@@ -81,7 +81,7 @@ public class MysqlConnectionPool implements ConnectionPool {
         return INSTANCE;
     }
 
-    static MysqlConnectionPool getTestInstance() {
+    public static MysqlConnectionPool getTestInstance() {
         return TEST_INSTANCE;
     }
 
