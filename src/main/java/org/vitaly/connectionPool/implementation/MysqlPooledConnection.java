@@ -4,6 +4,7 @@ import org.vitaly.connectionPool.abstraction.PooledConnection;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * Created by vitaly on 2017-03-25.
@@ -13,7 +14,7 @@ public class MysqlPooledConnection implements PooledConnection {
     private boolean isTransactionInitialized;
     private boolean isTransactionEnded;
 
-    public MysqlPooledConnection(Connection connection) {
+    MysqlPooledConnection(Connection connection) {
         this.connection = connection;
         this.isTransactionInitialized = false;
         this.isTransactionEnded = false;
@@ -30,6 +31,11 @@ public class MysqlPooledConnection implements PooledConnection {
             // TODO: 2017-03-25 log
             throw new IllegalStateException(e);
         }
+    }
+
+    @Override
+    public Statement prepareStatement(String sql) throws SQLException {
+        return connection.prepareStatement(sql);
     }
 
     @Override

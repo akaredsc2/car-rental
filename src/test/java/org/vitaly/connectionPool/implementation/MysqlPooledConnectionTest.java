@@ -1,14 +1,15 @@
 package org.vitaly.connectionPool.implementation;
 
-import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.vitaly.connectionPool.abstraction.ConnectionPool;
 import org.vitaly.connectionPool.abstraction.PooledConnection;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
+import java.sql.Statement;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -18,7 +19,7 @@ import static org.junit.Assert.*;
  * Created by vitaly on 2017-03-25.
  */
 public class MysqlPooledConnectionTest {
-    private ConnectionPool pool;
+    private static ConnectionPool pool;
     private PooledConnection connection;
     private Connection jdbcConnection;
     private Field isTransactionInitializedField;
@@ -26,9 +27,13 @@ public class MysqlPooledConnectionTest {
     private Field isTransactionEndedField;
     private boolean isTransactionEnded;
 
+    @BeforeClass
+    public static void beforeAll() throws Exception {
+        pool = MysqlConnectionPool.getTestInstance();
+    }
+
     @Before
     public void setUp() throws Exception {
-        pool = new MysqlConnectionPool(new BasicDataSource());
         connection = pool.getConnection();
 
         Field jdbcConnectionField = connection.getClass().getDeclaredField("connection");
@@ -56,7 +61,7 @@ public class MysqlPooledConnectionTest {
     public void pooledConnectionIsNotInitializedAndIsNotEnded() throws Exception {
         isTransactionInitialized = (boolean) isTransactionInitializedField.get(connection);
         isTransactionEnded = (boolean) isTransactionEndedField.get(connection);
-        assertFalse(isTransactionInitialized || isTransactionEnded);
+        assertTrue(!isTransactionInitialized && !isTransactionEnded);
     }
 
     @Test
@@ -102,13 +107,10 @@ public class MysqlPooledConnectionTest {
     @Test
     public void committingDoesNotAffectIsInitialized() throws Exception {
         connection.initializeTransaction();
-
         boolean isTransactionInitializedBeforeCommit = (boolean) isTransactionInitializedField.get(connection);
-
         connection.commit();
 
         boolean isTransactionInitializedAfterCommit = (boolean) isTransactionInitializedField.get(connection);
-
         assertThat(isTransactionInitializedBeforeCommit, equalTo(isTransactionInitializedAfterCommit));
     }
 
@@ -132,14 +134,19 @@ public class MysqlPooledConnectionTest {
     @Test
     public void rollingBackDoesNotAffectIsInitialized() throws Exception {
         connection.initializeTransaction();
-
         boolean isTransactionInitializedBeforeRollback = (boolean) isTransactionInitializedField.get(connection);
-
         connection.rollback();
 
         boolean isTransactionInitializedAfterRollback = (boolean) isTransactionInitializedField.get(connection);
-
         assertThat(isTransactionInitializedBeforeRollback, equalTo(isTransactionInitializedAfterRollback));
+    }
+
+    @Test
+    public void preparedStatementIsNotNull() throws Exception {
+        String query = "select * from users";
+        Statement prepareStatement = connection.prepareStatement(query);
+
+        assertNotNull(prepareStatement);
     }
 
     @After
