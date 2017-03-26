@@ -2,8 +2,7 @@ package org.vitaly.model;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
+import org.vitaly.model.location.Location;
 
 /**
  * Created by vitaly on 2017-03-26.

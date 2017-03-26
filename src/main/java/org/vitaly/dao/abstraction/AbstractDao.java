@@ -1,6 +1,6 @@
 package org.vitaly.dao.abstraction;
 
-import org.vitaly.model.Location;
+import org.vitaly.model.location.Location;
 
 import java.util.List;
 import java.util.Optional;

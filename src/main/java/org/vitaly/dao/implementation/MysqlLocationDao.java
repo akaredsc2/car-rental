@@ -2,7 +2,7 @@ package org.vitaly.dao.implementation;
 
 import org.vitaly.connectionPool.abstraction.PooledConnection;
 import org.vitaly.dao.abstraction.LocationDao;
-import org.vitaly.model.Location;
+import org.vitaly.model.location.Location;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

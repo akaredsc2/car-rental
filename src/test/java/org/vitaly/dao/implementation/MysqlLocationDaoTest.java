@@ -8,7 +8,7 @@ import org.vitaly.connectionPool.abstraction.PooledConnection;
 import org.vitaly.connectionPool.implementation.MysqlConnectionPool;
 import org.vitaly.dao.abstraction.DaoFactory;
 import org.vitaly.dao.abstraction.LocationDao;
-import org.vitaly.model.Location;
+import org.vitaly.model.location.Location;
 
 import java.util.ArrayList;
 import java.util.List;

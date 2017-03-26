@@ -1,4 +1,6 @@
-package org.vitaly.model;
+package org.vitaly.model.location;
+
+import org.vitaly.model.car.Car;
 
 import java.util.ArrayList;
 import java.util.List;

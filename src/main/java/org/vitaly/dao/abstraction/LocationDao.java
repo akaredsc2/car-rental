@@ -1,6 +1,6 @@
 package org.vitaly.dao.abstraction;
 
-import org.vitaly.model.Location;
+import org.vitaly.model.location.Location;
 
 /**
  * Created by vitaly on 2017-03-26.
