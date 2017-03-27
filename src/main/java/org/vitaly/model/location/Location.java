@@ -87,6 +87,18 @@ public class Location {
         return result;
     }
 
+    @Override
+    public String toString() {
+        return "Location{" +
+                "id=" + id +
+                ", state='" + state + '\'' +
+                ", city='" + city + '\'' +
+                ", street='" + street + '\'' +
+                ", building='" + building + '\'' +
+                ", cars=" + cars +
+                '}';
+    }
+
     public static class Builder {
         private Long id;
         private String state;

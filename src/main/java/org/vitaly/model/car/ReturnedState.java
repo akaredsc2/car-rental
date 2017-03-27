@@ -14,5 +14,10 @@ public class ReturnedState extends CarState {
     boolean canMakeUnavailable() {
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "returned";
+    }
 }
 

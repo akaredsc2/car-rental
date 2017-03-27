@@ -148,8 +148,7 @@ public class MysqlLocationDao implements LocationDao {
 
             ResultSet resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
-                createdId = (long) resultSet.getInt(1);
-                System.out.println();
+                createdId = resultSet.getLong(1);
             }
         } catch (SQLException e) {
             connection.rollback();

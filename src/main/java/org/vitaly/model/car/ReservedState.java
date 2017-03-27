@@ -14,4 +14,9 @@ public class ReservedState extends CarState {
     boolean canServe() {
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "reserved";
+    }
 }

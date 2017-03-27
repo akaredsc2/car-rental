@@ -32,7 +32,7 @@ public class MysqlLocationDaoTest {
     private LocationDao locationDao;
 
     @BeforeClass
-    public static void initPool() {
+    public static void initPoolAndFactory() {
         pool = MysqlConnectionPool.getTestInstance();
         factory = DaoFactory.getMysqlDaoFactory();
     }
@@ -152,7 +152,7 @@ public class MysqlLocationDaoTest {
     }
 
     @After
-    public void cleanUp() throws Exception {
+    public void tearDown() throws Exception {
         connection.initializeTransaction();
         connection.prepareStatement(CLEAN_UP_QUERY)
                 .executeUpdate();

@@ -14,4 +14,9 @@ public class MaintainedState extends CarState {
     boolean canMakeUnavailable() {
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "maintained";
+    }
 }

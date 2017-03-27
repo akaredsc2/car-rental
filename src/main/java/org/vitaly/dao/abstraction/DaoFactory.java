@@ -9,6 +9,8 @@ import org.vitaly.dao.implementation.MysqlDaoFactory;
 public interface DaoFactory {
     LocationDao createLocationDao(PooledConnection connection);
 
+    CarDao createCarDao(PooledConnection connection);
+
     static DaoFactory getMysqlDaoFactory() {
         return MysqlDaoFactory.getInstance();
     }

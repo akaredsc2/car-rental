@@ -25,4 +25,9 @@ public class AvailableState extends CarState {
     boolean canReserve() {
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "available";
+    }
 }
