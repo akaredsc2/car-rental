@@ -130,7 +130,7 @@ public class Car {
         if (!color.equals(car.color)) {
             return false;
         }
-        if (!pricePerDay.equals(car.pricePerDay)) {
+        if (!pricePerDay.stripTrailingZeros().equals(car.pricePerDay.stripTrailingZeros())) {
             return false;
         }
         return location.equals(car.location);

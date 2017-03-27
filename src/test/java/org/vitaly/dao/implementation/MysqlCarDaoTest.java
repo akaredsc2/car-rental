@@ -81,13 +81,19 @@ public class MysqlCarDaoTest {
     }
 
     @Test
-    public void findById() throws Exception {
+    public void findByIdExistingEntityReturnsEntity() throws Exception {
+        Long createdId = carDao.create(car1).orElseThrow(AssertionError::new);
 
+        Car foundCar = carDao.findById(createdId).orElseThrow(AssertionError::new);
+
+        assertThat(foundCar, equalTo(car1));
     }
 
     @Test
-    public void findIdOfEntity() throws Exception {
+    public void findByIdNonExistingEntityReturnsEmptyOptional() throws Exception {
+        boolean findResult = carDao.findById(-1L).isPresent();
 
+        assertThat(findResult, equalTo(false));
     }
 
     @Test
@@ -97,7 +103,6 @@ public class MysqlCarDaoTest {
 
     @Test
     public void successfulCreationReturnsId() throws Exception {
-
         boolean creationResult = carDao.create(car1).isPresent();
 
         assertThat(creationResult, equalTo(true));
