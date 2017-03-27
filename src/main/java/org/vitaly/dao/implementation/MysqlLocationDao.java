@@ -45,29 +45,35 @@ public class MysqlLocationDao implements LocationDao {
 
         Location location = null;
 
-        try {
-            PreparedStatement statement = connection.prepareStatement(FIND_BY_ID_QUERY);
+        try (PreparedStatement statement = connection.prepareStatement(FIND_BY_ID_QUERY)) {
             statement.setLong(1, id);
             statement.executeQuery();
 
             ResultSet resultSet = statement.getResultSet();
 
             if (resultSet.next()) {
-                location = new Location.Builder()
-                        .setId(resultSet.getLong(LOCATION_ID))
-                        .setState(resultSet.getString(LOCATION_STATE))
-                        .setCity(resultSet.getString(LOCATION_CITY))
-                        .setStreet(resultSet.getString(LOCATION_STREET))
-                        .setBuilding(resultSet.getString(LOCATION_BUILDING))
-                        .setCars(new ArrayList<>())
-                        .build();
+                location = buildLocationFromResultSetEntry(resultSet);
             }
+
+            resultSet.close();
         } catch (SQLException e) {
 
             // TODO: 2017-03-26 log
             e.printStackTrace();
         }
+
         return Optional.ofNullable(location);
+    }
+
+    private Location buildLocationFromResultSetEntry(ResultSet resultSet) throws SQLException {
+        return new Location.Builder()
+                .setId(resultSet.getLong(LOCATION_ID))
+                .setState(resultSet.getString(LOCATION_STATE))
+                .setCity(resultSet.getString(LOCATION_CITY))
+                .setStreet(resultSet.getString(LOCATION_STREET))
+                .setBuilding(resultSet.getString(LOCATION_BUILDING))
+                .setCars(new ArrayList<>())
+                .build();
     }
 
     @Override
@@ -76,8 +82,7 @@ public class MysqlLocationDao implements LocationDao {
 
         Long foundId = null;
 
-        try {
-            PreparedStatement statement = connection.prepareStatement(FIND_ID_OF_ENTITY_QUERY);
+        try (PreparedStatement statement = connection.prepareStatement(FIND_ID_OF_ENTITY_QUERY)) {
             statement.setString(1, location.getState());
             statement.setString(2, location.getCity());
             statement.setString(3, location.getStreet());
@@ -89,6 +94,8 @@ public class MysqlLocationDao implements LocationDao {
             if (resultSet.next()) {
                 foundId = resultSet.getLong(LOCATION_ID);
             }
+
+            resultSet.close();
         } catch (SQLException e) {
 
             // TODO: 2017-03-26 log
@@ -102,22 +109,16 @@ public class MysqlLocationDao implements LocationDao {
     public List<Location> getAll() {
         List<Location> locationList = new ArrayList<>();
 
-        try {
-            PreparedStatement statement = connection.prepareStatement(ALL_LOCATIONS_QUERY);
+        try (PreparedStatement statement = connection.prepareStatement(ALL_LOCATIONS_QUERY)) {
             statement.executeQuery();
             ResultSet resultSet = statement.getResultSet();
 
             while (resultSet.next()) {
-                Location location = new Location.Builder()
-                        .setId(resultSet.getLong(LOCATION_ID))
-                        .setState(resultSet.getString(LOCATION_STATE))
-                        .setCity(resultSet.getString(LOCATION_CITY))
-                        .setStreet(resultSet.getString(LOCATION_STREET))
-                        .setBuilding(resultSet.getString(LOCATION_BUILDING))
-                        .setCars(new ArrayList<>())
-                        .build();
+                Location location = buildLocationFromResultSetEntry(resultSet);
                 locationList.add(location);
             }
+
+            resultSet.close();
         } catch (SQLException e) {
 
             // TODO: 2017-03-26 log
@@ -134,8 +135,7 @@ public class MysqlLocationDao implements LocationDao {
         connection.initializeTransaction();
 
         Long createdId = null;
-        try {
-            PreparedStatement statement = connection.prepareStatement(CREATE_LOCATION_QUERY, RETURN_GENERATED_KEYS);
+        try (PreparedStatement statement = connection.prepareStatement(CREATE_LOCATION_QUERY, RETURN_GENERATED_KEYS)) {
             statement.setString(1, location.getState());
             statement.setString(2, location.getCity());
             statement.setString(3, location.getStreet());
@@ -150,6 +150,8 @@ public class MysqlLocationDao implements LocationDao {
             if (resultSet.next()) {
                 createdId = resultSet.getLong(1);
             }
+
+            resultSet.close();
         } catch (SQLException e) {
             connection.rollback();
 
@@ -161,24 +163,26 @@ public class MysqlLocationDao implements LocationDao {
     }
 
     @Override
-    public void update(Long id, Location entity) {
+    public int update(Long id, Location entity) {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public int getLocationCount() {
-        try {
-            PreparedStatement statement = connection.prepareStatement(LOCATION_COUNT_QUERY);
+        try (PreparedStatement statement = connection.prepareStatement(LOCATION_COUNT_QUERY)) {
             statement.executeQuery();
             ResultSet resultSet = statement.getResultSet();
             if (resultSet.next()) {
                 return resultSet.getInt(1);
             }
+
+            resultSet.close();
         } catch (SQLException e) {
 
             // TODO: 2017-03-26 log
             e.printStackTrace();
         }
-        return -1;
+
+        return 0;
     }
 }

@@ -1,6 +1,5 @@
 package org.vitaly.model.car;
 
-import org.vitaly.model.location.Location;
 import org.vitaly.util.InputChecker;
 
 import java.math.BigDecimal;
@@ -12,19 +11,19 @@ public class Car {
     private Long id;
     private CarState state;
     private String model;
+    private String registrationPlate;
     private String photoUrl;
     private String color;
     private BigDecimal pricePerDay;
-    private Location location;
 
     private Car(Builder builder) {
         this.id = builder.id;
         this.state = builder.state;
         this.model = builder.model;
+        this.registrationPlate = builder.registrationPlate;
         this.photoUrl = builder.photoUrl;
         this.color = builder.color;
         this.pricePerDay = builder.pricePerDay;
-        this.location = builder.location;
     }
 
     public Long getId() {
@@ -33,6 +32,10 @@ public class Car {
 
     public CarState getState() {
         return state;
+    }
+
+    public String getRegistrationPlate() {
+        return registrationPlate;
     }
 
     public String getModel() {
@@ -49,10 +52,6 @@ public class Car {
 
     public BigDecimal getPricePerDay() {
         return pricePerDay;
-    }
-
-    public Location getLocation() {
-        return location;
     }
 
     void setState(CarState state) {
@@ -124,50 +123,37 @@ public class Car {
         if (!model.equals(car.model)) {
             return false;
         }
+        if (!registrationPlate.equals(car.registrationPlate)) {
+            return false;
+        }
         if (!photoUrl.equals(car.photoUrl)) {
             return false;
         }
         if (!color.equals(car.color)) {
             return false;
         }
-        if (!pricePerDay.stripTrailingZeros().equals(car.pricePerDay.stripTrailingZeros())) {
-            return false;
-        }
-        return location.equals(car.location);
+        return pricePerDay.stripTrailingZeros().equals(car.pricePerDay.stripTrailingZeros());
     }
 
     @Override
     public int hashCode() {
         int result = state.hashCode();
         result = 31 * result + model.hashCode();
+        result = 31 * result + registrationPlate.hashCode();
         result = 31 * result + photoUrl.hashCode();
         result = 31 * result + color.hashCode();
         result = 31 * result + pricePerDay.hashCode();
-        result = 31 * result + location.hashCode();
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "Car{" +
-                "id=" + id +
-                ", state=" + state +
-                ", model='" + model + '\'' +
-                ", photoUrl='" + photoUrl + '\'' +
-                ", color='" + color + '\'' +
-                ", pricePerDay=" + pricePerDay +
-                ", location=" + location +
-                '}';
     }
 
     public static class Builder {
         private Long id;
         private CarState state;
         private String model;
+        private String registrationPlate;
         private String photoUrl;
         private String color;
         private BigDecimal pricePerDay;
-        private Location location;
 
         public Builder() {
         }
@@ -193,6 +179,13 @@ public class Car {
             return this;
         }
 
+        public Builder setRegistrationPlate(String registrationPlate) {
+            InputChecker.requireNotNull(registrationPlate, "Registration Plate must not be null!");
+
+            this.registrationPlate = registrationPlate;
+            return this;
+        }
+
         public Builder setPhotoUrl(String photoUrl) {
             InputChecker.requireNotNull(photoUrl, "PhotoUrl must not be null!");
 
@@ -211,13 +204,6 @@ public class Car {
             InputChecker.requireNotNull(pricePerDay, "PricePerDay must not be null!");
 
             this.pricePerDay = pricePerDay;
-            return this;
-        }
-
-        public Builder setLocation(Location location) {
-            InputChecker.requireNotNull(location, "Location must not be null!");
-
-            this.location = location;
             return this;
         }
 

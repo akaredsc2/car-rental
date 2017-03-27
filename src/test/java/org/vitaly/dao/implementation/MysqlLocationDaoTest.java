@@ -82,7 +82,7 @@ public class MysqlLocationDaoTest {
     }
 
     @Test
-    public void successfulFindIdOfEntityReturnsCorrectId() throws Exception {
+    public void successfulFindIdOfLocationReturnsId() throws Exception {
         Long createdId = locationDao.create(location1).orElseThrow(AssertionError::new);
 
         Long foundId = locationDao.findIdOfEntity(location1).orElseThrow(AssertionError::new);
@@ -91,14 +91,14 @@ public class MysqlLocationDaoTest {
     }
 
     @Test
-    public void findIdOfNonExistingEntityShouldThrowException() throws Exception {
+    public void findIdOfNonExistingLocationReturnsEmptyOptional() throws Exception {
         boolean findResult = locationDao.findIdOfEntity(location2).isPresent();
 
         assertThat(findResult, equalTo(false));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void findIdOfNullEntityShouldThrowException() throws Exception {
+    public void findIdOfNullLocationShouldThrowException() throws Exception {
         locationDao.findIdOfEntity(null);
     }
 

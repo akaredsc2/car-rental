@@ -1,7 +1,5 @@
 package org.vitaly.dao.abstraction;
 
-import org.vitaly.model.location.Location;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -17,5 +15,5 @@ public interface AbstractDao<E> {
 
     Optional<Long> create(E entity);
 
-    void update(Long id, Location entity);
+    int update(Long id, E entity);
 }

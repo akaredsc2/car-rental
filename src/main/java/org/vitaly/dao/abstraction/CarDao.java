@@ -9,5 +9,7 @@ import java.util.List;
  * Created by vitaly on 2017-03-27.
  */
 public interface CarDao extends AbstractDao<Car> {
+    boolean addCarToLocation(Car car, Location location);
+
     List<Car> getCarsAtLocation(Location location);
 }
