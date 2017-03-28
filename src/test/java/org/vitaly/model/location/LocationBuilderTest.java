@@ -1,4 +1,4 @@
-package org.vitaly.model;
+package org.vitaly.model.location;
 
 import org.junit.Before;
 import org.junit.Test;
