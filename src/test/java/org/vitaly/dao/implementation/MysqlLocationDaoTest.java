@@ -60,7 +60,7 @@ public class MysqlLocationDaoTest {
 
     @Test
     public void findByIdExistingLocationReturnsLocation() throws Exception {
-        Long createdLocationId = locationDao.create(location1).orElseThrow(AssertionError::new);
+        long createdLocationId = locationDao.create(location1).orElseThrow(AssertionError::new);
 
         Location foundLocation = locationDao.findById(createdLocationId).orElseThrow(AssertionError::new);
 
@@ -83,9 +83,9 @@ public class MysqlLocationDaoTest {
 
     @Test
     public void successfulFindIdOfLocationReturnsId() throws Exception {
-        Long createdId = locationDao.create(location1).orElseThrow(AssertionError::new);
+        long createdId = locationDao.create(location1).orElseThrow(AssertionError::new);
 
-        Long foundId = locationDao.findIdOfEntity(location1).orElseThrow(AssertionError::new);
+        long foundId = locationDao.findIdOfEntity(location1).orElseThrow(AssertionError::new);
 
         assertThat(foundId, equalTo(createdId));
     }

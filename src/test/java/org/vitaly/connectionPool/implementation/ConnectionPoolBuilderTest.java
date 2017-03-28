@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 /**
  * Created by vitaly on 2017-03-26.
  */
-public class BuilderTest {
+public class ConnectionPoolBuilderTest {
     private MysqlConnectionPool.Builder builder;
 
     @Before

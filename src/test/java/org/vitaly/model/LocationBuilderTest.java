@@ -16,11 +16,6 @@ public class LocationBuilderTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void setNullIdShouldThrowException() throws Exception {
-        builder.setId(null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
     public void setNullStateShouldThrowException() throws Exception {
         builder.setState(null);
     }

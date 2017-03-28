@@ -2,6 +2,7 @@ package org.vitaly.dao.abstraction;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalLong;
 
 /**
  * Created by vitaly on 2017-03-26.
@@ -9,11 +10,11 @@ import java.util.Optional;
 public interface AbstractDao<E> {
     Optional<E> findById(Long id);
 
-    Optional<Long> findIdOfEntity(E entity);
+    OptionalLong findIdOfEntity(E entity);
 
     List<E> getAll();
 
-    Optional<Long> create(E entity);
+    OptionalLong create(E entity);
 
     int update(Long id, E entity);
 }

@@ -14,6 +14,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalLong;
 
 import static org.vitaly.util.InputChecker.requireNotNull;
 
@@ -110,10 +111,10 @@ public class MysqlCarDao implements CarDao {
     }
 
     @Override
-    public Optional<Long> findIdOfEntity(Car car) {
+    public OptionalLong findIdOfEntity(Car car) {
         requireNotNull(car, CAR_MUST_NOT_BE_NULL);
 
-        Long foundId = null;
+        OptionalLong foundId = OptionalLong.empty();
 
         try (PreparedStatement statement = connection.prepareStatement(FIND_ID_OF_CAR_QUERY)) {
             statement.setString(1, car.getRegistrationPlate());
@@ -122,7 +123,7 @@ public class MysqlCarDao implements CarDao {
             ResultSet resultSet = statement.getResultSet();
 
             if (resultSet.next()) {
-                foundId = resultSet.getLong(1);
+                foundId = OptionalLong.of(resultSet.getLong(1));
             }
 
             resultSet.close();
@@ -132,7 +133,7 @@ public class MysqlCarDao implements CarDao {
             e.printStackTrace();
         }
 
-        return Optional.ofNullable(foundId);
+        return foundId;
     }
 
     @Override
@@ -159,12 +160,12 @@ public class MysqlCarDao implements CarDao {
     }
 
     @Override
-    public Optional<Long> create(Car car) {
+    public OptionalLong create(Car car) {
         requireNotNull(car, CAR_MUST_NOT_BE_NULL1);
 
         connection.initializeTransaction();
 
-        Long createdId = null;
+        OptionalLong createdId = OptionalLong.empty();
         try (PreparedStatement statement = connection.prepareStatement(CREATE_QUERY, Statement.RETURN_GENERATED_KEYS)) {
             setCarParametersInStatement(car, statement);
 
@@ -174,7 +175,7 @@ public class MysqlCarDao implements CarDao {
 
             ResultSet resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
-                createdId = resultSet.getLong(1);
+                createdId = OptionalLong.of(resultSet.getLong(1));
             }
 
             resultSet.close();
@@ -185,7 +186,7 @@ public class MysqlCarDao implements CarDao {
             e.printStackTrace();
         }
 
-        return Optional.ofNullable(createdId);
+        return createdId;
     }
 
     private void setCarParametersInStatement(Car car, PreparedStatement statement) throws SQLException {

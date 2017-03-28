@@ -11,7 +11,7 @@ import static org.vitaly.util.InputChecker.requireNotNull;
  * Created by vitaly on 2017-03-26.
  */
 public class Location {
-    private Long id;
+    private long id;
     private String state;
     private String city;
     private String street;
@@ -27,7 +27,7 @@ public class Location {
         this.cars = builder.cars;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
@@ -100,7 +100,7 @@ public class Location {
     }
 
     public static class Builder {
-        private Long id;
+        private long id;
         private String state;
         private String city;
         private String street;
@@ -110,9 +110,7 @@ public class Location {
         public Builder() {
         }
 
-        public Builder setId(Long id) {
-            requireNotNull(id, "Id must not be null!");
-
+        public Builder setId(long id) {
             this.id = id;
             return this;
         }

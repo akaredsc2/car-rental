@@ -24,6 +24,7 @@ public class MysqlConnectionPool implements ConnectionPool {
     private static final String DB_PASS = "db.pass";
     private static final String DB_USE_SSL = "db.useSsl";
     private static final String DB_MAX_TOTAL = "db.maxTotal";
+    public static final String USE_SSL_FALSE = "?useSSL=false";
 
     private static MysqlConnectionPool INSTANCE;
     private static MysqlConnectionPool TEST_INSTANCE;
@@ -71,8 +72,8 @@ public class MysqlConnectionPool implements ConnectionPool {
 
     private String createUrl(Builder builder) {
         String url = builder.url;
-        if (builder.useSsl) {
-            url += "?useSSL=false";
+        if (!builder.useSsl) {
+            url += USE_SSL_FALSE;
         }
         return url;
     }

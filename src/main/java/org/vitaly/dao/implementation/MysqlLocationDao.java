@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalLong;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static org.vitaly.util.InputChecker.requireNotNull;
@@ -77,10 +78,10 @@ public class MysqlLocationDao implements LocationDao {
     }
 
     @Override
-    public Optional<Long> findIdOfEntity(Location location) {
+    public OptionalLong findIdOfEntity(Location location) {
         requireNotNull(location, LOCATION_MUST_NOT_BE_NULL);
 
-        Long foundId = null;
+        OptionalLong foundId = OptionalLong.empty();
 
         try (PreparedStatement statement = connection.prepareStatement(FIND_ID_OF_ENTITY_QUERY)) {
             statement.setString(1, location.getState());
@@ -92,7 +93,7 @@ public class MysqlLocationDao implements LocationDao {
             ResultSet resultSet = statement.getResultSet();
 
             if (resultSet.next()) {
-                foundId = resultSet.getLong(LOCATION_ID);
+                foundId = OptionalLong.of(resultSet.getLong(LOCATION_ID));
             }
 
             resultSet.close();
@@ -102,7 +103,7 @@ public class MysqlLocationDao implements LocationDao {
             e.printStackTrace();
         }
 
-        return Optional.ofNullable(foundId);
+        return foundId;
     }
 
     @Override
@@ -129,12 +130,12 @@ public class MysqlLocationDao implements LocationDao {
     }
 
     @Override
-    public Optional<Long> create(Location location) {
+    public OptionalLong create(Location location) {
         requireNotNull(location, LOCATION_MUST_NOT_BE_NULL);
 
         connection.initializeTransaction();
 
-        Long createdId = null;
+        OptionalLong createdId = OptionalLong.empty();
         try (PreparedStatement statement = connection.prepareStatement(CREATE_LOCATION_QUERY, RETURN_GENERATED_KEYS)) {
             statement.setString(1, location.getState());
             statement.setString(2, location.getCity());
@@ -148,7 +149,7 @@ public class MysqlLocationDao implements LocationDao {
 
             ResultSet resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
-                createdId = resultSet.getLong(1);
+                createdId = OptionalLong.of(resultSet.getLong(1));
             }
 
             resultSet.close();
@@ -159,7 +160,7 @@ public class MysqlLocationDao implements LocationDao {
             e.printStackTrace();
         }
 
-        return Optional.ofNullable(createdId);
+        return createdId;
     }
 
     @Override

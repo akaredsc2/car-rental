@@ -8,7 +8,7 @@ import java.math.BigDecimal;
  * Created by vitaly on 2017-03-26.
  */
 public class Car {
-    private Long id;
+    private long id;
     private CarState state;
     private String model;
     private String registrationPlate;
@@ -26,7 +26,7 @@ public class Car {
         this.pricePerDay = builder.pricePerDay;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
@@ -147,7 +147,7 @@ public class Car {
     }
 
     public static class Builder {
-        private Long id;
+        private long id;
         private CarState state;
         private String model;
         private String registrationPlate;
@@ -158,9 +158,7 @@ public class Car {
         public Builder() {
         }
 
-        public Builder setId(Long id) {
-            InputChecker.requireNotNull(id, "Id must not be null!");
-
+        public Builder setId(long id) {
             this.id = id;
             return this;
         }

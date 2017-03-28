@@ -78,7 +78,7 @@ public class MysqlCarDaoTest {
 
     @Test
     public void findByIdExistingCarReturnsCar() throws Exception {
-        Long createdId = carDao.create(car1).orElseThrow(AssertionError::new);
+        long createdId = carDao.create(car1).orElseThrow(AssertionError::new);
 
         Car foundCar = carDao.findById(createdId).orElseThrow(AssertionError::new);
 
@@ -99,9 +99,9 @@ public class MysqlCarDaoTest {
 
     @Test
     public void findIdOfExistingCarReturnsId() throws Exception {
-        Long createdId = carDao.create(car1).orElseThrow(AssertionError::new);
+        long createdId = carDao.create(car1).orElseThrow(AssertionError::new);
 
-        Long foundId = carDao.findIdOfEntity(car1).orElseThrow(AssertionError::new);
+        long foundId = carDao.findIdOfEntity(car1).orElseThrow(AssertionError::new);
 
         assertThat(foundId, equalTo(createdId));
     }
@@ -156,7 +156,7 @@ public class MysqlCarDaoTest {
 
     @Test
     public void updateExistingCarReturnsOne() throws Exception {
-        Long createId = carDao.create(car1).orElseThrow(AssertionError::new);
+        long createId = carDao.create(car1).orElseThrow(AssertionError::new);
 
         int updateCount = carDao.update(createId, car2);
 
@@ -165,7 +165,7 @@ public class MysqlCarDaoTest {
 
     @Test
     public void updateExistingCarReturnsUpdatesCar() throws Exception {
-        Long createId = carDao.create(car1).orElseThrow(AssertionError::new);
+        long createId = carDao.create(car1).orElseThrow(AssertionError::new);
 
         carDao.update(createId, car2);
 
@@ -201,12 +201,12 @@ public class MysqlCarDaoTest {
     }
 
     private Car createCarWithId(Car car) {
-        Long createdCarId = carDao.create(car).orElseThrow(AssertionError::new);
+        long createdCarId = carDao.create(car).orElseThrow(AssertionError::new);
         return carDao.findById(createdCarId).orElseThrow(AssertionError::new);
     }
 
     private Location createLocationWithId(Location location) {
-        Long createdLocationId = locationDao.create(location).orElseThrow(AssertionError::new);
+        long createdLocationId = locationDao.create(location).orElseThrow(AssertionError::new);
         return locationDao.findById(createdLocationId).orElseThrow(AssertionError::new);
     }
 
