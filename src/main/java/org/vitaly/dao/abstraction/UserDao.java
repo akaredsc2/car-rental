@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface UserDao extends AbstractDao<User> {
     Optional<User> authenticate(String login, String password);
 
-    boolean changeRole(User user, UserRole role);
+    void changeRole(User user, UserRole role);
 
-    boolean changePassword(User user, String newPassword);
+    void changePassword(User user, String newPassword);
 }

@@ -23,7 +23,7 @@ public class MysqlLocationDao implements LocationDao {
     private static final String FIND_BY_ID_QUERY =
             "select * " +
             "from location where location_id = ?";
-    private static final String LOCATION_ID = "location.location_id";
+    private static final String LOCATION_LOCATION_ID = "location.location_id";
     private static final String LOCATION_STATE = "location.state";
     private static final String LOCATION_CITY = "location.city";
     private static final String LOCATION_STREET = "location.street";
@@ -31,8 +31,8 @@ public class MysqlLocationDao implements LocationDao {
     private static final String LOCATION_MUST_NOT_BE_NULL = "Location must not be null!";
     private static final String FIND_ID_OF_ENTITY_QUERY =
             "select location_id " +
-             "from location " +
-             "where state = ? and city = ? and street = ? and building = ?";
+            "from location " +
+            "where state = ? and city = ? and street = ? and building = ?";
     private static final String ALL_LOCATIONS_QUERY =
             "select * " +
             "from location";
@@ -77,7 +77,7 @@ public class MysqlLocationDao implements LocationDao {
 
     private Location buildLocationFromResultSetEntry(ResultSet resultSet) throws SQLException {
         return new Location.Builder()
-                .setId(resultSet.getLong(LOCATION_ID))
+                .setId(resultSet.getLong(LOCATION_LOCATION_ID))
                 .setState(resultSet.getString(LOCATION_STATE))
                 .setCity(resultSet.getString(LOCATION_CITY))
                 .setStreet(resultSet.getString(LOCATION_STREET))
@@ -102,7 +102,7 @@ public class MysqlLocationDao implements LocationDao {
             ResultSet resultSet = statement.getResultSet();
 
             if (resultSet.next()) {
-                foundId = OptionalLong.of(resultSet.getLong(LOCATION_ID));
+                foundId = OptionalLong.of(resultSet.getLong(LOCATION_LOCATION_ID));
             }
 
             resultSet.close();
@@ -173,7 +173,7 @@ public class MysqlLocationDao implements LocationDao {
     }
 
     @Override
-    public int update(Long id, Location entity) {
+    public int update(long id, Location entity) {
         throw new UnsupportedOperationException();
     }
 

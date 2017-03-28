@@ -10,9 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import java.util.OptionalLong;
+import java.util.*;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static org.vitaly.util.InputChecker.requireNotNull;
@@ -21,6 +19,42 @@ import static org.vitaly.util.InputChecker.requireNotNull;
  * Created by vitaly on 2017-03-28.
  */
 public class MysqlUserDao implements UserDao {
+    private static final String ID_MUST_NOT_BE_NULL = "Id must not be null!";
+    private static final String FIND_BY_ID_QUERY =
+            "select * " +
+                    "from users " +
+                    "where user_id = ?";
+    private static final String USERS_USER_ID = "users.user_id";
+    private static final String USERS_LOGIN = "users.login";
+    private static final String USERS_PASS = "users.pass";
+    private static final String USERS_FULL_NAME = "users.full_name";
+    private static final String USERS_BIRTH_DATE = "users.birth_date";
+    private static final String USERS_PASSPORT_NUMBER = "users.passport_number";
+    private static final String USERS_DRIVER_LICENCE_NUMBER = "users.driver_licence_number";
+    private static final String USERS_ROLE = "users.role";
+    private static final String FIND_ID_OF_USER_QUERY =
+            "select users.user_id " +
+                    "from users " +
+                    "where users.login = ?";
+    private static final String GET_ALL_QUERY = "select * " +
+            "from users";
+    private static final String CREATE_QUERY = "insert into users(login, pass, full_name, birth_date, passport_number, driver_licence_number) " +
+            "values (?, ?, ?, ?, ?, ?)";
+    private static final String LOGIN_MUST_NOT_BE_NULL = "Login must not be null!";
+    private static final String PASSWORD_MUST_NOT_BE_NULL = "Password must not be null!";
+    private static final String AUTHENTICATE_QUERY = "select * " +
+            "from users " +
+            "where users.login = ? and users.pass = ?";
+    private static final String ROLE_MUST_NOT_BE_NULL = "Role must not be null!";
+    private static final String CHANGE_ROLE_QUERY = "update users " +
+            "set users.role = ? " +
+            "where users.user_id = ?";
+    private static final String USER_MUST_NOT_BE_NULL = "User must not be null!";
+    private static final String NEW_PASSWORD_MUST_NOT_BE_NULL = "New password must not be null!";
+    private static final String CHANGE_PASSWORD_QUERY = "update users " +
+            "set users.pass = ? " +
+            "where users.user_id = ?";
+
     private PooledConnection connection;
 
     MysqlUserDao(PooledConnection connection) {
@@ -29,11 +63,11 @@ public class MysqlUserDao implements UserDao {
 
     @Override
     public Optional<User> findById(long id) {
-        requireNotNull(id, "Id must not be null!");
+        requireNotNull(id, ID_MUST_NOT_BE_NULL);
 
         User foundUser = null;
 
-        try (PreparedStatement statement = connection.prepareStatement("select * from users where user_id = ?")) {
+        try (PreparedStatement statement = connection.prepareStatement(FIND_BY_ID_QUERY)) {
             statement.setLong(1, id);
             statement.executeQuery();
 
@@ -54,41 +88,76 @@ public class MysqlUserDao implements UserDao {
     }
 
     private User buildUserFromResultSetEntry(ResultSet resultSet) throws SQLException {
-        LocalDate birthDate = resultSet.getDate("users.birth_date").toLocalDate();
-        UserRole role = UserRole.valueOf(resultSet.getString("users.role").toUpperCase());
+        LocalDate birthDate = resultSet.getDate(USERS_BIRTH_DATE).toLocalDate();
+        UserRole role = UserRole.valueOf(resultSet.getString(USERS_ROLE).toUpperCase());
 
         return new User.Builder()
-                .setId(resultSet.getLong("users.user_id"))
-                .setLogin(resultSet.getString("users.login"))
-                .setPassword(resultSet.getString("users.pass"))
-                .setFullName(resultSet.getString("users.full_name"))
+                .setId(resultSet.getLong(USERS_USER_ID))
+                .setLogin(resultSet.getString(USERS_LOGIN))
+                .setPassword(resultSet.getString(USERS_PASS))
+                .setFullName(resultSet.getString(USERS_FULL_NAME))
                 .setBirthDate(birthDate)
-                .setPassportNumber(resultSet.getString("users.passport_number"))
-                .setDriverLicenceNumber(resultSet.getString("users.driver_licence_number"))
+                .setPassportNumber(resultSet.getString(USERS_PASSPORT_NUMBER))
+                .setDriverLicenceNumber(resultSet.getString(USERS_DRIVER_LICENCE_NUMBER))
                 .setRole(role)
                 .build();
     }
 
     @Override
-    public OptionalLong findIdOfEntity(User entity) {
-        return null;
+    public OptionalLong findIdOfEntity(User user) {
+        requireNotNull(user, USER_MUST_NOT_BE_NULL);
+
+        OptionalLong findResult = OptionalLong.empty();
+
+        try (PreparedStatement statement = connection.prepareStatement(FIND_ID_OF_USER_QUERY)) {
+            statement.setString(1, user.getLogin());
+            statement.executeQuery();
+
+            ResultSet resultSet = statement.getResultSet();
+            if (resultSet.next()) {
+                findResult = OptionalLong.of(resultSet.getLong(USERS_USER_ID));
+            }
+
+            resultSet.close();
+        } catch (SQLException e) {
+
+            // TODO: 2017-03-28 log
+            e.printStackTrace();
+        }
+
+        return findResult;
     }
 
     @Override
     public List<User> getAll() {
-        return null;
+        List<User> users = new ArrayList<>();
+
+        try (PreparedStatement statement = connection.prepareStatement(GET_ALL_QUERY)) {
+            statement.executeQuery();
+
+            ResultSet resultSet = statement.getResultSet();
+            while (resultSet.next()) {
+                User nextUser = buildUserFromResultSetEntry(resultSet);
+                users.add(nextUser);
+            }
+
+            resultSet.close();
+        } catch (SQLException e) {
+
+            // TODO: 2017-03-28 log
+            e.printStackTrace();
+        }
+        return users;
     }
 
     @Override
     public OptionalLong create(User user) {
-        requireNotNull(user, "User must not be null!");
+        requireNotNull(user, USER_MUST_NOT_BE_NULL);
 
         connection.initializeTransaction();
 
         OptionalLong createdId = OptionalLong.empty();
-        try (PreparedStatement statement = connection.prepareStatement(
-                "insert into users(login, pass, full_name, birth_date, passport_number, driver_licence_number) " +
-                        "values (?, ?, ?, ?, ?, ?)", RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement statement = connection.prepareStatement(CREATE_QUERY, RETURN_GENERATED_KEYS)) {
             setUserParametersInStatement(user, statement);
 
             // TODO: 2017-03-28 transaction isolation
@@ -124,22 +193,81 @@ public class MysqlUserDao implements UserDao {
     }
 
     @Override
-    public int update(Long id, User entity) {
+    public int update(long id, User entity) {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public Optional<User> authenticate(String login, String password) {
-        return null;
+        requireNotNull(login, LOGIN_MUST_NOT_BE_NULL);
+        requireNotNull(password, PASSWORD_MUST_NOT_BE_NULL);
+
+        User authenticatedUser = null;
+
+        try (PreparedStatement statement = connection.prepareStatement(AUTHENTICATE_QUERY)) {
+            statement.setString(1, login);
+            statement.setString(2, password);
+            statement.executeQuery();
+
+            ResultSet resultSet = statement.getResultSet();
+
+            if (resultSet.next()) {
+                authenticatedUser = buildUserFromResultSetEntry(resultSet);
+            }
+
+            resultSet.close();
+        } catch (SQLException e) {
+
+            // TODO: 2017-03-28 log
+            e.printStackTrace();
+        }
+
+        return Optional.ofNullable(authenticatedUser);
     }
 
     @Override
-    public boolean changeRole(User user, UserRole role) {
-        return false;
+    public void changeRole(User user, UserRole role) {
+        requireNotNull(user, USER_MUST_NOT_BE_NULL);
+        requireNotNull(role, ROLE_MUST_NOT_BE_NULL);
+
+        if (user.getRole() != role) {
+            connection.initializeTransaction();
+
+            try (PreparedStatement statement = connection.prepareStatement(CHANGE_ROLE_QUERY)) {
+                statement.setString(1, role.toString().toLowerCase());
+                statement.setLong(2, user.getId());
+                statement.executeUpdate();
+
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+
+                // TODO: 2017-03-28 log
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
-    public boolean changePassword(User user, String newPassword) {
-        return false;
+    public void changePassword(User user, String newPassword) {
+        requireNotNull(user, USER_MUST_NOT_BE_NULL);
+        requireNotNull(newPassword, NEW_PASSWORD_MUST_NOT_BE_NULL);
+
+        if (!Objects.equals(user.getPassword(), newPassword)) {
+            connection.initializeTransaction();
+
+            try (PreparedStatement statement = connection.prepareStatement(CHANGE_PASSWORD_QUERY)) {
+                statement.setString(1, newPassword);
+                statement.setLong(2, user.getId());
+                statement.executeUpdate();
+
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+
+                // TODO: 2017-03-28 log
+                e.printStackTrace();
+            }
+        }
     }
 }

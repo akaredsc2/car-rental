@@ -16,5 +16,5 @@ public interface AbstractDao<E> {
 
     OptionalLong create(E entity);
 
-    int update(Long id, E entity);
+    int update(long id, E entity);
 }

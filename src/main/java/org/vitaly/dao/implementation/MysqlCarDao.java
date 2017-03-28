@@ -27,7 +27,7 @@ public class MysqlCarDao implements CarDao {
             "select * " +
             "from car " +
             "where car_id = ?";
-    private static final String CAR_STATUS = "car.car_status";
+    private static final String CAR_CAR_STATUS = "car.car_status";
     private static final String CAR_ID = "car.car_id";
     private static final String CAR_MODEL = "car.model";
     private static final String CAR_REGISTRATION_PLATE = "car.registration_plate";
@@ -41,23 +41,18 @@ public class MysqlCarDao implements CarDao {
     private static final String GET_ALL_QUERY =
             "select * " +
             "from car";
-    private static final String CAR_MUST_NOT_BE_NULL1 = "Car must not be null!";
     private static final String CREATE_QUERY =
             "insert into car(car_status, model, registration_plate, photo_url, color, price_per_day) " +
             "values (?, ?, ?, ?, ?, ?)";
-    private static final String ID_MUST_NOT_BE_NULL1 = "Id must not be null!";
-    private static final String CAR_MUST_NOT_BE_NULL2 = "Car must not be null!";
     private static final String UPDATE_QUERY =
             "update car " +
             "set car_status = ?, model = ?, registration_plate = ?, photo_url = ?, color = ?, price_per_day = ? " +
             "where car_id = ?";
-    private static final String CAR_MUST_NOT_BE_NULL3 = "Car must not be null!";
     private static final String LOCATION_MUST_NOT_BE_NULL = "Location must not be null!";
     private static final String ADD_CAR_TO_LOCATION_QUERY =
             "update car " +
             "set location_id = ? " +
             "where car_id = ?";
-    private static final String LOCATION_MUST_NOT_BE_NULL1 = "Location must not be null!";
     private static final String GET_CARS_AT_LOCATION_QUERY =
             "select car_id, car_status, model, registration_plate, photo_url, color, price_per_day " +
             "from car inner join location loc on car.location_id = loc.location_id " +
@@ -96,7 +91,7 @@ public class MysqlCarDao implements CarDao {
 
     private Car buildCarFromResultSetEntry(ResultSet resultSet) throws SQLException {
         CarState state = CarStateEnum
-                .valueOf(resultSet.getString(CAR_STATUS).toUpperCase())
+                .valueOf(resultSet.getString(CAR_CAR_STATUS).toUpperCase())
                 .getState();
 
         return new Car.Builder()
@@ -161,7 +156,7 @@ public class MysqlCarDao implements CarDao {
 
     @Override
     public OptionalLong create(Car car) {
-        requireNotNull(car, CAR_MUST_NOT_BE_NULL1);
+        requireNotNull(car, CAR_MUST_NOT_BE_NULL);
 
         connection.initializeTransaction();
 
@@ -199,9 +194,8 @@ public class MysqlCarDao implements CarDao {
     }
 
     @Override
-    public int update(Long id, Car car) {
-        requireNotNull(id, ID_MUST_NOT_BE_NULL1);
-        requireNotNull(car, CAR_MUST_NOT_BE_NULL2);
+    public int update(long id, Car car) {
+        requireNotNull(car, CAR_MUST_NOT_BE_NULL);
 
         connection.initializeTransaction();
 
@@ -225,7 +219,7 @@ public class MysqlCarDao implements CarDao {
 
     @Override
     public boolean addCarToLocation(Car car, Location location) {
-        requireNotNull(car, CAR_MUST_NOT_BE_NULL3);
+        requireNotNull(car, CAR_MUST_NOT_BE_NULL);
         requireNotNull(location, LOCATION_MUST_NOT_BE_NULL);
 
         boolean updateResult = false;
@@ -251,7 +245,7 @@ public class MysqlCarDao implements CarDao {
 
     @Override
     public List<Car> getCarsAtLocation(Location location) {
-        requireNotNull(location, LOCATION_MUST_NOT_BE_NULL1);
+        requireNotNull(location, LOCATION_MUST_NOT_BE_NULL);
 
         List<Car> cars = new ArrayList<>();
 

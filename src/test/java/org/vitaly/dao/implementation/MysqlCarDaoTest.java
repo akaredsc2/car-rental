@@ -185,11 +185,6 @@ public class MysqlCarDaoTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void updateNullIdShouldThrowException() throws Exception {
-        carDao.update(null, car1);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
     public void updateIdWithNullCarShouldThrowException() throws Exception {
         carDao.update(1L, null);
     }
