@@ -76,11 +76,6 @@ public class MysqlLocationDaoTest {
         assertThat(findResult, equalTo(false));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void findByNullIdShouldThrowException() throws Exception {
-        locationDao.findById(null);
-    }
-
     @Test
     public void successfulFindIdOfLocationReturnsId() throws Exception {
         long createdId = locationDao.create(location1).orElseThrow(AssertionError::new);

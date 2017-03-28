@@ -11,6 +11,7 @@ import org.vitaly.dao.abstraction.DaoFactory;
 import org.vitaly.dao.abstraction.LocationDao;
 import org.vitaly.model.car.Car;
 import org.vitaly.model.car.CarStateEnum;
+import org.vitaly.model.car.UnavailableState;
 import org.vitaly.model.location.Location;
 
 import java.lang.reflect.Field;
@@ -20,6 +21,7 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 
@@ -92,11 +94,6 @@ public class MysqlCarDaoTest {
         assertThat(findResult, equalTo(false));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void findByNullIdShouldThrowException() throws Exception {
-        carDao.findById(null);
-    }
-
     @Test
     public void findIdOfExistingCarReturnsId() throws Exception {
         long createdId = carDao.create(car1).orElseThrow(AssertionError::new);
@@ -147,6 +144,13 @@ public class MysqlCarDaoTest {
         boolean creationResult = carDao.create(car1).isPresent();
 
         assertThat(creationResult, equalTo(true));
+    }
+
+    @Test
+    public void createdCarHasUnavailableState() throws Exception {
+        Car car = createCarWithId(car1);
+
+        assertThat(car.getState(), instanceOf(UnavailableState.class));
     }
 
     @Test(expected = IllegalArgumentException.class)

@@ -69,7 +69,7 @@ public class MysqlCarDao implements CarDao {
     }
 
     @Override
-    public Optional<Car> findById(Long id) {
+    public Optional<Car> findById(long id) {
         requireNotNull(id, ID_MUST_NOT_BE_NULL);
 
         Car foundCar = null;

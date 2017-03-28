@@ -4,6 +4,7 @@ import org.vitaly.connectionPool.abstraction.PooledConnection;
 import org.vitaly.dao.abstraction.CarDao;
 import org.vitaly.dao.abstraction.DaoFactory;
 import org.vitaly.dao.abstraction.LocationDao;
+import org.vitaly.dao.abstraction.UserDao;
 
 import static org.vitaly.util.InputChecker.requireNotNull;
 
@@ -34,5 +35,12 @@ public class MysqlDaoFactory implements DaoFactory {
         requireNotNull(connection, CONNECTION_MUST_NOT_BE_NULL);
 
         return new MysqlCarDao(connection);
+    }
+
+    @Override
+    public UserDao createUserDao(PooledConnection connection) {
+        requireNotNull(connection, CONNECTION_MUST_NOT_BE_NULL);
+
+        return new MysqlUserDao(connection);
     }
 }

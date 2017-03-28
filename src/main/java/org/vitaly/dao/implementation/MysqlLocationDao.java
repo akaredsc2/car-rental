@@ -20,7 +20,9 @@ import static org.vitaly.util.InputChecker.requireNotNull;
  */
 public class MysqlLocationDao implements LocationDao {
     private static final String ID_MUST_NOT_BE_NULL = "Id must not be null!";
-    private static final String FIND_BY_ID_QUERY = "select * from location where location_id = ?";
+    private static final String FIND_BY_ID_QUERY =
+            "select * " +
+            "from location where location_id = ?";
     private static final String LOCATION_ID = "location.location_id";
     private static final String LOCATION_STATE = "location.state";
     private static final String LOCATION_CITY = "location.city";
@@ -28,11 +30,18 @@ public class MysqlLocationDao implements LocationDao {
     private static final String LOCATION_BUILDING = "location.building";
     private static final String LOCATION_MUST_NOT_BE_NULL = "Location must not be null!";
     private static final String FIND_ID_OF_ENTITY_QUERY =
-            "select location_id from location where state = ? and city = ? and street = ? and building = ?";
-    private static final String ALL_LOCATIONS_QUERY = "select * from location";
+            "select location_id " +
+             "from location " +
+             "where state = ? and city = ? and street = ? and building = ?";
+    private static final String ALL_LOCATIONS_QUERY =
+            "select * " +
+            "from location";
     private static final String CREATE_LOCATION_QUERY =
-            "insert into location(state, city, street, building) values (?, ?, ?, ?)";
-    private static final String LOCATION_COUNT_QUERY = "select count(*) from location";
+            "insert into location(state, city, street, building) " +
+            "values (?, ?, ?, ?)";
+    private static final String LOCATION_COUNT_QUERY =
+            "select count(*) " +
+            "from location";
 
     private PooledConnection connection;
 
@@ -41,7 +50,7 @@ public class MysqlLocationDao implements LocationDao {
     }
 
     @Override
-    public Optional<Location> findById(Long id) {
+    public Optional<Location> findById(long id) {
         requireNotNull(id, ID_MUST_NOT_BE_NULL);
 
         Location location = null;

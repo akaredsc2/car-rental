@@ -11,6 +11,8 @@ public interface DaoFactory {
 
     CarDao createCarDao(PooledConnection connection);
 
+    UserDao createUserDao(PooledConnection connection);
+
     static DaoFactory getMysqlDaoFactory() {
         return MysqlDaoFactory.getInstance();
     }

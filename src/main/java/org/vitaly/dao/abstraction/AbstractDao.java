@@ -8,7 +8,7 @@ import java.util.OptionalLong;
  * Created by vitaly on 2017-03-26.
  */
 public interface AbstractDao<E> {
-    Optional<E> findById(Long id);
+    Optional<E> findById(long id);
 
     OptionalLong findIdOfEntity(E entity);
 
