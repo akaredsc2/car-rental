@@ -1,6 +1,8 @@
 package org.vitaly.connectionPool.implementation;
 
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.vitaly.connectionPool.abstraction.ConnectionPool;
 import org.vitaly.connectionPool.abstraction.PooledConnection;
 
@@ -24,7 +26,9 @@ public class MysqlConnectionPool implements ConnectionPool {
     private static final String DB_PASS = "db.pass";
     private static final String DB_USE_SSL = "db.useSsl";
     private static final String DB_MAX_TOTAL = "db.maxTotal";
-    public static final String USE_SSL_FALSE = "?useSSL=false";
+    private static final String USE_SSL_FALSE = "?useSSL=false";
+
+    private static final Logger logger = LogManager.getLogger(MysqlPooledConnection.class.getName());
 
     private static MysqlConnectionPool INSTANCE;
     private static MysqlConnectionPool TEST_INSTANCE;
@@ -34,9 +38,7 @@ public class MysqlConnectionPool implements ConnectionPool {
             INSTANCE = createConnectionPoolFromProperties(CONNECTION_PROPERTIES);
             TEST_INSTANCE = createConnectionPoolFromProperties(TEST_CONNECTION_PROPERTIES);
         } catch (IOException e) {
-
-            // TODO: 2017-03-26 log
-            throw new IllegalStateException();
+            logger.fatal("Fatal error while initializing connection pool.", e);
         }
     }
 
@@ -92,9 +94,8 @@ public class MysqlConnectionPool implements ConnectionPool {
         try {
             jdbcConnection = basicDataSource.getConnection();
         } catch (SQLException e) {
-
-            // TODO: 2017-03-26 log
-            throw new IllegalStateException();
+            logger.error("Error while getting connection from pool.", e);
+            throw new IllegalArgumentException(e);
         }
 
         return new MysqlPooledConnection(jdbcConnection);

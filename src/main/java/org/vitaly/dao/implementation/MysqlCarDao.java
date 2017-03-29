@@ -1,5 +1,7 @@
 package org.vitaly.dao.implementation;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.vitaly.connectionPool.abstraction.PooledConnection;
 import org.vitaly.dao.abstraction.CarDao;
 import org.vitaly.model.car.Car;
@@ -25,8 +27,8 @@ public class MysqlCarDao implements CarDao {
     private static final String ID_MUST_NOT_BE_NULL = "Id must not be null!";
     private static final String FIND_BY_ID_QUERY =
             "select * " +
-            "from car " +
-            "where car_id = ?";
+                    "from car " +
+                    "where car_id = ?";
     private static final String CAR_CAR_STATUS = "car.car_status";
     private static final String CAR_ID = "car.car_id";
     private static final String CAR_MODEL = "car.model";
@@ -35,28 +37,32 @@ public class MysqlCarDao implements CarDao {
     private static final String CAR_COLOR = "car.color";
     private static final String CAR_PRICE_PER_DAY = "car.price_per_day";
     private static final String CAR_MUST_NOT_BE_NULL = "Car must not be null!";
-    private static final String FIND_ID_OF_CAR_QUERY = "select car_id " +
-            "from car " +
-            "where registration_plate = ?";
+    private static final String FIND_ID_OF_CAR_QUERY =
+            "select car_id " +
+                    "from car " +
+                    "where registration_plate = ?";
     private static final String GET_ALL_QUERY =
             "select * " +
-            "from car";
+                    "from car";
     private static final String CREATE_QUERY =
             "insert into car(car_status, model, registration_plate, photo_url, color, price_per_day) " +
-            "values (?, ?, ?, ?, ?, ?)";
+                    "values (?, ?, ?, ?, ?, ?)";
     private static final String UPDATE_QUERY =
             "update car " +
-            "set car_status = ?, model = ?, registration_plate = ?, photo_url = ?, color = ?, price_per_day = ? " +
-            "where car_id = ?";
+                    "set car_status = ?, model = ?, registration_plate = ?, photo_url = ?, color = ?, price_per_day = ? " +
+                    "where car_id = ?";
     private static final String LOCATION_MUST_NOT_BE_NULL = "Location must not be null!";
     private static final String ADD_CAR_TO_LOCATION_QUERY =
             "update car " +
-            "set location_id = ? " +
-            "where car_id = ?";
+                    "set location_id = ? " +
+                    "where car_id = ?";
     private static final String GET_CARS_AT_LOCATION_QUERY =
             "select car_id, car_status, model, registration_plate, photo_url, color, price_per_day " +
-            "from car inner join location loc on car.location_id = loc.location_id " +
-            "where loc.location_id = ?";
+                    "from car inner join location loc on car.location_id = loc.location_id " +
+                    "where loc.location_id = ?";
+
+    private static final Logger logger = LogManager.getLogger(MysqlCarDao.class.getName());
+
     private PooledConnection connection;
 
     MysqlCarDao(PooledConnection connection) {
@@ -81,9 +87,7 @@ public class MysqlCarDao implements CarDao {
 
             resultSet.close();
         } catch (SQLException e) {
-
-            // TODO: 2017-03-27 log
-            e.printStackTrace();
+            logger.error("Error while finding car by id.", e);
         }
 
         return Optional.ofNullable(foundCar);
@@ -123,9 +127,7 @@ public class MysqlCarDao implements CarDao {
 
             resultSet.close();
         } catch (SQLException e) {
-
-            // TODO: 2017-03-27 log
-            e.printStackTrace();
+            logger.error("Error while finding id of car.", e);
         }
 
         return foundId;
@@ -146,9 +148,7 @@ public class MysqlCarDao implements CarDao {
 
             resultSet.close();
         } catch (SQLException e) {
-
-            // TODO: 2017-03-27 log
-            e.printStackTrace();
+            logger.error("Error while getting all cars.", e);
         }
 
         return cars;
@@ -176,9 +176,7 @@ public class MysqlCarDao implements CarDao {
             resultSet.close();
         } catch (SQLException e) {
             connection.rollback();
-
-            // TODO: 2017-03-27 log
-            e.printStackTrace();
+            logger.error("Error while creating car. Rolling back transaction.", e);
         }
 
         return createdId;
@@ -209,9 +207,7 @@ public class MysqlCarDao implements CarDao {
             connection.commit();
         } catch (SQLException e) {
             connection.rollback();
-
-            // TODO: 2017-03-27 log
-            e.printStackTrace();
+            logger.error("Error while updating car. Rolling back transaction.", e);
         }
 
         return updateCount;
@@ -235,9 +231,7 @@ public class MysqlCarDao implements CarDao {
             connection.commit();
         } catch (SQLException e) {
             connection.rollback();
-
-            // TODO: 2017-03-27 log
-            e.printStackTrace();
+            logger.error("Error while adding car to location. Rolling back transaction.", e);
         }
 
         return updateResult;
@@ -259,9 +253,7 @@ public class MysqlCarDao implements CarDao {
                 cars.add(nextCar);
             }
         } catch (SQLException e) {
-
-            // TODO: 2017-03-27 log
-            e.printStackTrace();
+            logger.error("Error while getting cars at location.", e);
         }
 
         return cars;

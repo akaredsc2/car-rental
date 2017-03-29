@@ -1,5 +1,7 @@
 package org.vitaly.dao.implementation;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.vitaly.connectionPool.abstraction.PooledConnection;
 import org.vitaly.dao.abstraction.LocationDao;
 import org.vitaly.model.location.Location;
@@ -22,7 +24,7 @@ public class MysqlLocationDao implements LocationDao {
     private static final String ID_MUST_NOT_BE_NULL = "Id must not be null!";
     private static final String FIND_BY_ID_QUERY =
             "select * " +
-            "from location where location_id = ?";
+                    "from location where location_id = ?";
     private static final String LOCATION_LOCATION_ID = "location.location_id";
     private static final String LOCATION_STATE = "location.state";
     private static final String LOCATION_CITY = "location.city";
@@ -31,17 +33,19 @@ public class MysqlLocationDao implements LocationDao {
     private static final String LOCATION_MUST_NOT_BE_NULL = "Location must not be null!";
     private static final String FIND_ID_OF_ENTITY_QUERY =
             "select location_id " +
-            "from location " +
-            "where state = ? and city = ? and street = ? and building = ?";
+                    "from location " +
+                    "where state = ? and city = ? and street = ? and building = ?";
     private static final String ALL_LOCATIONS_QUERY =
             "select * " +
-            "from location";
+                    "from location";
     private static final String CREATE_LOCATION_QUERY =
             "insert into location(state, city, street, building) " +
-            "values (?, ?, ?, ?)";
+                    "values (?, ?, ?, ?)";
     private static final String LOCATION_COUNT_QUERY =
             "select count(*) " +
-            "from location";
+                    "from location";
+
+    private static final Logger logger = LogManager.getLogger(MysqlLocationDao.class.getName());
 
     private PooledConnection connection;
 
@@ -67,9 +71,7 @@ public class MysqlLocationDao implements LocationDao {
 
             resultSet.close();
         } catch (SQLException e) {
-
-            // TODO: 2017-03-26 log
-            e.printStackTrace();
+            logger.error("Error while finding location by id.", e);
         }
 
         return Optional.ofNullable(location);
@@ -107,9 +109,7 @@ public class MysqlLocationDao implements LocationDao {
 
             resultSet.close();
         } catch (SQLException e) {
-
-            // TODO: 2017-03-26 log
-            e.printStackTrace();
+            logger.error("Error while finding id of location.", e);
         }
 
         return foundId;
@@ -130,9 +130,7 @@ public class MysqlLocationDao implements LocationDao {
 
             resultSet.close();
         } catch (SQLException e) {
-
-            // TODO: 2017-03-26 log
-            e.printStackTrace();
+            logger.error("Error while getting all locations.", e);
         }
 
         return locationList;
@@ -164,9 +162,7 @@ public class MysqlLocationDao implements LocationDao {
             resultSet.close();
         } catch (SQLException e) {
             connection.rollback();
-
-            // TODO: 2017-03-26 log
-            e.printStackTrace();
+            logger.error("Error while creating location. Rolling back transaction.", e);
         }
 
         return createdId;
@@ -174,7 +170,9 @@ public class MysqlLocationDao implements LocationDao {
 
     @Override
     public int update(long id, Location entity) {
-        throw new UnsupportedOperationException();
+        RuntimeException e = new UnsupportedOperationException();
+        logger.error("Error while calling unsupported operation.", e);
+        throw e;
     }
 
     @Override
@@ -188,9 +186,7 @@ public class MysqlLocationDao implements LocationDao {
 
             resultSet.close();
         } catch (SQLException e) {
-
-            // TODO: 2017-03-26 log
-            e.printStackTrace();
+            logger.error("Error while getting location count.", e);
         }
 
         return 0;

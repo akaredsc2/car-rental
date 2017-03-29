@@ -1,16 +1,19 @@
 package org.vitaly.connectionPool.implementation;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.vitaly.connectionPool.abstraction.PooledConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 /**
  * Created by vitaly on 2017-03-25.
  */
 public class MysqlPooledConnection implements PooledConnection {
+    private static final Logger logger = LogManager.getLogger();
+
     private Connection connection;
     private boolean isTransactionInitialized;
     private boolean isTransactionEnded;
@@ -28,8 +31,7 @@ public class MysqlPooledConnection implements PooledConnection {
             isTransactionInitialized = true;
             isTransactionEnded = false;
         } catch (SQLException e) {
-
-            // TODO: 2017-03-25 log
+            logger.error("Error while initializing transaction.", e);
             throw new IllegalStateException(e);
         }
     }
@@ -51,8 +53,7 @@ public class MysqlPooledConnection implements PooledConnection {
             isTransactionEnded = true;
             connection.setAutoCommit(true);
         } catch (SQLException e) {
-
-            // TODO: 2017-03-25 log
+            logger.error("Error while committing transaction.", e);
             throw new IllegalArgumentException(e);
         }
     }
@@ -64,8 +65,7 @@ public class MysqlPooledConnection implements PooledConnection {
             isTransactionEnded = true;
             connection.setAutoCommit(true);
         } catch (SQLException e) {
-
-            // TODO: 2017-03-25 log
+            logger.error("Error while rolling back transaction.", e);
             throw new IllegalArgumentException(e);
         }
     }
@@ -78,8 +78,7 @@ public class MysqlPooledConnection implements PooledConnection {
             }
             connection.close();
         } catch (SQLException e) {
-
-            // TODO: 2017-03-25 log
+            logger.error("Error while closing connection.", e);
             throw new IllegalStateException(e);
         }
     }

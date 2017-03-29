@@ -1,5 +1,7 @@
 package org.vitaly.dao.implementation;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.vitaly.connectionPool.abstraction.PooledConnection;
 import org.vitaly.dao.abstraction.UserDao;
 import org.vitaly.model.user.User;
@@ -22,8 +24,8 @@ public class MysqlUserDao implements UserDao {
     private static final String ID_MUST_NOT_BE_NULL = "Id must not be null!";
     private static final String FIND_BY_ID_QUERY =
             "select * " +
-                    "from users " +
-                    "where user_id = ?";
+            "from users " +
+            "where user_id = ?";
     private static final String USERS_USER_ID = "users.user_id";
     private static final String USERS_LOGIN = "users.login";
     private static final String USERS_PASS = "users.pass";
@@ -34,26 +36,33 @@ public class MysqlUserDao implements UserDao {
     private static final String USERS_ROLE = "users.role";
     private static final String FIND_ID_OF_USER_QUERY =
             "select users.user_id " +
-                    "from users " +
-                    "where users.login = ?";
-    private static final String GET_ALL_QUERY = "select * " +
+            "from users " +
+            "where users.login = ?";
+    private static final String GET_ALL_QUERY =
+            "select * " +
             "from users";
-    private static final String CREATE_QUERY = "insert into users(login, pass, full_name, birth_date, passport_number, driver_licence_number) " +
+    private static final String CREATE_QUERY =
+            "insert into users(login, pass, full_name, birth_date, passport_number, driver_licence_number) " +
             "values (?, ?, ?, ?, ?, ?)";
     private static final String LOGIN_MUST_NOT_BE_NULL = "Login must not be null!";
     private static final String PASSWORD_MUST_NOT_BE_NULL = "Password must not be null!";
-    private static final String AUTHENTICATE_QUERY = "select * " +
+    private static final String AUTHENTICATE_QUERY =
+            "select * " +
             "from users " +
             "where users.login = ? and users.pass = ?";
     private static final String ROLE_MUST_NOT_BE_NULL = "Role must not be null!";
-    private static final String CHANGE_ROLE_QUERY = "update users " +
+    private static final String CHANGE_ROLE_QUERY =
+            "update users " +
             "set users.role = ? " +
             "where users.user_id = ?";
     private static final String USER_MUST_NOT_BE_NULL = "User must not be null!";
     private static final String NEW_PASSWORD_MUST_NOT_BE_NULL = "New password must not be null!";
-    private static final String CHANGE_PASSWORD_QUERY = "update users " +
+    private static final String CHANGE_PASSWORD_QUERY =
+            "update users " +
             "set users.pass = ? " +
             "where users.user_id = ?";
+
+    private static final Logger logger = LogManager.getLogger(MysqlUserDao.class.getName());
 
     private PooledConnection connection;
 
@@ -79,9 +88,7 @@ public class MysqlUserDao implements UserDao {
 
             resultSet.close();
         } catch (SQLException e) {
-
-            // TODO: 2017-03-28 log
-            e.printStackTrace();
+            logger.error("Error while finding user by id.", e);
         }
 
         return Optional.ofNullable(foundUser);
@@ -120,9 +127,7 @@ public class MysqlUserDao implements UserDao {
 
             resultSet.close();
         } catch (SQLException e) {
-
-            // TODO: 2017-03-28 log
-            e.printStackTrace();
+            logger.error("Error while finding id of user.", e);
         }
 
         return findResult;
@@ -143,9 +148,7 @@ public class MysqlUserDao implements UserDao {
 
             resultSet.close();
         } catch (SQLException e) {
-
-            // TODO: 2017-03-28 log
-            e.printStackTrace();
+            logger.error("Error while getting all users.", e);
         }
         return users;
     }
@@ -173,9 +176,7 @@ public class MysqlUserDao implements UserDao {
             resultSet.close();
         } catch (SQLException e) {
             connection.rollback();
-
-            // TODO: 2017-03-28 log
-            e.printStackTrace();
+            logger.error("Error while creating user. Rolling back transaction.", e);
         }
 
         return createdId;
@@ -194,7 +195,9 @@ public class MysqlUserDao implements UserDao {
 
     @Override
     public int update(long id, User entity) {
-        throw new UnsupportedOperationException();
+        RuntimeException e = new UnsupportedOperationException();
+        logger.error("Error while calling unsupported operation.", e);
+        throw e;
     }
 
     @Override
@@ -217,9 +220,7 @@ public class MysqlUserDao implements UserDao {
 
             resultSet.close();
         } catch (SQLException e) {
-
-            // TODO: 2017-03-28 log
-            e.printStackTrace();
+            logger.error("Error while authenticating user.", e);
         }
 
         return Optional.ofNullable(authenticatedUser);
@@ -241,9 +242,7 @@ public class MysqlUserDao implements UserDao {
                 connection.commit();
             } catch (SQLException e) {
                 connection.rollback();
-
-                // TODO: 2017-03-28 log
-                e.printStackTrace();
+                logger.error("Error while changing user role. Rolling back transaction.", e);
             }
         }
     }
@@ -264,9 +263,7 @@ public class MysqlUserDao implements UserDao {
                 connection.commit();
             } catch (SQLException e) {
                 connection.rollback();
-
-                // TODO: 2017-03-28 log
-                e.printStackTrace();
+                logger.error("Error while changing user password. Rolling back transaction.", e);
             }
         }
     }
