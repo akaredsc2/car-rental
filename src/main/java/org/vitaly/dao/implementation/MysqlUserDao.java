@@ -21,11 +21,6 @@ import static org.vitaly.util.InputChecker.requireNotNull;
  * Created by vitaly on 2017-03-28.
  */
 public class MysqlUserDao implements UserDao {
-    private static final String ID_MUST_NOT_BE_NULL = "Id must not be null!";
-    private static final String FIND_BY_ID_QUERY =
-            "select * " +
-            "from users " +
-            "where user_id = ?";
     private static final String USERS_USER_ID = "users.user_id";
     private static final String USERS_LOGIN = "users.login";
     private static final String USERS_PASS = "users.pass";
@@ -34,33 +29,40 @@ public class MysqlUserDao implements UserDao {
     private static final String USERS_PASSPORT_NUMBER = "users.passport_number";
     private static final String USERS_DRIVER_LICENCE_NUMBER = "users.driver_licence_number";
     private static final String USERS_ROLE = "users.role";
+
+    private static final String FIND_BY_ID_QUERY =
+            "SELECT * " +
+            "FROM users " +
+            "WHERE user_id = ?";
     private static final String FIND_ID_OF_USER_QUERY =
-            "select users.user_id " +
-            "from users " +
-            "where users.login = ?";
+            "SELECT users.user_id " +
+            "FROM users " +
+            "WHERE users.login = ?";
     private static final String GET_ALL_QUERY =
-            "select * " +
-            "from users";
+            "SELECT * " +
+            "FROM users";
     private static final String CREATE_QUERY =
-            "insert into users(login, pass, full_name, birth_date, passport_number, driver_licence_number) " +
-            "values (?, ?, ?, ?, ?, ?)";
+            "INSERT INTO users(login, pass, full_name, birth_date, passport_number, driver_licence_number) " +
+            "VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String AUTHENTICATE_QUERY =
+            "SELECT * " +
+            "FROM users " +
+            "WHERE users.login = ? and users.pass = ?";
+    private static final String CHANGE_ROLE_QUERY =
+            "UPDATE users " +
+            "SET users.role = ? " +
+            "WHERE users.user_id = ?";
+    private static final String CHANGE_PASSWORD_QUERY =
+            "UPDATE users " +
+            "SET users.pass = ? " +
+            "WHERE users.user_id = ?";
+
+    private static final String ID_MUST_NOT_BE_NULL = "Id must not be null!";
     private static final String LOGIN_MUST_NOT_BE_NULL = "Login must not be null!";
     private static final String PASSWORD_MUST_NOT_BE_NULL = "Password must not be null!";
-    private static final String AUTHENTICATE_QUERY =
-            "select * " +
-            "from users " +
-            "where users.login = ? and users.pass = ?";
     private static final String ROLE_MUST_NOT_BE_NULL = "Role must not be null!";
-    private static final String CHANGE_ROLE_QUERY =
-            "update users " +
-            "set users.role = ? " +
-            "where users.user_id = ?";
     private static final String USER_MUST_NOT_BE_NULL = "User must not be null!";
     private static final String NEW_PASSWORD_MUST_NOT_BE_NULL = "New password must not be null!";
-    private static final String CHANGE_PASSWORD_QUERY =
-            "update users " +
-            "set users.pass = ? " +
-            "where users.user_id = ?";
 
     private static final Logger logger = LogManager.getLogger(MysqlUserDao.class.getName());
 

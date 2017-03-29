@@ -128,9 +128,6 @@ public class User {
         private String driverLicenceNumber;
         private UserRole role;
 
-        public Builder() {
-        }
-
         public Builder setId(long id) {
             this.id = id;
             return this;

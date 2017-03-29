@@ -107,9 +107,6 @@ public class Location {
         private String building;
         private List<Car> cars;
 
-        public Builder() {
-        }
-
         public Builder setId(long id) {
             this.id = id;
             return this;

@@ -24,11 +24,6 @@ import static org.vitaly.util.InputChecker.requireNotNull;
  * Created by vitaly on 2017-03-27.
  */
 public class MysqlCarDao implements CarDao {
-    private static final String ID_MUST_NOT_BE_NULL = "Id must not be null!";
-    private static final String FIND_BY_ID_QUERY =
-            "select * " +
-                    "from car " +
-                    "where car_id = ?";
     private static final String CAR_CAR_STATUS = "car.car_status";
     private static final String CAR_ID = "car.car_id";
     private static final String CAR_MODEL = "car.model";
@@ -36,30 +31,45 @@ public class MysqlCarDao implements CarDao {
     private static final String CAR_PHOTO_URL = "car.photo_url";
     private static final String CAR_COLOR = "car.color";
     private static final String CAR_PRICE_PER_DAY = "car.price_per_day";
-    private static final String CAR_MUST_NOT_BE_NULL = "Car must not be null!";
+
+    private static final String FIND_BY_ID_QUERY =
+            "SELECT * " +
+            "FROM car " +
+            "WHERE car_id = ?";
     private static final String FIND_ID_OF_CAR_QUERY =
-            "select car_id " +
-                    "from car " +
-                    "where registration_plate = ?";
+            "SELECT car_id " +
+            "FROM car " +
+            "WHERE registration_plate = ?";
     private static final String GET_ALL_QUERY =
-            "select * " +
-                    "from car";
+            "SELECT * " +
+            "FROM car";
     private static final String CREATE_QUERY =
-            "insert into car(car_status, model, registration_plate, photo_url, color, price_per_day) " +
-                    "values (?, ?, ?, ?, ?, ?)";
+            "INSERT INTO car (car_status, model, registration_plate, photo_url, color, price_per_day) " +
+            "VALUES (?, ?, ?, ?, ?, ?)";
     private static final String UPDATE_QUERY =
-            "update car " +
-                    "set car_status = ?, model = ?, registration_plate = ?, photo_url = ?, color = ?, price_per_day = ? " +
-                    "where car_id = ?";
-    private static final String LOCATION_MUST_NOT_BE_NULL = "Location must not be null!";
+            "UPDATE car " +
+            "SET car_status = ?, model = ?, registration_plate = ?, photo_url = ?, color = ?, price_per_day = ? " +
+            "WHERE car_id = ?";
     private static final String ADD_CAR_TO_LOCATION_QUERY =
-            "update car " +
-                    "set location_id = ? " +
-                    "where car_id = ?";
+            "UPDATE car " +
+            "SET location_id = ? " +
+            "WHERE car_id = ?";
     private static final String GET_CARS_AT_LOCATION_QUERY =
-            "select car_id, car_status, model, registration_plate, photo_url, color, price_per_day " +
-                    "from car inner join location loc on car.location_id = loc.location_id " +
-                    "where loc.location_id = ?";
+            "SELECT" +
+            "  car_id," +
+            "  car_status," +
+            "  model," +
+            "  registration_plate," +
+            "  photo_url," +
+            "  color," +
+            "  price_per_day " +
+            "FROM car " +
+            "  INNER JOIN location loc ON car.location_id = loc.location_id " +
+            "WHERE loc.location_id = ?";
+
+    private static final String ID_MUST_NOT_BE_NULL = "Id must not be null!";
+    private static final String CAR_MUST_NOT_BE_NULL = "Car must not be null!";
+    private static final String LOCATION_MUST_NOT_BE_NULL = "Location must not be null!";
 
     private static final Logger logger = LogManager.getLogger(MysqlCarDao.class.getName());
 

@@ -21,29 +21,32 @@ import static org.vitaly.util.InputChecker.requireNotNull;
  * Created by vitaly on 2017-03-26.
  */
 public class MysqlLocationDao implements LocationDao {
-    private static final String ID_MUST_NOT_BE_NULL = "Id must not be null!";
-    private static final String FIND_BY_ID_QUERY =
-            "select * " +
-                    "from location where location_id = ?";
     private static final String LOCATION_LOCATION_ID = "location.location_id";
     private static final String LOCATION_STATE = "location.state";
     private static final String LOCATION_CITY = "location.city";
     private static final String LOCATION_STREET = "location.street";
     private static final String LOCATION_BUILDING = "location.building";
-    private static final String LOCATION_MUST_NOT_BE_NULL = "Location must not be null!";
-    private static final String FIND_ID_OF_ENTITY_QUERY =
-            "select location_id " +
-                    "from location " +
-                    "where state = ? and city = ? and street = ? and building = ?";
+
+    private static final String FIND_BY_ID_QUERY =
+            "SELECT * " +
+            "FROM location " +
+            "WHERE location_id = ?";
+    private static final String FIND_ID_OF_LOCATION_QUERY =
+            "SELECT location_id " +
+            "FROM location " +
+            "WHERE state = ? AND city = ? AND street = ? AND building = ?";
     private static final String ALL_LOCATIONS_QUERY =
-            "select * " +
-                    "from location";
+            "SELECT * " +
+            "FROM location";
     private static final String CREATE_LOCATION_QUERY =
-            "insert into location(state, city, street, building) " +
-                    "values (?, ?, ?, ?)";
+            "INSERT INTO location (state, city, street, building) " +
+            "VALUES (?, ?, ?, ?)";
     private static final String LOCATION_COUNT_QUERY =
-            "select count(*) " +
-                    "from location";
+            "SELECT count(*) " +
+            "FROM location";
+
+    private static final String ID_MUST_NOT_BE_NULL = "Id must not be null!";
+    private static final String LOCATION_MUST_NOT_BE_NULL = "Location must not be null!";
 
     private static final Logger logger = LogManager.getLogger(MysqlLocationDao.class.getName());
 
@@ -94,7 +97,7 @@ public class MysqlLocationDao implements LocationDao {
 
         OptionalLong foundId = OptionalLong.empty();
 
-        try (PreparedStatement statement = connection.prepareStatement(FIND_ID_OF_ENTITY_QUERY)) {
+        try (PreparedStatement statement = connection.prepareStatement(FIND_ID_OF_LOCATION_QUERY)) {
             statement.setString(1, location.getState());
             statement.setString(2, location.getCity());
             statement.setString(3, location.getStreet());

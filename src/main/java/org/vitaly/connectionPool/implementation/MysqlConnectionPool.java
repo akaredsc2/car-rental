@@ -30,16 +30,26 @@ public class MysqlConnectionPool implements ConnectionPool {
 
     private static final Logger logger = LogManager.getLogger(MysqlPooledConnection.class.getName());
 
-    private static MysqlConnectionPool INSTANCE;
-    private static MysqlConnectionPool TEST_INSTANCE;
+    private static MysqlConnectionPool instance;
+    private static MysqlConnectionPool testInstance;
+
+    private BasicDataSource basicDataSource;
 
     static {
         try {
-            INSTANCE = createConnectionPoolFromProperties(CONNECTION_PROPERTIES);
-            TEST_INSTANCE = createConnectionPoolFromProperties(TEST_CONNECTION_PROPERTIES);
+            instance = createConnectionPoolFromProperties(CONNECTION_PROPERTIES);
+            testInstance = createConnectionPoolFromProperties(TEST_CONNECTION_PROPERTIES);
         } catch (IOException e) {
             logger.fatal("Fatal error while initializing connection pool.", e);
         }
+    }
+
+    private MysqlConnectionPool(Builder builder) {
+        basicDataSource = new BasicDataSource();
+        basicDataSource.setUrl(createUrl(builder));
+        basicDataSource.setUsername(builder.username);
+        basicDataSource.setPassword(builder.password);
+        basicDataSource.setMaxTotal(builder.maxTotal);
     }
 
     private static MysqlConnectionPool createConnectionPoolFromProperties(String fileName) throws IOException {
@@ -50,8 +60,8 @@ public class MysqlConnectionPool implements ConnectionPool {
         String url = properties.getProperty(DB_URL);
         String user = properties.getProperty(DB_USER);
         String pass = properties.getProperty(DB_PASS);
-        boolean useSsl = Boolean.valueOf(properties.getProperty(DB_USE_SSL));
-        int maxTotal = Integer.valueOf(properties.getProperty(DB_MAX_TOTAL));
+        boolean useSsl = Boolean.parseBoolean(properties.getProperty(DB_USE_SSL));
+        int maxTotal = Integer.parseInt(properties.getProperty(DB_MAX_TOTAL));
 
         return new Builder()
                 .setUrl(url)
@@ -60,16 +70,6 @@ public class MysqlConnectionPool implements ConnectionPool {
                 .setUseSsl(useSsl)
                 .setMaxTotal(maxTotal)
                 .build();
-    }
-
-    private BasicDataSource basicDataSource;
-
-    private MysqlConnectionPool(Builder builder) {
-        basicDataSource = new BasicDataSource();
-        basicDataSource.setUrl(createUrl(builder));
-        basicDataSource.setUsername(builder.username);
-        basicDataSource.setPassword(builder.password);
-        basicDataSource.setMaxTotal(builder.maxTotal);
     }
 
     private String createUrl(Builder builder) {
@@ -81,13 +81,14 @@ public class MysqlConnectionPool implements ConnectionPool {
     }
 
     public static MysqlConnectionPool getInstance() {
-        return INSTANCE;
+        return instance;
     }
 
     public static MysqlConnectionPool getTestInstance() {
-        return TEST_INSTANCE;
+        return testInstance;
     }
 
+    @Override
     public PooledConnection getConnection() {
         Connection jdbcConnection;
 
@@ -107,9 +108,6 @@ public class MysqlConnectionPool implements ConnectionPool {
         private String password;
         private int maxTotal;
         private boolean useSsl;
-
-        public Builder() {
-        }
 
         public Builder setUrl(String url) {
             requireNotNull(url, "Url must not be null!");

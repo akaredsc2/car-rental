@@ -155,9 +155,6 @@ public class Car {
         private String color;
         private BigDecimal pricePerDay;
 
-        public Builder() {
-        }
-
         public Builder setId(long id) {
             this.id = id;
             return this;
