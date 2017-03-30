@@ -1,3 +1,7 @@
+SET GLOBAL time_zone = '+03:00';
+SET NAMES 'utf8';
+SET CHARACTER SET 'utf8';
+
 DROP SCHEMA car_rental;
 DROP SCHEMA car_rental_test;
 
@@ -6,11 +10,6 @@ CREATE SCHEMA car_rental_test;
 
 #use car_rental;
 USE car_rental_test;
-
-
-/*
-	Tables 
-*/
 
 CREATE TABLE users (
   user_id               BIGINT                   NOT NULL AUTO_INCREMENT,
@@ -32,12 +31,12 @@ ALTER TABLE users
   ADD CONSTRAINT u_users_driver_licence_number UNIQUE (driver_licence_number);
 
 CREATE TABLE notification (
-  notification_id        BIGINT                 NOT NULL AUTO_INCREMENT,
-  user_id                BIGINT                 NOT NULL,
-  notification_timestamp TIMESTAMP              NOT NULL DEFAULT current_timestamp,
-  notification_status    ENUM ('new', 'viewed') NOT NULL DEFAULT 'new',
-  header                 VARCHAR(128)           NOT NULL,
-  content                TEXT                   NOT NULL,
+  notification_id       BIGINT                 NOT NULL AUTO_INCREMENT,
+  user_id               BIGINT                 NOT NULL,
+  notification_datetime DATETIME               NOT NULL DEFAULT now(),
+  notification_status   ENUM ('new', 'viewed') NOT NULL DEFAULT 'new',
+  header                VARCHAR(128)           NOT NULL,
+  content               TEXT                   NOT NULL,
 
   PRIMARY KEY (notification_id)
 );
@@ -83,8 +82,8 @@ CREATE TABLE reservation (
   client_id          BIGINT           NOT NULL,
   admin_id           BIGINT                    DEFAULT NULL,
   car_id             BIGINT           NOT NULL,
-  pick_up_timestamp  TIMESTAMP        NOT NULL DEFAULT current_timestamp,
-  drop_off_timestamp TIMESTAMP        NOT NULL DEFAULT current_timestamp,
+  pick_up_datetime   DATETIME         NOT NULL,
+  drop_off_datetime  DATETIME         NOT NULL,
   zone_offset        VARCHAR(10)      NOT NULL,
   reservation_status ENUM ('new',
                            'approved',
@@ -103,12 +102,12 @@ ALTER TABLE reservation
   ADD CONSTRAINT fk_reservation_car FOREIGN KEY (car_id) REFERENCES car (car_id);
 
 CREATE TABLE bill (
-  bill_id            BIGINT         NOT NULL AUTO_INCREMENT,
-  is_paid            BOOLEAN        NOT NULL DEFAULT FALSE,
-  reservation_id     BIGINT         NOT NULL,
-  description        VARCHAR(128)   NOT NULL,
-  cash_amount        DECIMAL(10, 2) NOT NULL,
-  creation_timestamp TIMESTAMP      NOT NULL DEFAULT current_timestamp,
+  bill_id           BIGINT         NOT NULL AUTO_INCREMENT,
+  is_paid           BOOLEAN        NOT NULL DEFAULT FALSE,
+  reservation_id    BIGINT         NOT NULL,
+  description       VARCHAR(128)   NOT NULL,
+  cash_amount       DECIMAL(10, 2) NOT NULL,
+  creation_datetime DATETIME       NOT NULL DEFAULT now(),
 
   PRIMARY KEY (bill_id),
   FOREIGN KEY (reservation_id) REFERENCES reservation (reservation_id),
