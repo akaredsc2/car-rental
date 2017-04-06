@@ -11,6 +11,7 @@ import org.vitaly.dao.abstraction.UserDao;
 import org.vitaly.model.user.User;
 import org.vitaly.model.user.UserRole;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
@@ -149,11 +150,39 @@ public class MysqlUserDaoTest {
     }
 
     @Test
-    public void failedCreationReturnsEmptyOptional() throws Exception {
+    public void creatingUserWithSameLoginReturnsEmptyOptional() throws Exception {
         userDao.create(client1);
         userDao.create(client1);
 
         boolean isCreated = userDao.create(client1).isPresent();
+
+        assertFalse(isCreated);
+    }
+
+    @Test
+    public void creatingUserWithSamePassportNumberReturnsEmptyOptional() throws Exception {
+        userDao.create(client1);
+
+        Field passportNumberField = client2.getClass().getDeclaredField("passportNumber");
+        passportNumberField.setAccessible(true);
+        passportNumberField.set(client2, client1.getPassportNumber());
+        userDao.create(client2);
+
+        boolean isCreated = userDao.create(client2).isPresent();
+
+        assertFalse(isCreated);
+    }
+
+    @Test
+    public void creatingUserWithSameDriverLicenceNumberReturnsEmptyOptional() throws Exception {
+        userDao.create(client1);
+
+        Field passportNumberField = client2.getClass().getDeclaredField("driverLicenceNumber");
+        passportNumberField.setAccessible(true);
+        passportNumberField.set(client2, client1.getDriverLicenceNumber());
+        userDao.create(client2);
+
+        boolean isCreated = userDao.create(client2).isPresent();
 
         assertFalse(isCreated);
     }

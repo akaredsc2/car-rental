@@ -19,6 +19,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -91,7 +93,7 @@ public class MysqlCarDaoTest {
     public void findByIdNonExistingCarReturnsEmptyOptional() throws Exception {
         boolean findResult = carDao.findById(-1L).isPresent();
 
-        assertThat(findResult, equalTo(false));
+        assertFalse(findResult);
     }
 
     @Test
@@ -107,7 +109,7 @@ public class MysqlCarDaoTest {
     public void findIdOfNOnExistingCarReturnsEmptyOptional() throws Exception {
         boolean findResult = carDao.findIdOfEntity(car1).isPresent();
 
-        assertThat(findResult, equalTo(false));
+        assertFalse(findResult);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -136,14 +138,15 @@ public class MysqlCarDaoTest {
     public void successfulCreationReturnsId() throws Exception {
         boolean creationResult = carDao.create(car1).isPresent();
 
-        assertThat(creationResult, equalTo(true));
+        assertTrue(creationResult);
     }
 
     @Test
-    public void failedCreationReturnsEmptyOptional() throws Exception {
+    public void creatingCarWithSameRegistrationPlateReturnsEmptyOptional() throws Exception {
+        carDao.create(car1);
         boolean creationResult = carDao.create(car1).isPresent();
 
-        assertThat(creationResult, equalTo(true));
+        assertFalse(creationResult);
     }
 
     @Test
@@ -196,7 +199,7 @@ public class MysqlCarDaoTest {
 
         boolean addResult = carDao.addCarToLocation(createdCar, createdLocation);
 
-        assertThat(addResult, equalTo(true));
+        assertTrue(addResult);
     }
 
     private Car createCarWithId(Car car) {
@@ -230,7 +233,7 @@ public class MysqlCarDaoTest {
 
         boolean addResult = carDao.addCarToLocation(car1, location);
 
-        assertThat(addResult, equalTo(false));
+        assertFalse(addResult);
     }
 
     private void makeFakeIdForCar(Car car) throws NoSuchFieldException, IllegalAccessException {
@@ -246,7 +249,7 @@ public class MysqlCarDaoTest {
 
         boolean addResult = carDao.addCarToLocation(createdCar, location1);
 
-        assertThat(addResult, equalTo(false));
+        assertFalse(addResult);
     }
 
     private void makeFakeIdForLocation(Location location) throws NoSuchFieldException, IllegalAccessException {

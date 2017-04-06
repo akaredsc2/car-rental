@@ -13,6 +13,8 @@ import org.vitaly.model.location.Location;
 import java.util.ArrayList;
 import java.util.List;
 
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -73,7 +75,7 @@ public class MysqlLocationDaoTest {
 
         boolean findResult = locationDao.findById(-1L).isPresent();
 
-        assertThat(findResult, equalTo(false));
+        assertFalse(findResult);
     }
 
     @Test
@@ -89,7 +91,7 @@ public class MysqlLocationDaoTest {
     public void findIdOfNonExistingLocationReturnsEmptyOptional() throws Exception {
         boolean findResult = locationDao.findIdOfEntity(location2).isPresent();
 
-        assertThat(findResult, equalTo(false));
+        assertFalse(findResult);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -118,15 +120,15 @@ public class MysqlLocationDaoTest {
     public void successfulCreationReturnsId() throws Exception {
         boolean creationResult = locationDao.create(location1).isPresent();
 
-        assertThat(creationResult, equalTo(true));
+        assertTrue(creationResult);
     }
 
     @Test
-    public void failedCreationReturnsEmptyOptional() throws Exception {
+    public void creatingLocationWithSameStateCityStreetAndBuildingReturnsEmptyOptional() throws Exception {
         locationDao.create(location1);
         boolean creationResult = locationDao.create(location1).isPresent();
 
-        assertThat(creationResult, equalTo(false));
+        assertFalse(creationResult);
     }
 
     @Test(expected = IllegalArgumentException.class)
