@@ -13,6 +13,8 @@ public interface DaoFactory {
 
     UserDao createUserDao(PooledConnection connection);
 
+    NotificationDao createNotificationDao(PooledConnection connection);
+
     static DaoFactory getMysqlDaoFactory() {
         return MysqlDaoFactory.getInstance();
     }
