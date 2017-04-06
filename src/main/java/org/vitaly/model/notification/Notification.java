@@ -1,6 +1,7 @@
 package org.vitaly.model.notification;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 /**
  * Created by vitaly on 2017-04-06.
@@ -51,7 +52,7 @@ public class Notification {
 
         Notification that = (Notification) o;
 
-        if (!creationDateTime.equals(that.creationDateTime)) {
+        if (creationDateTime.until(that.creationDateTime, ChronoUnit.SECONDS) != 0) {
             return false;
         }
         if (status != that.status) {
@@ -65,8 +66,7 @@ public class Notification {
 
     @Override
     public int hashCode() {
-        int result = creationDateTime.hashCode();
-        result = 31 * result + status.hashCode();
+        int result = status.hashCode();
         result = 31 * result + header.hashCode();
         result = 31 * result + content.hashCode();
         return result;

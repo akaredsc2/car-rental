@@ -11,6 +11,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalLong;
@@ -29,17 +31,68 @@ public class MysqlNotificationDao implements NotificationDao {
 
     @Override
     public Optional<Notification> findById(long id) {
-        return null;
+        Optional<Notification> findResult = Optional.empty();
+
+        try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM notification WHERE notification_id = ?")) {
+            statement.setLong(1, id);
+            statement.executeQuery();
+
+            ResultSet resultSet = statement.getResultSet();
+
+            if (resultSet.next()) {
+                Notification notification = map(resultSet);
+                findResult = Optional.of(notification);
+            }
+
+            resultSet.close();
+        } catch (SQLException e) {
+            logger.error("Error while finding by id", e);
+        }
+
+        return findResult;
     }
 
     @Override
     public OptionalLong findIdOfEntity(Notification notification) {
-        return null;
+        RuntimeException e = new UnsupportedOperationException();
+        logger.error("Error while calling unsupported operation.", e);
+        throw e;
     }
 
     @Override
     public List<Notification> getAll() {
-        return null;
+        List<Notification> notificationList = new ArrayList<>();
+
+        try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM notification")) {
+            statement.executeQuery();
+
+            ResultSet resultSet = statement.getResultSet();
+
+            while (resultSet.next()) {
+                Notification nextNotification = map(resultSet);
+                notificationList.add(nextNotification);
+            }
+
+            resultSet.close();
+        } catch (SQLException e) {
+            logger.error("Error while getting all notifications", e);
+        }
+
+        return notificationList;
+    }
+
+    private Notification map(ResultSet resultSet) throws SQLException {
+        LocalDateTime creationDateTime = resultSet.getTimestamp("notification.notification_datetime")
+                .toLocalDateTime();
+        NotificationStatus notificationStatus = NotificationStatus.valueOf(
+                resultSet.getString("notification.notification_status").toUpperCase());
+        return new Notification.Builder()
+                .setId(resultSet.getLong("notification.notification_id"))
+                .setCreationDateTime(creationDateTime)
+                .setStatus(notificationStatus)
+                .setHeader(resultSet.getString("notification.header"))
+                .setContent(resultSet.getString("notification.content"))
+                .build();
     }
 
     @Override
@@ -49,7 +102,7 @@ public class MysqlNotificationDao implements NotificationDao {
         OptionalLong createdId = OptionalLong.empty();
         try (PreparedStatement statement =
                      connection.prepareStatement(
-                             "insert into notification(notification_status, header, content) values (?, ?, ?)",
+                             "INSERT INTO notification(notification_status, header, content) VALUES (?, ?, ?)",
                              Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, NotificationStatus.NEW.toString().toLowerCase());
             statement.setString(2, notification.getHeader());
@@ -76,16 +129,75 @@ public class MysqlNotificationDao implements NotificationDao {
 
     @Override
     public int update(long id, Notification entity) {
-        return 0;
+        RuntimeException e = new UnsupportedOperationException();
+        logger.error("Error while calling unsupported operation.", e);
+        throw e;
     }
 
     @Override
     public List<Notification> findNotificationsByUserId(long userId) {
-        return null;
+        List<Notification> notificationList = new ArrayList<>();
+
+        try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM notification WHERE user_id = ?")) {
+            statement.setLong(1, userId);
+            statement.executeQuery();
+
+            ResultSet resultSet = statement.getResultSet();
+
+            while (resultSet.next()) {
+                Notification notification = map(resultSet);
+                notificationList.add(notification);
+            }
+
+            resultSet.close();
+        } catch (SQLException e) {
+            logger.error("Error while finding by id", e);
+        }
+
+        return notificationList;
+    }
+
+    @Override
+    public boolean addNotificationToUser(long notificationId, long userId) {
+        connection.initializeTransaction();
+
+        try (PreparedStatement statement =
+                     connection.prepareStatement("update notification set user_id = ? where notification_id = ?")) {
+            statement.setLong(1, userId);
+            statement.setLong(2, notificationId);
+
+            statement.executeUpdate();
+
+            connection.commit();
+
+            int updateCount = statement.getUpdateCount();
+            return updateCount > 0;
+        } catch (SQLException e) {
+            connection.rollback();
+            logger.error("Error while adding notification to user. Rolling back transaction", e);
+        }
+        return false;
     }
 
     @Override
     public boolean markNotificationAsViewed(long notificationId) {
+        connection.initializeTransaction();
+
+        try (PreparedStatement statement =
+                     connection.prepareStatement("update notification set notification_status = ? where notification_id = ?")) {
+            statement.setString(1, NotificationStatus.VIEWED.toString().toLowerCase());
+            statement.setLong(2, notificationId);
+
+            statement.executeUpdate();
+
+            connection.commit();
+
+            int updateCount = statement.getUpdateCount();
+            return updateCount > 0;
+        } catch (SQLException e) {
+            connection.rollback();
+            logger.error("Error while changing notification status. Rolling back transaction", e);
+        }
         return false;
     }
 }

@@ -10,5 +10,7 @@ import java.util.List;
 public interface NotificationDao extends AbstractDao<Notification> {
     List<Notification> findNotificationsByUserId(long userId);
 
+    boolean addNotificationToUser(long notificationId, long userId);
+
     boolean markNotificationAsViewed(long notificationId);
 }
