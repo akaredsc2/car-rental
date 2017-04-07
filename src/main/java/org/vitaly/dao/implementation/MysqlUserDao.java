@@ -11,8 +11,6 @@ import org.vitaly.util.dao.mapper.Mapper;
 import org.vitaly.util.dao.mapper.UserMapper;
 
 import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.*;
 
 import static org.vitaly.util.InputChecker.requireNotNull;
@@ -136,20 +134,11 @@ public class MysqlUserDao implements UserDao {
         requireNotNull(user, USER_MUST_NOT_BE_NULL);
         requireNotNull(role, ROLE_MUST_NOT_BE_NULL);
 
-        if (user.getRole() != role) {
-            connection.initializeTransaction();
+        TreeMap<Integer, Object> parameterMap = new TreeMap<>();
+        parameterMap.put(1, role.toString().toLowerCase());
+        parameterMap.put(2, user.getId());
 
-            try (PreparedStatement statement = connection.prepareStatement(CHANGE_ROLE_QUERY)) {
-                statement.setString(1, role.toString().toLowerCase());
-                statement.setLong(2, user.getId());
-                statement.executeUpdate();
-
-                connection.commit();
-            } catch (SQLException e) {
-                connection.rollback();
-                logger.error("Error while changing user role. Rolling back transaction.", e);
-            }
-        }
+        daoTemplate.executeUpdate(CHANGE_ROLE_QUERY, parameterMap);
     }
 
     @Override
@@ -157,19 +146,10 @@ public class MysqlUserDao implements UserDao {
         requireNotNull(user, USER_MUST_NOT_BE_NULL);
         requireNotNull(newPassword, NEW_PASSWORD_MUST_NOT_BE_NULL);
 
-        if (!Objects.equals(user.getPassword(), newPassword)) {
-            connection.initializeTransaction();
+        TreeMap<Integer, Object> parameterMap = new TreeMap<>();
+        parameterMap.put(1, newPassword);
+        parameterMap.put(2, user.getId());
 
-            try (PreparedStatement statement = connection.prepareStatement(CHANGE_PASSWORD_QUERY)) {
-                statement.setString(1, newPassword);
-                statement.setLong(2, user.getId());
-                statement.executeUpdate();
-
-                connection.commit();
-            } catch (SQLException e) {
-                connection.rollback();
-                logger.error("Error while changing user password. Rolling back transaction.", e);
-            }
-        }
+        daoTemplate.executeUpdate(CHANGE_PASSWORD_QUERY, parameterMap);
     }
 }

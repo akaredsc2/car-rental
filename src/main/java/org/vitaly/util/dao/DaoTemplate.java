@@ -83,4 +83,18 @@ public class DaoTemplate {
 
         return insertedId;
     }
+
+    public int executeUpdate(String query, Map<Integer, Object> parameterMap) {
+        int updatedRecordCount = 0;
+
+        try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            setQueryParameters(statement, parameterMap);
+
+            updatedRecordCount = statement.executeUpdate();
+        } catch (SQLException e) {
+            logger.error("Error while executing update query", e);
+        }
+
+        return updatedRecordCount;
+    }
 }

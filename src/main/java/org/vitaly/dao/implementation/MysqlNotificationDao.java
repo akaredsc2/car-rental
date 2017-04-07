@@ -10,8 +10,6 @@ import org.vitaly.util.dao.DaoTemplate;
 import org.vitaly.util.dao.mapper.Mapper;
 import org.vitaly.util.dao.mapper.NotificationMapper;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -32,6 +30,14 @@ public class MysqlNotificationDao implements NotificationDao {
     private static final String CREATE_QUERY =
             "INSERT INTO notification(notification_status, header, content) " +
                     "VALUES (?, ?, ?)";
+    private static final String ADD_NOTIFICATION_TO_USER =
+            "UPDATE notification " +
+                    "SET user_id = ? " +
+                    "WHERE notification_id = ?";
+    private static final String MARK_NOTIFICATION_AS_VIEWED_QUERY =
+            "UPDATE notification " +
+                    "SET notification_status = ? " +
+                    "WHERE notification_id = ?";
 
     private static final Logger logger = LogManager.getLogger(MysqlNotificationDao.class.getName());
 
@@ -94,45 +100,21 @@ public class MysqlNotificationDao implements NotificationDao {
 
     @Override
     public boolean addNotificationToUser(long notificationId, long userId) {
-        connection.initializeTransaction();
+        TreeMap<Integer, Object> parameterMap = new TreeMap<>();
+        parameterMap.put(1, userId);
+        parameterMap.put(2, notificationId);
 
-        try (PreparedStatement statement =
-                     connection.prepareStatement("update notification set user_id = ? where notification_id = ?")) {
-            statement.setLong(1, userId);
-            statement.setLong(2, notificationId);
-
-            statement.executeUpdate();
-
-            connection.commit();
-
-            int updateCount = statement.getUpdateCount();
-            return updateCount > 0;
-        } catch (SQLException e) {
-            connection.rollback();
-            logger.error("Error while adding notification to user. Rolling back transaction", e);
-        }
-        return false;
+        int updatedRecordCount = daoTemplate.executeUpdate(ADD_NOTIFICATION_TO_USER, parameterMap);
+        return updatedRecordCount > 0;
     }
 
     @Override
     public boolean markNotificationAsViewed(long notificationId) {
-        connection.initializeTransaction();
+        TreeMap<Integer, Object> parameterMap = new TreeMap<>();
+        parameterMap.put(1, NotificationStatus.VIEWED.toString().toLowerCase());
+        parameterMap.put(2, notificationId);
 
-        try (PreparedStatement statement =
-                     connection.prepareStatement("update notification set notification_status = ? where notification_id = ?")) {
-            statement.setString(1, NotificationStatus.VIEWED.toString().toLowerCase());
-            statement.setLong(2, notificationId);
-
-            statement.executeUpdate();
-
-            connection.commit();
-
-            int updateCount = statement.getUpdateCount();
-            return updateCount > 0;
-        } catch (SQLException e) {
-            connection.rollback();
-            logger.error("Error while changing notification status. Rolling back transaction", e);
-        }
-        return false;
+        int updatedRecordCount = daoTemplate.executeUpdate(MARK_NOTIFICATION_AS_VIEWED_QUERY, parameterMap);
+        return updatedRecordCount > 0;
     }
 }

@@ -10,8 +10,6 @@ import org.vitaly.util.dao.DaoTemplate;
 import org.vitaly.util.dao.mapper.CarMapper;
 import org.vitaly.util.dao.mapper.Mapper;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.*;
 
 import static org.vitaly.util.InputChecker.requireNotNull;
@@ -94,46 +92,30 @@ public class MysqlCarDao implements CarDao {
         requireNotNull(car, CAR_MUST_NOT_BE_NULL);
 
         Map<Integer, Object> parameterMap = new TreeMap<>();
+        putCarParametersToMap(car, parameterMap);
+
+        Long createdId = daoTemplate.executeInsert(CREATE_QUERY, parameterMap);
+        return createdId == null ? OptionalLong.empty() : OptionalLong.of(createdId);
+    }
+
+    private void putCarParametersToMap(Car car, Map<Integer, Object> parameterMap) {
         parameterMap.put(1, car.getState().toString());
         parameterMap.put(2, car.getModel());
         parameterMap.put(3, car.getRegistrationPlate());
         parameterMap.put(4, car.getPhotoUrl());
         parameterMap.put(5, car.getColor());
         parameterMap.put(6, car.getPricePerDay());
-
-        Long createdId = daoTemplate.executeInsert(CREATE_QUERY, parameterMap);
-        return createdId == null ? OptionalLong.empty() : OptionalLong.of(createdId);
-    }
-
-    private void setCarParametersInStatement(Car car, PreparedStatement statement) throws SQLException {
-        statement.setString(1, car.getState().toString());
-        statement.setString(2, car.getModel());
-        statement.setString(3, car.getRegistrationPlate());
-        statement.setString(4, car.getPhotoUrl());
-        statement.setString(5, car.getColor());
-        statement.setBigDecimal(6, car.getPricePerDay());
     }
 
     @Override
     public int update(long id, Car car) {
         requireNotNull(car, CAR_MUST_NOT_BE_NULL);
 
-        connection.initializeTransaction();
+        Map<Integer, Object> parameterMap = new TreeMap<>();
+        putCarParametersToMap(car, parameterMap);
+        parameterMap.put(7, id);
 
-        int updateCount = 0;
-        try (PreparedStatement statement = connection.prepareStatement(UPDATE_QUERY)) {
-            setCarParametersInStatement(car, statement);
-            statement.setLong(7, id);
-
-            updateCount = statement.executeUpdate();
-
-            connection.commit();
-        } catch (SQLException e) {
-            connection.rollback();
-            logger.error("Error while updating car. Rolling back transaction.", e);
-        }
-
-        return updateCount;
+        return daoTemplate.executeUpdate(UPDATE_QUERY, parameterMap);
     }
 
     @Override
@@ -141,23 +123,12 @@ public class MysqlCarDao implements CarDao {
         requireNotNull(car, CAR_MUST_NOT_BE_NULL);
         requireNotNull(location, LOCATION_MUST_NOT_BE_NULL);
 
-        boolean updateResult = false;
+        TreeMap<Integer, Object> parameterMap = new TreeMap<>();
+        parameterMap.put(1, location.getId());
+        parameterMap.put(2, car.getId());
 
-        connection.initializeTransaction();
-
-        try (PreparedStatement statement = connection.prepareStatement(ADD_CAR_TO_LOCATION_QUERY)) {
-            statement.setLong(1, location.getId());
-            statement.setLong(2, car.getId());
-
-            int updatedRecordCount = statement.executeUpdate();
-            updateResult = updatedRecordCount > 0;
-            connection.commit();
-        } catch (SQLException e) {
-            connection.rollback();
-            logger.error("Error while adding car to location. Rolling back transaction.", e);
-        }
-
-        return updateResult;
+        int updatedRecordCount = daoTemplate.executeUpdate(ADD_CAR_TO_LOCATION_QUERY, parameterMap);
+        return updatedRecordCount > 0;
     }
 
     @Override
