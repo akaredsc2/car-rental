@@ -157,6 +157,11 @@ public class MysqlNotificationDaoTest {
         assertFalse(isCreated);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void createNullNotificationShouldThrowException() throws Exception {
+        notificationDao.create(null);
+    }
+
     @Test(expected = UnsupportedOperationException.class)
     public void updateShouldThrowException() throws Exception {
         notificationDao.update(1, notification1);

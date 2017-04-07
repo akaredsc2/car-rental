@@ -4,6 +4,8 @@ import org.vitaly.util.InputChecker;
 
 import java.math.BigDecimal;
 
+import static org.vitaly.util.InputChecker.*;
+
 /**
  * Created by vitaly on 2017-03-26.
  */
@@ -142,7 +144,6 @@ public class Car {
         result = 31 * result + registrationPlate.hashCode();
         result = 31 * result + photoUrl.hashCode();
         result = 31 * result + color.hashCode();
-        result = 31 * result + pricePerDay.hashCode();
         return result;
     }
 
@@ -161,42 +162,42 @@ public class Car {
         }
 
         public Builder setState(CarState state) {
-            InputChecker.requireNotNull(state, "State must not be null!");
+            requireNotNull(state, "State must not be null!");
 
             this.state = state;
             return this;
         }
 
         public Builder setModel(String model) {
-            InputChecker.requireNotNull(model, "Model not be null!");
+            requireNotNull(model, "Model not be null!");
 
             this.model = model;
             return this;
         }
 
         public Builder setRegistrationPlate(String registrationPlate) {
-            InputChecker.requireNotNull(registrationPlate, "Registration Plate must not be null!");
+            requireNotNull(registrationPlate, "Registration Plate must not be null!");
 
             this.registrationPlate = registrationPlate;
             return this;
         }
 
         public Builder setPhotoUrl(String photoUrl) {
-            InputChecker.requireNotNull(photoUrl, "PhotoUrl must not be null!");
+            requireNotNull(photoUrl, "PhotoUrl must not be null!");
 
             this.photoUrl = photoUrl;
             return this;
         }
 
         public Builder setColor(String color) {
-            InputChecker.requireNotNull(color, "Color must not be null!");
+            requireNotNull(color, "Color must not be null!");
 
             this.color = color;
             return this;
         }
 
         public Builder setPricePerDay(BigDecimal pricePerDay) {
-            InputChecker.requireNotNull(pricePerDay, "PricePerDay must not be null!");
+            requireNotNull(pricePerDay, "PricePerDay must not be null!");
 
             this.pricePerDay = pricePerDay;
             return this;

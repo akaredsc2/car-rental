@@ -11,7 +11,10 @@ import org.vitaly.util.dao.mapper.Mapper;
 import org.vitaly.util.dao.mapper.UserMapper;
 
 import java.sql.Date;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.TreeMap;
 
 import static org.vitaly.util.InputChecker.requireNotNull;
 
@@ -75,7 +78,7 @@ public class MysqlUserDao implements UserDao {
     }
 
     @Override
-    public OptionalLong findIdOfEntity(User user) {
+    public Optional<Long> findIdOfEntity(User user) {
         requireNotNull(user, USER_MUST_NOT_BE_NULL);
 
         Map<Integer, Object> parameterMap = new TreeMap<>();
@@ -84,7 +87,7 @@ public class MysqlUserDao implements UserDao {
         Long foundId = daoTemplate
                 .executeSelectOne(FIND_ID_OF_USER_QUERY, resultSet -> resultSet.getLong(1), parameterMap);
 
-        return foundId == null ? OptionalLong.empty() : OptionalLong.of(foundId);
+        return Optional.ofNullable(foundId);
     }
 
     @Override
@@ -93,7 +96,7 @@ public class MysqlUserDao implements UserDao {
     }
 
     @Override
-    public OptionalLong create(User user) {
+    public Optional<Long> create(User user) {
         requireNotNull(user, USER_MUST_NOT_BE_NULL);
 
         Map<Integer, Object> parameterMap = new TreeMap<>();
@@ -105,7 +108,7 @@ public class MysqlUserDao implements UserDao {
         parameterMap.put(6, user.getDriverLicenceNumber());
 
         Long createdId = daoTemplate.executeInsert(CREATE_QUERY, parameterMap);
-        return createdId == null ? OptionalLong.empty() : OptionalLong.of(createdId);
+        return Optional.ofNullable(createdId);
     }
 
     @Override

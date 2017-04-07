@@ -59,7 +59,7 @@ public class MysqlLocationDao implements LocationDao {
     }
 
     @Override
-    public OptionalLong findIdOfEntity(Location location) {
+    public Optional<Long> findIdOfEntity(Location location) {
         requireNotNull(location, LOCATION_MUST_NOT_BE_NULL);
 
         Map<Integer, Object> parameterMap = new TreeMap<>();
@@ -71,7 +71,7 @@ public class MysqlLocationDao implements LocationDao {
         Long foundId = daoTemplate
                 .executeSelectOne(FIND_ID_OF_LOCATION_QUERY, resultSet -> resultSet.getLong(1), parameterMap);
 
-        return foundId == null ? OptionalLong.empty() : OptionalLong.of(foundId);
+        return Optional.ofNullable(foundId);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class MysqlLocationDao implements LocationDao {
     }
 
     @Override
-    public OptionalLong create(Location location) {
+    public Optional<Long> create(Location location) {
         requireNotNull(location, LOCATION_MUST_NOT_BE_NULL);
 
         Map<Integer, Object> parameterMap = new TreeMap<>();
@@ -90,7 +90,7 @@ public class MysqlLocationDao implements LocationDao {
         parameterMap.put(4, location.getBuilding());
 
         Long createdId = daoTemplate.executeInsert(CREATE_LOCATION_QUERY, parameterMap);
-        return createdId == null ? OptionalLong.empty() : OptionalLong.of(createdId);
+        return Optional.ofNullable(createdId);
     }
 
     @Override

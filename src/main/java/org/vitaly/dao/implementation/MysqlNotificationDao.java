@@ -6,11 +6,14 @@ import org.vitaly.connectionPool.abstraction.PooledConnection;
 import org.vitaly.dao.abstraction.NotificationDao;
 import org.vitaly.model.notification.Notification;
 import org.vitaly.model.notification.NotificationStatus;
+import org.vitaly.util.InputChecker;
 import org.vitaly.util.dao.DaoTemplate;
 import org.vitaly.util.dao.mapper.Mapper;
 import org.vitaly.util.dao.mapper.NotificationMapper;
 
 import java.util.*;
+
+import static org.vitaly.util.InputChecker.*;
 
 /**
  * Created by vitaly on 2017-04-06.
@@ -40,6 +43,7 @@ public class MysqlNotificationDao implements NotificationDao {
                     "WHERE notification_id = ?";
 
     private static final Logger logger = LogManager.getLogger(MysqlNotificationDao.class.getName());
+    public static final String NOTIFICATION_MUST_NOT_BE_NULL = "Notification must not be null!";
 
     private PooledConnection connection;
     private Mapper<Notification> mapper;
@@ -61,7 +65,7 @@ public class MysqlNotificationDao implements NotificationDao {
     }
 
     @Override
-    public OptionalLong findIdOfEntity(Notification notification) {
+    public Optional<Long> findIdOfEntity(Notification notification) {
         RuntimeException e = new UnsupportedOperationException();
         logger.error("Error while calling unsupported operation.", e);
         throw e;
@@ -73,14 +77,16 @@ public class MysqlNotificationDao implements NotificationDao {
     }
 
     @Override
-    public OptionalLong create(Notification notification) {
+    public Optional<Long> create(Notification notification) {
+        requireNotNull(notification, NOTIFICATION_MUST_NOT_BE_NULL);
+
         Map<Integer, Object> parameterMap = new TreeMap<>();
         parameterMap.put(1, NotificationStatus.NEW.toString().toLowerCase());
         parameterMap.put(2, notification.getHeader());
         parameterMap.put(3, notification.getContent());
 
         Long createdId = daoTemplate.executeInsert(CREATE_QUERY, parameterMap);
-        return createdId == null ? OptionalLong.empty() : OptionalLong.of(createdId);
+        return Optional.ofNullable(createdId);
     }
 
     @Override

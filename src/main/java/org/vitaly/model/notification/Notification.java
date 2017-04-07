@@ -1,7 +1,11 @@
 package org.vitaly.model.notification;
 
+import org.vitaly.util.InputChecker;
+
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+
+import static org.vitaly.util.InputChecker.*;
 
 /**
  * Created by vitaly on 2017-04-06.
@@ -97,21 +101,29 @@ public class Notification {
         }
 
         public Builder setCreationDateTime(LocalDateTime creationDateTime) {
+            requireNotNull(creationDateTime, "Creation datetime must not be null!");
+
             this.creationDateTime = creationDateTime;
             return this;
         }
 
         public Builder setStatus(NotificationStatus status) {
+            requireNotNull(status, "Notification status must not be null!");
+
             this.status = status;
             return this;
         }
 
         public Builder setHeader(String header) {
+            requireNotNull(header, "Notification header must not be null!");
+
             this.header = header;
             return this;
         }
 
         public Builder setContent(String content) {
+            requireNotNull(content, "Notification content must not be null!");
+
             this.content = content;
             return this;
         }

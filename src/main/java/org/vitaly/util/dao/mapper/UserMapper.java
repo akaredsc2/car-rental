@@ -10,7 +10,7 @@ import java.time.LocalDate;
 /**
  * Created by vitaly on 2017-04-07.
  */
-public class UserMapper implements Mapper<User>{
+public class UserMapper implements Mapper<User> {
     private static final String USERS_USER_ID = "users.user_id";
     private static final String USERS_LOGIN = "users.login";
     private static final String USERS_PASS = "users.pass";

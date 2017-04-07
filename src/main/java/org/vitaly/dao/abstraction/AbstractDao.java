@@ -10,11 +10,11 @@ import java.util.OptionalLong;
 public interface AbstractDao<E> {
     Optional<E> findById(long id);
 
-    OptionalLong findIdOfEntity(E entity);
+    Optional<Long> findIdOfEntity(E entity);
 
     List<E> getAll();
 
-    OptionalLong create(E entity);
+    Optional<Long> create(E entity);
 
     int update(long id, E entity);
 }

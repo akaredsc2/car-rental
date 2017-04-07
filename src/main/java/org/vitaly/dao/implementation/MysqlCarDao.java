@@ -70,7 +70,7 @@ public class MysqlCarDao implements CarDao {
     }
 
     @Override
-    public OptionalLong findIdOfEntity(Car car) {
+    public Optional<Long> findIdOfEntity(Car car) {
         requireNotNull(car, CAR_MUST_NOT_BE_NULL);
 
         Map<Integer, Object> parameterMap = new TreeMap<>();
@@ -79,7 +79,7 @@ public class MysqlCarDao implements CarDao {
         Long foundId = daoTemplate
                 .executeSelectOne(FIND_ID_OF_CAR_QUERY, resultSet -> resultSet.getLong(1), parameterMap);
 
-        return foundId == null ? OptionalLong.empty() : OptionalLong.of(foundId);
+        return Optional.ofNullable(foundId);
     }
 
     @Override
@@ -88,14 +88,14 @@ public class MysqlCarDao implements CarDao {
     }
 
     @Override
-    public OptionalLong create(Car car) {
+    public Optional<Long> create(Car car) {
         requireNotNull(car, CAR_MUST_NOT_BE_NULL);
 
         Map<Integer, Object> parameterMap = new TreeMap<>();
         putCarParametersToMap(car, parameterMap);
 
         Long createdId = daoTemplate.executeInsert(CREATE_QUERY, parameterMap);
-        return createdId == null ? OptionalLong.empty() : OptionalLong.of(createdId);
+        return Optional.ofNullable(createdId);
     }
 
     private void putCarParametersToMap(Car car, Map<Integer, Object> parameterMap) {
