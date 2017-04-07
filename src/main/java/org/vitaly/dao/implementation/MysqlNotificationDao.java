@@ -6,50 +6,44 @@ import org.vitaly.connectionPool.abstraction.PooledConnection;
 import org.vitaly.dao.abstraction.NotificationDao;
 import org.vitaly.model.notification.Notification;
 import org.vitaly.model.notification.NotificationStatus;
+import org.vitaly.util.dao.DaoTemplate;
+import org.vitaly.util.dao.mapper.Mapper;
+import org.vitaly.util.dao.mapper.NotificationMapper;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.OptionalLong;
+import java.util.*;
 
 /**
  * Created by vitaly on 2017-04-06.
  */
 public class MysqlNotificationDao implements NotificationDao {
+    public static final String FIND_BY_ID_QUERY =
+            "SELECT * " +
+                    "FROM notification " +
+                    "WHERE notification_id = ?";
+
     private static final Logger logger = LogManager.getLogger(MysqlNotificationDao.class.getName());
 
     private PooledConnection connection;
+    private Mapper<Notification> mapper;
+    private DaoTemplate daoTemplate;
 
     MysqlNotificationDao(PooledConnection connection) {
         this.connection = connection;
+        this.mapper = new NotificationMapper();
+        this.daoTemplate = new DaoTemplate(connection);
     }
 
     @Override
     public Optional<Notification> findById(long id) {
-        Optional<Notification> findResult = Optional.empty();
+        Map<Integer, Object> parameterMap = new TreeMap<>();
+        parameterMap.put(1, id);
 
-        try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM notification WHERE notification_id = ?")) {
-            statement.setLong(1, id);
-            statement.executeQuery();
-
-            ResultSet resultSet = statement.getResultSet();
-
-            if (resultSet.next()) {
-                Notification notification = map(resultSet);
-                findResult = Optional.of(notification);
-            }
-
-            resultSet.close();
-        } catch (SQLException e) {
-            logger.error("Error while finding by id", e);
-        }
-
-        return findResult;
+        Notification notification = daoTemplate.executeSelect(FIND_BY_ID_QUERY, mapper, parameterMap);
+        return Optional.ofNullable(notification);
     }
 
     @Override
@@ -69,7 +63,7 @@ public class MysqlNotificationDao implements NotificationDao {
             ResultSet resultSet = statement.getResultSet();
 
             while (resultSet.next()) {
-                Notification nextNotification = map(resultSet);
+                Notification nextNotification = mapper.map(resultSet);
                 notificationList.add(nextNotification);
             }
 
@@ -79,20 +73,6 @@ public class MysqlNotificationDao implements NotificationDao {
         }
 
         return notificationList;
-    }
-
-    private Notification map(ResultSet resultSet) throws SQLException {
-        LocalDateTime creationDateTime = resultSet.getTimestamp("notification.notification_datetime")
-                .toLocalDateTime();
-        NotificationStatus notificationStatus = NotificationStatus.valueOf(
-                resultSet.getString("notification.notification_status").toUpperCase());
-        return new Notification.Builder()
-                .setId(resultSet.getLong("notification.notification_id"))
-                .setCreationDateTime(creationDateTime)
-                .setStatus(notificationStatus)
-                .setHeader(resultSet.getString("notification.header"))
-                .setContent(resultSet.getString("notification.content"))
-                .build();
     }
 
     @Override
@@ -145,7 +125,7 @@ public class MysqlNotificationDao implements NotificationDao {
             ResultSet resultSet = statement.getResultSet();
 
             while (resultSet.next()) {
-                Notification notification = map(resultSet);
+                Notification notification = mapper.map(resultSet);
                 notificationList.add(notification);
             }
 

@@ -5,18 +5,16 @@ import org.apache.logging.log4j.Logger;
 import org.vitaly.connectionPool.abstraction.PooledConnection;
 import org.vitaly.dao.abstraction.CarDao;
 import org.vitaly.model.car.Car;
-import org.vitaly.model.car.CarState;
-import org.vitaly.model.car.CarStateEnum;
 import org.vitaly.model.location.Location;
+import org.vitaly.util.dao.DaoTemplate;
+import org.vitaly.util.dao.mapper.CarMapper;
+import org.vitaly.util.dao.mapper.Mapper;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.OptionalLong;
+import java.util.*;
 
 import static org.vitaly.util.InputChecker.requireNotNull;
 
@@ -24,14 +22,6 @@ import static org.vitaly.util.InputChecker.requireNotNull;
  * Created by vitaly on 2017-03-27.
  */
 public class MysqlCarDao implements CarDao {
-    private static final String CAR_CAR_STATUS = "car.car_status";
-    private static final String CAR_ID = "car.car_id";
-    private static final String CAR_MODEL = "car.model";
-    private static final String CAR_REGISTRATION_PLATE = "car.registration_plate";
-    private static final String CAR_PHOTO_URL = "car.photo_url";
-    private static final String CAR_COLOR = "car.color";
-    private static final String CAR_PRICE_PER_DAY = "car.price_per_day";
-
     private static final String FIND_BY_ID_QUERY =
             "SELECT * " +
             "FROM car " +
@@ -67,80 +57,41 @@ public class MysqlCarDao implements CarDao {
             "  INNER JOIN location loc ON car.location_id = loc.location_id " +
             "WHERE loc.location_id = ?";
 
-    private static final String ID_MUST_NOT_BE_NULL = "Id must not be null!";
     private static final String CAR_MUST_NOT_BE_NULL = "Car must not be null!";
     private static final String LOCATION_MUST_NOT_BE_NULL = "Location must not be null!";
 
     private static final Logger logger = LogManager.getLogger(MysqlCarDao.class.getName());
 
     private PooledConnection connection;
+    private Mapper<Car> mapper;
+    private DaoTemplate daoTemplate;
 
     MysqlCarDao(PooledConnection connection) {
         this.connection = connection;
+        this.mapper = new CarMapper();
+        this.daoTemplate = new DaoTemplate(connection);
     }
 
     @Override
     public Optional<Car> findById(long id) {
-        requireNotNull(id, ID_MUST_NOT_BE_NULL);
+        Map<Integer, Object> parameterMap = new TreeMap<>();
+        parameterMap.put(1, id);
 
-        Car foundCar = null;
-
-        try (PreparedStatement statement = connection.prepareStatement(FIND_BY_ID_QUERY)) {
-            statement.setLong(1, id);
-            statement.executeQuery();
-
-            ResultSet resultSet = statement.getResultSet();
-
-            if (resultSet.next()) {
-                foundCar = buildCarFromResultSetEntry(resultSet);
-            }
-
-            resultSet.close();
-        } catch (SQLException e) {
-            logger.error("Error while finding car by id.", e);
-        }
-
-        return Optional.ofNullable(foundCar);
-    }
-
-    private Car buildCarFromResultSetEntry(ResultSet resultSet) throws SQLException {
-        CarState state = CarStateEnum
-                .valueOf(resultSet.getString(CAR_CAR_STATUS).toUpperCase())
-                .getState();
-
-        return new Car.Builder()
-                .setId(resultSet.getLong(CAR_ID))
-                .setState(state)
-                .setModel(resultSet.getString(CAR_MODEL))
-                .setRegistrationPlate(resultSet.getString(CAR_REGISTRATION_PLATE))
-                .setPhotoUrl(resultSet.getString(CAR_PHOTO_URL))
-                .setColor(resultSet.getString(CAR_COLOR))
-                .setPricePerDay(resultSet.getBigDecimal(CAR_PRICE_PER_DAY))
-                .build();
+        Car car = daoTemplate.executeSelect(FIND_BY_ID_QUERY, mapper, parameterMap);
+        return Optional.ofNullable(car);
     }
 
     @Override
     public OptionalLong findIdOfEntity(Car car) {
         requireNotNull(car, CAR_MUST_NOT_BE_NULL);
 
-        OptionalLong foundId = OptionalLong.empty();
+        Map<Integer, Object> parameterMap = new TreeMap<>();
+        parameterMap.put(1, car.getRegistrationPlate());
 
-        try (PreparedStatement statement = connection.prepareStatement(FIND_ID_OF_CAR_QUERY)) {
-            statement.setString(1, car.getRegistrationPlate());
-            statement.executeQuery();
+        Long foundId = daoTemplate
+                .executeSelect(FIND_ID_OF_CAR_QUERY, resultSet -> resultSet.getLong(1), parameterMap);
 
-            ResultSet resultSet = statement.getResultSet();
-
-            if (resultSet.next()) {
-                foundId = OptionalLong.of(resultSet.getLong(1));
-            }
-
-            resultSet.close();
-        } catch (SQLException e) {
-            logger.error("Error while finding id of car.", e);
-        }
-
-        return foundId;
+        return foundId == null ? OptionalLong.empty() : OptionalLong.of(foundId);
     }
 
     @Override
@@ -152,7 +103,7 @@ public class MysqlCarDao implements CarDao {
             ResultSet resultSet = statement.getResultSet();
 
             while (resultSet.next()) {
-                Car nextCar = buildCarFromResultSetEntry(resultSet);
+                Car nextCar = mapper.map(resultSet);
                 cars.add(nextCar);
             }
 
@@ -259,7 +210,7 @@ public class MysqlCarDao implements CarDao {
 
             ResultSet resultSet = statement.getResultSet();
             while (resultSet.next()) {
-                Car nextCar = buildCarFromResultSetEntry(resultSet);
+                Car nextCar = mapper.map(resultSet);
                 cars.add(nextCar);
             }
         } catch (SQLException e) {
