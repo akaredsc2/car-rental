@@ -12,11 +12,9 @@ import org.vitaly.util.dao.mapper.UserMapper;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static org.vitaly.util.InputChecker.requireNotNull;
 
 /**
@@ -25,30 +23,30 @@ import static org.vitaly.util.InputChecker.requireNotNull;
 public class MysqlUserDao implements UserDao {
     private static final String FIND_BY_ID_QUERY =
             "SELECT * " +
-            "FROM users " +
-            "WHERE user_id = ?";
+                    "FROM users " +
+                    "WHERE user_id = ?";
     private static final String FIND_ID_OF_USER_QUERY =
             "SELECT users.user_id " +
-            "FROM users " +
-            "WHERE users.login = ?";
+                    "FROM users " +
+                    "WHERE users.login = ?";
     private static final String GET_ALL_QUERY =
             "SELECT * " +
-            "FROM users";
+                    "FROM users";
     private static final String CREATE_QUERY =
             "INSERT INTO users(login, pass, full_name, birth_date, passport_number, driver_licence_number) " +
-            "VALUES (?, ?, ?, ?, ?, ?)";
+                    "VALUES (?, ?, ?, ?, ?, ?)";
     private static final String AUTHENTICATE_QUERY =
             "SELECT * " +
-            "FROM users " +
-            "WHERE users.login = ? and users.pass = ?";
+                    "FROM users " +
+                    "WHERE users.login = ? and users.pass = ?";
     private static final String CHANGE_ROLE_QUERY =
             "UPDATE users " +
-            "SET users.role = ? " +
-            "WHERE users.user_id = ?";
+                    "SET users.role = ? " +
+                    "WHERE users.user_id = ?";
     private static final String CHANGE_PASSWORD_QUERY =
             "UPDATE users " +
-            "SET users.pass = ? " +
-            "WHERE users.user_id = ?";
+                    "SET users.pass = ? " +
+                    "WHERE users.user_id = ?";
 
     private static final String LOGIN_MUST_NOT_BE_NULL = "Login must not be null!";
     private static final String PASSWORD_MUST_NOT_BE_NULL = "Password must not be null!";
@@ -100,40 +98,16 @@ public class MysqlUserDao implements UserDao {
     public OptionalLong create(User user) {
         requireNotNull(user, USER_MUST_NOT_BE_NULL);
 
-        connection.initializeTransaction();
+        Map<Integer, Object> parameterMap = new TreeMap<>();
+        parameterMap.put(1, user.getLogin());
+        parameterMap.put(2, user.getPassword());
+        parameterMap.put(3, user.getFullName());
+        parameterMap.put(4, Date.valueOf(user.getBirthDate()));
+        parameterMap.put(5, user.getPassportNumber());
+        parameterMap.put(6, user.getDriverLicenceNumber());
 
-        OptionalLong createdId = OptionalLong.empty();
-        try (PreparedStatement statement = connection.prepareStatement(CREATE_QUERY, RETURN_GENERATED_KEYS)) {
-            setUserParametersInStatement(user, statement);
-
-            // TODO: 2017-03-28 transaction isolation
-            statement.executeUpdate();
-
-            connection.commit();
-
-            ResultSet resultSet = statement.getGeneratedKeys();
-            if (resultSet.next()) {
-                createdId = OptionalLong.of(resultSet.getLong(1));
-            }
-
-            resultSet.close();
-        } catch (SQLException e) {
-            connection.rollback();
-            logger.error("Error while creating user. Rolling back transaction.", e);
-        }
-
-        return createdId;
-    }
-
-    private void setUserParametersInStatement(User user, PreparedStatement statement) throws SQLException {
-        statement.setString(1, user.getLogin());
-        statement.setString(2, user.getPassword());
-        statement.setString(3, user.getFullName());
-
-        Date date = Date.valueOf(user.getBirthDate());
-        statement.setDate(4, date);
-        statement.setString(5, user.getPassportNumber());
-        statement.setString(6, user.getDriverLicenceNumber());
+        Long createdId = daoTemplate.executeInsert(CREATE_QUERY, parameterMap);
+        return createdId == null ? OptionalLong.empty() : OptionalLong.of(createdId);
     }
 
     @Override

@@ -11,9 +11,7 @@ import org.vitaly.util.dao.mapper.Mapper;
 import org.vitaly.util.dao.mapper.NotificationMapper;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.*;
 
 /**
@@ -31,6 +29,9 @@ public class MysqlNotificationDao implements NotificationDao {
             "SELECT * " +
                     "FROM notification " +
                     "WHERE user_id = ?";
+    private static final String CREATE_QUERY =
+            "INSERT INTO notification(notification_status, header, content) " +
+                    "VALUES (?, ?, ?)";
 
     private static final Logger logger = LogManager.getLogger(MysqlNotificationDao.class.getName());
 
@@ -67,34 +68,13 @@ public class MysqlNotificationDao implements NotificationDao {
 
     @Override
     public OptionalLong create(Notification notification) {
-        connection.initializeTransaction();
+        Map<Integer, Object> parameterMap = new TreeMap<>();
+        parameterMap.put(1, NotificationStatus.NEW.toString().toLowerCase());
+        parameterMap.put(2, notification.getHeader());
+        parameterMap.put(3, notification.getContent());
 
-        OptionalLong createdId = OptionalLong.empty();
-        try (PreparedStatement statement =
-                     connection.prepareStatement(
-                             "INSERT INTO notification(notification_status, header, content) VALUES (?, ?, ?)",
-                             Statement.RETURN_GENERATED_KEYS)) {
-            statement.setString(1, NotificationStatus.NEW.toString().toLowerCase());
-            statement.setString(2, notification.getHeader());
-            statement.setString(3, notification.getContent());
-
-            statement.executeUpdate();
-
-            connection.commit();
-
-            ResultSet resultSet = statement.getGeneratedKeys();
-
-            if (resultSet.next()) {
-                createdId = OptionalLong.of(resultSet.getLong(1));
-            }
-
-            resultSet.close();
-        } catch (SQLException e) {
-            connection.rollback();
-            logger.error("Error while creating notification. Rolling back transaction.", e);
-        }
-
-        return createdId;
+        Long createdId = daoTemplate.executeInsert(CREATE_QUERY, parameterMap);
+        return createdId == null ? OptionalLong.empty() : OptionalLong.of(createdId);
     }
 
     @Override

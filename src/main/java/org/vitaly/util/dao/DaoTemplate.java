@@ -8,6 +8,7 @@ import org.vitaly.util.dao.mapper.Mapper;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,9 +28,7 @@ public class DaoTemplate {
         List<T> result = new ArrayList<>();
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            for (Integer i : parameterMap.keySet()) {
-                statement.setObject(i, parameterMap.get(i));
-            }
+            setQueryParameters(statement, parameterMap);
 
             statement.executeQuery();
 
@@ -48,6 +47,12 @@ public class DaoTemplate {
         return result;
     }
 
+    private void setQueryParameters(PreparedStatement statement, Map<Integer, Object> parameterMap) throws SQLException {
+        for (Integer i : parameterMap.keySet()) {
+            statement.setObject(i, parameterMap.get(i));
+        }
+    }
+
     public <T> T executeSelectOne(String query, Mapper<T> mapper, Map<Integer, Object> parameterMap) {
         List<T> result = executeSelect(query, mapper, parameterMap);
 
@@ -56,5 +61,26 @@ public class DaoTemplate {
         } else {
             return result.get(0);
         }
+    }
+
+    // TODO: 2017-04-07 add transaction isolation
+    public Long executeInsert(String query, Map<Integer, Object> parameterMap) {
+        Long insertedId = null;
+
+        try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            setQueryParameters(statement, parameterMap);
+
+            statement.executeUpdate();
+
+            ResultSet resultSet = statement.getGeneratedKeys();
+            if (resultSet != null && resultSet.next()) {
+                insertedId = resultSet.getLong(1);
+                resultSet.close();
+            }
+        } catch (SQLException e) {
+            logger.error("Error while executing insert query", e);
+        }
+
+        return insertedId;
     }
 }

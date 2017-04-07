@@ -9,12 +9,8 @@ import org.vitaly.util.dao.DaoTemplate;
 import org.vitaly.util.dao.mapper.LocationMapper;
 import org.vitaly.util.dao.mapper.Mapper;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
 
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static org.vitaly.util.InputChecker.requireNotNull;
 
 /**
@@ -87,32 +83,14 @@ public class MysqlLocationDao implements LocationDao {
     public OptionalLong create(Location location) {
         requireNotNull(location, LOCATION_MUST_NOT_BE_NULL);
 
-        connection.initializeTransaction();
+        Map<Integer, Object> parameterMap = new TreeMap<>();
+        parameterMap.put(1, location.getState());
+        parameterMap.put(2, location.getCity());
+        parameterMap.put(3, location.getStreet());
+        parameterMap.put(4, location.getBuilding());
 
-        OptionalLong createdId = OptionalLong.empty();
-        try (PreparedStatement statement = connection.prepareStatement(CREATE_LOCATION_QUERY, RETURN_GENERATED_KEYS)) {
-            statement.setString(1, location.getState());
-            statement.setString(2, location.getCity());
-            statement.setString(3, location.getStreet());
-            statement.setString(4, location.getBuilding());
-
-            // TODO: 2017-03-26 transaction isolation
-            statement.executeUpdate();
-
-            connection.commit();
-
-            ResultSet resultSet = statement.getGeneratedKeys();
-            if (resultSet.next()) {
-                createdId = OptionalLong.of(resultSet.getLong(1));
-            }
-
-            resultSet.close();
-        } catch (SQLException e) {
-            connection.rollback();
-            logger.error("Error while creating location. Rolling back transaction.", e);
-        }
-
-        return createdId;
+        Long createdId = daoTemplate.executeInsert(CREATE_LOCATION_QUERY, parameterMap);
+        return createdId == null ? OptionalLong.empty() : OptionalLong.of(createdId);
     }
 
     @Override

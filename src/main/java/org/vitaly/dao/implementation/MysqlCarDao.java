@@ -11,9 +11,7 @@ import org.vitaly.util.dao.mapper.CarMapper;
 import org.vitaly.util.dao.mapper.Mapper;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.*;
 
 import static org.vitaly.util.InputChecker.requireNotNull;
@@ -95,28 +93,16 @@ public class MysqlCarDao implements CarDao {
     public OptionalLong create(Car car) {
         requireNotNull(car, CAR_MUST_NOT_BE_NULL);
 
-        connection.initializeTransaction();
+        Map<Integer, Object> parameterMap = new TreeMap<>();
+        parameterMap.put(1, car.getState().toString());
+        parameterMap.put(2, car.getModel());
+        parameterMap.put(3, car.getRegistrationPlate());
+        parameterMap.put(4, car.getPhotoUrl());
+        parameterMap.put(5, car.getColor());
+        parameterMap.put(6, car.getPricePerDay());
 
-        OptionalLong createdId = OptionalLong.empty();
-        try (PreparedStatement statement = connection.prepareStatement(CREATE_QUERY, Statement.RETURN_GENERATED_KEYS)) {
-            setCarParametersInStatement(car, statement);
-
-            statement.executeUpdate();
-
-            connection.commit();
-
-            ResultSet resultSet = statement.getGeneratedKeys();
-            if (resultSet.next()) {
-                createdId = OptionalLong.of(resultSet.getLong(1));
-            }
-
-            resultSet.close();
-        } catch (SQLException e) {
-            connection.rollback();
-            logger.error("Error while creating car. Rolling back transaction.", e);
-        }
-
-        return createdId;
+        Long createdId = daoTemplate.executeInsert(CREATE_QUERY, parameterMap);
+        return createdId == null ? OptionalLong.empty() : OptionalLong.of(createdId);
     }
 
     private void setCarParametersInStatement(Car car, PreparedStatement statement) throws SQLException {
