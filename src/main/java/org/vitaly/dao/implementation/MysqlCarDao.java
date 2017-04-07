@@ -24,38 +24,30 @@ import static org.vitaly.util.InputChecker.requireNotNull;
 public class MysqlCarDao implements CarDao {
     private static final String FIND_BY_ID_QUERY =
             "SELECT * " +
-            "FROM car " +
-            "WHERE car_id = ?";
+                    "FROM car " +
+                    "WHERE car_id = ?";
     private static final String FIND_ID_OF_CAR_QUERY =
             "SELECT car_id " +
-            "FROM car " +
-            "WHERE registration_plate = ?";
+                    "FROM car " +
+                    "WHERE registration_plate = ?";
     private static final String GET_ALL_QUERY =
             "SELECT * " +
-            "FROM car";
+                    "FROM car";
     private static final String CREATE_QUERY =
             "INSERT INTO car (car_status, model, registration_plate, photo_url, color, price_per_day) " +
-            "VALUES (?, ?, ?, ?, ?, ?)";
+                    "VALUES (?, ?, ?, ?, ?, ?)";
     private static final String UPDATE_QUERY =
             "UPDATE car " +
-            "SET car_status = ?, model = ?, registration_plate = ?, photo_url = ?, color = ?, price_per_day = ? " +
-            "WHERE car_id = ?";
+                    "SET car_status = ?, model = ?, registration_plate = ?, photo_url = ?, color = ?, price_per_day = ? " +
+                    "WHERE car_id = ?";
     private static final String ADD_CAR_TO_LOCATION_QUERY =
             "UPDATE car " +
-            "SET location_id = ? " +
-            "WHERE car_id = ?";
+                    "SET location_id = ? " +
+                    "WHERE car_id = ?";
     private static final String GET_CARS_AT_LOCATION_QUERY =
-            "SELECT" +
-            "  car_id," +
-            "  car_status," +
-            "  model," +
-            "  registration_plate," +
-            "  photo_url," +
-            "  color," +
-            "  price_per_day " +
-            "FROM car " +
-            "  INNER JOIN location loc ON car.location_id = loc.location_id " +
-            "WHERE loc.location_id = ?";
+            "SELECT * " +
+                    "FROM car " +
+                    "WHERE location_id = ?";
 
     private static final String CAR_MUST_NOT_BE_NULL = "Car must not be null!";
     private static final String LOCATION_MUST_NOT_BE_NULL = "Location must not be null!";
@@ -77,7 +69,7 @@ public class MysqlCarDao implements CarDao {
         Map<Integer, Object> parameterMap = new TreeMap<>();
         parameterMap.put(1, id);
 
-        Car car = daoTemplate.executeSelect(FIND_BY_ID_QUERY, mapper, parameterMap);
+        Car car = daoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
         return Optional.ofNullable(car);
     }
 
@@ -89,30 +81,14 @@ public class MysqlCarDao implements CarDao {
         parameterMap.put(1, car.getRegistrationPlate());
 
         Long foundId = daoTemplate
-                .executeSelect(FIND_ID_OF_CAR_QUERY, resultSet -> resultSet.getLong(1), parameterMap);
+                .executeSelectOne(FIND_ID_OF_CAR_QUERY, resultSet -> resultSet.getLong(1), parameterMap);
 
         return foundId == null ? OptionalLong.empty() : OptionalLong.of(foundId);
     }
 
     @Override
     public List<Car> getAll() {
-        List<Car> cars = new ArrayList<>();
-
-        try (PreparedStatement statement = connection.prepareStatement(GET_ALL_QUERY)) {
-            statement.executeQuery();
-            ResultSet resultSet = statement.getResultSet();
-
-            while (resultSet.next()) {
-                Car nextCar = mapper.map(resultSet);
-                cars.add(nextCar);
-            }
-
-            resultSet.close();
-        } catch (SQLException e) {
-            logger.error("Error while getting all cars.", e);
-        }
-
-        return cars;
+        return daoTemplate.executeSelect(GET_ALL_QUERY, mapper, new TreeMap<>());
     }
 
     @Override
@@ -202,21 +178,9 @@ public class MysqlCarDao implements CarDao {
     public List<Car> getCarsAtLocation(Location location) {
         requireNotNull(location, LOCATION_MUST_NOT_BE_NULL);
 
-        List<Car> cars = new ArrayList<>();
+        Map<Integer, Object> parameterMap = new TreeMap<>();
+        parameterMap.put(1, location.getId());
 
-        try (PreparedStatement statement = connection.prepareStatement(GET_CARS_AT_LOCATION_QUERY)) {
-            statement.setLong(1, location.getId());
-            statement.executeQuery();
-
-            ResultSet resultSet = statement.getResultSet();
-            while (resultSet.next()) {
-                Car nextCar = mapper.map(resultSet);
-                cars.add(nextCar);
-            }
-        } catch (SQLException e) {
-            logger.error("Error while getting cars at location.", e);
-        }
-
-        return cars;
+        return daoTemplate.executeSelect(GET_CARS_AT_LOCATION_QUERY, mapper, parameterMap);
     }
 }

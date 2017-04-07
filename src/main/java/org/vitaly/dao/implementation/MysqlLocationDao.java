@@ -29,7 +29,7 @@ public class MysqlLocationDao implements LocationDao {
             "SELECT location_id " +
                     "FROM location " +
                     "WHERE state = ? AND city = ? AND street = ? AND building = ?";
-    private static final String ALL_LOCATIONS_QUERY =
+    private static final String GET_ALL_QUERY =
             "SELECT * " +
                     "FROM location";
     private static final String CREATE_LOCATION_QUERY =
@@ -58,7 +58,7 @@ public class MysqlLocationDao implements LocationDao {
         Map<Integer, Object> parameterMap = new TreeMap<>();
         parameterMap.put(1, id);
 
-        Location location = daoTemplate.executeSelect(FIND_BY_ID_QUERY, mapper, parameterMap);
+        Location location = daoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
         return Optional.ofNullable(location);
     }
 
@@ -73,30 +73,14 @@ public class MysqlLocationDao implements LocationDao {
         parameterMap.put(4, location.getBuilding());
 
         Long foundId = daoTemplate
-                .executeSelect(FIND_ID_OF_LOCATION_QUERY, resultSet -> resultSet.getLong(1), parameterMap);
+                .executeSelectOne(FIND_ID_OF_LOCATION_QUERY, resultSet -> resultSet.getLong(1), parameterMap);
 
         return foundId == null ? OptionalLong.empty() : OptionalLong.of(foundId);
     }
 
     @Override
     public List<Location> getAll() {
-        List<Location> locationList = new ArrayList<>();
-
-        try (PreparedStatement statement = connection.prepareStatement(ALL_LOCATIONS_QUERY)) {
-            statement.executeQuery();
-            ResultSet resultSet = statement.getResultSet();
-
-            while (resultSet.next()) {
-                Location location = mapper.map(resultSet);
-                locationList.add(location);
-            }
-
-            resultSet.close();
-        } catch (SQLException e) {
-            logger.error("Error while getting all locations.", e);
-        }
-
-        return locationList;
+        return daoTemplate.executeSelect(GET_ALL_QUERY, mapper, new TreeMap<>());
     }
 
     @Override
@@ -140,18 +124,6 @@ public class MysqlLocationDao implements LocationDao {
 
     @Override
     public int getLocationCount() {
-        try (PreparedStatement statement = connection.prepareStatement(LOCATION_COUNT_QUERY)) {
-            statement.executeQuery();
-            ResultSet resultSet = statement.getResultSet();
-            if (resultSet.next()) {
-                return resultSet.getInt(1);
-            }
-
-            resultSet.close();
-        } catch (SQLException e) {
-            logger.error("Error while getting location count.", e);
-        }
-
-        return 0;
+        return daoTemplate.executeSelectOne(LOCATION_COUNT_QUERY, resultSet -> resultSet.getInt(1), new TreeMap<>());
     }
 }

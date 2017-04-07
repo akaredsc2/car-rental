@@ -20,10 +20,17 @@ import java.util.*;
  * Created by vitaly on 2017-04-06.
  */
 public class MysqlNotificationDao implements NotificationDao {
-    public static final String FIND_BY_ID_QUERY =
+    private static final String FIND_BY_ID_QUERY =
             "SELECT * " +
                     "FROM notification " +
                     "WHERE notification_id = ?";
+    private static final String GET_ALL_QUERY =
+            "SELECT * " +
+                    "FROM notification";
+    private static final String FIND_NOTIFICATIONS_BY_USER_ID =
+            "SELECT * " +
+                    "FROM notification " +
+                    "WHERE user_id = ?";
 
     private static final Logger logger = LogManager.getLogger(MysqlNotificationDao.class.getName());
 
@@ -42,7 +49,7 @@ public class MysqlNotificationDao implements NotificationDao {
         Map<Integer, Object> parameterMap = new TreeMap<>();
         parameterMap.put(1, id);
 
-        Notification notification = daoTemplate.executeSelect(FIND_BY_ID_QUERY, mapper, parameterMap);
+        Notification notification = daoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
         return Optional.ofNullable(notification);
     }
 
@@ -55,24 +62,7 @@ public class MysqlNotificationDao implements NotificationDao {
 
     @Override
     public List<Notification> getAll() {
-        List<Notification> notificationList = new ArrayList<>();
-
-        try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM notification")) {
-            statement.executeQuery();
-
-            ResultSet resultSet = statement.getResultSet();
-
-            while (resultSet.next()) {
-                Notification nextNotification = mapper.map(resultSet);
-                notificationList.add(nextNotification);
-            }
-
-            resultSet.close();
-        } catch (SQLException e) {
-            logger.error("Error while getting all notifications", e);
-        }
-
-        return notificationList;
+        return daoTemplate.executeSelect(GET_ALL_QUERY, mapper, new TreeMap<>());
     }
 
     @Override
@@ -116,25 +106,10 @@ public class MysqlNotificationDao implements NotificationDao {
 
     @Override
     public List<Notification> findNotificationsByUserId(long userId) {
-        List<Notification> notificationList = new ArrayList<>();
+        Map<Integer, Object> parameterMap = new TreeMap<>();
+        parameterMap.put(1, userId);
 
-        try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM notification WHERE user_id = ?")) {
-            statement.setLong(1, userId);
-            statement.executeQuery();
-
-            ResultSet resultSet = statement.getResultSet();
-
-            while (resultSet.next()) {
-                Notification notification = mapper.map(resultSet);
-                notificationList.add(notification);
-            }
-
-            resultSet.close();
-        } catch (SQLException e) {
-            logger.error("Error while finding by id", e);
-        }
-
-        return notificationList;
+        return daoTemplate.executeSelect(FIND_NOTIFICATIONS_BY_USER_ID, mapper, parameterMap);
     }
 
     @Override

@@ -73,7 +73,8 @@ public class MysqlUserDao implements UserDao {
         Map<Integer, Object> parameterMap = new TreeMap<>();
         parameterMap.put(1, id);
 
-        User user = daoTemplate.executeSelect(FIND_BY_ID_QUERY, mapper, parameterMap);
+        User user = daoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
+
         return Optional.ofNullable(user);
     }
 
@@ -85,29 +86,14 @@ public class MysqlUserDao implements UserDao {
         parameterMap.put(1, user.getLogin());
 
         Long foundId = daoTemplate
-                .executeSelect(FIND_ID_OF_USER_QUERY, resultSet -> resultSet.getLong(1), parameterMap);
+                .executeSelectOne(FIND_ID_OF_USER_QUERY, resultSet -> resultSet.getLong(1), parameterMap);
 
         return foundId == null ? OptionalLong.empty() : OptionalLong.of(foundId);
     }
 
     @Override
     public List<User> getAll() {
-        List<User> users = new ArrayList<>();
-
-        try (PreparedStatement statement = connection.prepareStatement(GET_ALL_QUERY)) {
-            statement.executeQuery();
-
-            ResultSet resultSet = statement.getResultSet();
-            while (resultSet.next()) {
-                User nextUser = mapper.map(resultSet);
-                users.add(nextUser);
-            }
-
-            resultSet.close();
-        } catch (SQLException e) {
-            logger.error("Error while getting all users.", e);
-        }
-        return users;
+        return daoTemplate.executeSelect(GET_ALL_QUERY, mapper, new TreeMap<>());
     }
 
     @Override
@@ -162,23 +148,11 @@ public class MysqlUserDao implements UserDao {
         requireNotNull(login, LOGIN_MUST_NOT_BE_NULL);
         requireNotNull(password, PASSWORD_MUST_NOT_BE_NULL);
 
-        User authenticatedUser = null;
+        Map<Integer, Object> parameterMap = new TreeMap<>();
+        parameterMap.put(1, login);
+        parameterMap.put(2, password);
 
-        try (PreparedStatement statement = connection.prepareStatement(AUTHENTICATE_QUERY)) {
-            statement.setString(1, login);
-            statement.setString(2, password);
-            statement.executeQuery();
-
-            ResultSet resultSet = statement.getResultSet();
-
-            if (resultSet.next()) {
-                authenticatedUser = mapper.map(resultSet);
-            }
-
-            resultSet.close();
-        } catch (SQLException e) {
-            logger.error("Error while authenticating user.", e);
-        }
+        User authenticatedUser = daoTemplate.executeSelectOne(AUTHENTICATE_QUERY, mapper, parameterMap);
 
         return Optional.ofNullable(authenticatedUser);
     }
