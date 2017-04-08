@@ -17,6 +17,8 @@ public interface DaoFactory {
 
     ReservationDao createReservationDao(PooledConnection connection);
 
+    BillDao createBillDao(PooledConnection connection);
+
     static DaoFactory getMysqlDaoFactory() {
         return MysqlDaoFactory.getInstance();
     }

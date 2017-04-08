@@ -104,8 +104,7 @@ public class MysqlNotificationDao implements NotificationDao {
         parameterMap.put(1, userId);
         parameterMap.put(2, notificationId);
 
-        int updatedRecordCount = daoTemplate.executeUpdate(ADD_NOTIFICATION_TO_USER_QUERY, parameterMap);
-        return updatedRecordCount > 0;
+        return daoTemplate.executeUpdate(ADD_NOTIFICATION_TO_USER_QUERY, parameterMap) > 0;
     }
 
     @Override

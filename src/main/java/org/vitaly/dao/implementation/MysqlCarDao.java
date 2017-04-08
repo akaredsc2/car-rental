@@ -117,8 +117,7 @@ public class MysqlCarDao implements CarDao {
         parameterMap.put(1, locationId);
         parameterMap.put(2, carId);
 
-        int updatedRecordCount = daoTemplate.executeUpdate(ADD_CAR_TO_LOCATION_QUERY, parameterMap);
-        return updatedRecordCount > 0;
+        return daoTemplate.executeUpdate(ADD_CAR_TO_LOCATION_QUERY, parameterMap) > 0;
     }
 
     @Override

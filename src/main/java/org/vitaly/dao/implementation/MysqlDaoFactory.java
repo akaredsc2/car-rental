@@ -49,6 +49,13 @@ public class MysqlDaoFactory implements DaoFactory {
     }
 
     @Override
+    public BillDao createBillDao(PooledConnection connection) {
+        requireNotNull(connection, CONNECTION_MUST_NOT_BE_NULL);
+
+        return new MysqlBillDao(connection);
+    }
+
+    @Override
     public NotificationDao createNotificationDao(PooledConnection connection) {
         requireNotNull(connection, CONNECTION_MUST_NOT_BE_NULL);
 

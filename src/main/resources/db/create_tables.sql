@@ -32,7 +32,7 @@ ALTER TABLE users
 
 CREATE TABLE notification (
   notification_id       BIGINT                 NOT NULL AUTO_INCREMENT,
-  user_id               BIGINT                 DEFAULT NULL,
+  user_id               BIGINT                          DEFAULT NULL,
   notification_datetime DATETIME               NOT NULL,
   notification_status   ENUM ('new', 'viewed') NOT NULL DEFAULT 'new',
   header                VARCHAR(128)           NOT NULL,
@@ -105,10 +105,10 @@ ALTER TABLE reservation
 CREATE TABLE bill (
   bill_id           BIGINT         NOT NULL AUTO_INCREMENT,
   is_paid           BOOLEAN        NOT NULL DEFAULT FALSE,
-  reservation_id    BIGINT         NOT NULL,
+  reservation_id    BIGINT         DEFAULT NULL,
   description       VARCHAR(128)   NOT NULL,
   cash_amount       DECIMAL(10, 2) NOT NULL,
-  creation_datetime DATETIME       NOT NULL DEFAULT now(),
+  creation_datetime DATETIME       NOT NULL,
 
   PRIMARY KEY (bill_id),
   FOREIGN KEY (reservation_id) REFERENCES reservation (reservation_id),
