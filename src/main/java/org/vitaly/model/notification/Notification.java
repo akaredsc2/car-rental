@@ -1,11 +1,9 @@
 package org.vitaly.model.notification;
 
-import org.vitaly.util.InputChecker;
-
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-import static org.vitaly.util.InputChecker.*;
+import static org.vitaly.util.InputChecker.requireNotNull;
 
 /**
  * Created by vitaly on 2017-04-06.

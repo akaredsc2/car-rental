@@ -88,6 +88,7 @@ CREATE TABLE reservation (
   reservation_status ENUM ('new',
                            'approved',
                            'rejected',
+                           'canceled',
                            'picked',
                            'dropped') NOT NULL DEFAULT 'new',
   rejection_reason   VARCHAR(128)              DEFAULT NULL,

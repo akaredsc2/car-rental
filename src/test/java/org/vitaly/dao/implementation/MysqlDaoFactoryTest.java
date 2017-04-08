@@ -36,4 +36,9 @@ public class MysqlDaoFactoryTest {
     public void createNotificationDaoWithNullConnectionShouldThrowException() throws Exception {
         factory.createNotificationDao(null);
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void createReservationDaoWithNullConnectionShouldThrowException() throws Exception {
+        factory.createReservationDao(null);
+    }
 }

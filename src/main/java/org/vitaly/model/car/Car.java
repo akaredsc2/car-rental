@@ -1,10 +1,8 @@
 package org.vitaly.model.car;
 
-import org.vitaly.util.InputChecker;
-
 import java.math.BigDecimal;
 
-import static org.vitaly.util.InputChecker.*;
+import static org.vitaly.util.InputChecker.requireNotNull;
 
 /**
  * Created by vitaly on 2017-03-26.
