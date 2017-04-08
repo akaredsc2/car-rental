@@ -29,9 +29,9 @@ public class MysqlNotificationDao implements NotificationDao {
                     "FROM notification " +
                     "WHERE user_id = ?";
     private static final String CREATE_QUERY =
-            "INSERT INTO notification(notification_status, header, content) " +
-                    "VALUES (?, ?, ?)";
-    private static final String ADD_NOTIFICATION_TO_USER =
+            "INSERT INTO notification(notification_datetime, notification_status, header, content) " +
+                    "VALUES (?, ?, ?, ?)";
+    private static final String ADD_NOTIFICATION_TO_USER_QUERY =
             "UPDATE notification " +
                     "SET user_id = ? " +
                     "WHERE notification_id = ?";
@@ -75,9 +75,10 @@ public class MysqlNotificationDao implements NotificationDao {
         requireNotNull(notification, NOTIFICATION_MUST_NOT_BE_NULL);
 
         Map<Integer, Object> parameterMap = new HashMap<>();
-        parameterMap.put(1, NotificationStatus.NEW.toString().toLowerCase());
-        parameterMap.put(2, notification.getHeader());
-        parameterMap.put(3, notification.getContent());
+        parameterMap.put(1, notification.getCreationDateTime());
+        parameterMap.put(2, NotificationStatus.NEW.toString().toLowerCase());
+        parameterMap.put(3, notification.getHeader());
+        parameterMap.put(4, notification.getContent());
 
         Long createdId = daoTemplate.executeInsert(CREATE_QUERY, parameterMap);
         return Optional.ofNullable(createdId);
@@ -103,7 +104,7 @@ public class MysqlNotificationDao implements NotificationDao {
         parameterMap.put(1, userId);
         parameterMap.put(2, notificationId);
 
-        int updatedRecordCount = daoTemplate.executeUpdate(ADD_NOTIFICATION_TO_USER, parameterMap);
+        int updatedRecordCount = daoTemplate.executeUpdate(ADD_NOTIFICATION_TO_USER_QUERY, parameterMap);
         return updatedRecordCount > 0;
     }
 

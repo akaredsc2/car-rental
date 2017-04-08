@@ -124,25 +124,23 @@ public class MysqlUserDao implements UserDao {
     }
 
     @Override
-    public void changeRole(User user, UserRole role) {
-        requireNotNull(user, USER_MUST_NOT_BE_NULL);
+    public void changeRole(long userId, UserRole role) {
         requireNotNull(role, ROLE_MUST_NOT_BE_NULL);
 
         HashMap<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, role.toString().toLowerCase());
-        parameterMap.put(2, user.getId());
+        parameterMap.put(2, userId);
 
         daoTemplate.executeUpdate(CHANGE_ROLE_QUERY, parameterMap);
     }
 
     @Override
-    public void changePassword(User user, String newPassword) {
-        requireNotNull(user, USER_MUST_NOT_BE_NULL);
+    public void changePassword(long userId, String newPassword) {
         requireNotNull(newPassword, NEW_PASSWORD_MUST_NOT_BE_NULL);
 
         HashMap<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, newPassword);
-        parameterMap.put(2, user.getId());
+        parameterMap.put(2, userId);
 
         daoTemplate.executeUpdate(CHANGE_PASSWORD_QUERY, parameterMap);
     }

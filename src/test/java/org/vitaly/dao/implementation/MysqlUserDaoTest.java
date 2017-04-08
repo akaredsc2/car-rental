@@ -1,19 +1,16 @@
 package org.vitaly.dao.implementation;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.vitaly.connectionPool.abstraction.PooledConnection;
 import org.vitaly.connectionPool.implementation.MysqlConnectionPool;
 import org.vitaly.dao.abstraction.DaoFactory;
 import org.vitaly.dao.abstraction.UserDao;
+import org.vitaly.data.TestData;
+import org.vitaly.data.TestUtil;
 import org.vitaly.model.user.User;
 import org.vitaly.model.user.UserRole;
 
 import java.lang.reflect.Field;
-import java.time.LocalDate;
-import java.time.Month;
 import java.util.List;
 
 import static junit.framework.TestCase.assertFalse;
@@ -27,67 +24,48 @@ import static org.junit.Assert.assertThat;
  */
 public class MysqlUserDaoTest {
     private static final String CLEAN_UP_QUERY = "delete from users";
-    private static MysqlConnectionPool pool;
-    private static DaoFactory factory;
+
+    private static PooledConnection connection;
+    private static UserDao userDao;
 
     private User client1;
     private User client2;
     private User admin;
-    private PooledConnection connection;
-    private UserDao userDao;
 
     @BeforeClass
-    public static void initPoolAndFactory() {
-        pool = MysqlConnectionPool.getTestInstance();
-        factory = DaoFactory.getMysqlDaoFactory();
+    public static void init() {
+        MysqlConnectionPool pool = MysqlConnectionPool.getTestInstance();
+        connection = pool.getConnection();
+
+        DaoFactory factory = DaoFactory.getMysqlDaoFactory();
+        userDao = factory.createUserDao(connection);
     }
 
     @Before
     public void setUp() throws Exception {
-        client1 = new User.Builder()
-                .setLogin("vitaly")
-                .setPassword("sh2r2p0v")
-                .setFullName("Vitaly Victorovich Sharapov")
-                .setBirthDate(LocalDate.of(1995, Month.AUGUST, 1))
-                .setPassportNumber("ab123456")
-                .setDriverLicenceNumber("123sdf456")
-                .setRole(UserRole.CLIENT)
-                .build();
+        client1 = TestData.getInstance().getUser("client1");
+        client2 = TestData.getInstance().getUser("client2");
+        admin = TestData.getInstance().getUser("admin");
+    }
 
-        client2 = new User.Builder()
-                .setLogin("evilVitaly")
-                .setPassword("sh2r2p0v")
-                .setFullName("Vitaly Victorovich Sharapov")
-                .setBirthDate(LocalDate.of(1995, Month.AUGUST, 1))
-                .setPassportNumber("666sat666")
-                .setDriverLicenceNumber("1313an1313")
-                .setRole(UserRole.CLIENT)
-                .build();
+    @After
+    public void tearDown() throws Exception {
+        connection.initializeTransaction();
+        connection.prepareStatement(CLEAN_UP_QUERY)
+                .executeUpdate();
+        connection.commit();
+    }
 
-        admin = new User.Builder()
-                .setLogin("Karsa")
-                .setPassword("toblakai")
-                .setFullName("Karsa Orlong from Uryd Tribe")
-                .setBirthDate(LocalDate.of(1937, Month.JANUARY, 1))
-                .setPassportNumber("cd789101")
-                .setDriverLicenceNumber("789def101")
-                .setRole(UserRole.ADMIN)
-                .build();
-
-        connection = pool.getConnection();
-        userDao = factory.createUserDao(connection);
+    @AfterClass
+    public static void cleanUp() throws Exception {
+        connection.close();
     }
 
     @Test
     public void findByIdExistingUserReturnsUser() throws Exception {
-        User user = createUserWithId(client1);
+        User user = TestUtil.createEntityWithId(client1, userDao);
 
         assertThat(user, equalTo(client1));
-    }
-
-    private User createUserWithId(User user) {
-        long createUserId = userDao.create(user).orElseThrow(AssertionError::new);
-        return userDao.findById(createUserId).orElseThrow(AssertionError::new);
     }
 
     @Test
@@ -144,7 +122,7 @@ public class MysqlUserDaoTest {
 
     @Test
     public void createdUserAlwaysInitiallyHasClientRole() throws Exception {
-        User exAdmin = createUserWithId(admin);
+        User exAdmin = TestUtil.createEntityWithId(admin, userDao);
 
         assertThat(exAdmin.getRole(), equalTo(UserRole.CLIENT));
     }
@@ -240,11 +218,11 @@ public class MysqlUserDaoTest {
 
     @Test
     public void changeRoleToSameRoleDoesNotChangeRole() throws Exception {
-        User client = createUserWithId(client1);
+        User client = TestUtil.createEntityWithId(client1, userDao);
         UserRole roleBeforeChange = client.getRole();
 
         UserRole newRole = UserRole.CLIENT;
-        userDao.changeRole(client, newRole);
+        userDao.changeRole(client.getId(), newRole);
 
         User updatedClient = userDao.findById(client.getId()).orElseThrow(AssertionError::new);
         UserRole changedRole = updatedClient.getRole();
@@ -255,11 +233,11 @@ public class MysqlUserDaoTest {
 
     @Test
     public void changeRoleToAnotherRoleDoesChangeRole() throws Exception {
-        User futureAdmin = createUserWithId(admin);
+        User futureAdmin = TestUtil.createEntityWithId(admin, userDao);
         UserRole roleBeforeChange = futureAdmin.getRole();
 
         UserRole newRole = UserRole.ADMIN;
-        userDao.changeRole(futureAdmin, newRole);
+        userDao.changeRole(futureAdmin.getId(), newRole);
 
         User updatedAdmin = userDao.findById(futureAdmin.getId()).orElseThrow(AssertionError::new);
         UserRole changedRole = updatedAdmin.getRole();
@@ -269,21 +247,16 @@ public class MysqlUserDaoTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void changeRoleOfNullUserShouldThrowException() throws Exception {
-        userDao.changeRole(null, UserRole.ADMIN);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
     public void changeRoleToNullShouldThrowException() throws Exception {
-        userDao.changeRole(client1, null);
+        userDao.changeRole(client1.getId(), null);
     }
 
     @Test
     public void changePasswordToSamePasswordDoesNotChangePassword() throws Exception {
-        User client = createUserWithId(client1);
+        User client = TestUtil.createEntityWithId(client1, userDao);
         String passwordBeforeChange = client.getPassword();
 
-        userDao.changePassword(client, passwordBeforeChange);
+        userDao.changePassword(client.getId(), passwordBeforeChange);
 
         User updatedClient = userDao.findById(client.getId()).orElseThrow(AssertionError::new);
         String changedPassword = updatedClient.getPassword();
@@ -292,11 +265,11 @@ public class MysqlUserDaoTest {
 
     @Test
     public void changePasswordToAnotherPasswordDoesChangePassword() throws Exception {
-        User client = createUserWithId(client1);
+        User client = TestUtil.createEntityWithId(client1, userDao);
         String passwordBeforeChange = client.getPassword();
 
         String newPassword = passwordBeforeChange + "password";
-        userDao.changePassword(client, newPassword);
+        userDao.changePassword(client.getId(), newPassword);
 
         User updatedClient = userDao.findById(client.getId()).orElseThrow(AssertionError::new);
         String changedPassword = updatedClient.getPassword();
@@ -306,21 +279,7 @@ public class MysqlUserDaoTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void changePasswordOfNullUserShouldThrowException() throws Exception {
-        userDao.changePassword(null, client1.getPassword());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
     public void changePasswordToNullShouldThrowException() throws Exception {
-        userDao.changePassword(client1, null);
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        connection.initializeTransaction();
-        connection.prepareStatement(CLEAN_UP_QUERY)
-                .executeUpdate();
-        connection.commit();
-        connection.close();
+        userDao.changePassword(client1.getId(), null);
     }
 }

@@ -1,29 +1,22 @@
 package org.vitaly.dao.implementation;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.vitaly.connectionPool.abstraction.PooledConnection;
 import org.vitaly.connectionPool.implementation.MysqlConnectionPool;
 import org.vitaly.dao.abstraction.CarDao;
 import org.vitaly.dao.abstraction.DaoFactory;
 import org.vitaly.dao.abstraction.LocationDao;
+import org.vitaly.data.TestData;
+import org.vitaly.data.TestUtil;
 import org.vitaly.model.car.Car;
-import org.vitaly.model.car.CarStateEnum;
 import org.vitaly.model.car.UnavailableState;
 import org.vitaly.model.location.Location;
 
-import java.lang.reflect.Field;
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItems;
-import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 
@@ -33,51 +26,48 @@ import static org.hamcrest.Matchers.empty;
 public class MysqlCarDaoTest {
     private static final String LOCATION_CLEAN_UP_QUERY = "delete from location";
     private static final String CAR_CLEAN_UP_QUERY = "delete from car";
-    private static MysqlConnectionPool pool;
-    private static DaoFactory factory;
+
+    private static PooledConnection connection;
+    private static CarDao carDao;
+    private static Location location1;
 
     private Car car1;
     private Car car2;
-    private Location location1;
-    private PooledConnection connection;
-    private CarDao carDao;
-    private LocationDao locationDao;
 
     @BeforeClass
-    public static void initPoolAndFactory() {
-        pool = MysqlConnectionPool.getTestInstance();
-        factory = DaoFactory.getMysqlDaoFactory();
+    public static void init() {
+        MysqlConnectionPool pool = MysqlConnectionPool.getTestInstance();
+        connection = pool.getConnection();
+
+        DaoFactory factory = DaoFactory.getMysqlDaoFactory();
+        carDao = factory.createCarDao(connection);
+
+        LocationDao locationDao = factory.createLocationDao(connection);
+        location1 = TestData.getInstance().getLocation("location1");
+        location1 = TestUtil.createEntityWithId(location1, locationDao);
     }
 
     @Before
     public void setUp() throws Exception {
-        car1 = new Car.Builder()
-                .setState(CarStateEnum.UNAVAILABLE.getState())
-                .setModel("Ford Focus")
-                .setRegistrationPlate("666 satan 666")
-                .setPhotoUrl("http://bit.ly/2o8TCb9")
-                .setColor("grey")
-                .setPricePerDay(BigDecimal.valueOf(100.0))
-                .build();
-        car2 = new Car.Builder()
-                .setState(CarStateEnum.UNAVAILABLE.getState())
-                .setModel("Ford Fiesta")
-                .setRegistrationPlate("777 lucky 777")
-                .setPhotoUrl("http://bit.ly/2mHkMc3")
-                .setColor("blue")
-                .setPricePerDay(BigDecimal.valueOf(120.0))
-                .build();
-        location1 = new Location.Builder()
-                .setState("Kiev region")
-                .setCity("Kotsjubinske")
-                .setStreet("Ponomarjova")
-                .setBuilding("18-a")
-                .setCars(new ArrayList<>())
-                .build();
+        car1 = TestData.getInstance().getCar("car1");
+        car2 = TestData.getInstance().getCar("car2");
+    }
 
-        connection = pool.getConnection();
-        carDao = factory.createCarDao(connection);
-        locationDao = factory.createLocationDao(connection);
+    @After
+    public void tearDown() throws Exception {
+        connection.initializeTransaction();
+        connection.prepareStatement(CAR_CLEAN_UP_QUERY)
+                .executeUpdate();
+        connection.commit();
+    }
+
+    @AfterClass
+    public static void cleanUp() throws Exception {
+        connection.initializeTransaction();
+        connection.prepareStatement(LOCATION_CLEAN_UP_QUERY)
+                .executeUpdate();
+        connection.commit();
+        connection.close();
     }
 
     @Test
@@ -151,7 +141,7 @@ public class MysqlCarDaoTest {
 
     @Test
     public void createdCarHasUnavailableState() throws Exception {
-        Car car = createCarWithId(car1);
+        Car car = TestUtil.createEntityWithId(car1, carDao);
 
         assertThat(car.getState(), instanceOf(UnavailableState.class));
     }
@@ -194,111 +184,53 @@ public class MysqlCarDaoTest {
 
     @Test
     public void addExistingCarToExistingLocationReturnsTrue() throws Exception {
-        Car createdCar = createCarWithId(car1);
-        Location createdLocation = createLocationWithId(location1);
+        Car createdCar = TestUtil.createEntityWithId(car1, carDao);
 
-        boolean addResult = carDao.addCarToLocation(createdCar, createdLocation);
+        boolean addResult = carDao.addCarToLocation(createdCar.getId(), location1.getId());
 
         assertTrue(addResult);
     }
 
-    private Car createCarWithId(Car car) {
-        long createdCarId = carDao.create(car).orElseThrow(AssertionError::new);
-        return carDao.findById(createdCarId).orElseThrow(AssertionError::new);
-    }
-
-    private Location createLocationWithId(Location location) {
-        long createdLocationId = locationDao.create(location).orElseThrow(AssertionError::new);
-        return locationDao.findById(createdLocationId).orElseThrow(AssertionError::new);
-    }
-
     @Test
     public void addExistingCarToExistingLocationAddsCarToLocation() throws Exception {
-        Car createdCar1 = createCarWithId(car1);
-        Car createdCar2 = createCarWithId(car2);
-        Location createdLocation = createLocationWithId(location1);
+        Car createdCar1 = TestUtil.createEntityWithId(car1, carDao);
+        Car createdCar2 = TestUtil.createEntityWithId(car2, carDao);
 
-        carDao.addCarToLocation(createdCar1, createdLocation);
-        carDao.addCarToLocation(createdCar2, createdLocation);
+        carDao.addCarToLocation(createdCar1.getId(), location1.getId());
+        carDao.addCarToLocation(createdCar2.getId(), location1.getId());
 
-        List<Car> carsAtLocation = carDao.getCarsAtLocation(createdLocation);
+        List<Car> carsAtLocation = carDao.getCarsAtLocation(location1.getId());
 
         assertThat(carsAtLocation, hasItems(car1, car2));
     }
 
     @Test
     public void addNonExistingCarToExistingLocationReturnsFalse() throws Exception {
-        makeFakeIdForCar(car1);
-        Location location = createLocationWithId(location1);
-
-        boolean addResult = carDao.addCarToLocation(car1, location);
+        boolean addResult = carDao.addCarToLocation(-1, location1.getId());
 
         assertFalse(addResult);
-    }
-
-    private void makeFakeIdForCar(Car car) throws NoSuchFieldException, IllegalAccessException {
-        Field carIdField = car.getClass().getDeclaredField("id");
-        carIdField.setAccessible(true);
-        carIdField.set(car, -1L);
     }
 
     @Test
     public void addExistingCarToNonExistingLocationReturnsFalse() throws Exception {
-        Car createdCar = createCarWithId(car1);
-        makeFakeIdForLocation(location1);
+        Car createdCar = TestUtil.createEntityWithId(car1, carDao);
 
-        boolean addResult = carDao.addCarToLocation(createdCar, location1);
+        boolean addResult = carDao.addCarToLocation(createdCar.getId(), -1);
 
         assertFalse(addResult);
     }
 
-    private void makeFakeIdForLocation(Location location) throws NoSuchFieldException, IllegalAccessException {
-        Field locationIdField = location.getClass().getDeclaredField("id");
-        locationIdField.setAccessible(true);
-        locationIdField.set(location, -1L);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void addNullCarToLocationShouldThrowException() throws Exception {
-        carDao.addCarToLocation(null, location1);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void addCarToNullLocationShouldThrowException() throws Exception {
-        carDao.addCarToLocation(car1, null);
-    }
-
     @Test
     public void getCarsAtExistingLocationWithNoCarsReturnsEmptyList() throws Exception {
-        Location location = createLocationWithId(location1);
-
-        List<Car> cars = carDao.getCarsAtLocation(location);
+        List<Car> cars = carDao.getCarsAtLocation(location1.getId());
 
         assertThat(cars, empty());
     }
 
     @Test
     public void getCarsAtNonExistingLocationReturnsEmptyList() throws Exception {
-        makeFakeIdForLocation(location1);
-
-        List<Car> cars = carDao.getCarsAtLocation(location1);
+        List<Car> cars = carDao.getCarsAtLocation(-1);
 
         assertThat(cars, empty());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void getCarsFromNullLocationShouldThrowException() throws Exception {
-        carDao.getCarsAtLocation(null);
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        connection.initializeTransaction();
-        connection.prepareStatement(CAR_CLEAN_UP_QUERY)
-                .executeUpdate();
-        connection.prepareStatement(LOCATION_CLEAN_UP_QUERY)
-                .executeUpdate();
-        connection.commit();
-        connection.close();
     }
 }

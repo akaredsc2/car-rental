@@ -33,7 +33,7 @@ ALTER TABLE users
 CREATE TABLE notification (
   notification_id       BIGINT                 NOT NULL AUTO_INCREMENT,
   user_id               BIGINT                 DEFAULT NULL,
-  notification_datetime DATETIME               NOT NULL DEFAULT now(),
+  notification_datetime DATETIME               NOT NULL,
   notification_status   ENUM ('new', 'viewed') NOT NULL DEFAULT 'new',
   header                VARCHAR(128)           NOT NULL,
   content               TEXT                   NOT NULL,

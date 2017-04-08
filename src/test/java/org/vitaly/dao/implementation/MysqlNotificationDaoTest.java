@@ -1,23 +1,18 @@
 package org.vitaly.dao.implementation;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.vitaly.connectionPool.abstraction.PooledConnection;
 import org.vitaly.connectionPool.implementation.MysqlConnectionPool;
 import org.vitaly.dao.abstraction.DaoFactory;
 import org.vitaly.dao.abstraction.NotificationDao;
 import org.vitaly.dao.abstraction.UserDao;
+import org.vitaly.data.TestData;
 import org.vitaly.model.notification.Notification;
 import org.vitaly.model.notification.NotificationStatus;
 import org.vitaly.model.user.User;
-import org.vitaly.model.user.UserRole;
 
 import java.lang.reflect.Field;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.List;
 
 import static junit.framework.TestCase.*;
@@ -30,50 +25,31 @@ import static org.hamcrest.Matchers.*;
 public class MysqlNotificationDaoTest {
     private static final String NOTIFICATION_CLEAN_UP_QUERY = "delete from notification";
     private static final String USERS_CLEAN_UP_QUERY = "delete from users";
-    private static MysqlConnectionPool pool;
-    private static DaoFactory factory;
+
+    private static PooledConnection connection;
+    private static NotificationDao notificationDao;
+    private static long userId;
 
     private Notification notification1;
     private Notification notification2;
-    private PooledConnection connection;
-    private NotificationDao notificationDao;
-    private User user;
-    private UserDao userDao;
 
     @BeforeClass
-    public static void initPoolAndFactory() {
-        pool = MysqlConnectionPool.getTestInstance();
-        factory = DaoFactory.getMysqlDaoFactory();
+    public static void init() {
+        MysqlConnectionPool pool = MysqlConnectionPool.getTestInstance();
+        connection = pool.getConnection();
+
+        DaoFactory factory = DaoFactory.getMysqlDaoFactory();
+        notificationDao = factory.createNotificationDao(connection);
+
+        UserDao userDao = factory.createUserDao(connection);
+        User client1 = TestData.getInstance().getUser("client1");
+        userId = userDao.create(client1).orElseThrow(AssertionError::new);
     }
 
     @Before
     public void setUp() throws Exception {
-        notification1 = new Notification.Builder()
-                .setCreationDateTime(LocalDateTime.now())
-                .setStatus(NotificationStatus.NEW)
-                .setHeader("header1")
-                .setContent("content1")
-                .build();
-        notification2 = new Notification.Builder()
-                .setCreationDateTime(LocalDateTime.now())
-                .setStatus(NotificationStatus.NEW)
-                .setHeader("header2")
-                .setContent("content2")
-                .build();
-
-        connection = pool.getConnection();
-        notificationDao = factory.createNotificationDao(connection);
-
-        user = new User.Builder()
-                .setLogin("vitaly")
-                .setPassword("sh2r2p0v")
-                .setFullName("Vitaly Victorovich Sharapov")
-                .setBirthDate(LocalDate.of(1995, Month.AUGUST, 1))
-                .setPassportNumber("ab123456")
-                .setDriverLicenceNumber("123sdf456")
-                .setRole(UserRole.CLIENT)
-                .build();
-        userDao = factory.createUserDao(connection);
+        notification1 = TestData.getInstance().getNotification("notification1");
+        notification2 = TestData.getInstance().getNotification("notification2");
     }
 
     @After
@@ -81,6 +57,12 @@ public class MysqlNotificationDaoTest {
         connection.initializeTransaction();
         connection.prepareStatement(NOTIFICATION_CLEAN_UP_QUERY)
                 .executeUpdate();
+        connection.commit();
+    }
+
+    @AfterClass
+    public static void cleanUp() throws Exception {
+        connection.initializeTransaction();
         connection.prepareStatement(USERS_CLEAN_UP_QUERY)
                 .executeUpdate();
         connection.commit();
@@ -169,8 +151,6 @@ public class MysqlNotificationDaoTest {
 
     @Test
     public void findNotificationsByUserIdOfExistingUserReturnsNotificationList() throws Exception {
-        long userId = userDao.create(user).orElseThrow(AssertionError::new);
-
         long notificationId1 = notificationDao.create(notification1).orElseThrow(AssertionError::new);
         long notificationId2 = notificationDao.create(notification2).orElseThrow(AssertionError::new);
 
@@ -194,7 +174,6 @@ public class MysqlNotificationDaoTest {
     @Test
     public void addExistingNotificationToExistingUserReturnsTrue() throws Exception {
         long notificationId = notificationDao.create(notification1).orElseThrow(AssertionError::new);
-        long userId = userDao.create(user).orElseThrow(AssertionError::new);
 
         boolean isAddedNotification = notificationDao.addNotificationToUser(notificationId, userId);
 
@@ -203,10 +182,7 @@ public class MysqlNotificationDaoTest {
 
     @Test
     public void addNonExistingNotificationToExistingUserReturnsFalse() throws Exception {
-        long notificationId = -1;
-        long userId = userDao.create(user).orElseThrow(AssertionError::new);
-
-        boolean isAddedNotification = notificationDao.addNotificationToUser(notificationId, userId);
+        boolean isAddedNotification = notificationDao.addNotificationToUser(-1, userId);
 
         assertFalse(isAddedNotification);
     }
@@ -223,10 +199,7 @@ public class MysqlNotificationDaoTest {
 
     @Test
     public void addNonExistingNotificationToNonExistingUserReturnsFalse() throws Exception {
-        long notificationId = -1;
-        long userId = -1;
-
-        boolean isAddedNotification = notificationDao.addNotificationToUser(notificationId, userId);
+        boolean isAddedNotification = notificationDao.addNotificationToUser(-1, -1);
 
         assertFalse(isAddedNotification);
     }
@@ -268,7 +241,8 @@ public class MysqlNotificationDaoTest {
 
         notificationDao.markNotificationAsViewed(viewedNotificationId);
 
-        Notification createdNotification = notificationDao.findById(viewedNotificationId).orElseThrow(AssertionError::new);
+        Notification createdNotification =
+                notificationDao.findById(viewedNotificationId).orElseThrow(AssertionError::new);
 
         assertThat(createdNotification.getStatus(), equalTo(NotificationStatus.VIEWED));
     }

@@ -3,7 +3,6 @@ package org.vitaly.dao.implementation;
 import org.vitaly.connectionPool.abstraction.PooledConnection;
 import org.vitaly.dao.abstraction.CarDao;
 import org.vitaly.model.car.Car;
-import org.vitaly.model.location.Location;
 import org.vitaly.util.dao.DaoTemplate;
 import org.vitaly.util.dao.mapper.CarMapper;
 import org.vitaly.util.dao.mapper.Mapper;
@@ -113,24 +112,19 @@ public class MysqlCarDao implements CarDao {
     }
 
     @Override
-    public boolean addCarToLocation(Car car, Location location) {
-        requireNotNull(car, CAR_MUST_NOT_BE_NULL);
-        requireNotNull(location, LOCATION_MUST_NOT_BE_NULL);
-
+    public boolean addCarToLocation(long carId, long locationId) {
         HashMap<Integer, Object> parameterMap = new HashMap<>();
-        parameterMap.put(1, location.getId());
-        parameterMap.put(2, car.getId());
+        parameterMap.put(1, locationId);
+        parameterMap.put(2, carId);
 
         int updatedRecordCount = daoTemplate.executeUpdate(ADD_CAR_TO_LOCATION_QUERY, parameterMap);
         return updatedRecordCount > 0;
     }
 
     @Override
-    public List<Car> getCarsAtLocation(Location location) {
-        requireNotNull(location, LOCATION_MUST_NOT_BE_NULL);
-
+    public List<Car> getCarsAtLocation(long locationId) {
         Map<Integer, Object> parameterMap = new HashMap<>();
-        parameterMap.put(1, location.getId());
+        parameterMap.put(1, locationId);
 
         return daoTemplate.executeSelect(GET_CARS_AT_LOCATION_QUERY, mapper, parameterMap);
     }
