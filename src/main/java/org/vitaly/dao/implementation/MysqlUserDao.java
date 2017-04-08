@@ -1,7 +1,5 @@
 package org.vitaly.dao.implementation;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.vitaly.connectionPool.abstraction.PooledConnection;
 import org.vitaly.dao.abstraction.UserDao;
 import org.vitaly.model.user.User;
@@ -11,11 +9,9 @@ import org.vitaly.util.dao.mapper.Mapper;
 import org.vitaly.util.dao.mapper.UserMapper;
 
 import java.sql.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.TreeMap;
+import java.util.*;
 
+import static org.vitaly.util.ExceptionThrower.unsupported;
 import static org.vitaly.util.InputChecker.requireNotNull;
 
 /**
@@ -55,21 +51,17 @@ public class MysqlUserDao implements UserDao {
     private static final String USER_MUST_NOT_BE_NULL = "User must not be null!";
     private static final String NEW_PASSWORD_MUST_NOT_BE_NULL = "New password must not be null!";
 
-    private static final Logger logger = LogManager.getLogger(MysqlUserDao.class.getName());
-
-    private PooledConnection connection;
     private Mapper<User> mapper;
     private DaoTemplate daoTemplate;
 
     MysqlUserDao(PooledConnection connection) {
-        this.connection = connection;
         this.mapper = new UserMapper();
         this.daoTemplate = new DaoTemplate(connection);
     }
 
     @Override
     public Optional<User> findById(long id) {
-        Map<Integer, Object> parameterMap = new TreeMap<>();
+        Map<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, id);
 
         User user = daoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
@@ -81,7 +73,7 @@ public class MysqlUserDao implements UserDao {
     public Optional<Long> findIdOfEntity(User user) {
         requireNotNull(user, USER_MUST_NOT_BE_NULL);
 
-        Map<Integer, Object> parameterMap = new TreeMap<>();
+        Map<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, user.getLogin());
 
         Long foundId = daoTemplate
@@ -92,14 +84,14 @@ public class MysqlUserDao implements UserDao {
 
     @Override
     public List<User> getAll() {
-        return daoTemplate.executeSelect(GET_ALL_QUERY, mapper, new TreeMap<>());
+        return daoTemplate.executeSelect(GET_ALL_QUERY, mapper, Collections.emptyMap());
     }
 
     @Override
     public Optional<Long> create(User user) {
         requireNotNull(user, USER_MUST_NOT_BE_NULL);
 
-        Map<Integer, Object> parameterMap = new TreeMap<>();
+        Map<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, user.getLogin());
         parameterMap.put(2, user.getPassword());
         parameterMap.put(3, user.getFullName());
@@ -113,9 +105,8 @@ public class MysqlUserDao implements UserDao {
 
     @Override
     public int update(long id, User entity) {
-        RuntimeException e = new UnsupportedOperationException();
-        logger.error("Error while calling unsupported operation.", e);
-        throw e;
+        unsupported();
+        return 0;
     }
 
     @Override
@@ -123,7 +114,7 @@ public class MysqlUserDao implements UserDao {
         requireNotNull(login, LOGIN_MUST_NOT_BE_NULL);
         requireNotNull(password, PASSWORD_MUST_NOT_BE_NULL);
 
-        Map<Integer, Object> parameterMap = new TreeMap<>();
+        Map<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, login);
         parameterMap.put(2, password);
 
@@ -137,7 +128,7 @@ public class MysqlUserDao implements UserDao {
         requireNotNull(user, USER_MUST_NOT_BE_NULL);
         requireNotNull(role, ROLE_MUST_NOT_BE_NULL);
 
-        TreeMap<Integer, Object> parameterMap = new TreeMap<>();
+        HashMap<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, role.toString().toLowerCase());
         parameterMap.put(2, user.getId());
 
@@ -149,7 +140,7 @@ public class MysqlUserDao implements UserDao {
         requireNotNull(user, USER_MUST_NOT_BE_NULL);
         requireNotNull(newPassword, NEW_PASSWORD_MUST_NOT_BE_NULL);
 
-        TreeMap<Integer, Object> parameterMap = new TreeMap<>();
+        HashMap<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, newPassword);
         parameterMap.put(2, user.getId());
 

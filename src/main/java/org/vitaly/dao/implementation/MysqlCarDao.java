@@ -1,7 +1,5 @@
 package org.vitaly.dao.implementation;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.vitaly.connectionPool.abstraction.PooledConnection;
 import org.vitaly.dao.abstraction.CarDao;
 import org.vitaly.model.car.Car;
@@ -48,21 +46,17 @@ public class MysqlCarDao implements CarDao {
     private static final String CAR_MUST_NOT_BE_NULL = "Car must not be null!";
     private static final String LOCATION_MUST_NOT_BE_NULL = "Location must not be null!";
 
-    private static final Logger logger = LogManager.getLogger(MysqlCarDao.class.getName());
-
-    private PooledConnection connection;
     private Mapper<Car> mapper;
     private DaoTemplate daoTemplate;
 
     MysqlCarDao(PooledConnection connection) {
-        this.connection = connection;
         this.mapper = new CarMapper();
         this.daoTemplate = new DaoTemplate(connection);
     }
 
     @Override
     public Optional<Car> findById(long id) {
-        Map<Integer, Object> parameterMap = new TreeMap<>();
+        Map<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, id);
 
         Car car = daoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
@@ -73,7 +67,7 @@ public class MysqlCarDao implements CarDao {
     public Optional<Long> findIdOfEntity(Car car) {
         requireNotNull(car, CAR_MUST_NOT_BE_NULL);
 
-        Map<Integer, Object> parameterMap = new TreeMap<>();
+        Map<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, car.getRegistrationPlate());
 
         Long foundId = daoTemplate
@@ -84,14 +78,14 @@ public class MysqlCarDao implements CarDao {
 
     @Override
     public List<Car> getAll() {
-        return daoTemplate.executeSelect(GET_ALL_QUERY, mapper, new TreeMap<>());
+        return daoTemplate.executeSelect(GET_ALL_QUERY, mapper, Collections.emptyMap());
     }
 
     @Override
     public Optional<Long> create(Car car) {
         requireNotNull(car, CAR_MUST_NOT_BE_NULL);
 
-        Map<Integer, Object> parameterMap = new TreeMap<>();
+        Map<Integer, Object> parameterMap = new HashMap<>();
         putCarParametersToMap(car, parameterMap);
 
         Long createdId = daoTemplate.executeInsert(CREATE_QUERY, parameterMap);
@@ -111,7 +105,7 @@ public class MysqlCarDao implements CarDao {
     public int update(long id, Car car) {
         requireNotNull(car, CAR_MUST_NOT_BE_NULL);
 
-        Map<Integer, Object> parameterMap = new TreeMap<>();
+        Map<Integer, Object> parameterMap = new HashMap<>();
         putCarParametersToMap(car, parameterMap);
         parameterMap.put(7, id);
 
@@ -123,7 +117,7 @@ public class MysqlCarDao implements CarDao {
         requireNotNull(car, CAR_MUST_NOT_BE_NULL);
         requireNotNull(location, LOCATION_MUST_NOT_BE_NULL);
 
-        TreeMap<Integer, Object> parameterMap = new TreeMap<>();
+        HashMap<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, location.getId());
         parameterMap.put(2, car.getId());
 
@@ -135,7 +129,7 @@ public class MysqlCarDao implements CarDao {
     public List<Car> getCarsAtLocation(Location location) {
         requireNotNull(location, LOCATION_MUST_NOT_BE_NULL);
 
-        Map<Integer, Object> parameterMap = new TreeMap<>();
+        Map<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, location.getId());
 
         return daoTemplate.executeSelect(GET_CARS_AT_LOCATION_QUERY, mapper, parameterMap);

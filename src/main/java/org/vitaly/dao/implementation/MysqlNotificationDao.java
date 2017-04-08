@@ -1,19 +1,17 @@
 package org.vitaly.dao.implementation;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.vitaly.connectionPool.abstraction.PooledConnection;
 import org.vitaly.dao.abstraction.NotificationDao;
 import org.vitaly.model.notification.Notification;
 import org.vitaly.model.notification.NotificationStatus;
-import org.vitaly.util.InputChecker;
 import org.vitaly.util.dao.DaoTemplate;
 import org.vitaly.util.dao.mapper.Mapper;
 import org.vitaly.util.dao.mapper.NotificationMapper;
 
 import java.util.*;
 
-import static org.vitaly.util.InputChecker.*;
+import static org.vitaly.util.ExceptionThrower.unsupported;
+import static org.vitaly.util.InputChecker.requireNotNull;
 
 /**
  * Created by vitaly on 2017-04-06.
@@ -42,22 +40,19 @@ public class MysqlNotificationDao implements NotificationDao {
                     "SET notification_status = ? " +
                     "WHERE notification_id = ?";
 
-    private static final Logger logger = LogManager.getLogger(MysqlNotificationDao.class.getName());
-    public static final String NOTIFICATION_MUST_NOT_BE_NULL = "Notification must not be null!";
+    private static final String NOTIFICATION_MUST_NOT_BE_NULL = "Notification must not be null!";
 
-    private PooledConnection connection;
     private Mapper<Notification> mapper;
     private DaoTemplate daoTemplate;
 
     MysqlNotificationDao(PooledConnection connection) {
-        this.connection = connection;
         this.mapper = new NotificationMapper();
         this.daoTemplate = new DaoTemplate(connection);
     }
 
     @Override
     public Optional<Notification> findById(long id) {
-        Map<Integer, Object> parameterMap = new TreeMap<>();
+        Map<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, id);
 
         Notification notification = daoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
@@ -66,21 +61,20 @@ public class MysqlNotificationDao implements NotificationDao {
 
     @Override
     public Optional<Long> findIdOfEntity(Notification notification) {
-        RuntimeException e = new UnsupportedOperationException();
-        logger.error("Error while calling unsupported operation.", e);
-        throw e;
+        unsupported();
+        return null;
     }
 
     @Override
     public List<Notification> getAll() {
-        return daoTemplate.executeSelect(GET_ALL_QUERY, mapper, new TreeMap<>());
+        return daoTemplate.executeSelect(GET_ALL_QUERY, mapper, Collections.emptyMap());
     }
 
     @Override
     public Optional<Long> create(Notification notification) {
         requireNotNull(notification, NOTIFICATION_MUST_NOT_BE_NULL);
 
-        Map<Integer, Object> parameterMap = new TreeMap<>();
+        Map<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, NotificationStatus.NEW.toString().toLowerCase());
         parameterMap.put(2, notification.getHeader());
         parameterMap.put(3, notification.getContent());
@@ -91,14 +85,13 @@ public class MysqlNotificationDao implements NotificationDao {
 
     @Override
     public int update(long id, Notification entity) {
-        RuntimeException e = new UnsupportedOperationException();
-        logger.error("Error while calling unsupported operation.", e);
-        throw e;
+        unsupported();
+        return 0;
     }
 
     @Override
     public List<Notification> findNotificationsByUserId(long userId) {
-        Map<Integer, Object> parameterMap = new TreeMap<>();
+        Map<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, userId);
 
         return daoTemplate.executeSelect(FIND_NOTIFICATIONS_BY_USER_ID, mapper, parameterMap);
@@ -106,7 +99,7 @@ public class MysqlNotificationDao implements NotificationDao {
 
     @Override
     public boolean addNotificationToUser(long notificationId, long userId) {
-        TreeMap<Integer, Object> parameterMap = new TreeMap<>();
+        HashMap<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, userId);
         parameterMap.put(2, notificationId);
 
@@ -116,7 +109,7 @@ public class MysqlNotificationDao implements NotificationDao {
 
     @Override
     public boolean markNotificationAsViewed(long notificationId) {
-        TreeMap<Integer, Object> parameterMap = new TreeMap<>();
+        HashMap<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, NotificationStatus.VIEWED.toString().toLowerCase());
         parameterMap.put(2, notificationId);
 

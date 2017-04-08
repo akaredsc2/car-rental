@@ -1,7 +1,5 @@
 package org.vitaly.dao.implementation;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.vitaly.connectionPool.abstraction.PooledConnection;
 import org.vitaly.dao.abstraction.LocationDao;
 import org.vitaly.model.location.Location;
@@ -11,6 +9,7 @@ import org.vitaly.util.dao.mapper.Mapper;
 
 import java.util.*;
 
+import static org.vitaly.util.ExceptionThrower.unsupported;
 import static org.vitaly.util.InputChecker.requireNotNull;
 
 /**
@@ -37,21 +36,17 @@ public class MysqlLocationDao implements LocationDao {
 
     private static final String LOCATION_MUST_NOT_BE_NULL = "Location must not be null!";
 
-    private static final Logger logger = LogManager.getLogger(MysqlLocationDao.class.getName());
-
-    private PooledConnection connection;
     private DaoTemplate daoTemplate;
     private Mapper<Location> mapper;
 
     MysqlLocationDao(PooledConnection connection) {
-        this.connection = connection;
         this.mapper = new LocationMapper();
         this.daoTemplate = new DaoTemplate(connection);
     }
 
     @Override
     public Optional<Location> findById(long id) {
-        Map<Integer, Object> parameterMap = new TreeMap<>();
+        Map<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, id);
 
         Location location = daoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
@@ -62,7 +57,7 @@ public class MysqlLocationDao implements LocationDao {
     public Optional<Long> findIdOfEntity(Location location) {
         requireNotNull(location, LOCATION_MUST_NOT_BE_NULL);
 
-        Map<Integer, Object> parameterMap = new TreeMap<>();
+        Map<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, location.getState());
         parameterMap.put(2, location.getCity());
         parameterMap.put(3, location.getStreet());
@@ -76,14 +71,14 @@ public class MysqlLocationDao implements LocationDao {
 
     @Override
     public List<Location> getAll() {
-        return daoTemplate.executeSelect(GET_ALL_QUERY, mapper, new TreeMap<>());
+        return daoTemplate.executeSelect(GET_ALL_QUERY, mapper, Collections.emptyMap());
     }
 
     @Override
     public Optional<Long> create(Location location) {
         requireNotNull(location, LOCATION_MUST_NOT_BE_NULL);
 
-        Map<Integer, Object> parameterMap = new TreeMap<>();
+        Map<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, location.getState());
         parameterMap.put(2, location.getCity());
         parameterMap.put(3, location.getStreet());
@@ -95,13 +90,13 @@ public class MysqlLocationDao implements LocationDao {
 
     @Override
     public int update(long id, Location entity) {
-        RuntimeException e = new UnsupportedOperationException();
-        logger.error("Error while calling unsupported operation.", e);
-        throw e;
+        unsupported();
+        return 0;
     }
 
     @Override
     public int getLocationCount() {
-        return daoTemplate.executeSelectOne(LOCATION_COUNT_QUERY, resultSet -> resultSet.getInt(1), new TreeMap<>());
+        return daoTemplate
+                .executeSelectOne(LOCATION_COUNT_QUERY, resultSet -> resultSet.getInt(1), Collections.emptyMap());
     }
 }
