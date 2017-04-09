@@ -11,12 +11,12 @@ import org.vitaly.util.dao.mapper.ReservationMapper;
 import java.sql.Timestamp;
 import java.time.ZoneOffset;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.HashMap;
 
 import static org.vitaly.util.ExceptionThrower.unsupported;
-import static org.vitaly.util.InputChecker.*;
+import static org.vitaly.util.InputChecker.requireNotNull;
 
 /**
  * Created by vitaly on 2017-04-08.
@@ -53,7 +53,10 @@ public class MysqlReservationDao implements ReservationDao {
             "UPDATE reservation " +
                     "SET rejection_reason = ? " +
                     "WHERE reservation_id = ?";
-    public static final String FIND_RESERVATIONS_WITHOUT_ADMIN_QUERY = "SELECT * FROM reservation WHERE admin_id IS NULL";
+    private static final String FIND_RESERVATIONS_WITHOUT_ADMIN_QUERY =
+            "SELECT * " +
+                    "FROM reservation " +
+                    "WHERE admin_id IS NULL";
 
     private DaoTemplate daoTemplate;
     private Mapper<Reservation> mapper;

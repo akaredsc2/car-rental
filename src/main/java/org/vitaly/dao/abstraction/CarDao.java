@@ -1,7 +1,6 @@
 package org.vitaly.dao.abstraction;
 
 import org.vitaly.model.car.Car;
-import org.vitaly.model.location.Location;
 
 import java.math.BigDecimal;
 import java.util.List;

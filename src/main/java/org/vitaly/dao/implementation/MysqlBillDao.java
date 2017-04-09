@@ -3,7 +3,6 @@ package org.vitaly.dao.implementation;
 import org.vitaly.connectionPool.abstraction.PooledConnection;
 import org.vitaly.dao.abstraction.BillDao;
 import org.vitaly.model.bill.Bill;
-import org.vitaly.util.InputChecker;
 import org.vitaly.util.dao.DaoTemplate;
 import org.vitaly.util.dao.mapper.BillMapper;
 import org.vitaly.util.dao.mapper.Mapper;
@@ -14,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.vitaly.util.ExceptionThrower.unsupported;
-import static org.vitaly.util.InputChecker.*;
+import static org.vitaly.util.InputChecker.requireNotNull;
 
 /**
  * Created by vitaly on 2017-04-08.

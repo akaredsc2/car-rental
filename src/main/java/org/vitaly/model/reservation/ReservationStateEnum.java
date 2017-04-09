@@ -9,8 +9,7 @@ public enum ReservationStateEnum {
     APPROVED(new ApprovedState()),
     CANCELED(new CanceledState()),
     PICKED(new PickedUpState()),
-    DROPPED(new DroppedOffState())
-    ;
+    DROPPED(new DroppedOffState());
 
     private final ReservationState state;
 

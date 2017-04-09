@@ -2,7 +2,7 @@ package org.vitaly.model.user;
 
 import java.time.LocalDate;
 
-import static org.vitaly.util.InputChecker.*;
+import static org.vitaly.util.InputChecker.requireNotNull;
 
 /**
  * Created by vitaly on 2017-03-28.

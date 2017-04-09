@@ -1,7 +1,5 @@
 package org.vitaly.model.bill;
 
-import org.vitaly.util.InputChecker;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
