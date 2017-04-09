@@ -155,6 +155,11 @@ public class MysqlBillDaoTest {
         assertFalse(createdBill.isPaid());
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void createNullBillShouldThrowException() throws Exception {
+        billDao.create(null);
+    }
+
     @Test(expected = UnsupportedOperationException.class)
     public void updateShouldThrowException() throws Exception {
         billDao.update(1, bill1);

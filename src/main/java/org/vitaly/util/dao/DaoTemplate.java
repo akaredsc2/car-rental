@@ -17,7 +17,13 @@ import java.util.Map;
  * Created by vitaly on 2017-04-07.
  */
 public class DaoTemplate {
-    private static final Logger logger = LogManager.getLogger(DaoTemplate.class.getName());
+    private static final String ERROR_WHILE_EXECUTING_SELECT_QUERY = "Error while executing select query.";
+    private static final String ERROR_WHILE_EXECUTING_UPDATE_QUERY =
+            "Error while executing update query.  Rolling back transaction.";
+    private static final String ERROR_WHILE_EXECUTING_INSERT_QUERY =
+            "Error while executing insert query. Rolling back transaction.";
+
+    private static Logger logger = LogManager.getLogger(DaoTemplate.class.getName());
     private PooledConnection connection;
 
     public DaoTemplate(PooledConnection connection) {
@@ -41,13 +47,14 @@ public class DaoTemplate {
                 resultSet.close();
             }
         } catch (SQLException e) {
-            logger.error("Error while executing select query.", e);
+            logger.error(ERROR_WHILE_EXECUTING_SELECT_QUERY, e);
         }
 
         return result;
     }
 
-    private void setQueryParameters(PreparedStatement statement, Map<Integer, Object> parameterMap) throws SQLException {
+    private void setQueryParameters(PreparedStatement statement, Map<Integer, Object> parameterMap)
+            throws SQLException {
         for (Integer i : parameterMap.keySet()) {
             statement.setObject(i, parameterMap.get(i));
         }
@@ -70,7 +77,11 @@ public class DaoTemplate {
         try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setQueryParameters(statement, parameterMap);
 
+            connection.initializeTransaction();
+
             statement.executeUpdate();
+
+            connection.commit();
 
             ResultSet resultSet = statement.getGeneratedKeys();
             if (resultSet != null && resultSet.next()) {
@@ -78,7 +89,8 @@ public class DaoTemplate {
                 resultSet.close();
             }
         } catch (SQLException e) {
-            logger.error("Error while executing insert query", e);
+            connection.rollback();
+            logger.error(ERROR_WHILE_EXECUTING_INSERT_QUERY, e);
         }
 
         return insertedId;
@@ -90,9 +102,14 @@ public class DaoTemplate {
         try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setQueryParameters(statement, parameterMap);
 
+            connection.initializeTransaction();
+
             updatedRecordCount = statement.executeUpdate();
+
+            connection.commit();
         } catch (SQLException e) {
-            logger.error("Error while executing update query", e);
+            connection.rollback();
+            logger.error(ERROR_WHILE_EXECUTING_UPDATE_QUERY, e);
         }
 
         return updatedRecordCount;

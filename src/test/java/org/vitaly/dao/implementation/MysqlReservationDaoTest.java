@@ -158,6 +158,11 @@ public class MysqlReservationDaoTest {
         assertEquals(ReservationStateEnum.NEW.getState(), state);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void createNullReservationShouldThrowException() throws Exception {
+        reservationDao.create(null);
+    }
+
     @Test(expected = UnsupportedOperationException.class)
     public void updateShouldThrowException() throws Exception {
         reservationDao.update(1, reservation1);
@@ -283,6 +288,11 @@ public class MysqlReservationDaoTest {
         assertFalse(isChanged);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void changeReservationStateToNullShouldThrowException() throws Exception {
+        reservationDao.changeReservationState(1, null);
+    }
+
     @Test
     public void addRejectionReasonToExistingReservationReturnsTrue() throws Exception {
         reservation1 = TestUtil.createEntityWithId(reservation1, reservationDao);
@@ -310,5 +320,10 @@ public class MysqlReservationDaoTest {
         boolean isChanged = reservationDao.addRejectionReason(-1, "reason");
 
         assertFalse(isChanged);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void addNullRejectionReasonShouldThrowException() throws Exception {
+        reservationDao.addRejectionReason(1, null);
     }
 }

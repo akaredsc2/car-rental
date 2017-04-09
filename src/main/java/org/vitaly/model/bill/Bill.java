@@ -1,8 +1,12 @@
 package org.vitaly.model.bill;
 
+import org.vitaly.util.InputChecker;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+
+import static org.vitaly.util.InputChecker.*;
 
 /**
  * Created by vitaly on 2017-04-08.
@@ -101,16 +105,22 @@ public class Bill {
         }
 
         public Builder setDescription(String description) {
+            requireNotNull(description, "Description must not be null!");
+
             this.description = description;
             return this;
         }
 
         public Builder setCashAmount(BigDecimal cashAmount) {
+            requireNotNull(cashAmount, "Cash amount must not be null!");
+
             this.cashAmount = cashAmount;
             return this;
         }
 
         public Builder setCreationDateTime(LocalDateTime creationDateTime) {
+            requireNotNull(creationDateTime, "Creation datetime must not be null!");
+
             this.creationDateTime = creationDateTime;
             return this;
         }

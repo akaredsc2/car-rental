@@ -4,6 +4,7 @@ import org.vitaly.connectionPool.abstraction.PooledConnection;
 import org.vitaly.dao.abstraction.ReservationDao;
 import org.vitaly.model.reservation.Reservation;
 import org.vitaly.model.reservation.ReservationState;
+import org.vitaly.util.InputChecker;
 import org.vitaly.util.dao.DaoTemplate;
 import org.vitaly.util.dao.mapper.Mapper;
 import org.vitaly.util.dao.mapper.ReservationMapper;
@@ -16,6 +17,7 @@ import java.util.Optional;
 import java.util.HashMap;
 
 import static org.vitaly.util.ExceptionThrower.unsupported;
+import static org.vitaly.util.InputChecker.*;
 
 /**
  * Created by vitaly on 2017-04-08.
@@ -56,7 +58,7 @@ public class MysqlReservationDao implements ReservationDao {
     private DaoTemplate daoTemplate;
     private Mapper<Reservation> mapper;
 
-    public MysqlReservationDao(PooledConnection connection) {
+    MysqlReservationDao(PooledConnection connection) {
         this.mapper = new ReservationMapper();
         this.daoTemplate = new DaoTemplate(connection);
     }
@@ -83,6 +85,8 @@ public class MysqlReservationDao implements ReservationDao {
 
     @Override
     public Optional<Long> create(Reservation reservation) {
+        requireNotNull(reservation, "Reservation must not be null!");
+
         HashMap<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, reservation.getClient().getId());
         parameterMap.put(2, reservation.getCar().getId());
@@ -127,6 +131,8 @@ public class MysqlReservationDao implements ReservationDao {
 
     @Override
     public boolean changeReservationState(long reservationId, ReservationState state) {
+        requireNotNull(state, "Reservation state must not be null!");
+
         HashMap<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, state.toString());
         parameterMap.put(2, reservationId);
@@ -136,6 +142,8 @@ public class MysqlReservationDao implements ReservationDao {
 
     @Override
     public boolean addRejectionReason(long reservationId, String rejectionReason) {
+        requireNotNull(rejectionReason, "Rejection reason must not be null!");
+
         HashMap<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, rejectionReason);
         parameterMap.put(2, reservationId);

@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
+import static org.vitaly.util.InputChecker.requireNotNull;
+
 /**
  * Created by vitaly on 2017-04-08.
  */
@@ -139,6 +141,8 @@ public class Reservation {
         }
 
         public Builder setClient(User client) {
+            requireNotNull(client, "Client must not be null!");
+
             this.client = client;
             return this;
         }
@@ -149,21 +153,29 @@ public class Reservation {
         }
 
         public Builder setCar(Car car) {
+            requireNotNull(car, "Car must not be null!");
+
             this.car = car;
             return this;
         }
 
         public Builder setPickUpDatetime(LocalDateTime pickUpDatetime) {
+            requireNotNull(pickUpDatetime, "Pick up datetime must not be null!");
+
             this.pickUpDatetime = pickUpDatetime;
             return this;
         }
 
         public Builder setDropOffDatetime(LocalDateTime dropOffDatetime) {
+            requireNotNull(dropOffDatetime, "Drop off datetime must not be null!");
+
             this.dropOffDatetime = dropOffDatetime;
             return this;
         }
 
         public Builder setState(ReservationState state) {
+            requireNotNull(state, "Reservation state must not be null!");
+
             this.state = state;
             return this;
         }
