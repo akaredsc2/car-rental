@@ -8,7 +8,7 @@ public abstract class ReservationState {
         return false;
     }
 
-    boolean reject(String reason, Reservation reservation) {
+    boolean reject(Reservation reservation) {
         return false;
     }
 

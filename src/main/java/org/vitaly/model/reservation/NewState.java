@@ -11,7 +11,7 @@ public class NewState extends ReservationState {
     }
 
     @Override
-    boolean reject(String reason, Reservation reservation) {
+    boolean reject(Reservation reservation) {
         reservation.setState(ReservationStateEnum.REJECTED.getState());
         return true;
     }
