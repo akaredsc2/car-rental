@@ -59,8 +59,18 @@ public class TestData {
                 .setPricePerDay(BigDecimal.valueOf(120.0))
                 .build();
 
+        Car car3 = new Car.Builder()
+                .setState(CarStateEnum.UNAVAILABLE.getState())
+                .setModel("Ford Fiesta")
+                .setRegistrationPlate("13 unlucky 777")
+                .setPhotoUrl("http://bit.ly/2mHkMc3")
+                .setColor("blue")
+                .setPricePerDay(BigDecimal.valueOf(140.0))
+                .build();
+
         result.put("car1", car1);
         result.put("car2", car2);
+        result.put("car3", car3);
 
         return result;
     }

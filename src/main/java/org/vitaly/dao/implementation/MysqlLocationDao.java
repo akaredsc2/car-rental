@@ -30,9 +30,10 @@ public class MysqlLocationDao implements LocationDao {
     private static final String CREATE_LOCATION_QUERY =
             "INSERT INTO location (state, city, street, building) " +
                     "VALUES (?, ?, ?, ?)";
-    private static final String LOCATION_COUNT_QUERY =
-            "SELECT count(*) " +
-                    "FROM location";
+    private static final String FIND_LOCATION_BY_CAR_ID_QUERY =
+            "SELECT * " +
+                    "FROM location " +
+                    "WHERE location_id IN (SELECT location_id FROM car WHERE car_id = ?)";
 
     private static final String LOCATION_MUST_NOT_BE_NULL = "Location must not be null!";
 
@@ -95,8 +96,11 @@ public class MysqlLocationDao implements LocationDao {
     }
 
     @Override
-    public int getLocationCount() {
-        return daoTemplate
-                .executeSelectOne(LOCATION_COUNT_QUERY, resultSet -> resultSet.getInt(1), Collections.emptyMap());
+    public Optional<Location> findLocationByCarId(long carId) {
+        Map<Integer, Object> parameterMap = new HashMap<>();
+        parameterMap.put(1, carId);
+
+        Location foundLocation = daoTemplate.executeSelectOne(FIND_LOCATION_BY_CAR_ID_QUERY, mapper, parameterMap);
+        return Optional.ofNullable(foundLocation);
     }
 }

@@ -3,6 +3,8 @@ package org.vitaly.util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.math.BigDecimal;
+
 /**
  * Created by vitaly on 2017-03-26.
  */

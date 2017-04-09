@@ -4,7 +4,6 @@ import org.vitaly.connectionPool.abstraction.PooledConnection;
 import org.vitaly.dao.abstraction.ReservationDao;
 import org.vitaly.model.reservation.Reservation;
 import org.vitaly.model.reservation.ReservationState;
-import org.vitaly.util.InputChecker;
 import org.vitaly.util.dao.DaoTemplate;
 import org.vitaly.util.dao.mapper.Mapper;
 import org.vitaly.util.dao.mapper.ReservationMapper;
@@ -54,6 +53,7 @@ public class MysqlReservationDao implements ReservationDao {
             "UPDATE reservation " +
                     "SET rejection_reason = ? " +
                     "WHERE reservation_id = ?";
+    public static final String FIND_RESERVATIONS_WITHOUT_ADMIN_QUERY = "SELECT * FROM reservation WHERE admin_id IS NULL";
 
     private DaoTemplate daoTemplate;
     private Mapper<Reservation> mapper;
@@ -149,5 +149,10 @@ public class MysqlReservationDao implements ReservationDao {
         parameterMap.put(2, reservationId);
 
         return daoTemplate.executeUpdate(ADD_REJECTION_REASON_QUERY, parameterMap) > 0;
+    }
+
+    @Override
+    public List<Reservation> findReservationsWithoutAdmin() {
+        return daoTemplate.executeSelect(FIND_RESERVATIONS_WITHOUT_ADMIN_QUERY, mapper, Collections.emptyMap());
     }
 }

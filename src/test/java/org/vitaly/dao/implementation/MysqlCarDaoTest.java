@@ -12,13 +12,17 @@ import org.vitaly.model.car.Car;
 import org.vitaly.model.car.UnavailableState;
 import org.vitaly.model.location.Location;
 
+import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.iterableWithSize;
 
 /**
  * Created by vitaly on 2017-03-27.
@@ -199,7 +203,7 @@ public class MysqlCarDaoTest {
         carDao.addCarToLocation(createdCar1.getId(), location1.getId());
         carDao.addCarToLocation(createdCar2.getId(), location1.getId());
 
-        List<Car> carsAtLocation = carDao.getCarsAtLocation(location1.getId());
+        List<Car> carsAtLocation = carDao.findCarsAtLocation(location1.getId());
 
         assertThat(carsAtLocation, hasItems(car1, car2));
     }
@@ -222,15 +226,109 @@ public class MysqlCarDaoTest {
 
     @Test
     public void getCarsAtExistingLocationWithNoCarsReturnsEmptyList() throws Exception {
-        List<Car> cars = carDao.getCarsAtLocation(location1.getId());
+        List<Car> cars = carDao.findCarsAtLocation(location1.getId());
 
         assertThat(cars, empty());
     }
 
     @Test
     public void getCarsAtNonExistingLocationReturnsEmptyList() throws Exception {
-        List<Car> cars = carDao.getCarsAtLocation(-1);
+        List<Car> cars = carDao.findCarsAtLocation(-1);
 
         assertThat(cars, empty());
+    }
+
+    @Test
+    public void findCarsByExistingModelReturnsAllMatchingCars() throws Exception {
+        car1 = TestUtil.createEntityWithId(car1, carDao);
+        car2 = TestUtil.createEntityWithId(car2, carDao);
+
+        String targetModel = car1.getModel();
+
+        List<Car> matchingCars = carDao.findCarsByModel(targetModel);
+
+        assertThat(matchingCars, allOf(
+                hasItem(car1),
+                not(hasItem(car2))));
+    }
+
+    @Test
+    public void findCarsByNonExistingModelReturnsEmptyList() throws Exception {
+        car1 = TestUtil.createEntityWithId(car1, carDao);
+        car2 = TestUtil.createEntityWithId(car2, carDao);
+
+        String targetModel = "tesla model s";
+
+        List<Car> matchingCars = carDao.findCarsByModel(targetModel);
+
+        assertThat(matchingCars, empty());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void findCarsByNullModelShouldThrowException() throws Exception {
+        carDao.findCarsByModel(null);
+    }
+
+    @Test
+    public void findCarsWithPriceBetweenReturnsAllMatchingCars() throws Exception {
+        car1 = TestUtil.createEntityWithId(car1, carDao);
+        car2 = TestUtil.createEntityWithId(car2, carDao);
+
+        BigDecimal first = car1.getPricePerDay();
+        BigDecimal second = car2.getPricePerDay();
+        BigDecimal from = first.min(second);
+        BigDecimal to = first.max(second).subtract(BigDecimal.ONE);
+
+        List<Car> matchingCars = carDao.findCarsWithPriceBetween(from, to);
+
+        assertThat(matchingCars, allOf(
+                iterableWithSize(1),
+                hasItem(car1),
+                not(hasItem(car2))));
+    }
+
+    @Test
+    public void findCarsWithPriceBetweenReturnsEmptyListIfThereAreNoMatches() throws Exception {
+        BigDecimal from = BigDecimal.TEN.negate();
+        BigDecimal to = BigDecimal.ONE.negate();
+
+        List<Car> matchingCars = carDao.findCarsWithPriceBetween(from, to);
+
+        assertThat(matchingCars, empty());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void findCarsWithPriceBetweenNullAndNumberShouldThrowException() throws Exception {
+        carDao.findCarsWithPriceBetween(null, BigDecimal.ONE);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void findCarsWithPriceBetweenNumberAndNullShouldThrowException() throws Exception {
+        carDao.findCarsWithPriceBetween(BigDecimal.ONE, null);
+    }
+
+    @Test
+    public void findAllModelsReturnsAllDistinctModels() throws Exception {
+        car1 = TestUtil.createEntityWithId(car1, carDao);
+        car2 = TestUtil.createEntityWithId(car2, carDao);
+        Car car3 = TestUtil.createEntityWithId(TestData.getInstance().getCar("car3"), carDao);
+
+        Set<String> actualModels = new HashSet<>();
+        actualModels.add(car1.getModel());
+        actualModels.add(car2.getModel());
+        actualModels.add(car3.getModel());
+
+        List<String> foundModels = carDao.findAllCarModels();
+
+        assertThat(foundModels, allOf(
+                iterableWithSize(2),
+                hasItems(actualModels.toArray(new String[0]))));
+    }
+
+    @Test
+    public void findAllModelsReturnsEmptyListOnEmptyCarTable() throws Exception {
+        List<String> foundModels = carDao.findAllCarModels();
+
+        assertThat(foundModels, empty());
     }
 }

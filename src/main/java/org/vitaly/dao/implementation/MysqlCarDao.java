@@ -7,6 +7,7 @@ import org.vitaly.util.dao.DaoTemplate;
 import org.vitaly.util.dao.mapper.CarMapper;
 import org.vitaly.util.dao.mapper.Mapper;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 import static org.vitaly.util.InputChecker.requireNotNull;
@@ -41,9 +42,17 @@ public class MysqlCarDao implements CarDao {
             "SELECT * " +
                     "FROM car " +
                     "WHERE location_id = ?";
+    private static final String FIND_CAR_BY_MODEL_QUERY =
+            "SELECT * " +
+                    "FROM car " +
+                    "WHERE model = ?";
+    private static final String FIND_CARS_WITH_PRICE_BETWEEN_QUERY =
+            "SELECT * " +
+                    "FROM car " +
+                    "WHERE price_per_day BETWEEN ? AND ?";
 
     private static final String CAR_MUST_NOT_BE_NULL = "Car must not be null!";
-    private static final String LOCATION_MUST_NOT_BE_NULL = "Location must not be null!";
+    public static final String FIND_ALL_CAR_MODELS_QUERY = "SELECT DISTINCT model FROM car";
 
     private Mapper<Car> mapper;
     private DaoTemplate daoTemplate;
@@ -121,10 +130,38 @@ public class MysqlCarDao implements CarDao {
     }
 
     @Override
-    public List<Car> getCarsAtLocation(long locationId) {
+    public List<Car> findCarsAtLocation(long locationId) {
         Map<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, locationId);
 
         return daoTemplate.executeSelect(GET_CARS_AT_LOCATION_QUERY, mapper, parameterMap);
+    }
+
+    @Override
+    public List<Car> findCarsByModel(String model) {
+        requireNotNull(model, "Model must not be null!");
+
+        Map<Integer, Object> parameterMap = new HashMap<>();
+        parameterMap.put(1, model);
+
+        return daoTemplate.executeSelect(FIND_CAR_BY_MODEL_QUERY, mapper, parameterMap);
+    }
+
+    @Override
+    public List<Car> findCarsWithPriceBetween(BigDecimal from, BigDecimal to) {
+        requireNotNull(from, "From number must not be null!");
+        requireNotNull(to, "To number must not be null!");
+
+        Map<Integer, Object> parameterMap = new HashMap<>();
+        parameterMap.put(1, from);
+        parameterMap.put(2, to);
+
+        return daoTemplate.executeSelect(FIND_CARS_WITH_PRICE_BETWEEN_QUERY, mapper, parameterMap);
+    }
+
+    @Override
+    public List<String> findAllCarModels() {
+        return daoTemplate.executeSelect(FIND_ALL_CAR_MODELS_QUERY,
+                resultSet -> resultSet.getString(1), Collections.emptyMap());
     }
 }

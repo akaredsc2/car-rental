@@ -326,4 +326,38 @@ public class MysqlReservationDaoTest {
     public void addNullRejectionReasonShouldThrowException() throws Exception {
         reservationDao.addRejectionReason(1, null);
     }
+
+    @Test
+    public void findReservationsWithoutAdminReturnsListOfReservationsWithoutAdmin() throws Exception {
+        reservation1 = TestUtil.createEntityWithId(reservation1, reservationDao);
+        reservation2 = TestUtil.createEntityWithId(reservation2, reservationDao);
+
+        reservationDao.addAdminToReservation(reservation1.getId(), admin.getId());
+
+        List<Reservation> reservationsWithoutAdmin = reservationDao.findReservationsWithoutAdmin();
+
+        assertThat(reservationsWithoutAdmin, allOf(
+                not(hasItem(reservation1)),
+                hasItem(reservation2)));
+    }
+
+    @Test
+    public void findReservationsWithoutAdminReturnsEmptyListOnEmptyTable() throws Exception {
+        List<Reservation> reservationsWithoutAdmin = reservationDao.findReservationsWithoutAdmin();
+
+        assertThat(reservationsWithoutAdmin, empty());
+    }
+
+    @Test
+    public void findReservationsWithoutAdminEmptyListIfAllReservationsHaveAdmin() throws Exception {
+        reservation1 = TestUtil.createEntityWithId(reservation1, reservationDao);
+        reservation2 = TestUtil.createEntityWithId(reservation2, reservationDao);
+
+        reservationDao.addAdminToReservation(reservation1.getId(), admin.getId());
+        reservationDao.addAdminToReservation(reservation2.getId(), admin.getId());
+
+        List<Reservation> reservationsWithoutAdmin = reservationDao.findReservationsWithoutAdmin();
+
+        assertThat(reservationsWithoutAdmin, empty());
+    }
 }
