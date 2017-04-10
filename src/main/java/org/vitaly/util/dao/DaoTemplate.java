@@ -18,10 +18,8 @@ import java.util.Map;
  */
 public class DaoTemplate {
     private static final String ERROR_WHILE_EXECUTING_SELECT_QUERY = "Error while executing select query.";
-    private static final String ERROR_WHILE_EXECUTING_UPDATE_QUERY =
-            "Error while executing update query.  Rolling back transaction.";
-    private static final String ERROR_WHILE_EXECUTING_INSERT_QUERY =
-            "Error while executing insert query. Rolling back transaction.";
+    private static final String ERROR_WHILE_EXECUTING_UPDATE_QUERY = "Error while executing update query.";
+    private static final String ERROR_WHILE_EXECUTING_INSERT_QUERY = "Error while executing insert query.";
 
     private static Logger logger = LogManager.getLogger(DaoTemplate.class.getName());
     private PooledConnection connection;
@@ -77,11 +75,7 @@ public class DaoTemplate {
         try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setQueryParameters(statement, parameterMap);
 
-            connection.initializeTransaction();
-
             statement.executeUpdate();
-
-            connection.commit();
 
             ResultSet resultSet = statement.getGeneratedKeys();
             if (resultSet != null && resultSet.next()) {
@@ -89,7 +83,6 @@ public class DaoTemplate {
                 resultSet.close();
             }
         } catch (SQLException e) {
-            connection.rollback();
             logger.error(ERROR_WHILE_EXECUTING_INSERT_QUERY, e);
         }
 
@@ -102,13 +95,8 @@ public class DaoTemplate {
         try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setQueryParameters(statement, parameterMap);
 
-            connection.initializeTransaction();
-
             updatedRecordCount = statement.executeUpdate();
-
-            connection.commit();
         } catch (SQLException e) {
-            connection.rollback();
             logger.error(ERROR_WHILE_EXECUTING_UPDATE_QUERY, e);
         }
 
