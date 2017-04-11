@@ -27,6 +27,7 @@ public class MysqlConnectionPool implements ConnectionPool {
     private static final String DB_USE_SSL = "db.useSsl";
     private static final String DB_MAX_TOTAL = "db.maxTotal";
     private static final String USE_SSL_FALSE = "?useSSL=false";
+    private static final String DB_DRIVER = "db.driver";
 
     private static final Logger logger = LogManager.getLogger(MysqlPooledConnection.class.getName());
 
@@ -39,6 +40,8 @@ public class MysqlConnectionPool implements ConnectionPool {
         try {
             instance = createConnectionPoolFromProperties(CONNECTION_PROPERTIES);
             testInstance = createConnectionPoolFromProperties(TEST_CONNECTION_PROPERTIES);
+        } catch (ClassNotFoundException e) {
+            logger.fatal("Fatal error while loading driver class", e);
         } catch (IOException e) {
             logger.fatal("Fatal error while initializing connection pool.", e);
         }
@@ -52,10 +55,14 @@ public class MysqlConnectionPool implements ConnectionPool {
         basicDataSource.setMaxTotal(builder.maxTotal);
     }
 
-    private static MysqlConnectionPool createConnectionPoolFromProperties(String fileName) throws IOException {
+    private static MysqlConnectionPool createConnectionPoolFromProperties(String fileName)
+            throws IOException, ClassNotFoundException {
         InputStream input = MysqlConnectionPool.class.getClassLoader().getResourceAsStream(fileName);
         Properties properties = new Properties();
         properties.load(input);
+
+        String driver = properties.getProperty(DB_DRIVER);
+        Class.forName(driver);
 
         String url = properties.getProperty(DB_URL);
         String user = properties.getProperty(DB_USER);
