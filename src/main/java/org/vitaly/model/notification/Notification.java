@@ -1,5 +1,7 @@
 package org.vitaly.model.notification;
 
+import org.vitaly.model.Entity;
+
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -8,7 +10,7 @@ import static org.vitaly.util.InputChecker.requireNotNull;
 /**
  * Created by vitaly on 2017-04-06.
  */
-public class Notification {
+public class Notification implements Entity {
     private long id;
     private LocalDateTime creationDateTime;
     private NotificationStatus status;
@@ -23,6 +25,7 @@ public class Notification {
         this.content = builder.content;
     }
 
+    @Override
     public long getId() {
         return id;
     }

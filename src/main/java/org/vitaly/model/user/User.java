@@ -1,5 +1,7 @@
 package org.vitaly.model.user;
 
+import org.vitaly.model.Entity;
+
 import java.time.LocalDate;
 
 import static org.vitaly.util.InputChecker.requireNotNull;
@@ -7,7 +9,7 @@ import static org.vitaly.util.InputChecker.requireNotNull;
 /**
  * Created by vitaly on 2017-03-28.
  */
-public class User {
+public class User implements Entity {
     private long id;
     private String login;
     private String password;
@@ -28,6 +30,7 @@ public class User {
         this.role = builder.role;
     }
 
+    @Override
     public long getId() {
         return id;
     }
@@ -185,5 +188,31 @@ public class User {
         public User build() {
             return new User(this);
         }
+    }
+
+    public static User createDummyClientWithId(long id) {
+        return new User.Builder()
+                .setId(id)
+                .setLogin("")
+                .setPassword("")
+                .setFullName("")
+                .setBirthDate(LocalDate.MIN)
+                .setPassword("")
+                .setDriverLicenceNumber("")
+                .setRole(UserRole.CLIENT)
+                .build();
+    }
+
+    public static User createDummyAdminWithId(long id) {
+        return new User.Builder()
+                .setId(id)
+                .setLogin("")
+                .setPassword("")
+                .setFullName("")
+                .setBirthDate(LocalDate.MIN)
+                .setPassword("")
+                .setDriverLicenceNumber("")
+                .setRole(UserRole.ADMIN)
+                .build();
     }
 }

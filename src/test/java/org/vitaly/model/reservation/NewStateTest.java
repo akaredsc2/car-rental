@@ -4,24 +4,21 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by vitaly on 09.04.17.
  */
 public class NewStateTest {
-    private ReservationState state;
-    private Reservation reservation;
+    private ReservationState state = new NewState();
+    private Reservation reservation = new Reservation.Builder()
+            .setState(state)
+            .build();
 
     @Before
     public void setUp() throws Exception {
-        state = new NewState();
-        reservation = new Reservation.Builder()
-                .setState(state)
-                .build();
     }
 
     @Test

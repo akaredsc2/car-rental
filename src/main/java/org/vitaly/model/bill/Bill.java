@@ -1,15 +1,17 @@
 package org.vitaly.model.bill;
 
+import org.vitaly.model.Entity;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-import static org.vitaly.util.InputChecker.*;
+import static org.vitaly.util.InputChecker.requireNotNull;
 
 /**
  * Created by vitaly on 2017-04-08.
  */
-public class Bill {
+public class Bill implements Entity {
     private long id;
     private boolean isPaid;
     private String description;

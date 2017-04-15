@@ -1,20 +1,12 @@
 package org.vitaly.model.bill;
 
-import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by vitaly on 09.04.17.
  */
 public class BuilderTest {
-    private Bill.Builder builder;
-
-    @Before
-    public void setUp() throws Exception {
-        builder = new Bill.Builder();
-    }
+    private Bill.Builder builder = new Bill.Builder();
 
     @Test(expected = IllegalArgumentException.class)
     public void setNullDescriptionShouldThrowException() throws Exception {

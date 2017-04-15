@@ -1,6 +1,9 @@
 package org.vitaly.dao.implementation;
 
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.vitaly.connectionPool.abstraction.PooledConnection;
 import org.vitaly.connectionPool.implementation.MysqlConnectionPool;
 import org.vitaly.dao.abstraction.CarDao;
@@ -23,6 +26,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.iterableWithSize;
+import static org.vitaly.matcher.EntityIdMatcher.hasId;
 
 /**
  * Created by vitaly on 2017-03-27.
@@ -31,30 +35,18 @@ public class MysqlCarDaoTest {
     private static final String LOCATION_CLEAN_UP_QUERY = "delete from location";
     private static final String CAR_CLEAN_UP_QUERY = "delete from car";
 
-    private static PooledConnection connection;
-    private static CarDao carDao;
-    private static Location location1;
+    private static PooledConnection connection = MysqlConnectionPool.getTestInstance().getConnection();
+    private static CarDao carDao = DaoFactory.getMysqlDaoFactory().createCarDao(connection);
+    private static Location location;
 
-    private Car car1;
-    private Car car2;
+    private Car car1 = TestData.getInstance().getCar("car1");
+    private Car car2 = TestData.getInstance().getCar("car2");
 
     @BeforeClass
     public static void init() {
-        MysqlConnectionPool pool = MysqlConnectionPool.getTestInstance();
-        connection = pool.getConnection();
-
-        DaoFactory factory = DaoFactory.getMysqlDaoFactory();
-        carDao = factory.createCarDao(connection);
-
-        LocationDao locationDao = factory.createLocationDao(connection);
-        location1 = TestData.getInstance().getLocation("location1");
-        location1 = TestUtil.createEntityWithId(location1, locationDao);
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        car1 = TestData.getInstance().getCar("car1");
-        car2 = TestData.getInstance().getCar("car2");
+        Location location1 = TestData.getInstance().getLocation("location1");
+        LocationDao locationDao = DaoFactory.getMysqlDaoFactory().createLocationDao(connection);
+        MysqlCarDaoTest.location = TestUtil.createEntityWithId(location1, locationDao);
     }
 
     @After
@@ -92,11 +84,11 @@ public class MysqlCarDaoTest {
 
     @Test
     public void findIdOfExistingCarReturnsId() throws Exception {
-        long createdId = carDao.create(car1).orElseThrow(AssertionError::new);
+        Car createdCar = TestUtil.createEntityWithId(car1, carDao);
 
         long foundId = carDao.findIdOfEntity(car1).orElseThrow(AssertionError::new);
 
-        assertThat(foundId, equalTo(createdId));
+        assertThat(createdCar, hasId(foundId));
     }
 
     @Test
@@ -190,7 +182,7 @@ public class MysqlCarDaoTest {
     public void addExistingCarToExistingLocationReturnsTrue() throws Exception {
         Car createdCar = TestUtil.createEntityWithId(car1, carDao);
 
-        boolean addResult = carDao.addCarToLocation(createdCar.getId(), location1.getId());
+        boolean addResult = carDao.addCarToLocation(createdCar.getId(), location.getId());
 
         assertTrue(addResult);
     }
@@ -200,17 +192,17 @@ public class MysqlCarDaoTest {
         Car createdCar1 = TestUtil.createEntityWithId(car1, carDao);
         Car createdCar2 = TestUtil.createEntityWithId(car2, carDao);
 
-        carDao.addCarToLocation(createdCar1.getId(), location1.getId());
-        carDao.addCarToLocation(createdCar2.getId(), location1.getId());
+        carDao.addCarToLocation(createdCar1.getId(), location.getId());
+        carDao.addCarToLocation(createdCar2.getId(), location.getId());
 
-        List<Car> carsAtLocation = carDao.findCarsAtLocation(location1.getId());
+        List<Car> carsAtLocation = carDao.findCarsAtLocation(location.getId());
 
         assertThat(carsAtLocation, hasItems(car1, car2));
     }
 
     @Test
     public void addNonExistingCarToExistingLocationReturnsFalse() throws Exception {
-        boolean addResult = carDao.addCarToLocation(-1, location1.getId());
+        boolean addResult = carDao.addCarToLocation(-1, location.getId());
 
         assertFalse(addResult);
     }
@@ -226,7 +218,7 @@ public class MysqlCarDaoTest {
 
     @Test
     public void getCarsAtExistingLocationWithNoCarsReturnsEmptyList() throws Exception {
-        List<Car> cars = carDao.findCarsAtLocation(location1.getId());
+        List<Car> cars = carDao.findCarsAtLocation(location.getId());
 
         assertThat(cars, empty());
     }

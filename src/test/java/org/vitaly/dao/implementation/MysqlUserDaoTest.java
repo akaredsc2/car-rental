@@ -1,6 +1,8 @@
 package org.vitaly.dao.implementation;
 
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Test;
 import org.vitaly.connectionPool.abstraction.PooledConnection;
 import org.vitaly.connectionPool.implementation.MysqlConnectionPool;
 import org.vitaly.dao.abstraction.DaoFactory;
@@ -18,6 +20,7 @@ import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.assertThat;
+import static org.vitaly.matcher.EntityIdMatcher.hasId;
 
 /**
  * Created by vitaly on 2017-03-28.
@@ -25,28 +28,12 @@ import static org.junit.Assert.assertThat;
 public class MysqlUserDaoTest {
     private static final String CLEAN_UP_QUERY = "delete from users";
 
-    private static PooledConnection connection;
-    private static UserDao userDao;
+    private static PooledConnection connection = MysqlConnectionPool.getTestInstance().getConnection();
+    private static UserDao userDao = DaoFactory.getMysqlDaoFactory().createUserDao(connection);
 
-    private User client1;
-    private User client2;
-    private User admin;
-
-    @BeforeClass
-    public static void init() {
-        MysqlConnectionPool pool = MysqlConnectionPool.getTestInstance();
-        connection = pool.getConnection();
-
-        DaoFactory factory = DaoFactory.getMysqlDaoFactory();
-        userDao = factory.createUserDao(connection);
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        client1 = TestData.getInstance().getUser("client1");
-        client2 = TestData.getInstance().getUser("client2");
-        admin = TestData.getInstance().getUser("admin");
-    }
+    private User client1 = TestData.getInstance().getUser("client1");
+    private User client2 = TestData.getInstance().getUser("client2");
+    private User admin = TestData.getInstance().getUser("admin");
 
     @After
     public void tearDown() throws Exception {
@@ -77,11 +64,11 @@ public class MysqlUserDaoTest {
 
     @Test
     public void findIdOfExistingEntityReturnsId() throws Exception {
-        userDao.create(client1);
+        User createdUser = TestUtil.createEntityWithId(client1, userDao);
+
         long foundId = userDao.findIdOfEntity(client1).orElseThrow(AssertionError::new);
 
-        User foundUser = userDao.findById(foundId).orElseThrow(AssertionError::new);
-        assertThat(foundUser, equalTo(client1));
+        assertThat(createdUser, hasId(foundId));
     }
 
     @Test

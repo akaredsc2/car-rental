@@ -7,17 +7,12 @@ import org.vitaly.model.car.CarStateEnum;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import static org.vitaly.util.TableAttributes.*;
+
 /**
  * Created by vitaly on 2017-04-07.
  */
 public class CarMapper implements Mapper<Car> {
-    private static final String CAR_CAR_STATUS = "car.car_status";
-    private static final String CAR_ID = "car.car_id";
-    private static final String CAR_MODEL = "car.model";
-    private static final String CAR_REGISTRATION_PLATE = "car.registration_plate";
-    private static final String CAR_PHOTO_URL = "car.photo_url";
-    private static final String CAR_COLOR = "car.color";
-    private static final String CAR_PRICE_PER_DAY = "car.price_per_day";
 
     @Override
     public Car map(ResultSet resultSet) throws SQLException {
@@ -26,7 +21,7 @@ public class CarMapper implements Mapper<Car> {
                 .getState();
 
         return new Car.Builder()
-                .setId(resultSet.getLong(CAR_ID))
+                .setId(resultSet.getLong(CAR_CAR_ID))
                 .setState(state)
                 .setModel(resultSet.getString(CAR_MODEL))
                 .setRegistrationPlate(resultSet.getString(CAR_REGISTRATION_PLATE))

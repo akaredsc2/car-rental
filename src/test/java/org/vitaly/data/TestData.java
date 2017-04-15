@@ -1,5 +1,6 @@
 package org.vitaly.data;
 
+import org.vitaly.model.bill.Bill;
 import org.vitaly.model.car.Car;
 import org.vitaly.model.car.CarStateEnum;
 import org.vitaly.model.location.Location;
@@ -26,12 +27,14 @@ public class TestData {
     private Map<String, Location> locationMap;
     private Map<String, User> userMap;
     private Map<String, Notification> notificationMap;
+    private Map<String, Bill> billMap;
 
     private TestData() {
         carMap = fillWithCars();
         locationMap = fillWithLocations();
         userMap = fillWithUsers();
         notificationMap = fillWithNotifications();
+        billMap = fillWithBills();
     }
 
     public static TestData getInstance() {
@@ -42,6 +45,7 @@ public class TestData {
         Map<String, Car> result = new HashMap<>();
 
         Car car1 = new Car.Builder()
+                .setId(1L)
                 .setState(CarStateEnum.UNAVAILABLE.getState())
                 .setModel("Ford Focus")
                 .setRegistrationPlate("666 satan 666")
@@ -51,6 +55,7 @@ public class TestData {
                 .build();
 
         Car car2 = new Car.Builder()
+                .setId(2L)
                 .setState(CarStateEnum.UNAVAILABLE.getState())
                 .setModel("Ford Fiesta")
                 .setRegistrationPlate("777 lucky 777")
@@ -60,6 +65,7 @@ public class TestData {
                 .build();
 
         Car car3 = new Car.Builder()
+                .setId(3L)
                 .setState(CarStateEnum.UNAVAILABLE.getState())
                 .setModel("Ford Fiesta")
                 .setRegistrationPlate("13 unlucky 777")
@@ -78,7 +84,8 @@ public class TestData {
     private Map<String, Location> fillWithLocations() {
         Map<String, Location> result = new HashMap<>();
 
-        Location location1 = new org.vitaly.model.location.Location.Builder()
+        Location location1 = new Location.Builder()
+                .setId(4L)
                 .setState("Kiev region")
                 .setCity("Kotsjubinske")
                 .setStreet("Ponomarjova")
@@ -87,6 +94,7 @@ public class TestData {
                 .build();
 
         Location location2 = new Location.Builder()
+                .setId(5L)
                 .setState("Odesska")
                 .setCity("Odesa")
                 .setStreet("Peysivska")
@@ -104,6 +112,7 @@ public class TestData {
         Map<String, User> result = new HashMap<>();
 
         User client1 = new User.Builder()
+                .setId(6L)
                 .setLogin("vitaly")
                 .setPassword("sh2r2p0v")
                 .setFullName("Vitaly Victorovich Sharapov")
@@ -114,6 +123,7 @@ public class TestData {
                 .build();
 
         User client2 = new User.Builder()
+                .setId(7L)
                 .setLogin("evilVitaly")
                 .setPassword("sh2r2p0v")
                 .setFullName("Vitaly Victorovich Sharapov")
@@ -124,6 +134,7 @@ public class TestData {
                 .build();
 
         User admin = new User.Builder()
+                .setId(8L)
                 .setLogin("Karsa")
                 .setPassword("toblakai")
                 .setFullName("Karsa Orlong from Uryd Tribe")
@@ -144,6 +155,7 @@ public class TestData {
         Map<String, Notification> result = new HashMap<>();
 
         Notification notification1 = new Notification.Builder()
+                .setId(9L)
                 .setCreationDateTime(LocalDateTime.now())
                 .setStatus(NotificationStatus.NEW)
                 .setHeader("header1")
@@ -151,6 +163,7 @@ public class TestData {
                 .build();
 
         Notification notification2 = new Notification.Builder()
+                .setId(10L)
                 .setCreationDateTime(LocalDateTime.now())
                 .setStatus(NotificationStatus.NEW)
                 .setHeader("header2")
@@ -159,6 +172,30 @@ public class TestData {
 
         result.put("notification1", notification1);
         result.put("notification2", notification2);
+
+        return result;
+    }
+
+
+    private Map<String, Bill> fillWithBills() {
+        Map<String, Bill> result = new HashMap<>();
+
+        Bill bill1 = new Bill.Builder()
+                .setPaid(false)
+                .setDescription("description")
+                .setCashAmount(BigDecimal.valueOf(1111))
+                .setCreationDateTime(LocalDateTime.now())
+                .build();
+
+        Bill bill2 = new Bill.Builder()
+                .setPaid(false)
+                .setDescription("description2")
+                .setCashAmount(BigDecimal.valueOf(2222))
+                .setCreationDateTime(LocalDateTime.now())
+                .build();
+
+        result.put("bill1", bill1);
+        result.put("bill2", bill2);
 
         return result;
     }
@@ -227,6 +264,22 @@ public class TestData {
                     .setStatus(storedNotification.getStatus())
                     .setHeader(storedNotification.getHeader())
                     .setContent(storedNotification.getContent())
+                    .build();
+        }
+
+        return null;
+    }
+
+    public Bill getBill(String name) {
+        if (billMap.containsKey(name)) {
+            Bill storedBill = billMap.get(name);
+
+            return new Bill.Builder()
+                    .setId(storedBill.getId())
+                    .setPaid(storedBill.isPaid())
+                    .setDescription(storedBill.getDescription())
+                    .setCashAmount(storedBill.getCashAmount())
+                    .setCreationDateTime(storedBill.getCreationDateTime())
                     .build();
         }
 

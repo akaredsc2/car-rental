@@ -6,19 +6,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 
+import static org.vitaly.util.TableAttributes.*;
+
 /**
  * Created by vitaly on 2017-04-08.
  */
 public class BillMapper implements Mapper<Bill> {
+
     @Override
     public Bill map(ResultSet resultSet) throws SQLException {
-        LocalDateTime creationDateTime = resultSet.getTimestamp("bill.creation_datetime").toLocalDateTime();
+        LocalDateTime creationDateTime = resultSet.getTimestamp(BILL_CREATION_DATETIME).toLocalDateTime();
 
         return new Bill.Builder()
-                .setId(resultSet.getLong("bill.bill_id"))
-                .setPaid(resultSet.getBoolean("bill.is_paid"))
-                .setDescription(resultSet.getString("bill.description"))
-                .setCashAmount(resultSet.getBigDecimal("bill.cash_amount"))
+                .setId(resultSet.getLong(BILL_BILL_ID))
+                .setPaid(resultSet.getBoolean(BILL_IS_PAID))
+                .setDescription(resultSet.getString(BILL_DESCRIPTION))
+                .setCashAmount(resultSet.getBigDecimal(BILL_CASH_AMOUNT))
                 .setCreationDateTime(creationDateTime)
                 .build();
     }

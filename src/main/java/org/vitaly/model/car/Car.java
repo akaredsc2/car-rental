@@ -1,5 +1,7 @@
 package org.vitaly.model.car;
 
+import org.vitaly.model.Entity;
+
 import java.math.BigDecimal;
 
 import static org.vitaly.util.InputChecker.requireNotNull;
@@ -7,7 +9,7 @@ import static org.vitaly.util.InputChecker.requireNotNull;
 /**
  * Created by vitaly on 2017-03-26.
  */
-public class Car {
+public class Car implements Entity {
     private long id;
     private CarState state;
     private String model;
@@ -26,6 +28,7 @@ public class Car {
         this.pricePerDay = builder.pricePerDay;
     }
 
+    @Override
     public long getId() {
         return id;
     }
@@ -204,5 +207,17 @@ public class Car {
         public Car build() {
             return new Car(this);
         }
+    }
+
+    public static Car createDummyCarWithId(long id) {
+        return new Car.Builder()
+                .setId(id)
+                .setState(CarStateEnum.UNAVAILABLE.getState())
+                .setModel("")
+                .setRegistrationPlate("")
+                .setPhotoUrl("")
+                .setColor("")
+                .setPricePerDay(BigDecimal.ZERO)
+                .build();
     }
 }

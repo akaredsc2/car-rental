@@ -6,15 +6,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import static org.vitaly.util.TableAttributes.*;
+
 /**
  * Created by vitaly on 2017-04-07.
  */
 public class LocationMapper implements Mapper<Location> {
-    private static final String LOCATION_LOCATION_ID = "location.location_id";
-    private static final String LOCATION_STATE = "location.state";
-    private static final String LOCATION_CITY = "location.city";
-    private static final String LOCATION_STREET = "location.street";
-    private static final String LOCATION_BUILDING = "location.building";
 
     @Override
     public Location map(ResultSet resultSet) throws SQLException {

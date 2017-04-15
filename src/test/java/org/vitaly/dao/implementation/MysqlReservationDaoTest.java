@@ -1,6 +1,9 @@
 package org.vitaly.dao.implementation;
 
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.vitaly.connectionPool.abstraction.PooledConnection;
 import org.vitaly.connectionPool.implementation.MysqlConnectionPool;
 import org.vitaly.dao.abstraction.CarDao;
@@ -33,8 +36,8 @@ public class MysqlReservationDaoTest {
     private static final String CAR_CLEAN_UP_QUERY = "delete from car";
     private static final String RESERVATION_CLEAN_UP_QUERY = "delete from reservation";
 
-    private static PooledConnection connection;
-    private static ReservationDao reservationDao;
+    private static PooledConnection connection = MysqlConnectionPool.getTestInstance().getConnection();
+    private static ReservationDao reservationDao = DaoFactory.getMysqlDaoFactory().createReservationDao(connection);
 
     private static User client1;
     private static User client2;
@@ -42,18 +45,23 @@ public class MysqlReservationDaoTest {
     private static Car car1;
     private static Car car2;
 
-    private Reservation reservation1;
-    private Reservation reservation2;
+    private Reservation reservation1 = new Reservation.Builder()
+            .setClient(client1)
+            .setCar(car1)
+            .setPickUpDatetime(LocalDateTime.now())
+            .setDropOffDatetime(LocalDateTime.now().plusDays(2))
+            .build();
+
+    private Reservation reservation2 = new Reservation.Builder()
+            .setClient(client2)
+            .setCar(car2)
+            .setPickUpDatetime(LocalDateTime.now().plusDays(7))
+            .setDropOffDatetime(LocalDateTime.now().plusDays(10))
+            .build();
 
     @BeforeClass
     public static void init() {
-        MysqlConnectionPool pool = MysqlConnectionPool.getTestInstance();
-        connection = pool.getConnection();
-
-        DaoFactory factory = DaoFactory.getMysqlDaoFactory();
-        reservationDao = factory.createReservationDao(connection);
-
-        UserDao userDao = factory.createUserDao(connection);
+        UserDao userDao = DaoFactory.getMysqlDaoFactory().createUserDao(connection);
         client1 = TestUtil.createEntityWithId(TestData.getInstance().getUser("client1"), userDao);
         client2 = TestUtil.createEntityWithId(TestData.getInstance().getUser("client2"), userDao);
 
@@ -61,26 +69,9 @@ public class MysqlReservationDaoTest {
         userDao.changeRole(admin.getId(), UserRole.ADMIN);
         admin = userDao.findById(admin.getId()).orElseThrow(AssertionError::new);
 
-        CarDao carDao = factory.createCarDao(connection);
+        CarDao carDao = DaoFactory.getMysqlDaoFactory().createCarDao(connection);
         car1 = TestUtil.createEntityWithId(TestData.getInstance().getCar("car1"), carDao);
         car2 = TestUtil.createEntityWithId(TestData.getInstance().getCar("car2"), carDao);
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        reservation1 = new Reservation.Builder()
-                .setClient(client1)
-                .setCar(car1)
-                .setPickUpDatetime(LocalDateTime.now())
-                .setDropOffDatetime(LocalDateTime.now().plusDays(2))
-                .build();
-
-        reservation2 = new Reservation.Builder()
-                .setClient(client2)
-                .setCar(car2)
-                .setPickUpDatetime(LocalDateTime.now().plusDays(7))
-                .setDropOffDatetime(LocalDateTime.now().plusDays(10))
-                .build();
     }
 
     @After

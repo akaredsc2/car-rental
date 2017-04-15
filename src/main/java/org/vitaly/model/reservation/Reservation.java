@@ -1,5 +1,6 @@
 package org.vitaly.model.reservation;
 
+import org.vitaly.model.Entity;
 import org.vitaly.model.car.Car;
 import org.vitaly.model.user.User;
 
@@ -12,7 +13,7 @@ import static org.vitaly.util.InputChecker.requireNotNull;
 /**
  * Created by vitaly on 2017-04-08.
  */
-public class Reservation {
+public class Reservation implements Entity {
     private long id;
     private User client;
     private User admin;

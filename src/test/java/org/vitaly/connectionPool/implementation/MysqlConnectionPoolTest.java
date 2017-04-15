@@ -11,11 +11,9 @@ import static org.junit.Assert.assertThat;
  * Created by vitaly on 2017-03-25.
  */
 public class MysqlConnectionPoolTest {
-    private ConnectionPool connectionPool;
-
     @Test
     public void pooledConnectionRegularPoolIsNotNull() throws Exception {
-        connectionPool = MysqlConnectionPool.getInstance();
+        ConnectionPool connectionPool = MysqlConnectionPool.getInstance();
 
         try (PooledConnection pooledConnection = connectionPool.getConnection()) {
             assertThat(pooledConnection, allOf(
@@ -26,7 +24,7 @@ public class MysqlConnectionPoolTest {
 
     @Test
     public void pooledConnectionFromTestPoolIsNotNull() throws Exception {
-        connectionPool = MysqlConnectionPool.getTestInstance();
+        ConnectionPool connectionPool = MysqlConnectionPool.getTestInstance();
 
         try (PooledConnection pooledConnection = connectionPool.getConnection()) {
             assertThat(pooledConnection, allOf(

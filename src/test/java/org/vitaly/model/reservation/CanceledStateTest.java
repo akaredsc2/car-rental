@@ -1,25 +1,19 @@
 package org.vitaly.model.reservation;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by vitaly on 09.04.17.
  */
 public class CanceledStateTest {
-    private ReservationState state;
-    private Reservation reservation;
-
-    @Before
-    public void setUp() throws Exception {
-        state = new CanceledState();
-        reservation = new Reservation.Builder()
-                .setState(state)
-                .build();
-    }
+    private ReservationState state = new CanceledState();
+    private Reservation reservation = new Reservation.Builder()
+            .setState(state)
+            .build();
 
     @Test
     public void canceledReservationCannotChangeState() throws Exception {

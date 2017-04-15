@@ -1,6 +1,8 @@
 package org.vitaly.dao.implementation;
 
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Test;
 import org.vitaly.connectionPool.abstraction.PooledConnection;
 import org.vitaly.connectionPool.implementation.MysqlConnectionPool;
 import org.vitaly.dao.abstraction.DaoFactory;
@@ -12,7 +14,6 @@ import org.vitaly.model.notification.NotificationStatus;
 import org.vitaly.model.user.User;
 
 import java.lang.reflect.Field;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static junit.framework.TestCase.*;
@@ -26,31 +27,19 @@ public class MysqlNotificationDaoTest {
     private static final String NOTIFICATION_CLEAN_UP_QUERY = "delete from notification";
     private static final String USERS_CLEAN_UP_QUERY = "delete from users";
 
-    private static PooledConnection connection;
-    private static NotificationDao notificationDao;
-    private static long userId;
+    private static PooledConnection connection = MysqlConnectionPool.getTestInstance().getConnection();
+    private static NotificationDao notificationDao = DaoFactory.getMysqlDaoFactory().createNotificationDao(connection);
 
-    private Notification notification1;
-    private Notification notification2;
+    private static final long userId;
 
-    @BeforeClass
-    public static void init() {
-        MysqlConnectionPool pool = MysqlConnectionPool.getTestInstance();
-        connection = pool.getConnection();
-
-        DaoFactory factory = DaoFactory.getMysqlDaoFactory();
-        notificationDao = factory.createNotificationDao(connection);
-
-        UserDao userDao = factory.createUserDao(connection);
+    static {
         User client1 = TestData.getInstance().getUser("client1");
+        UserDao userDao = DaoFactory.getMysqlDaoFactory().createUserDao(connection);
         userId = userDao.create(client1).orElseThrow(AssertionError::new);
     }
 
-    @Before
-    public void setUp() throws Exception {
-        notification1 = TestData.getInstance().getNotification("notification1");
-        notification2 = TestData.getInstance().getNotification("notification2");
-    }
+    private Notification notification1 = TestData.getInstance().getNotification("notification1");
+    private Notification notification2 = TestData.getInstance().getNotification("notification2");
 
     @After
     public void tearDown() throws Exception {

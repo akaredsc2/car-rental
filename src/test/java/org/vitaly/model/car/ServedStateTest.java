@@ -1,6 +1,5 @@
 package org.vitaly.model.car;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -13,22 +12,10 @@ import static org.junit.Assert.assertTrue;
  * Created by vitaly on 2017-03-28.
  */
 public class ServedStateTest {
-    private CarState state;
-    private Car car;
-
-    @Before
-    public void setUp() throws Exception {
-        state = new ServedState();
-        car = new Car.Builder()
-                .setId(1L)
-                .setState(state)
-                .setModel("model")
-                .setRegistrationPlate("aa 001 aa")
-                .setColor("orange")
-                .setPhotoUrl("none")
-                .setPricePerDay(BigDecimal.ONE)
-                .build();
-    }
+    private CarState state = new ServedState();
+    private Car car = new Car.Builder()
+            .setState(state)
+            .build();
 
     @Test
     public void servedCarCanOnlyBecomeReturned() throws Exception {

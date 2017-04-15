@@ -2,9 +2,7 @@ package org.vitaly.connectionPool.implementation;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.vitaly.connectionPool.abstraction.ConnectionPool;
 import org.vitaly.connectionPool.abstraction.PooledConnection;
 
 import java.lang.reflect.Field;
@@ -19,23 +17,15 @@ import static org.junit.Assert.*;
  * Created by vitaly on 2017-03-25.
  */
 public class MysqlPooledConnectionTest {
-    private static ConnectionPool pool;
-    private PooledConnection connection;
+    private PooledConnection connection = MysqlConnectionPool.getTestInstance().getConnection();
     private Connection jdbcConnection;
     private Field isTransactionInitializedField;
     private boolean isTransactionInitialized;
     private Field isTransactionEndedField;
     private boolean isTransactionEnded;
 
-    @BeforeClass
-    public static void beforeAll() throws Exception {
-        pool = MysqlConnectionPool.getTestInstance();
-    }
-
     @Before
     public void setUp() throws Exception {
-        connection = pool.getConnection();
-
         Field jdbcConnectionField = connection.getClass().getDeclaredField("connection");
         jdbcConnectionField.setAccessible(true);
         jdbcConnection = (Connection) jdbcConnectionField.get(connection);

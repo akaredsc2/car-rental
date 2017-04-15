@@ -1,6 +1,9 @@
 package org.vitaly.dao.implementation;
 
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.vitaly.connectionPool.abstraction.PooledConnection;
 import org.vitaly.connectionPool.implementation.MysqlConnectionPool;
 import org.vitaly.dao.abstraction.*;
@@ -11,7 +14,6 @@ import org.vitaly.model.car.Car;
 import org.vitaly.model.reservation.Reservation;
 import org.vitaly.model.user.User;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -31,18 +33,15 @@ public class MysqlBillDaoTest {
     private static final String CAR_CLEAN_UP_QUERY = "delete from car";
     private static final String RESERVATION_CLEAN_UP_QUERY = "delete from reservation";
 
-    private static PooledConnection connection;
+    private static PooledConnection connection = MysqlConnectionPool.getTestInstance().getConnection();
     private static BillDao billDao;
     private static Reservation reservation;
 
-    private Bill bill1;
-    private Bill bill2;
+    private Bill bill1 = TestData.getInstance().getBill("bill1");
+    private Bill bill2 = TestData.getInstance().getBill("bill2");
 
     @BeforeClass
     public static void init() {
-        MysqlConnectionPool pool = MysqlConnectionPool.getTestInstance();
-        connection = pool.getConnection();
-
         DaoFactory factory = DaoFactory.getMysqlDaoFactory();
         billDao = factory.createBillDao(connection);
 
@@ -60,23 +59,6 @@ public class MysqlBillDaoTest {
                 .build();
         ReservationDao reservationDao = factory.createReservationDao(connection);
         reservation = TestUtil.createEntityWithId(temp, reservationDao);
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        bill1 = new Bill.Builder()
-                .setPaid(false)
-                .setDescription("description")
-                .setCashAmount(BigDecimal.valueOf(1111))
-                .setCreationDateTime(LocalDateTime.now())
-                .build();
-
-        bill2 = new Bill.Builder()
-                .setPaid(false)
-                .setDescription("description2")
-                .setCashAmount(BigDecimal.valueOf(1111))
-                .setCreationDateTime(LocalDateTime.now())
-                .build();
     }
 
     @After

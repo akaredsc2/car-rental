@@ -1,5 +1,6 @@
 package org.vitaly.model.location;
 
+import org.vitaly.model.Entity;
 import org.vitaly.model.car.Car;
 
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import static org.vitaly.util.InputChecker.requireNotNull;
 /**
  * Created by vitaly on 2017-03-26.
  */
-public class Location {
+public class Location implements Entity {
     private long id;
     private String state;
     private String city;
@@ -27,6 +28,7 @@ public class Location {
         this.cars = builder.cars;
     }
 
+    @Override
     public long getId() {
         return id;
     }

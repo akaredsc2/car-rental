@@ -1,20 +1,12 @@
 package org.vitaly.connectionPool.implementation;
 
-import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by vitaly on 2017-03-26.
  */
 public class ConnectionPoolBuilderTest {
-    private MysqlConnectionPool.Builder builder;
-
-    @Before
-    public void setUp() throws Exception {
-        builder = new MysqlConnectionPool.Builder();
-    }
+    private MysqlConnectionPool.Builder builder = new MysqlConnectionPool.Builder();
 
     @Test(expected = IllegalArgumentException.class)
     public void setUrlWithNullShouldThrowException() throws Exception {

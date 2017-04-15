@@ -7,18 +7,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
+import static org.vitaly.util.TableAttributes.*;
+
 /**
  * Created by vitaly on 2017-04-07.
  */
 public class UserMapper implements Mapper<User> {
-    private static final String USERS_USER_ID = "users.user_id";
-    private static final String USERS_LOGIN = "users.login";
-    private static final String USERS_PASS = "users.pass";
-    private static final String USERS_FULL_NAME = "users.full_name";
-    private static final String USERS_BIRTH_DATE = "users.birth_date";
-    private static final String USERS_PASSPORT_NUMBER = "users.passport_number";
-    private static final String USERS_DRIVER_LICENCE_NUMBER = "users.driver_licence_number";
-    private static final String USERS_ROLE = "users.role";
 
     @Override
     public User map(ResultSet resultSet) throws SQLException {

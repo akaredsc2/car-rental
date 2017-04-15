@@ -1,6 +1,8 @@
 package org.vitaly.dao.implementation;
 
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Test;
 import org.vitaly.connectionPool.abstraction.PooledConnection;
 import org.vitaly.connectionPool.implementation.MysqlConnectionPool;
 import org.vitaly.dao.abstraction.CarDao;
@@ -13,14 +15,12 @@ import org.vitaly.model.location.Location;
 
 import java.util.List;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItems;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
+import static org.vitaly.matcher.EntityIdMatcher.hasId;
 
 /**
  * Created by vitaly on 2017-03-26.
@@ -29,26 +29,11 @@ public class MysqlLocationDaoTest {
     private static final String CLEAN_UP_QUERY = "delete from location";
     private static final String CAR_CLEAN_UP_QUERY = "delete from car";
 
-    private static PooledConnection connection;
-    private static LocationDao locationDao;
+    private static PooledConnection connection = MysqlConnectionPool.getTestInstance().getConnection();
+    private static LocationDao locationDao = DaoFactory.getMysqlDaoFactory().createLocationDao(connection);
 
-    private Location location1;
-    private Location location2;
-
-    @BeforeClass
-    public static void init() {
-        MysqlConnectionPool pool = MysqlConnectionPool.getTestInstance();
-        connection = pool.getConnection();
-
-        DaoFactory factory = DaoFactory.getMysqlDaoFactory();
-        locationDao = factory.createLocationDao(connection);
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        location1 = TestData.getInstance().getLocation("location1");
-        location2 = TestData.getInstance().getLocation("location2");
-    }
+    private Location location1 = TestData.getInstance().getLocation("location1");
+    private Location location2 = TestData.getInstance().getLocation("location2");
 
     @After
     public void tearDown() throws Exception {
@@ -83,11 +68,11 @@ public class MysqlLocationDaoTest {
 
     @Test
     public void successfulFindIdOfLocationReturnsId() throws Exception {
-        long createdId = locationDao.create(location1).orElseThrow(AssertionError::new);
+        Location createdLocation = TestUtil.createEntityWithId(location1, locationDao);
 
         long foundId = locationDao.findIdOfEntity(location1).orElseThrow(AssertionError::new);
 
-        assertThat(foundId, equalTo(createdId));
+        assertThat(createdLocation, hasId(foundId));
     }
 
     @Test
