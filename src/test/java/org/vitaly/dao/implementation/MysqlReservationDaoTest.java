@@ -10,6 +10,7 @@ import org.vitaly.dao.abstraction.CarDao;
 import org.vitaly.dao.abstraction.DaoFactory;
 import org.vitaly.dao.abstraction.ReservationDao;
 import org.vitaly.dao.abstraction.UserDao;
+import org.vitaly.dao.exception.DaoException;
 import org.vitaly.data.TestData;
 import org.vitaly.data.TestUtil;
 import org.vitaly.model.car.Car;
@@ -232,12 +233,11 @@ public class MysqlReservationDaoTest {
         assertFalse(isAdded);
     }
 
-    @Test
-    public void addNonExistingAdminToExistingReservationReturnsFalse() throws Exception {
+    @Test(expected = DaoException.class)
+    public void addNonExistingAdminToExistingReservationShouldThrowException() throws Exception {
         reservation1 = TestUtil.createEntityWithId(reservation1, reservationDao);
 
-        boolean isAdded = reservationDao.addAdminToReservation(reservation1.getId(), -1);
-        assertFalse(isAdded);
+        reservationDao.addAdminToReservation(reservation1.getId(), -1);
     }
 
     @Test

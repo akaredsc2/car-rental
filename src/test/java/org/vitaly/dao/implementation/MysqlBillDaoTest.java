@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.vitaly.connectionPool.abstraction.PooledConnection;
 import org.vitaly.connectionPool.implementation.MysqlConnectionPool;
 import org.vitaly.dao.abstraction.*;
+import org.vitaly.dao.exception.DaoException;
 import org.vitaly.data.TestData;
 import org.vitaly.data.TestUtil;
 import org.vitaly.model.bill.Bill;
@@ -168,13 +169,11 @@ public class MysqlBillDaoTest {
         assertTrue(isAdded);
     }
 
-    @Test
-    public void addExistingBillToNonExistingReservationReturnsFalse() throws Exception {
+    @Test(expected = DaoException.class)
+    public void addExistingBillToNonExistingReservationShouldThrowException() throws Exception {
         Bill bill = TestUtil.createEntityWithId(bill1, billDao);
 
-        boolean isAdded = billDao.addBillToReservation(bill.getId(), -1);
-
-        assertFalse(isAdded);
+        billDao.addBillToReservation(bill.getId(), -1);
     }
 
     @Test

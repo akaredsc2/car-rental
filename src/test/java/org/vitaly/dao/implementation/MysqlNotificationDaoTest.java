@@ -8,6 +8,7 @@ import org.vitaly.connectionPool.implementation.MysqlConnectionPool;
 import org.vitaly.dao.abstraction.DaoFactory;
 import org.vitaly.dao.abstraction.NotificationDao;
 import org.vitaly.dao.abstraction.UserDao;
+import org.vitaly.dao.exception.DaoException;
 import org.vitaly.data.TestData;
 import org.vitaly.model.notification.Notification;
 import org.vitaly.model.notification.NotificationStatus;
@@ -117,17 +118,6 @@ public class MysqlNotificationDaoTest {
         assertThat(createdNotification.getStatus(), equalTo(NotificationStatus.NEW));
     }
 
-    @Test
-    public void failedCreationOfNotificationReturnsEmptyOptional() throws Exception {
-        Field headerField = notification1.getClass().getDeclaredField("header");
-        headerField.setAccessible(true);
-        headerField.set(notification1, null);
-
-        boolean isCreated = notificationDao.create(notification1).isPresent();
-
-        assertFalse(isCreated);
-    }
-
     @Test(expected = IllegalArgumentException.class)
     public void createNullNotificationShouldThrowException() throws Exception {
         notificationDao.create(null);
@@ -176,14 +166,11 @@ public class MysqlNotificationDaoTest {
         assertFalse(isAddedNotification);
     }
 
-    @Test
-    public void addExistingNotificationToNonExistingUserReturnsFalse() throws Exception {
+    @Test(expected = DaoException.class)
+    public void addExistingNotificationToNonExistingUserShouldThrowException() throws Exception {
         long notificationId = notificationDao.create(notification1).orElseThrow(AssertionError::new);
-        long userId = -1;
 
-        boolean isAddedNotification = notificationDao.addNotificationToUser(notificationId, userId);
-
-        assertFalse(isAddedNotification);
+        notificationDao.addNotificationToUser(notificationId, -1);
     }
 
     @Test

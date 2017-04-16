@@ -7,6 +7,7 @@ import org.vitaly.connectionPool.abstraction.PooledConnection;
 import org.vitaly.connectionPool.implementation.MysqlConnectionPool;
 import org.vitaly.dao.abstraction.DaoFactory;
 import org.vitaly.dao.abstraction.UserDao;
+import org.vitaly.dao.exception.DaoException;
 import org.vitaly.data.TestData;
 import org.vitaly.data.TestUtil;
 import org.vitaly.model.user.User;
@@ -114,8 +115,8 @@ public class MysqlUserDaoTest {
         assertThat(exAdmin.getRole(), equalTo(UserRole.CLIENT));
     }
 
-    @Test
-    public void creatingUserWithSameLoginReturnsEmptyOptional() throws Exception {
+    @Test(expected = DaoException.class)
+    public void creatingUserWithSameLoginShouldThrowException() throws Exception {
         userDao.create(client1);
         userDao.create(client1);
 
@@ -124,32 +125,25 @@ public class MysqlUserDaoTest {
         assertFalse(isCreated);
     }
 
-    @Test
-    public void creatingUserWithSamePassportNumberReturnsEmptyOptional() throws Exception {
+    @Test(expected = DaoException.class)
+    public void creatingUserWithSamePassportNumberShouldThrowException() throws Exception {
         userDao.create(client1);
 
         Field passportNumberField = client2.getClass().getDeclaredField("passportNumber");
         passportNumberField.setAccessible(true);
         passportNumberField.set(client2, client1.getPassportNumber());
+
         userDao.create(client2);
-
-        boolean isCreated = userDao.create(client2).isPresent();
-
-        assertFalse(isCreated);
     }
 
-    @Test
-    public void creatingUserWithSameDriverLicenceNumberReturnsEmptyOptional() throws Exception {
+    @Test(expected = DaoException.class)
+    public void creatingUserWithSameDriverLicenceNumberShouldThrowException() throws Exception {
         userDao.create(client1);
 
         Field passportNumberField = client2.getClass().getDeclaredField("driverLicenceNumber");
         passportNumberField.setAccessible(true);
         passportNumberField.set(client2, client1.getDriverLicenceNumber());
         userDao.create(client2);
-
-        boolean isCreated = userDao.create(client2).isPresent();
-
-        assertFalse(isCreated);
     }
 
     @Test(expected = IllegalArgumentException.class)

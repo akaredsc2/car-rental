@@ -50,9 +50,11 @@ public class MysqlCarDao implements CarDao {
             "SELECT * " +
                     "FROM car " +
                     "WHERE price_per_day BETWEEN ? AND ?";
+    private static final String FIND_ALL_CAR_MODELS_QUERY =
+            "SELECT DISTINCT model " +
+                    "FROM car";
 
     private static final String CAR_MUST_NOT_BE_NULL = "Car must not be null!";
-    public static final String FIND_ALL_CAR_MODELS_QUERY = "SELECT DISTINCT model FROM car";
 
     private Mapper<Car> mapper;
     private DaoTemplate daoTemplate;

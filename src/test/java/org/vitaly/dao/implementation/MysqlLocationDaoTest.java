@@ -8,6 +8,7 @@ import org.vitaly.connectionPool.implementation.MysqlConnectionPool;
 import org.vitaly.dao.abstraction.CarDao;
 import org.vitaly.dao.abstraction.DaoFactory;
 import org.vitaly.dao.abstraction.LocationDao;
+import org.vitaly.dao.exception.DaoException;
 import org.vitaly.data.TestData;
 import org.vitaly.data.TestUtil;
 import org.vitaly.model.car.Car;
@@ -111,12 +112,10 @@ public class MysqlLocationDaoTest {
         assertTrue(creationResult);
     }
 
-    @Test
-    public void creatingLocationWithSameStateCityStreetAndBuildingReturnsEmptyOptional() throws Exception {
+    @Test(expected = DaoException.class)
+    public void creatingLocationWithSameStateCityStreetAndBuildingShouldThrowException() throws Exception {
         locationDao.create(location1);
-        boolean creationResult = locationDao.create(location1).isPresent();
-
-        assertFalse(creationResult);
+        locationDao.create(location1);
     }
 
     @Test(expected = IllegalArgumentException.class)

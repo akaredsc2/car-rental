@@ -9,6 +9,7 @@ import org.vitaly.connectionPool.implementation.MysqlConnectionPool;
 import org.vitaly.dao.abstraction.CarDao;
 import org.vitaly.dao.abstraction.DaoFactory;
 import org.vitaly.dao.abstraction.LocationDao;
+import org.vitaly.dao.exception.DaoException;
 import org.vitaly.data.TestData;
 import org.vitaly.data.TestUtil;
 import org.vitaly.model.car.Car;
@@ -127,12 +128,10 @@ public class MysqlCarDaoTest {
         assertTrue(creationResult);
     }
 
-    @Test
-    public void creatingCarWithSameRegistrationPlateReturnsEmptyOptional() throws Exception {
+    @Test(expected = DaoException.class)
+    public void creatingCarWithSameRegistrationPlateShouldThrowException() throws Exception {
         carDao.create(car1);
-        boolean creationResult = carDao.create(car1).isPresent();
-
-        assertFalse(creationResult);
+        carDao.create(car1);
     }
 
     @Test
@@ -207,13 +206,11 @@ public class MysqlCarDaoTest {
         assertFalse(addResult);
     }
 
-    @Test
-    public void addExistingCarToNonExistingLocationReturnsFalse() throws Exception {
+    @Test(expected = DaoException.class)
+    public void addExistingCarToNonExistingLocationShouldThrowException() throws Exception {
         Car createdCar = TestUtil.createEntityWithId(car1, carDao);
 
-        boolean addResult = carDao.addCarToLocation(createdCar.getId(), -1);
-
-        assertFalse(addResult);
+        carDao.addCarToLocation(createdCar.getId(), -1);
     }
 
     @Test

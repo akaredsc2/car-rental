@@ -37,8 +37,8 @@ public class MysqlLocationDao implements LocationDao {
 
     private static final String LOCATION_MUST_NOT_BE_NULL = "Location must not be null!";
 
-    private DaoTemplate daoTemplate;
     private Mapper<Location> mapper;
+    private DaoTemplate daoTemplate;
 
     MysqlLocationDao(PooledConnection connection) {
         this.mapper = new LocationMapper();

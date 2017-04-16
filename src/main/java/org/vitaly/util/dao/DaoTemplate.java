@@ -3,6 +3,7 @@ package org.vitaly.util.dao;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.vitaly.connectionPool.abstraction.PooledConnection;
+import org.vitaly.dao.exception.DaoException;
 import org.vitaly.util.dao.mapper.Mapper;
 
 import java.sql.PreparedStatement;
@@ -46,6 +47,7 @@ public class DaoTemplate {
             }
         } catch (SQLException e) {
             logger.error(ERROR_WHILE_EXECUTING_SELECT_QUERY, e);
+            throw new DaoException(e);
         }
 
         return result;
@@ -84,6 +86,7 @@ public class DaoTemplate {
             }
         } catch (SQLException e) {
             logger.error(ERROR_WHILE_EXECUTING_INSERT_QUERY, e);
+            throw new DaoException(e);
         }
 
         return insertedId;
@@ -98,6 +101,7 @@ public class DaoTemplate {
             updatedRecordCount = statement.executeUpdate();
         } catch (SQLException e) {
             logger.error(ERROR_WHILE_EXECUTING_UPDATE_QUERY, e);
+            throw new DaoException(e);
         }
 
         return updatedRecordCount;
