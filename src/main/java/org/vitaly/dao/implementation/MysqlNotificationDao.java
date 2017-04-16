@@ -29,8 +29,8 @@ public class MysqlNotificationDao implements NotificationDao {
                     "FROM notification " +
                     "WHERE user_id = ?";
     private static final String CREATE_QUERY =
-            "INSERT INTO notification(notification_datetime, notification_status, header, content) " +
-                    "VALUES (?, ?, ?, ?)";
+            "INSERT INTO notification(notification_datetime, header, content) " +
+                    "VALUES (?, ?, ?)";
     private static final String ADD_NOTIFICATION_TO_USER_QUERY =
             "UPDATE notification " +
                     "SET user_id = ? " +
@@ -76,9 +76,8 @@ public class MysqlNotificationDao implements NotificationDao {
 
         Map<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, notification.getCreationDateTime());
-        parameterMap.put(2, NotificationStatus.NEW.toString().toLowerCase());
-        parameterMap.put(3, notification.getHeader());
-        parameterMap.put(4, notification.getContent());
+        parameterMap.put(2, notification.getHeader());
+        parameterMap.put(3, notification.getContent());
 
         Long createdId = daoTemplate.executeInsert(CREATE_QUERY, parameterMap);
         return Optional.ofNullable(createdId);

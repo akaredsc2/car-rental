@@ -24,6 +24,19 @@ public class MysqlPooledConnection implements PooledConnection {
         this.isTransactionEnded = false;
     }
 
+    public boolean isTransactionInitialized() {
+        return isTransactionInitialized;
+    }
+
+    public boolean isTransactionEnded() {
+        return isTransactionEnded;
+    }
+
+    @Override
+    public boolean getAutoCommit() throws SQLException {
+        return connection.getAutoCommit();
+    }
+
     @Override
     public void initializeTransaction() {
         try {

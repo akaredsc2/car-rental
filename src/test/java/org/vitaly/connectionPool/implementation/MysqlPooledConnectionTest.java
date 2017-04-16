@@ -1,16 +1,12 @@
 package org.vitaly.connectionPool.implementation;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.vitaly.connectionPool.abstraction.PooledConnection;
 
-import java.lang.reflect.Field;
-import java.sql.Connection;
 import java.sql.Statement;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.*;
 
 /**
@@ -18,63 +14,31 @@ import static org.junit.Assert.*;
  */
 public class MysqlPooledConnectionTest {
     private PooledConnection connection = MysqlConnectionPool.getTestInstance().getConnection();
-    private Connection jdbcConnection;
-    private Field isTransactionInitializedField;
-    private boolean isTransactionInitialized;
-    private Field isTransactionEndedField;
-    private boolean isTransactionEnded;
-
-    @Before
-    public void setUp() throws Exception {
-        Field jdbcConnectionField = connection.getClass().getDeclaredField("connection");
-        jdbcConnectionField.setAccessible(true);
-        jdbcConnection = (Connection) jdbcConnectionField.get(connection);
-
-        isTransactionInitializedField = connection.getClass().getDeclaredField("isTransactionInitialized");
-        isTransactionInitializedField.setAccessible(true);
-
-        isTransactionEndedField = connection.getClass().getDeclaredField("isTransactionEnded");
-        isTransactionEndedField.setAccessible(true);
-    }
-
-    @Test
-    public void pooledConnectionHasNotNullJdbcConnection() throws Exception {
-        assertThat(jdbcConnection, notNullValue());
-    }
-
-    @Test
-    public void pooledConnectionHasJdbcConnectionWithAutoCommitSetToTrue() throws Exception {
-        assertTrue(jdbcConnection.getAutoCommit());
-    }
 
     @Test
     public void pooledConnectionIsNotInitializedAndIsNotEnded() throws Exception {
-        isTransactionInitialized = (boolean) isTransactionInitializedField.get(connection);
-        isTransactionEnded = (boolean) isTransactionEndedField.get(connection);
-        assertTrue(!isTransactionInitialized && !isTransactionEnded);
+        assertTrue(!connection.isTransactionInitialized() && !connection.isTransactionEnded());
     }
 
     @Test
     public void initializingTransactionSetsAutoCommitToFalse() throws Exception {
         connection.initializeTransaction();
 
-        assertFalse(jdbcConnection.getAutoCommit());
+        assertFalse(connection.getAutoCommit());
     }
 
     @Test
     public void initializingTransactionsSetIsInitializedToTrue() throws Exception {
         connection.initializeTransaction();
 
-        isTransactionInitialized = (boolean) isTransactionInitializedField.get(connection);
-        assertTrue(isTransactionInitialized);
+        assertTrue(connection.isTransactionInitialized());
     }
 
     @Test
     public void initializingTransactionsSetIsEndedToFalse() throws Exception {
         connection.initializeTransaction();
 
-        isTransactionEnded = (boolean) isTransactionEndedField.get(connection);
-        assertFalse(isTransactionEnded);
+        assertFalse(connection.isTransactionEnded());
     }
 
     @Test
@@ -82,7 +46,7 @@ public class MysqlPooledConnectionTest {
         connection.initializeTransaction();
         connection.commit();
 
-        assertTrue(jdbcConnection.getAutoCommit());
+        assertTrue(connection.getAutoCommit());
     }
 
     @Test
@@ -90,18 +54,17 @@ public class MysqlPooledConnectionTest {
         connection.initializeTransaction();
         connection.commit();
 
-        isTransactionEnded = (boolean) isTransactionEndedField.get(connection);
-        assertTrue(isTransactionEnded);
+        assertTrue(connection.isTransactionEnded());
     }
 
     @Test
     public void committingDoesNotAffectIsInitialized() throws Exception {
         connection.initializeTransaction();
-        boolean isTransactionInitializedBeforeCommit = (boolean) isTransactionInitializedField.get(connection);
+        boolean isTransactionInitializedBeforeCommit = connection.isTransactionInitialized();
         connection.commit();
 
-        boolean isTransactionInitializedAfterCommit = (boolean) isTransactionInitializedField.get(connection);
-        assertThat(isTransactionInitializedBeforeCommit, equalTo(isTransactionInitializedAfterCommit));
+        boolean isTransactionInitializedAfterCommit = connection.isTransactionInitialized();
+        assertEquals(isTransactionInitializedBeforeCommit, isTransactionInitializedAfterCommit);
     }
 
     @Test
@@ -109,7 +72,7 @@ public class MysqlPooledConnectionTest {
         connection.initializeTransaction();
         connection.rollback();
 
-        assertTrue(jdbcConnection.getAutoCommit());
+        assertTrue(connection.getAutoCommit());
     }
 
     @Test
@@ -117,17 +80,16 @@ public class MysqlPooledConnectionTest {
         connection.initializeTransaction();
         connection.rollback();
 
-        isTransactionEnded = (boolean) isTransactionEndedField.get(connection);
-        assertTrue(isTransactionEnded);
+        assertTrue(connection.isTransactionEnded());
     }
 
     @Test
     public void rollingBackDoesNotAffectIsInitialized() throws Exception {
         connection.initializeTransaction();
-        boolean isTransactionInitializedBeforeRollback = (boolean) isTransactionInitializedField.get(connection);
+        boolean isTransactionInitializedBeforeRollback = connection.isTransactionInitialized();
         connection.rollback();
 
-        boolean isTransactionInitializedAfterRollback = (boolean) isTransactionInitializedField.get(connection);
+        boolean isTransactionInitializedAfterRollback = connection.isTransactionInitialized();
         assertThat(isTransactionInitializedBeforeRollback, equalTo(isTransactionInitializedAfterRollback));
     }
 

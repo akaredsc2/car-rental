@@ -7,6 +7,12 @@ import java.sql.SQLException;
  * Created by vitaly on 2017-03-25.
  */
 public interface PooledConnection extends AutoCloseable {
+    boolean isTransactionInitialized();
+
+    boolean isTransactionEnded();
+
+    boolean getAutoCommit() throws SQLException;
+
     void initializeTransaction();
 
     PreparedStatement prepareStatement(String sql) throws SQLException;

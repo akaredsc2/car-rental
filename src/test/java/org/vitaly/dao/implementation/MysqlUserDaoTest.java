@@ -13,7 +13,6 @@ import org.vitaly.data.TestUtil;
 import org.vitaly.model.user.User;
 import org.vitaly.model.user.UserRole;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 import static junit.framework.TestCase.assertFalse;
@@ -129,21 +128,32 @@ public class MysqlUserDaoTest {
     public void creatingUserWithSamePassportNumberShouldThrowException() throws Exception {
         userDao.create(client1);
 
-        Field passportNumberField = client2.getClass().getDeclaredField("passportNumber");
-        passportNumberField.setAccessible(true);
-        passportNumberField.set(client2, client1.getPassportNumber());
+        User clientWithSamePassportNumber = new User.Builder()
+                .setLogin(client2.getLogin())
+                .setPassword(client2.getPassword())
+                .setFullName(client2.getFullName())
+                .setPassportNumber(client1.getPassportNumber())
+                .setDriverLicenceNumber(client2.getDriverLicenceNumber())
+                .setBirthDate(client2.getBirthDate())
+                .build();
 
-        userDao.create(client2);
+        userDao.create(clientWithSamePassportNumber);
     }
 
     @Test(expected = DaoException.class)
     public void creatingUserWithSameDriverLicenceNumberShouldThrowException() throws Exception {
         userDao.create(client1);
 
-        Field passportNumberField = client2.getClass().getDeclaredField("driverLicenceNumber");
-        passportNumberField.setAccessible(true);
-        passportNumberField.set(client2, client1.getDriverLicenceNumber());
-        userDao.create(client2);
+        User clientWithSameDriverLicenceNumber = new User.Builder()
+                .setLogin(client2.getLogin())
+                .setPassword(client2.getPassword())
+                .setFullName(client2.getFullName())
+                .setPassportNumber(client2.getPassportNumber())
+                .setDriverLicenceNumber(client1.getDriverLicenceNumber())
+                .setBirthDate(client2.getBirthDate())
+                .build();
+
+        userDao.create(clientWithSameDriverLicenceNumber);
     }
 
     @Test(expected = IllegalArgumentException.class)

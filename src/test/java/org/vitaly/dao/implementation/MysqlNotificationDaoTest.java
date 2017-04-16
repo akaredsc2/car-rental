@@ -14,7 +14,6 @@ import org.vitaly.model.notification.Notification;
 import org.vitaly.model.notification.NotificationStatus;
 import org.vitaly.model.user.User;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 import static junit.framework.TestCase.*;
@@ -107,10 +106,6 @@ public class MysqlNotificationDaoTest {
 
     @Test
     public void createdNotificationStatusIsNew() throws Exception {
-        Field statusField = notification1.getClass().getDeclaredField("status");
-        statusField.setAccessible(true);
-        statusField.set(notification1, NotificationStatus.VIEWED);
-
         long notificationId = notificationDao.create(notification1).orElseThrow(AssertionError::new);
 
         Notification createdNotification = notificationDao.findById(notificationId).orElseThrow(AssertionError::new);

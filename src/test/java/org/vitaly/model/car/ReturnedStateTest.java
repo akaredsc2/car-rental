@@ -2,8 +2,6 @@ package org.vitaly.model.car;
 
 import org.junit.Test;
 
-import java.math.BigDecimal;
-
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;

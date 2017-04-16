@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.vitaly.connectionPool.abstraction.ConnectionPool;
 import org.vitaly.connectionPool.abstraction.PooledConnection;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -16,9 +16,7 @@ public class MysqlConnectionPoolTest {
         ConnectionPool connectionPool = MysqlConnectionPool.getInstance();
 
         try (PooledConnection pooledConnection = connectionPool.getConnection()) {
-            assertThat(pooledConnection, allOf(
-                    notNullValue(),
-                    instanceOf(MysqlPooledConnection.class)));
+            assertThat(pooledConnection, instanceOf(MysqlPooledConnection.class));
         }
     }
 
@@ -27,9 +25,7 @@ public class MysqlConnectionPoolTest {
         ConnectionPool connectionPool = MysqlConnectionPool.getTestInstance();
 
         try (PooledConnection pooledConnection = connectionPool.getConnection()) {
-            assertThat(pooledConnection, allOf(
-                    notNullValue(),
-                    instanceOf(MysqlPooledConnection.class)));
+            assertThat(pooledConnection, instanceOf(MysqlPooledConnection.class));
         }
     }
 }
