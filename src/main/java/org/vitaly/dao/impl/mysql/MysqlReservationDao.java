@@ -4,9 +4,9 @@ import org.vitaly.dao.abstraction.ReservationDao;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.model.reservation.Reservation;
 import org.vitaly.model.reservation.ReservationState;
-import org.vitaly.util.dao.DaoTemplate;
-import org.vitaly.util.dao.mapper.Mapper;
-import org.vitaly.util.dao.mapper.ReservationMapper;
+import org.vitaly.dao.impl.mysql.template.DaoTemplate;
+import org.vitaly.dao.abstraction.mapper.Mapper;
+import org.vitaly.dao.impl.mysql.mapper.ReservationMapper;
 
 import java.sql.Timestamp;
 import java.time.ZoneOffset;

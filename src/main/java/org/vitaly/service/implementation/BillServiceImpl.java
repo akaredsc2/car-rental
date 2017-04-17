@@ -8,7 +8,7 @@ import org.vitaly.service.abstraction.BillService;
 import java.util.List;
 import java.util.Optional;
 
-//import org.vitaly.dao.abstraction.DaoFactory;
+//import org.vitaly.template.abstraction.DaoFactory;
 
 /**
  * Created by vitaly on 2017-04-10.
@@ -17,7 +17,7 @@ public class BillServiceImpl implements BillService {
     private BillDao dao;
 
     public BillServiceImpl(PooledConnection connection) {
-//        this.dao = DaoFactory.getMysqlDaoFactory().createBillDao(connection);
+//        this.template = DaoFactory.getMysqlDaoFactory().createBillDao(connection);
     }
 
     @Override

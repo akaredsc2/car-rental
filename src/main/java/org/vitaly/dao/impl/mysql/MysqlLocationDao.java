@@ -3,9 +3,9 @@ package org.vitaly.dao.impl.mysql;
 import org.vitaly.dao.abstraction.LocationDao;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.model.location.Location;
-import org.vitaly.util.dao.DaoTemplate;
-import org.vitaly.util.dao.mapper.LocationMapper;
-import org.vitaly.util.dao.mapper.Mapper;
+import org.vitaly.dao.impl.mysql.template.DaoTemplate;
+import org.vitaly.dao.impl.mysql.mapper.LocationMapper;
+import org.vitaly.dao.abstraction.mapper.Mapper;
 
 import java.util.*;
 

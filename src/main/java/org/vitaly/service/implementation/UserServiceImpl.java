@@ -9,7 +9,7 @@ import org.vitaly.service.abstraction.UserService;
 import java.util.List;
 import java.util.Optional;
 
-//import org.vitaly.dao.abstraction.DaoFactory;
+//import org.vitaly.template.abstraction.DaoFactory;
 
 /**
  * Created by vitaly on 2017-04-10.
@@ -18,7 +18,7 @@ public class UserServiceImpl implements UserService {
     private UserDao dao;
 
     public UserServiceImpl(PooledConnection connection) {
-//        this.dao = DaoFactory.getMysqlDaoFactory().createUserDao(connection);
+//        this.template = DaoFactory.getMysqlDaoFactory().createUserDao(connection);
     }
 
     @Override

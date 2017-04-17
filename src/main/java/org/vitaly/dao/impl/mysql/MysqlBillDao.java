@@ -3,9 +3,9 @@ package org.vitaly.dao.impl.mysql;
 import org.vitaly.dao.abstraction.BillDao;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.model.bill.Bill;
-import org.vitaly.util.dao.DaoTemplate;
-import org.vitaly.util.dao.mapper.BillMapper;
-import org.vitaly.util.dao.mapper.Mapper;
+import org.vitaly.dao.impl.mysql.template.DaoTemplate;
+import org.vitaly.dao.impl.mysql.mapper.BillMapper;
+import org.vitaly.dao.abstraction.mapper.Mapper;
 
 import java.util.Collections;
 import java.util.HashMap;

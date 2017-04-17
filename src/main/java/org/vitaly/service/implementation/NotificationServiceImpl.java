@@ -8,7 +8,7 @@ import org.vitaly.service.abstraction.NotificationService;
 import java.util.List;
 import java.util.Optional;
 
-//import org.vitaly.dao.abstraction.DaoFactory;
+//import org.vitaly.template.abstraction.DaoFactory;
 
 /**
  * Created by vitaly on 2017-04-10.
@@ -17,7 +17,7 @@ public class NotificationServiceImpl implements NotificationService {
     private NotificationDao dao;
 
     public NotificationServiceImpl(PooledConnection connection) {
-//        this.dao = DaoFactory.getMysqlDaoFactory().createNotificationDao(connection);
+//        this.template = DaoFactory.getMysqlDaoFactory().createNotificationDao(connection);
     }
 
     @Override

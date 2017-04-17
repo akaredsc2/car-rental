@@ -3,9 +3,9 @@ package org.vitaly.dao.impl.mysql;
 import org.vitaly.dao.abstraction.CarDao;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.model.car.Car;
-import org.vitaly.util.dao.DaoTemplate;
-import org.vitaly.util.dao.mapper.CarMapper;
-import org.vitaly.util.dao.mapper.Mapper;
+import org.vitaly.dao.impl.mysql.template.DaoTemplate;
+import org.vitaly.dao.impl.mysql.mapper.CarMapper;
+import org.vitaly.dao.abstraction.mapper.Mapper;
 
 import java.math.BigDecimal;
 import java.util.*;

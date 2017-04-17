@@ -1,5 +1,6 @@
-package org.vitaly.util.dao.mapper;
+package org.vitaly.dao.impl.mysql.mapper;
 
+import org.vitaly.dao.abstraction.mapper.Mapper;
 import org.vitaly.model.bill.Bill;
 
 import java.sql.ResultSet;

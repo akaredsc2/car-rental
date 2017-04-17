@@ -4,9 +4,9 @@ import org.vitaly.dao.abstraction.NotificationDao;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.model.notification.Notification;
 import org.vitaly.model.notification.NotificationStatus;
-import org.vitaly.util.dao.DaoTemplate;
-import org.vitaly.util.dao.mapper.Mapper;
-import org.vitaly.util.dao.mapper.NotificationMapper;
+import org.vitaly.dao.impl.mysql.template.DaoTemplate;
+import org.vitaly.dao.abstraction.mapper.Mapper;
+import org.vitaly.dao.impl.mysql.mapper.NotificationMapper;
 
 import java.util.*;
 

@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-//import org.vitaly.dao.abstraction.DaoFactory;
+//import org.vitaly.template.abstraction.DaoFactory;
 
 /**
  * Created by vitaly on 2017-04-10.
@@ -18,7 +18,7 @@ public class CarServiceImpl implements CarService {
     private CarDao dao;
 
     public CarServiceImpl(PooledConnection connection) {
-//        this.dao = DaoFactory.getMysqlDaoFactory().createCarDao(connection);
+//        this.template = DaoFactory.getMysqlDaoFactory().createCarDao(connection);
     }
 
     @Override

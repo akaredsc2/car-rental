@@ -1,4 +1,4 @@
-package org.vitaly.util.dao.mapper;
+package org.vitaly.dao.abstraction.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

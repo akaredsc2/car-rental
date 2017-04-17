@@ -8,7 +8,7 @@ import org.vitaly.service.abstraction.LocationService;
 import java.util.List;
 import java.util.Optional;
 
-//import org.vitaly.dao.abstraction.DaoFactory;
+//import org.vitaly.template.abstraction.DaoFactory;
 
 /**
  * Created by vitaly on 2017-04-10.
@@ -17,7 +17,7 @@ public class LocationServiceImpl implements LocationService {
     private LocationDao dao;
 
     public LocationServiceImpl(PooledConnection connection) {
-//        this.dao = DaoFactory.getMysqlDaoFactory().createLocationDao(connection);
+//        this.template = DaoFactory.getMysqlDaoFactory().createLocationDao(connection);
     }
 
     @Override

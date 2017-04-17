@@ -9,7 +9,7 @@ import org.vitaly.service.abstraction.ReservationService;
 import java.util.List;
 import java.util.Optional;
 
-//import org.vitaly.dao.abstraction.DaoFactory;
+//import org.vitaly.template.abstraction.DaoFactory;
 
 /**
  * Created by vitaly on 2017-04-10.
@@ -18,7 +18,7 @@ public class ReservationServiceImpl implements ReservationService {
     private ReservationDao dao;
 
     public ReservationServiceImpl(PooledConnection connection) {
-//        this.dao = DaoFactory.getMysqlDaoFactory().createReservationDao(connection);
+//        this.template = DaoFactory.getMysqlDaoFactory().createReservationDao(connection);
     }
 
     @Override
