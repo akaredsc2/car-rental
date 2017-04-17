@@ -1,8 +1,8 @@
 package org.vitaly.service.implementation;
 
-import org.vitaly.connectionPool.abstraction.PooledConnection;
+import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.abstraction.BillDao;
-import org.vitaly.dao.abstraction.DaoFactory;
+//import org.vitaly.dao.abstraction.DaoFactory;
 import org.vitaly.model.bill.Bill;
 import org.vitaly.service.abstraction.BillService;
 
@@ -16,7 +16,7 @@ public class BillServiceImpl implements BillService {
     private BillDao dao;
 
     public BillServiceImpl(PooledConnection connection) {
-        this.dao = DaoFactory.getMysqlDaoFactory().createBillDao(connection);
+//        this.dao = DaoFactory.getMysqlDaoFactory().createBillDao(connection);
     }
 
     @Override

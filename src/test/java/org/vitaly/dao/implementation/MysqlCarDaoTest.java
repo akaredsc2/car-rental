@@ -4,10 +4,9 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.vitaly.connectionPool.abstraction.PooledConnection;
-import org.vitaly.connectionPool.implementation.MysqlConnectionPool;
+import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
+import org.vitaly.dao.implementation.connectionPool.MysqlConnectionPool;
 import org.vitaly.dao.abstraction.CarDao;
-import org.vitaly.dao.abstraction.DaoFactory;
 import org.vitaly.dao.abstraction.LocationDao;
 import org.vitaly.dao.exception.DaoException;
 import org.vitaly.data.TestData;
@@ -34,33 +33,30 @@ import static org.vitaly.matcher.EntityIdMatcher.hasId;
  */
 public class MysqlCarDaoTest {
     private static final String LOCATION_CLEAN_UP_QUERY = "delete from location";
-    private static final String CAR_CLEAN_UP_QUERY = "delete from car";
 
     private static PooledConnection connection = MysqlConnectionPool.getTestInstance().getConnection();
-    private static CarDao carDao = DaoFactory.getMysqlDaoFactory().createCarDao(connection);
+    private static CarDao carDao = new MysqlCarDao(connection);
     private static Location location;
 
     private Car car1 = TestData.getInstance().getCar("car1");
     private Car car2 = TestData.getInstance().getCar("car2");
 
     @BeforeClass
-    public static void init() {
+    public static void init() throws Exception {
         Location location1 = TestData.getInstance().getLocation("location1");
-        LocationDao locationDao = DaoFactory.getMysqlDaoFactory().createLocationDao(connection);
+        LocationDao locationDao = new MysqlLocationDao(connection);
         MysqlCarDaoTest.location = TestUtil.createEntityWithId(location1, locationDao);
+
+        connection.commit();
     }
 
     @After
     public void tearDown() throws Exception {
-        connection.initializeTransaction();
-        connection.prepareStatement(CAR_CLEAN_UP_QUERY)
-                .executeUpdate();
-        connection.commit();
+        connection.rollback();
     }
 
     @AfterClass
     public static void cleanUp() throws Exception {
-        connection.initializeTransaction();
         connection.prepareStatement(LOCATION_CLEAN_UP_QUERY)
                 .executeUpdate();
         connection.commit();

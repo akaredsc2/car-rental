@@ -1,4 +1,4 @@
-package org.vitaly.connectionPool.abstraction;
+package org.vitaly.dao.abstraction.connectionPool;
 
 /**
  * Created by vitaly on 2017-03-25.

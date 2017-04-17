@@ -3,10 +3,9 @@ package org.vitaly.dao.implementation;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Test;
-import org.vitaly.connectionPool.abstraction.PooledConnection;
-import org.vitaly.connectionPool.implementation.MysqlConnectionPool;
+import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
+import org.vitaly.dao.implementation.connectionPool.MysqlConnectionPool;
 import org.vitaly.dao.abstraction.CarDao;
-import org.vitaly.dao.abstraction.DaoFactory;
 import org.vitaly.dao.abstraction.LocationDao;
 import org.vitaly.dao.exception.DaoException;
 import org.vitaly.data.TestData;
@@ -27,21 +26,15 @@ import static org.vitaly.matcher.EntityIdMatcher.hasId;
  * Created by vitaly on 2017-03-26.
  */
 public class MysqlLocationDaoTest {
-    private static final String CLEAN_UP_QUERY = "delete from location";
-    private static final String CAR_CLEAN_UP_QUERY = "delete from car";
-
     private static PooledConnection connection = MysqlConnectionPool.getTestInstance().getConnection();
-    private static LocationDao locationDao = DaoFactory.getMysqlDaoFactory().createLocationDao(connection);
+    private static LocationDao locationDao = new MysqlLocationDao(connection);
 
     private Location location1 = TestData.getInstance().getLocation("location1");
     private Location location2 = TestData.getInstance().getLocation("location2");
 
     @After
     public void tearDown() throws Exception {
-        connection.initializeTransaction();
-        connection.prepareStatement(CLEAN_UP_QUERY)
-                .executeUpdate();
-        connection.commit();
+        connection.rollback();
     }
 
     @AfterClass
@@ -131,19 +124,18 @@ public class MysqlLocationDaoTest {
     @Test
     public void findLocationOfExistingCarReturnsLocation() throws Exception {
         Car car = TestData.getInstance().getCar("car1");
-        CarDao carDao = MysqlDaoFactory.getInstance().createCarDao(connection);
+        CarDao carDao = new MysqlCarDao(connection);
         car = TestUtil.createEntityWithId(car, carDao);
 
         location1 = TestUtil.createEntityWithId(location1, locationDao);
         carDao.addCarToLocation(car.getId(), location1.getId());
 
         Location foundLocation = locationDao.findLocationByCarId(car.getId()).orElseThrow(AssertionError::new);
-
-        connection.initializeTransaction();
+/*
         connection.prepareStatement(CAR_CLEAN_UP_QUERY)
                 .executeUpdate();
         connection.commit();
-
+*/
         assertEquals(foundLocation, location1);
     }
 

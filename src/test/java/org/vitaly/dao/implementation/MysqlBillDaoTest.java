@@ -4,9 +4,12 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.vitaly.connectionPool.abstraction.PooledConnection;
-import org.vitaly.connectionPool.implementation.MysqlConnectionPool;
-import org.vitaly.dao.abstraction.*;
+import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
+import org.vitaly.dao.implementation.connectionPool.MysqlConnectionPool;
+import org.vitaly.dao.abstraction.BillDao;
+import org.vitaly.dao.abstraction.CarDao;
+import org.vitaly.dao.abstraction.ReservationDao;
+import org.vitaly.dao.abstraction.UserDao;
 import org.vitaly.dao.exception.DaoException;
 import org.vitaly.data.TestData;
 import org.vitaly.data.TestUtil;
@@ -15,6 +18,7 @@ import org.vitaly.model.car.Car;
 import org.vitaly.model.reservation.Reservation;
 import org.vitaly.model.user.User;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -29,7 +33,6 @@ import static org.hamcrest.Matchers.iterableWithSize;
  * Created by vitaly on 2017-04-08.
  */
 public class MysqlBillDaoTest {
-    private static final String CLEAN_UP_QUERY = "delete from bill";
     private static final String USERS_CLEAN_UP_QUERY = "delete from users";
     private static final String CAR_CLEAN_UP_QUERY = "delete from car";
     private static final String RESERVATION_CLEAN_UP_QUERY = "delete from reservation";
@@ -42,14 +45,13 @@ public class MysqlBillDaoTest {
     private Bill bill2 = TestData.getInstance().getBill("bill2");
 
     @BeforeClass
-    public static void init() {
-        DaoFactory factory = DaoFactory.getMysqlDaoFactory();
-        billDao = factory.createBillDao(connection);
+    public static void init() throws SQLException {
+        billDao = new MysqlBillDao(connection);
 
-        UserDao userDao = factory.createUserDao(connection);
+        UserDao userDao = new MysqlUserDao(connection);
         User user = TestUtil.createEntityWithId(TestData.getInstance().getUser("client1"), userDao);
 
-        CarDao carDao = factory.createCarDao(connection);
+        CarDao carDao = new MysqlCarDao(connection);
         Car car = TestUtil.createEntityWithId(TestData.getInstance().getCar("car1"), carDao);
 
         Reservation temp = new Reservation.Builder()
@@ -58,21 +60,19 @@ public class MysqlBillDaoTest {
                 .setPickUpDatetime(LocalDateTime.now())
                 .setDropOffDatetime(LocalDateTime.now().plusDays(2))
                 .build();
-        ReservationDao reservationDao = factory.createReservationDao(connection);
+        ReservationDao reservationDao = new MysqlReservationDao(connection);
         reservation = TestUtil.createEntityWithId(temp, reservationDao);
+
+        connection.commit();
     }
 
     @After
     public void tearDown() throws Exception {
-        connection.initializeTransaction();
-        connection.prepareStatement(CLEAN_UP_QUERY)
-                .executeUpdate();
-        connection.commit();
+        connection.rollback();
     }
 
     @AfterClass
     public static void cleanUp() throws Exception {
-        connection.initializeTransaction();
         connection.prepareStatement(RESERVATION_CLEAN_UP_QUERY)
                 .executeUpdate();
         connection.prepareStatement(USERS_CLEAN_UP_QUERY)

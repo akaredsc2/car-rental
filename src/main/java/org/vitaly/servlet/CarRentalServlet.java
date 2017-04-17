@@ -1,8 +1,8 @@
 package org.vitaly.servlet;
 
-import org.vitaly.connectionPool.abstraction.ConnectionPool;
-import org.vitaly.connectionPool.abstraction.PooledConnection;
-import org.vitaly.connectionPool.implementation.MysqlConnectionPool;
+import org.vitaly.dao.abstraction.connectionPool.ConnectionPool;
+import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
+import org.vitaly.dao.implementation.connectionPool.MysqlConnectionPool;
 import org.vitaly.model.user.User;
 import org.vitaly.service.abstraction.UserService;
 import org.vitaly.service.implementation.UserServiceImpl;

@@ -1,6 +1,6 @@
 package org.vitaly.dao.implementation;
 
-import org.vitaly.connectionPool.abstraction.PooledConnection;
+import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.abstraction.NotificationDao;
 import org.vitaly.model.notification.Notification;
 import org.vitaly.model.notification.NotificationStatus;
@@ -45,7 +45,7 @@ public class MysqlNotificationDao implements NotificationDao {
     private Mapper<Notification> mapper;
     private DaoTemplate daoTemplate;
 
-    MysqlNotificationDao(PooledConnection connection) {
+    public MysqlNotificationDao(PooledConnection connection) {
         this.mapper = new NotificationMapper();
         this.daoTemplate = new DaoTemplate(connection);
     }

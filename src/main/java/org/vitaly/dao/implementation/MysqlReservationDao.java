@@ -1,6 +1,6 @@
 package org.vitaly.dao.implementation;
 
-import org.vitaly.connectionPool.abstraction.PooledConnection;
+import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.abstraction.ReservationDao;
 import org.vitaly.model.reservation.Reservation;
 import org.vitaly.model.reservation.ReservationState;
@@ -61,7 +61,7 @@ public class MysqlReservationDao implements ReservationDao {
     private DaoTemplate daoTemplate;
     private Mapper<Reservation> mapper;
 
-    MysqlReservationDao(PooledConnection connection) {
+    public MysqlReservationDao(PooledConnection connection) {
         this.mapper = new ReservationMapper();
         this.daoTemplate = new DaoTemplate(connection);
     }

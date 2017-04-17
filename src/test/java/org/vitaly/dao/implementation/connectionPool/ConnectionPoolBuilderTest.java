@@ -1,4 +1,4 @@
-package org.vitaly.connectionPool.implementation;
+package org.vitaly.dao.implementation.connectionPool;
 
 import org.junit.Test;
 

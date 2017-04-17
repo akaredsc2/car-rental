@@ -1,6 +1,6 @@
 package org.vitaly.dao.implementation;
 
-import org.vitaly.connectionPool.abstraction.PooledConnection;
+import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.abstraction.UserDao;
 import org.vitaly.model.user.User;
 import org.vitaly.model.user.UserRole;
@@ -54,7 +54,7 @@ public class MysqlUserDao implements UserDao {
     private Mapper<User> mapper;
     private DaoTemplate daoTemplate;
 
-    MysqlUserDao(PooledConnection connection) {
+    public MysqlUserDao(PooledConnection connection) {
         this.mapper = new UserMapper();
         this.daoTemplate = new DaoTemplate(connection);
     }

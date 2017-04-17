@@ -1,7 +1,7 @@
 package org.vitaly.service.implementation;
 
-import org.vitaly.connectionPool.abstraction.PooledConnection;
-import org.vitaly.dao.abstraction.DaoFactory;
+import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
+//import org.vitaly.dao.abstraction.DaoFactory;
 import org.vitaly.dao.abstraction.UserDao;
 import org.vitaly.model.user.User;
 import org.vitaly.model.user.UserRole;
@@ -17,7 +17,7 @@ public class UserServiceImpl implements UserService {
     private UserDao dao;
 
     public UserServiceImpl(PooledConnection connection) {
-        this.dao = DaoFactory.getMysqlDaoFactory().createUserDao(connection);
+//        this.dao = DaoFactory.getMysqlDaoFactory().createUserDao(connection);
     }
 
     @Override

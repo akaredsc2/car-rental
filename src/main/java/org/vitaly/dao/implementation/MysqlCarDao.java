@@ -1,6 +1,6 @@
 package org.vitaly.dao.implementation;
 
-import org.vitaly.connectionPool.abstraction.PooledConnection;
+import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.abstraction.CarDao;
 import org.vitaly.model.car.Car;
 import org.vitaly.util.dao.DaoTemplate;
@@ -59,7 +59,7 @@ public class MysqlCarDao implements CarDao {
     private Mapper<Car> mapper;
     private DaoTemplate daoTemplate;
 
-    MysqlCarDao(PooledConnection connection) {
+    public MysqlCarDao(PooledConnection connection) {
         this.mapper = new CarMapper();
         this.daoTemplate = new DaoTemplate(connection);
     }

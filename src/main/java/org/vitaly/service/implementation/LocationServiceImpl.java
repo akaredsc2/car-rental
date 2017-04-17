@@ -1,7 +1,7 @@
 package org.vitaly.service.implementation;
 
-import org.vitaly.connectionPool.abstraction.PooledConnection;
-import org.vitaly.dao.abstraction.DaoFactory;
+import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
+//import org.vitaly.dao.abstraction.DaoFactory;
 import org.vitaly.dao.abstraction.LocationDao;
 import org.vitaly.model.location.Location;
 import org.vitaly.service.abstraction.LocationService;
@@ -16,7 +16,7 @@ public class LocationServiceImpl implements LocationService {
     private LocationDao dao;
 
     public LocationServiceImpl(PooledConnection connection) {
-        this.dao = DaoFactory.getMysqlDaoFactory().createLocationDao(connection);
+//        this.dao = DaoFactory.getMysqlDaoFactory().createLocationDao(connection);
     }
 
     @Override

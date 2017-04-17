@@ -2,7 +2,7 @@ package org.vitaly.util.dao;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.vitaly.connectionPool.abstraction.PooledConnection;
+import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.exception.DaoException;
 import org.vitaly.util.dao.mapper.Mapper;
 
@@ -92,18 +92,15 @@ public class DaoTemplate {
         return insertedId;
     }
 
+    // TODO: 2017-04-07 add transaction isolation
     public int executeUpdate(String query, Map<Integer, Object> parameterMap) {
-        int updatedRecordCount = 0;
-
         try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setQueryParameters(statement, parameterMap);
 
-            updatedRecordCount = statement.executeUpdate();
+            return statement.executeUpdate();
         } catch (SQLException e) {
             logger.error(ERROR_WHILE_EXECUTING_UPDATE_QUERY, e);
             throw new DaoException(e);
         }
-
-        return updatedRecordCount;
     }
 }

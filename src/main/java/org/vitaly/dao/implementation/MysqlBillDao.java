@@ -1,6 +1,6 @@
 package org.vitaly.dao.implementation;
 
-import org.vitaly.connectionPool.abstraction.PooledConnection;
+import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.abstraction.BillDao;
 import org.vitaly.model.bill.Bill;
 import org.vitaly.util.dao.DaoTemplate;
@@ -45,7 +45,7 @@ public class MysqlBillDao implements BillDao {
     private DaoTemplate daoTemplate;
     private Mapper<Bill> mapper;
 
-    MysqlBillDao(PooledConnection connection) {
+    public MysqlBillDao(PooledConnection connection) {
         this.daoTemplate = new DaoTemplate(connection);
         this.mapper = new BillMapper();
     }

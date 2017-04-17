@@ -3,9 +3,8 @@ package org.vitaly.dao.implementation;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Test;
-import org.vitaly.connectionPool.abstraction.PooledConnection;
-import org.vitaly.connectionPool.implementation.MysqlConnectionPool;
-import org.vitaly.dao.abstraction.DaoFactory;
+import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
+import org.vitaly.dao.implementation.connectionPool.MysqlConnectionPool;
 import org.vitaly.dao.abstraction.NotificationDao;
 import org.vitaly.dao.abstraction.UserDao;
 import org.vitaly.dao.exception.DaoException;
@@ -14,6 +13,7 @@ import org.vitaly.model.notification.Notification;
 import org.vitaly.model.notification.NotificationStatus;
 import org.vitaly.model.user.User;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import static junit.framework.TestCase.*;
@@ -24,18 +24,23 @@ import static org.hamcrest.Matchers.*;
  * Created by vitaly on 2017-04-06.
  */
 public class MysqlNotificationDaoTest {
-    private static final String NOTIFICATION_CLEAN_UP_QUERY = "delete from notification";
     private static final String USERS_CLEAN_UP_QUERY = "delete from users";
 
     private static PooledConnection connection = MysqlConnectionPool.getTestInstance().getConnection();
-    private static NotificationDao notificationDao = DaoFactory.getMysqlDaoFactory().createNotificationDao(connection);
+    private static NotificationDao notificationDao = new MysqlNotificationDao(connection);
 
     private static final long userId;
 
     static {
         User client1 = TestData.getInstance().getUser("client1");
-        UserDao userDao = DaoFactory.getMysqlDaoFactory().createUserDao(connection);
+        UserDao userDao = new MysqlUserDao(connection);
         userId = userDao.create(client1).orElseThrow(AssertionError::new);
+
+        try {
+            connection.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private Notification notification1 = TestData.getInstance().getNotification("notification1");
@@ -43,15 +48,11 @@ public class MysqlNotificationDaoTest {
 
     @After
     public void tearDown() throws Exception {
-        connection.initializeTransaction();
-        connection.prepareStatement(NOTIFICATION_CLEAN_UP_QUERY)
-                .executeUpdate();
-        connection.commit();
+        connection.rollback();
     }
 
     @AfterClass
     public static void cleanUp() throws Exception {
-        connection.initializeTransaction();
         connection.prepareStatement(USERS_CLEAN_UP_QUERY)
                 .executeUpdate();
         connection.commit();

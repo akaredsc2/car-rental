@@ -1,7 +1,7 @@
 package org.vitaly.service.implementation;
 
-import org.vitaly.connectionPool.abstraction.PooledConnection;
-import org.vitaly.dao.abstraction.DaoFactory;
+import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
+//import org.vitaly.dao.abstraction.DaoFactory;
 import org.vitaly.dao.abstraction.NotificationDao;
 import org.vitaly.model.notification.Notification;
 import org.vitaly.service.abstraction.NotificationService;
@@ -16,7 +16,7 @@ public class NotificationServiceImpl implements NotificationService {
     private NotificationDao dao;
 
     public NotificationServiceImpl(PooledConnection connection) {
-        this.dao = DaoFactory.getMysqlDaoFactory().createNotificationDao(connection);
+//        this.dao = DaoFactory.getMysqlDaoFactory().createNotificationDao(connection);
     }
 
     @Override

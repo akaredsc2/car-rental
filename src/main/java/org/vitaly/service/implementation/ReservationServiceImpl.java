@@ -1,7 +1,7 @@
 package org.vitaly.service.implementation;
 
-import org.vitaly.connectionPool.abstraction.PooledConnection;
-import org.vitaly.dao.abstraction.DaoFactory;
+import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
+//import org.vitaly.dao.abstraction.DaoFactory;
 import org.vitaly.dao.abstraction.ReservationDao;
 import org.vitaly.model.reservation.Reservation;
 import org.vitaly.model.reservation.ReservationState;
@@ -17,7 +17,7 @@ public class ReservationServiceImpl implements ReservationService {
     private ReservationDao dao;
 
     public ReservationServiceImpl(PooledConnection connection) {
-        this.dao = DaoFactory.getMysqlDaoFactory().createReservationDao(connection);
+//        this.dao = DaoFactory.getMysqlDaoFactory().createReservationDao(connection);
     }
 
     @Override

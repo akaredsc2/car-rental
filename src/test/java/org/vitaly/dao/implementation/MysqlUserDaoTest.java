@@ -3,9 +3,8 @@ package org.vitaly.dao.implementation;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Test;
-import org.vitaly.connectionPool.abstraction.PooledConnection;
-import org.vitaly.connectionPool.implementation.MysqlConnectionPool;
-import org.vitaly.dao.abstraction.DaoFactory;
+import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
+import org.vitaly.dao.implementation.connectionPool.MysqlConnectionPool;
 import org.vitaly.dao.abstraction.UserDao;
 import org.vitaly.dao.exception.DaoException;
 import org.vitaly.data.TestData;
@@ -26,10 +25,8 @@ import static org.vitaly.matcher.EntityIdMatcher.hasId;
  * Created by vitaly on 2017-03-28.
  */
 public class MysqlUserDaoTest {
-    private static final String CLEAN_UP_QUERY = "delete from users";
-
     private static PooledConnection connection = MysqlConnectionPool.getTestInstance().getConnection();
-    private static UserDao userDao = DaoFactory.getMysqlDaoFactory().createUserDao(connection);
+    private static UserDao userDao = new MysqlUserDao(connection);
 
     private User client1 = TestData.getInstance().getUser("client1");
     private User client2 = TestData.getInstance().getUser("client2");
@@ -37,10 +34,7 @@ public class MysqlUserDaoTest {
 
     @After
     public void tearDown() throws Exception {
-        connection.initializeTransaction();
-        connection.prepareStatement(CLEAN_UP_QUERY)
-                .executeUpdate();
-        connection.commit();
+        connection.rollback();
     }
 
     @AfterClass

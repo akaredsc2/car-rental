@@ -1,10 +1,11 @@
-package org.vitaly.connectionPool.implementation;
+package org.vitaly.dao.implementation.connectionPool;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.vitaly.connectionPool.abstraction.ConnectionPool;
-import org.vitaly.connectionPool.abstraction.PooledConnection;
+import org.vitaly.dao.abstraction.connectionPool.ConnectionPool;
+import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
+import org.vitaly.dao.exception.DaoException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,8 +29,10 @@ public class MysqlConnectionPool implements ConnectionPool {
     private static final String DB_MAX_TOTAL = "db.maxTotal";
     private static final String USE_SSL_FALSE = "?useSSL=false";
     private static final String DB_DRIVER = "db.driver";
+    private static final String DB_DEFAULT_AUTO_COMMIT = "db.defaultAutoCommit";
+    private static final String DB_DEFAULT_TRANSACTION_ISOLATION = "db.defaultTransactionIsolation";
 
-    private static final Logger logger = LogManager.getLogger(MysqlPooledConnection.class.getName());
+    private static Logger logger = LogManager.getLogger(MysqlPooledConnection.class.getName());
 
     private static MysqlConnectionPool instance;
     private static MysqlConnectionPool testInstance;
@@ -53,6 +56,8 @@ public class MysqlConnectionPool implements ConnectionPool {
         basicDataSource.setUsername(builder.username);
         basicDataSource.setPassword(builder.password);
         basicDataSource.setMaxTotal(builder.maxTotal);
+        basicDataSource.setDefaultAutoCommit(builder.defaultAutoCommit);
+        basicDataSource.setDefaultTransactionIsolation(builder.defaultTransactionIsolation);
     }
 
     private static MysqlConnectionPool createConnectionPoolFromProperties(String fileName)
@@ -69,6 +74,8 @@ public class MysqlConnectionPool implements ConnectionPool {
         String pass = properties.getProperty(DB_PASS);
         boolean useSsl = Boolean.parseBoolean(properties.getProperty(DB_USE_SSL));
         int maxTotal = Integer.parseInt(properties.getProperty(DB_MAX_TOTAL));
+        boolean defaultAutoCommit = Boolean.parseBoolean(properties.getProperty(DB_DEFAULT_AUTO_COMMIT));
+        int defaultTransactionIsolation = Integer.parseInt(properties.getProperty(DB_DEFAULT_TRANSACTION_ISOLATION));
 
         return new Builder()
                 .setUrl(url)
@@ -76,6 +83,8 @@ public class MysqlConnectionPool implements ConnectionPool {
                 .setPassword(pass)
                 .setUseSsl(useSsl)
                 .setMaxTotal(maxTotal)
+                .setDefaultAutoCommit(defaultAutoCommit)
+                .setDefaultTransactionIsolation(defaultTransactionIsolation)
                 .build();
     }
 
@@ -97,16 +106,14 @@ public class MysqlConnectionPool implements ConnectionPool {
 
     @Override
     public PooledConnection getConnection() {
-        Connection jdbcConnection;
-
         try {
-            jdbcConnection = basicDataSource.getConnection();
+            Connection connection = basicDataSource.getConnection();
+            return new MysqlPooledConnection(connection);
         } catch (SQLException e) {
-            logger.error("Error while getting connection from pool.", e);
-            throw new IllegalArgumentException(e);
+            String message = "Error while getting connection from pool.";
+            logger.error(message, e);
+            throw new DaoException(message, e);
         }
-
-        return new MysqlPooledConnection(jdbcConnection);
     }
 
     static class Builder {
@@ -115,6 +122,8 @@ public class MysqlConnectionPool implements ConnectionPool {
         private String password;
         private int maxTotal;
         private boolean useSsl;
+        private boolean defaultAutoCommit;
+        private int defaultTransactionIsolation;
 
         public Builder setUrl(String url) {
             requireNotNull(url, "Url must not be null!");
@@ -144,6 +153,16 @@ public class MysqlConnectionPool implements ConnectionPool {
 
         public Builder setUseSsl(boolean useSsl) {
             this.useSsl = useSsl;
+            return this;
+        }
+
+        public Builder setDefaultAutoCommit(boolean defaultAutoCommit) {
+            this.defaultAutoCommit = defaultAutoCommit;
+            return this;
+        }
+
+        public Builder setDefaultTransactionIsolation(int defaultTransactionIsolation) {
+            this.defaultTransactionIsolation = defaultTransactionIsolation;
             return this;
         }
 

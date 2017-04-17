@@ -1,6 +1,6 @@
 package org.vitaly.dao.implementation;
 
-import org.vitaly.connectionPool.abstraction.PooledConnection;
+import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.abstraction.LocationDao;
 import org.vitaly.model.location.Location;
 import org.vitaly.util.dao.DaoTemplate;
@@ -40,7 +40,7 @@ public class MysqlLocationDao implements LocationDao {
     private Mapper<Location> mapper;
     private DaoTemplate daoTemplate;
 
-    MysqlLocationDao(PooledConnection connection) {
+    public MysqlLocationDao(PooledConnection connection) {
         this.mapper = new LocationMapper();
         this.daoTemplate = new DaoTemplate(connection);
     }

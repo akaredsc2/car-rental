@@ -1,8 +1,8 @@
 package org.vitaly.service.implementation;
 
-import org.vitaly.connectionPool.abstraction.PooledConnection;
+import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.abstraction.CarDao;
-import org.vitaly.dao.abstraction.DaoFactory;
+//import org.vitaly.dao.abstraction.DaoFactory;
 import org.vitaly.model.car.Car;
 import org.vitaly.service.abstraction.CarService;
 
@@ -17,7 +17,7 @@ public class CarServiceImpl implements CarService {
     private CarDao dao;
 
     public CarServiceImpl(PooledConnection connection) {
-        this.dao = DaoFactory.getMysqlDaoFactory().createCarDao(connection);
+//        this.dao = DaoFactory.getMysqlDaoFactory().createCarDao(connection);
     }
 
     @Override
