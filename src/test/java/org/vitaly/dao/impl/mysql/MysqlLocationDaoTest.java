@@ -1,10 +1,10 @@
-package org.vitaly.dao.implementation;
+package org.vitaly.dao.impl.mysql;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Test;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
-import org.vitaly.dao.implementation.connectionPool.MysqlConnectionPool;
+import org.vitaly.dao.impl.mysql.connectionPool.MysqlConnectionPool;
 import org.vitaly.dao.abstraction.CarDao;
 import org.vitaly.dao.abstraction.LocationDao;
 import org.vitaly.dao.exception.DaoException;

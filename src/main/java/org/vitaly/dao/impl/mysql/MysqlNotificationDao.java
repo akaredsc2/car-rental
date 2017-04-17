@@ -1,7 +1,7 @@
-package org.vitaly.dao.implementation;
+package org.vitaly.dao.impl.mysql;
 
-import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.abstraction.NotificationDao;
+import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.model.notification.Notification;
 import org.vitaly.model.notification.NotificationStatus;
 import org.vitaly.util.dao.DaoTemplate;

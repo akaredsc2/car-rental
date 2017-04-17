@@ -1,4 +1,4 @@
-package org.vitaly.dao.implementation.transaction;
+package org.vitaly.dao.impl.mysql.transaction;
 
 import org.junit.Test;
 import org.mockito.InOrder;

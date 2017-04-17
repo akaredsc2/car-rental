@@ -1,4 +1,4 @@
-package org.vitaly.dao.implementation.factory;
+package org.vitaly.dao.impl.mysql.factory;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -7,7 +7,7 @@ import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.abstraction.factory.TransactionFactory;
 import org.vitaly.dao.abstraction.transaction.Transaction;
 import org.vitaly.dao.exception.DaoException;
-import org.vitaly.dao.implementation.transaction.MysqlTransaction;
+import org.vitaly.dao.impl.mysql.transaction.MysqlTransaction;
 
 import java.sql.SQLException;
 

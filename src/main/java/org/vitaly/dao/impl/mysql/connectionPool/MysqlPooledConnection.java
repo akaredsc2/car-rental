@@ -1,4 +1,4 @@
-package org.vitaly.dao.implementation.connectionPool;
+package org.vitaly.dao.impl.mysql.connectionPool;
 
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 

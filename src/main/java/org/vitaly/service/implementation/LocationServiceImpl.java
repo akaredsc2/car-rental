@@ -1,13 +1,14 @@
 package org.vitaly.service.implementation;
 
-import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
-//import org.vitaly.dao.abstraction.DaoFactory;
 import org.vitaly.dao.abstraction.LocationDao;
+import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.model.location.Location;
 import org.vitaly.service.abstraction.LocationService;
 
 import java.util.List;
 import java.util.Optional;
+
+//import org.vitaly.dao.abstraction.DaoFactory;
 
 /**
  * Created by vitaly on 2017-04-10.

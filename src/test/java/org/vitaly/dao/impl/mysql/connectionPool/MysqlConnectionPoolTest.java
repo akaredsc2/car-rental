@@ -1,10 +1,8 @@
-package org.vitaly.dao.implementation.connectionPool;
+package org.vitaly.dao.impl.mysql.connectionPool;
 
 import org.junit.Test;
 import org.vitaly.dao.abstraction.connectionPool.ConnectionPool;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
-import org.vitaly.dao.implementation.connectionPool.MysqlConnectionPool;
-import org.vitaly.dao.implementation.connectionPool.MysqlPooledConnection;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;

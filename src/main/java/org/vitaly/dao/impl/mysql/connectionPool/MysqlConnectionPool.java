@@ -1,4 +1,4 @@
-package org.vitaly.dao.implementation.connectionPool;
+package org.vitaly.dao.impl.mysql.connectionPool;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.logging.log4j.LogManager;

@@ -1,12 +1,12 @@
-package org.vitaly.dao.implementation.transaction;
+package org.vitaly.dao.impl.mysql.transaction;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.abstraction.*;
+import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.abstraction.transaction.Transaction;
 import org.vitaly.dao.exception.DaoException;
-import org.vitaly.dao.implementation.*;
+import org.vitaly.dao.impl.mysql.*;
 
 import java.sql.SQLException;
 

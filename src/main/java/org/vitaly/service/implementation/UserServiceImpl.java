@@ -1,14 +1,15 @@
 package org.vitaly.service.implementation;
 
-import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
-//import org.vitaly.dao.abstraction.DaoFactory;
 import org.vitaly.dao.abstraction.UserDao;
+import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.model.user.User;
 import org.vitaly.model.user.UserRole;
 import org.vitaly.service.abstraction.UserService;
 
 import java.util.List;
 import java.util.Optional;
+
+//import org.vitaly.dao.abstraction.DaoFactory;
 
 /**
  * Created by vitaly on 2017-04-10.

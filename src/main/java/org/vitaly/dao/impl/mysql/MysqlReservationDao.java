@@ -1,7 +1,7 @@
-package org.vitaly.dao.implementation;
+package org.vitaly.dao.impl.mysql;
 
-import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.abstraction.ReservationDao;
+import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.model.reservation.Reservation;
 import org.vitaly.model.reservation.ReservationState;
 import org.vitaly.util.dao.DaoTemplate;
