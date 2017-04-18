@@ -5,7 +5,7 @@ import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.impl.mysql.connectionPool.MysqlConnectionPool;
 import org.vitaly.model.user.User;
 import org.vitaly.service.abstraction.UserService;
-import org.vitaly.service.implementation.UserServiceImpl;
+import org.vitaly.service.impl.UserServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -39,9 +39,10 @@ public class CarRentalServlet extends HttpServlet {
 
                 ConnectionPool pool = MysqlConnectionPool.getInstance();
                 PooledConnection connection = pool.getConnection();
-                UserService userService = new UserServiceImpl(connection);
+//                UserService userService = new UserServiceImpl(connection);
 
-                Optional<User> user = userService.authenticate(userLogin, userPassword);
+//                Optional<User> user = userService.authenticate(userLogin, userPassword);
+                Optional<User> user = Optional.empty();
 
                 if (user.isPresent()) {
                     HttpSession session = req.getSession();

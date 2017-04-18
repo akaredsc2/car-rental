@@ -2,11 +2,11 @@ package org.vitaly.dao.impl.mysql;
 
 import org.vitaly.dao.abstraction.UserDao;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
-import org.vitaly.model.user.User;
-import org.vitaly.model.user.UserRole;
-import org.vitaly.dao.impl.mysql.template.DaoTemplate;
 import org.vitaly.dao.impl.mysql.mapper.Mapper;
 import org.vitaly.dao.impl.mysql.mapper.UserMapper;
+import org.vitaly.dao.impl.mysql.template.DaoTemplate;
+import org.vitaly.model.user.User;
+import org.vitaly.model.user.UserRole;
 
 import java.sql.Date;
 import java.util.*;

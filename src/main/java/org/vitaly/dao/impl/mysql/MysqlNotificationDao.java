@@ -2,11 +2,11 @@ package org.vitaly.dao.impl.mysql;
 
 import org.vitaly.dao.abstraction.NotificationDao;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
-import org.vitaly.model.notification.Notification;
-import org.vitaly.model.notification.NotificationStatus;
-import org.vitaly.dao.impl.mysql.template.DaoTemplate;
 import org.vitaly.dao.impl.mysql.mapper.Mapper;
 import org.vitaly.dao.impl.mysql.mapper.NotificationMapper;
+import org.vitaly.dao.impl.mysql.template.DaoTemplate;
+import org.vitaly.model.notification.Notification;
+import org.vitaly.model.notification.NotificationStatus;
 
 import java.util.*;
 
