@@ -1,7 +1,6 @@
 package org.vitaly.dao.impl.mysql.mapper;
 
 import org.junit.Test;
-import org.vitaly.dao.abstraction.mapper.Mapper;
 import org.vitaly.model.car.Car;
 import org.vitaly.model.reservation.Reservation;
 import org.vitaly.model.reservation.ReservationStateEnum;

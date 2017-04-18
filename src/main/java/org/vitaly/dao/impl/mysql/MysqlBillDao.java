@@ -5,7 +5,7 @@ import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.model.bill.Bill;
 import org.vitaly.dao.impl.mysql.template.DaoTemplate;
 import org.vitaly.dao.impl.mysql.mapper.BillMapper;
-import org.vitaly.dao.abstraction.mapper.Mapper;
+import org.vitaly.dao.impl.mysql.mapper.Mapper;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -42,12 +42,16 @@ public class MysqlBillDao implements BillDao {
                     "SET is_paid = ? " +
                     "WHERE bill_id = ?";
 
-    private DaoTemplate daoTemplate;
     private Mapper<Bill> mapper;
+    private DaoTemplate daoTemplate;
 
     public MysqlBillDao(PooledConnection connection) {
-        this.daoTemplate = new DaoTemplate(connection);
-        this.mapper = new BillMapper();
+        this(new BillMapper(), new DaoTemplate(connection));
+    }
+
+    public MysqlBillDao(Mapper<Bill> mapper, DaoTemplate daoTemplate) {
+        this.mapper = mapper;
+        this.daoTemplate = daoTemplate;
     }
 
     @Override

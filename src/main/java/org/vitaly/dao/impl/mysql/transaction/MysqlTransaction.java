@@ -7,6 +7,8 @@ import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.abstraction.transaction.Transaction;
 import org.vitaly.dao.exception.DaoException;
 import org.vitaly.dao.impl.mysql.*;
+import org.vitaly.dao.impl.mysql.factory.MapperFactory;
+import org.vitaly.dao.impl.mysql.template.DaoTemplate;
 
 import java.sql.SQLException;
 
@@ -17,7 +19,8 @@ public class MysqlTransaction implements Transaction {
     private static Logger logger = LogManager.getLogger(MysqlTransaction.class.getName());
 
     private PooledConnection pooledConnection;
-    private boolean autoCommitBeforeTransaction;
+    private DaoTemplate daoTemplate;
+    private MapperFactory mapperFactory;
 
     private BillDao billDao;
     private CarDao carDao;
@@ -26,24 +29,35 @@ public class MysqlTransaction implements Transaction {
     private ReservationDao reservationDao;
     private UserDao userDao;
 
+    private boolean autoCommitBeforeTransaction;
+
     MysqlTransaction(PooledConnection pooledConnection) {
-        this(pooledConnection, false);
+        this(pooledConnection, new MapperFactory(), false);
     }
 
-    private MysqlTransaction(PooledConnection pooledConnection, boolean autoCommitBeforeTransaction) {
+    private MysqlTransaction(PooledConnection pooledConnection, MapperFactory mapperFactory,
+                             boolean autoCommitBeforeTransaction) {
         this.pooledConnection = pooledConnection;
+        this.mapperFactory = mapperFactory;
+        this.daoTemplate = new DaoTemplate(pooledConnection);
         this.autoCommitBeforeTransaction = autoCommitBeforeTransaction;
     }
 
-    public static Transaction createTransaction(PooledConnection pooledConnection) throws SQLException {
+    static Transaction createTransaction(PooledConnection pooledConnection) throws SQLException {
+        return createTransaction(pooledConnection, new MapperFactory());
+    }
+
+    public static Transaction createTransaction(PooledConnection pooledConnection, MapperFactory mapperFactory)
+            throws SQLException {
+        boolean autoCommitBeforeTransaction = pooledConnection.getAutoCommit();
         pooledConnection.setAutoCommit(false);
-        return new MysqlTransaction(pooledConnection, pooledConnection.getAutoCommit());
+        return new MysqlTransaction(pooledConnection, mapperFactory, autoCommitBeforeTransaction);
     }
 
     @Override
     public BillDao getBillDao() {
         if (billDao == null) {
-            billDao = new MysqlBillDao(pooledConnection);
+            billDao = new MysqlBillDao(mapperFactory.getBillMapper(), daoTemplate);
         }
         return billDao;
     }
@@ -51,7 +65,7 @@ public class MysqlTransaction implements Transaction {
     @Override
     public CarDao getCarDao() {
         if (carDao == null) {
-            carDao = new MysqlCarDao(pooledConnection);
+            carDao = new MysqlCarDao(mapperFactory.getCarMapper(), daoTemplate);
         }
         return carDao;
     }
@@ -59,7 +73,7 @@ public class MysqlTransaction implements Transaction {
     @Override
     public LocationDao getLocationDao() {
         if (locationDao == null) {
-            locationDao = new MysqlLocationDao(pooledConnection);
+            locationDao = new MysqlLocationDao(mapperFactory.getLocationMapper(), daoTemplate);
         }
         return locationDao;
     }
@@ -67,7 +81,7 @@ public class MysqlTransaction implements Transaction {
     @Override
     public NotificationDao getNotificationDao() {
         if (notificationDao == null) {
-            notificationDao = new MysqlNotificationDao(pooledConnection);
+            notificationDao = new MysqlNotificationDao(mapperFactory.getNotificationMapper(), daoTemplate);
         }
         return notificationDao;
     }
@@ -75,7 +89,7 @@ public class MysqlTransaction implements Transaction {
     @Override
     public ReservationDao getReservationDao() {
         if (reservationDao == null) {
-            reservationDao = new MysqlReservationDao(pooledConnection);
+            reservationDao = new MysqlReservationDao(mapperFactory.getReservationMapper(), daoTemplate);
         }
         return reservationDao;
     }
@@ -83,7 +97,7 @@ public class MysqlTransaction implements Transaction {
     @Override
     public UserDao getUserDao() {
         if (userDao == null) {
-            userDao = new MysqlUserDao(pooledConnection);
+            userDao = new MysqlUserDao(mapperFactory.getUserMapper(), daoTemplate);
         }
         return userDao;
     }

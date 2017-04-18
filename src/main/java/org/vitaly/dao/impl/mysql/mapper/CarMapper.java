@@ -1,6 +1,5 @@
 package org.vitaly.dao.impl.mysql.mapper;
 
-import org.vitaly.dao.abstraction.mapper.Mapper;
 import org.vitaly.model.car.Car;
 import org.vitaly.model.car.CarState;
 import org.vitaly.model.car.CarStateEnum;

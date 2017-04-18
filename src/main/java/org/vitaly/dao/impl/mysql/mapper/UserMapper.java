@@ -1,6 +1,5 @@
 package org.vitaly.dao.impl.mysql.mapper;
 
-import org.vitaly.dao.abstraction.mapper.Mapper;
 import org.vitaly.model.user.User;
 import org.vitaly.model.user.UserRole;
 

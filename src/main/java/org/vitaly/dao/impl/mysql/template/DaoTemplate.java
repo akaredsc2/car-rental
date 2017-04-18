@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.exception.DaoException;
-import org.vitaly.dao.abstraction.mapper.Mapper;
+import org.vitaly.dao.impl.mysql.mapper.Mapper;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

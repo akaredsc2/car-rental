@@ -5,7 +5,7 @@ import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.model.car.Car;
 import org.vitaly.dao.impl.mysql.template.DaoTemplate;
 import org.vitaly.dao.impl.mysql.mapper.CarMapper;
-import org.vitaly.dao.abstraction.mapper.Mapper;
+import org.vitaly.dao.impl.mysql.mapper.Mapper;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -60,8 +60,12 @@ public class MysqlCarDao implements CarDao {
     private DaoTemplate daoTemplate;
 
     public MysqlCarDao(PooledConnection connection) {
-        this.mapper = new CarMapper();
-        this.daoTemplate = new DaoTemplate(connection);
+        this(new CarMapper(), new DaoTemplate(connection));
+    }
+
+    public MysqlCarDao(Mapper<Car> mapper, DaoTemplate daoTemplate) {
+        this.mapper = mapper;
+        this.daoTemplate = daoTemplate;
     }
 
     @Override

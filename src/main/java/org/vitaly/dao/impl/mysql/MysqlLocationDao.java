@@ -5,7 +5,7 @@ import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.model.location.Location;
 import org.vitaly.dao.impl.mysql.template.DaoTemplate;
 import org.vitaly.dao.impl.mysql.mapper.LocationMapper;
-import org.vitaly.dao.abstraction.mapper.Mapper;
+import org.vitaly.dao.impl.mysql.mapper.Mapper;
 
 import java.util.*;
 
@@ -41,8 +41,12 @@ public class MysqlLocationDao implements LocationDao {
     private DaoTemplate daoTemplate;
 
     public MysqlLocationDao(PooledConnection connection) {
-        this.mapper = new LocationMapper();
-        this.daoTemplate = new DaoTemplate(connection);
+        this(new LocationMapper(), new DaoTemplate(connection));
+    }
+
+    public MysqlLocationDao(Mapper<Location> mapper, DaoTemplate daoTemplate) {
+        this.mapper = mapper;
+        this.daoTemplate = daoTemplate;
     }
 
     @Override

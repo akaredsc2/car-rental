@@ -1,7 +1,6 @@
 package org.vitaly.dao.impl.mysql.mapper;
 
 import org.junit.Test;
-import org.vitaly.dao.abstraction.mapper.Mapper;
 import org.vitaly.data.TestData;
 import org.vitaly.model.notification.Notification;
 

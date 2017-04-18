@@ -18,16 +18,18 @@ public class MysqlTransactionFactory implements TransactionFactory {
     private static Logger logger = LogManager.getLogger(MysqlTransactionFactory.class.getName());
 
     private ConnectionPool connectionPool;
+    private MapperFactory mapperFactory;
 
-    public MysqlTransactionFactory(ConnectionPool connectionPool) {
+    public MysqlTransactionFactory(ConnectionPool connectionPool, MapperFactory mapperFactory) {
         this.connectionPool = connectionPool;
+        this.mapperFactory = mapperFactory;
     }
 
     @Override
     public Transaction createTransaction() {
         try {
             PooledConnection pooledConnection = connectionPool.getConnection();
-            return MysqlTransaction.createTransaction(pooledConnection);
+            return MysqlTransaction.createTransaction(pooledConnection, mapperFactory);
         } catch (SQLException e) {
             String message = "Error while creating transaction";
             logger.error(message, e);

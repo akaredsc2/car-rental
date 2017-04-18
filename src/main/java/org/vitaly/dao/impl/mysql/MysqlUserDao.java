@@ -5,7 +5,7 @@ import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.model.user.User;
 import org.vitaly.model.user.UserRole;
 import org.vitaly.dao.impl.mysql.template.DaoTemplate;
-import org.vitaly.dao.abstraction.mapper.Mapper;
+import org.vitaly.dao.impl.mysql.mapper.Mapper;
 import org.vitaly.dao.impl.mysql.mapper.UserMapper;
 
 import java.sql.Date;
@@ -55,8 +55,12 @@ public class MysqlUserDao implements UserDao {
     private DaoTemplate daoTemplate;
 
     public MysqlUserDao(PooledConnection connection) {
-        this.mapper = new UserMapper();
-        this.daoTemplate = new DaoTemplate(connection);
+        this(new UserMapper(), new DaoTemplate(connection));
+    }
+
+    public MysqlUserDao(Mapper<User> mapper, DaoTemplate daoTemplate) {
+        this.mapper = mapper;
+        this.daoTemplate = daoTemplate;
     }
 
     @Override
