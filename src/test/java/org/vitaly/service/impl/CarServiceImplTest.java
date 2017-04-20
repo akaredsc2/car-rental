@@ -6,7 +6,6 @@ import org.mockito.Mockito;
 import org.vitaly.dao.abstraction.CarDao;
 import org.vitaly.dao.abstraction.factory.TransactionFactory;
 import org.vitaly.dao.abstraction.transaction.Transaction;
-import org.vitaly.model.car.CarState;
 import org.vitaly.model.car.CarStateEnum;
 import org.vitaly.service.abstraction.CarService;
 import org.vitaly.service.impl.dto.CarDto;

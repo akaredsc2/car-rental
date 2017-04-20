@@ -11,7 +11,6 @@ import org.vitaly.service.impl.dto.UserDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by vitaly on 2017-04-10.
