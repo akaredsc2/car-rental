@@ -39,6 +39,7 @@ public class UserServiceImplTest {
         InOrder inOrder = inOrder(userDao, transaction);
         inOrder.verify(userDao).create(any());
         inOrder.verify(transaction).commit();
+        inOrder.verify(transaction).close();
     }
 
     @Test
@@ -50,7 +51,9 @@ public class UserServiceImplTest {
         when(transaction.getUserDao()).thenReturn(userDao);
         userService.authenticate(login, password);
 
-        verify(userDao).authenticate(login, password);
+        InOrder inOrder = inOrder(userDao, transaction);
+        inOrder.verify(userDao).authenticate(login, password);
+        inOrder.verify(transaction).close();
     }
 
     @Test
@@ -67,6 +70,7 @@ public class UserServiceImplTest {
         InOrder inOrder = inOrder(userDao, transaction);
         inOrder.verify(userDao).changeRole(userId, role);
         inOrder.verify(transaction).commit();
+        inOrder.verify(transaction).close();
     }
 
     @Test
@@ -83,5 +87,6 @@ public class UserServiceImplTest {
         InOrder inOrder = inOrder(userDao, transaction);
         inOrder.verify(userDao).changePassword(userId, newPassword);
         inOrder.verify(transaction).commit();
+        inOrder.verify(transaction).close();
     }
 }
