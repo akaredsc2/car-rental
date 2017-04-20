@@ -35,6 +35,7 @@ public class UserServiceImpl implements UserService {
 
             UserDao userDao = transaction.getUserDao();
             Optional<Long> createdUserId = userDao.create(user);
+
             transaction.commit();
 
             return createdUserId;
@@ -55,6 +56,7 @@ public class UserServiceImpl implements UserService {
             long userId = userDto.getId();
             UserDao userDao = transaction.getUserDao();
             userDao.changeRole(userId, newRole);
+
             transaction.commit();
         }
     }
@@ -65,6 +67,7 @@ public class UserServiceImpl implements UserService {
             long userId = userDto.getId();
             UserDao userDao = transaction.getUserDao();
             userDao.changePassword(userId, newPassword);
+
             transaction.commit();
         }
     }

@@ -177,7 +177,7 @@ public class MysqlCarDaoTest {
     public void addExistingCarToExistingLocationReturnsTrue() throws Exception {
         Car createdCar = TestUtil.createEntityWithId(car1, carDao);
 
-        boolean addResult = carDao.addCarToLocation(createdCar.getId(), location.getId());
+        boolean addResult = carDao.moveCarToLocation(createdCar.getId(), location.getId());
 
         assertTrue(addResult);
     }
@@ -187,8 +187,8 @@ public class MysqlCarDaoTest {
         Car createdCar1 = TestUtil.createEntityWithId(car1, carDao);
         Car createdCar2 = TestUtil.createEntityWithId(car2, carDao);
 
-        carDao.addCarToLocation(createdCar1.getId(), location.getId());
-        carDao.addCarToLocation(createdCar2.getId(), location.getId());
+        carDao.moveCarToLocation(createdCar1.getId(), location.getId());
+        carDao.moveCarToLocation(createdCar2.getId(), location.getId());
 
         List<Car> carsAtLocation = carDao.findCarsAtLocation(location.getId());
 
@@ -197,7 +197,7 @@ public class MysqlCarDaoTest {
 
     @Test
     public void addNonExistingCarToExistingLocationReturnsFalse() throws Exception {
-        boolean addResult = carDao.addCarToLocation(-1, location.getId());
+        boolean addResult = carDao.moveCarToLocation(-1, location.getId());
 
         assertFalse(addResult);
     }
@@ -206,7 +206,7 @@ public class MysqlCarDaoTest {
     public void addExistingCarToNonExistingLocationShouldThrowException() throws Exception {
         Car createdCar = TestUtil.createEntityWithId(car1, carDao);
 
-        carDao.addCarToLocation(createdCar.getId(), -1);
+        carDao.moveCarToLocation(createdCar.getId(), -1);
     }
 
     @Test

@@ -128,7 +128,7 @@ public class MysqlLocationDaoTest {
         car = TestUtil.createEntityWithId(car, carDao);
 
         location1 = TestUtil.createEntityWithId(location1, locationDao);
-        carDao.addCarToLocation(car.getId(), location1.getId());
+        carDao.moveCarToLocation(car.getId(), location1.getId());
 
         Location foundLocation = locationDao.findLocationByCarId(car.getId()).orElseThrow(AssertionError::new);
 /*

@@ -36,6 +36,7 @@ public class NotificationServiceImpl implements NotificationService {
             long createdNotificationId = notificationDao.create(notification).orElseThrow(ServiceException::new);
             long userId = userDto.getId();
             notificationDao.addNotificationToUser(createdNotificationId, userId);
+
             transaction.commit();
         }
     }
@@ -43,8 +44,8 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public List<Notification> findNotificationsOfUser(UserDto userDto) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
-            NotificationDao notificationDao = transaction.getNotificationDao();
             long userId = userDto.getId();
+            NotificationDao notificationDao = transaction.getNotificationDao();
             return notificationDao.findNotificationsByUserId(userId);
         }
     }
@@ -55,6 +56,7 @@ public class NotificationServiceImpl implements NotificationService {
             long notificationId = notificationDto.getId();
             NotificationDao notificationDao = transaction.getNotificationDao();
             notificationDao.markNotificationAsViewed(notificationId);
+
             transaction.commit();
         }
     }

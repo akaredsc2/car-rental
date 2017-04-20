@@ -127,7 +127,7 @@ public class MysqlCarDao implements CarDao {
     }
 
     @Override
-    public boolean addCarToLocation(long carId, long locationId) {
+    public boolean moveCarToLocation(long carId, long locationId) {
         HashMap<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, locationId);
         parameterMap.put(2, carId);

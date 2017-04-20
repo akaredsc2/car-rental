@@ -55,7 +55,6 @@ public class NotificationServiceImplTest {
 
         when(transactionFactory.createTransaction()).thenReturn(transaction);
         when(transaction.getNotificationDao()).thenReturn(notificationDao);
-        when(notificationDao.findNotificationsByUserId(userDto.getId())).thenReturn(new ArrayList<>());
         notificationService.findNotificationsOfUser(userDto);
 
         InOrder inOrder = inOrder(notificationDao, transaction);
