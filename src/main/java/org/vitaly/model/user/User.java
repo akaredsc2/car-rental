@@ -158,7 +158,7 @@ public class User implements Entity {
         }
 
         public Builder setBirthDate(LocalDate birthDate) {
-            requireNotNull(birthDate, "Must not be null!");
+            requireNotNull(birthDate, "Birth date must not be null!");
 
             this.birthDate = birthDate;
             return this;
