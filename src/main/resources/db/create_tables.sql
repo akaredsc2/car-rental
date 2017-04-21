@@ -49,11 +49,31 @@ CREATE TABLE location (
   city        VARCHAR(20) NOT NULL,
   street      VARCHAR(20) NOT NULL,
   building    VARCHAR(20) NOT NULL,
+  photo_url   VARCHAR(128)         DEFAULT NULL,
 
   PRIMARY KEY (location_id)
 );
 ALTER TABLE location
   ADD CONSTRAINT u_location UNIQUE (state, city, street, building);
+
+CREATE TABLE model (
+  model_id     BIGINT      NOT NULL AUTO_INCREMENT,
+  model_name   VARCHAR(50) NOT NULL,
+  photo_url    VARCHAR(128)         DEFAULT NULL,
+  doors        INTEGER     NOT NULL,
+  seats        INTEGER     NOT NULL,
+  horse_powers INTEGER     NOT NULL,
+
+  PRIMARY KEY (model_id)
+);
+ALTER TABLE model
+  ADD CONSTRAINT u_model UNIQUE (model_name);
+ALTER TABLE model
+  ADD CONSTRAINT c_model_doors CHECK (doors >= 0 AND doors <= 10);
+ALTER TABLE model
+  ADD CONSTRAINT c_model_seats CHECK (seats >= 1 AND seats <= 100);
+ALTER TABLE model
+  ADD CONSTRAINT c_model_horse_powers CHECK (horse_powers >= 0 AND horse_powers <= 3000);
 
 CREATE TABLE car (
   car_id             BIGINT              NOT NULL AUTO_INCREMENT,
@@ -63,9 +83,8 @@ CREATE TABLE car (
                            'returned',
                            'unavailable',
                            'maintained') NOT NULL DEFAULT 'unavailable',
-  model              VARCHAR(20)         NOT NULL,
+  model_id           BIGINT              NOT NULL,
   registration_plate VARCHAR(20)         NOT NULL,
-  photo_url          TEXT                NOT NULL,
   color              VARCHAR(20)         NOT NULL,
   price_per_day      DECIMAL(10, 2)      NOT NULL,
   location_id        BIGINT                       DEFAULT NULL,
@@ -76,6 +95,8 @@ ALTER TABLE car
   ADD CONSTRAINT u_car UNIQUE (registration_plate);
 ALTER TABLE car
   ADD CONSTRAINT fk_car_location FOREIGN KEY (location_id) REFERENCES location (location_id);
+ALTER TABLE car
+  ADD CONSTRAINT fk_car_model FOREIGN KEY (model_id) REFERENCES model (model_id);
 
 CREATE TABLE reservation (
   reservation_id     BIGINT           NOT NULL AUTO_INCREMENT,
@@ -105,14 +126,12 @@ ALTER TABLE reservation
 CREATE TABLE bill (
   bill_id           BIGINT         NOT NULL AUTO_INCREMENT,
   is_paid           BOOLEAN        NOT NULL DEFAULT FALSE,
-  reservation_id    BIGINT         DEFAULT NULL,
+  reservation_id    BIGINT                  DEFAULT NULL,
   description       VARCHAR(128)   NOT NULL,
   cash_amount       DECIMAL(10, 2) NOT NULL,
   creation_datetime DATETIME       NOT NULL,
 
-  PRIMARY KEY (bill_id),
-  FOREIGN KEY (reservation_id) REFERENCES reservation (reservation_id),
-  CHECK (cash_amount > 0)
+  PRIMARY KEY (bill_id)
 );
 ALTER TABLE bill
   ADD CONSTRAINT fk_bill_reservation FOREIGN KEY (reservation_id) REFERENCES reservation (reservation_id);
