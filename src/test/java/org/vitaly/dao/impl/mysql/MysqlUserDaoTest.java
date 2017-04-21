@@ -5,7 +5,6 @@ import org.junit.AfterClass;
 import org.junit.Test;
 import org.vitaly.dao.abstraction.UserDao;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
-import org.vitaly.dao.exception.DaoException;
 import org.vitaly.dao.impl.mysql.connectionPool.MysqlConnectionPool;
 import org.vitaly.data.TestData;
 import org.vitaly.data.TestUtil;
@@ -108,18 +107,17 @@ public class MysqlUserDaoTest {
         assertThat(exAdmin.getRole(), equalTo(UserRole.CLIENT));
     }
 
-    @Test(expected = DaoException.class)
-    public void creatingUserWithSameLoginShouldThrowException() throws Exception {
-        userDao.create(client1);
+    @Test
+    public void creatingUserWithSameLoginReturnsEmptyOptional() throws Exception {
         userDao.create(client1);
 
-        boolean isCreated = userDao.create(client1).isPresent();
+        boolean creatingDuplicateEntryResult = userDao.create(client1).isPresent();
 
-        assertFalse(isCreated);
+        assertFalse(creatingDuplicateEntryResult);
     }
 
-    @Test(expected = DaoException.class)
-    public void creatingUserWithSamePassportNumberShouldThrowException() throws Exception {
+    @Test
+    public void creatingUserWithSamePassportNumberReturnsEmptyOptional() throws Exception {
         userDao.create(client1);
 
         User clientWithSamePassportNumber = new User.Builder()
@@ -131,11 +129,13 @@ public class MysqlUserDaoTest {
                 .setBirthDate(client2.getBirthDate())
                 .build();
 
-        userDao.create(clientWithSamePassportNumber);
+        boolean creatingDuplicateEntryResult = userDao.create(clientWithSamePassportNumber).isPresent();
+
+        assertFalse(creatingDuplicateEntryResult);
     }
 
-    @Test(expected = DaoException.class)
-    public void creatingUserWithSameDriverLicenceNumberShouldThrowException() throws Exception {
+    @Test
+    public void creatingUserWithSameDriverLicenceNumberReturnsEmptyOptional() throws Exception {
         userDao.create(client1);
 
         User clientWithSameDriverLicenceNumber = new User.Builder()
@@ -147,7 +147,9 @@ public class MysqlUserDaoTest {
                 .setBirthDate(client2.getBirthDate())
                 .build();
 
-        userDao.create(clientWithSameDriverLicenceNumber);
+        boolean creatingDuplicateEntryResult = userDao.create(clientWithSameDriverLicenceNumber).isPresent();
+
+        assertFalse(creatingDuplicateEntryResult);
     }
 
     @Test(expected = IllegalArgumentException.class)

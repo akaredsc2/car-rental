@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.vitaly.dao.abstraction.CarDao;
 import org.vitaly.dao.abstraction.LocationDao;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
-import org.vitaly.dao.exception.DaoException;
 import org.vitaly.dao.impl.mysql.connectionPool.MysqlConnectionPool;
 import org.vitaly.data.TestData;
 import org.vitaly.data.TestUtil;
@@ -105,10 +104,13 @@ public class MysqlLocationDaoTest {
         assertTrue(creationResult);
     }
 
-    @Test(expected = DaoException.class)
-    public void creatingLocationWithSameStateCityStreetAndBuildingShouldThrowException() throws Exception {
+    @Test
+    public void creatingLocationWithSameStateCityStreetAndBuildingReturnsEmptyOptional() throws Exception {
         locationDao.create(location1);
-        locationDao.create(location1);
+
+        boolean creatingDuplicateEntryResult = locationDao.create(location1).isPresent();
+
+        assertFalse(creatingDuplicateEntryResult);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -131,11 +133,7 @@ public class MysqlLocationDaoTest {
         carDao.moveCarToLocation(car.getId(), location1.getId());
 
         Location foundLocation = locationDao.findLocationByCarId(car.getId()).orElseThrow(AssertionError::new);
-/*
-        connection.prepareStatement(CAR_CLEAN_UP_QUERY)
-                .executeUpdate();
-        connection.commit();
-*/
+
         assertEquals(foundLocation, location1);
     }
 

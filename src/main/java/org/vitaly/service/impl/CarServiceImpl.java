@@ -10,7 +10,6 @@ import org.vitaly.service.impl.dto.LocationDto;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -22,6 +21,27 @@ public class CarServiceImpl implements CarService {
 
     public CarServiceImpl(TransactionFactory transactionFactory) {
         this.transactionFactory = transactionFactory;
+    }
+
+    @Override
+    public boolean addNewCar(CarDto carDto) {
+        try (Transaction transaction = transactionFactory.createTransaction()) {
+            Car car = new Car.Builder()
+                    .setState(carDto.getState())
+                    .setColor(carDto.getColor())
+                    .setPricePerDay(carDto.getPricePerDay())
+                    .setPhotoUrl(carDto.getPhotoUrl())
+                    .setModel(carDto.getModel())
+                    .setRegistrationPlate(carDto.getRegistrationPlate())
+                    .build();
+
+            CarDao carDao = transaction.getCarDao();
+            boolean isCarCreated = carDao.create(car).isPresent();
+
+            transaction.commit();
+
+            return isCarCreated;
+        }
     }
 
     @Override
@@ -57,27 +77,6 @@ public class CarServiceImpl implements CarService {
                     .stream()
                     .filter(carPredicate)
                     .collect(Collectors.toList());
-        }
-    }
-
-    @Override
-    public Optional<Long> addNewCar(CarDto carDto) {
-        try (Transaction transaction = transactionFactory.createTransaction()) {
-            Car car = new Car.Builder()
-                    .setState(carDto.getState())
-                    .setColor(carDto.getColor())
-                    .setPricePerDay(carDto.getPricePerDay())
-                    .setPhotoUrl(carDto.getPhotoUrl())
-                    .setModel(carDto.getModel())
-                    .setRegistrationPlate(carDto.getRegistrationPlate())
-                    .build();
-
-            CarDao carDao = transaction.getCarDao();
-            Optional<Long> createdCarId = carDao.create(car);
-
-            transaction.commit();
-
-            return createdCarId;
         }
     }
 

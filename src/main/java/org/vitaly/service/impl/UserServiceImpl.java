@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<Long> registerNewUser(UserDto userDto) {
+    public boolean registerNewUser(UserDto userDto) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
             User user = new User.Builder()
                     .setLogin(userDto.getLogin())
@@ -34,11 +34,11 @@ public class UserServiceImpl implements UserService {
                     .build();
 
             UserDao userDao = transaction.getUserDao();
-            Optional<Long> createdUserId = userDao.create(user);
+            boolean isUserCreated = userDao.create(user).isPresent();
 
             transaction.commit();
 
-            return createdUserId;
+            return isUserCreated;
         }
     }
 

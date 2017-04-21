@@ -24,7 +24,7 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public void addNewLocation(LocationDto locationDto) {
+    public boolean addNewLocation(LocationDto locationDto) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
             Location location = new Location.Builder()
                     .setState(locationDto.getState())
@@ -34,9 +34,11 @@ public class LocationServiceImpl implements LocationService {
                     .build();
 
             LocationDao locationDao = transaction.getLocationDao();
-            locationDao.create(location);
+            boolean isLocationCreated = locationDao.create(location).isPresent();
 
             transaction.commit();
+
+            return isLocationCreated;
         }
     }
 

@@ -10,7 +10,7 @@ import java.util.Optional;
  * Created by vitaly on 2017-04-10.
  */
 public interface UserService {
-    Optional<Long> registerNewUser(UserDto userDto);
+    boolean registerNewUser(UserDto userDto);
 
     Optional<User> authenticate(String login, String password);
 

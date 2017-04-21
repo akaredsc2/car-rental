@@ -12,7 +12,7 @@ import java.util.function.Predicate;
  * Created by vitaly on 2017-04-10.
  */
 public interface LocationService {
-    void addNewLocation(LocationDto locationDto);
+    boolean addNewLocation(LocationDto locationDto);
 
     Optional<Location> findLocationOfCar(CarDto carDto);
 

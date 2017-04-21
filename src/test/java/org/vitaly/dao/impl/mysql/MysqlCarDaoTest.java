@@ -124,10 +124,13 @@ public class MysqlCarDaoTest {
         assertTrue(creationResult);
     }
 
-    @Test(expected = DaoException.class)
-    public void creatingCarWithSameRegistrationPlateShouldThrowException() throws Exception {
+    @Test
+    public void creatingCarWithSameRegistrationPlateReturnsEmptyOptional() throws Exception {
         carDao.create(car1);
-        carDao.create(car1);
+
+        boolean creatingDuplicateEntryResult = carDao.create(car1).isPresent();
+
+        assertFalse(creatingDuplicateEntryResult);
     }
 
     @Test

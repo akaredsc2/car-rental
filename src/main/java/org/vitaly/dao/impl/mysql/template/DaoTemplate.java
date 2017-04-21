@@ -21,6 +21,7 @@ public class DaoTemplate {
     private static final String ERROR_WHILE_EXECUTING_SELECT_QUERY = "Error while executing select query.";
     private static final String ERROR_WHILE_EXECUTING_UPDATE_QUERY = "Error while executing update query.";
     private static final String ERROR_WHILE_EXECUTING_INSERT_QUERY = "Error while executing insert query.";
+    private static final int ERROR_CODE_DUPLICATE_ENTRY = 1062;
 
     private static Logger logger = LogManager.getLogger(DaoTemplate.class.getName());
     private PooledConnection connection;
@@ -45,12 +46,12 @@ public class DaoTemplate {
                 }
                 resultSet.close();
             }
+
+            return result;
         } catch (SQLException e) {
             logger.error(ERROR_WHILE_EXECUTING_SELECT_QUERY, e);
-            throw new DaoException(e);
+            throw new DaoException(ERROR_WHILE_EXECUTING_SELECT_QUERY, e);
         }
-
-        return result;
     }
 
     private void setQueryParameters(PreparedStatement statement, Map<Integer, Object> parameterMap)
@@ -86,7 +87,9 @@ public class DaoTemplate {
             }
         } catch (SQLException e) {
             logger.error(ERROR_WHILE_EXECUTING_INSERT_QUERY, e);
-            throw new DaoException(e);
+            if (e.getErrorCode() != ERROR_CODE_DUPLICATE_ENTRY) {
+                throw new DaoException(ERROR_WHILE_EXECUTING_INSERT_QUERY, e);
+            }
         }
 
         return insertedId;
@@ -100,7 +103,7 @@ public class DaoTemplate {
             return statement.executeUpdate();
         } catch (SQLException e) {
             logger.error(ERROR_WHILE_EXECUTING_UPDATE_QUERY, e);
-            throw new DaoException(e);
+            throw new DaoException(ERROR_WHILE_EXECUTING_UPDATE_QUERY, e);
         }
     }
 }
