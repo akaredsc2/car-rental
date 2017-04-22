@@ -6,15 +6,17 @@ import org.vitaly.service.abstraction.*;
  * Created by vitaly on 18.04.17.
  */
 public interface ServiceFactory {
-    BillService createBillService();
+    BillService getBillService();
 
-    CarService createCarService();
+    CarModelService getCarModelService();
 
-    LocationService createLocationService();
+    CarService getCarService();
 
-    NotificationService createNotificationService();
+    LocationService getLocationService();
 
-    ReservationService createReservationService();
+    NotificationService getNotificationService();
 
-    UserService createUserService();
+    ReservationService getReservationService();
+
+    UserService getUserService();
 }

@@ -13,11 +13,10 @@ import org.vitaly.dao.impl.mysql.factory.MysqlTransactionFactory;
 public class MysqlDaoFacade implements DaoFacade {
     private static MysqlDaoFacade instance = new MysqlDaoFacade();
 
-    private ConnectionPool connectionPool;
     private TransactionFactory transactionFactory;
-    private MapperFactory mapperFactory;
 
     private MysqlDaoFacade() {
+        init();
     }
 
     public static MysqlDaoFacade getInstance() {
@@ -26,8 +25,8 @@ public class MysqlDaoFacade implements DaoFacade {
 
     @Override
     public void init() {
-        this.connectionPool = MysqlConnectionPool.getInstance();
-        this.mapperFactory = new MapperFactory();
+        ConnectionPool connectionPool = MysqlConnectionPool.getInstance();
+        MapperFactory mapperFactory = new MapperFactory();
         this.transactionFactory = new MysqlTransactionFactory(connectionPool, mapperFactory);
     }
 

@@ -32,8 +32,6 @@ public class CarServiceImpl implements CarService {
                     .setState(carDto.getState())
                     .setColor(carDto.getColor())
                     .setPricePerDay(carDto.getPricePerDay())
-//                    .setPhotoUrl(carDto.getPhotoUrl())
-//                    .setModel(carDto.getModel())
                     .setCarModel(CarModel.createDummyCarModelWithId(carDto.getId()))
                     .setRegistrationPlate(carDto.getRegistrationPlate())
                     .build();
@@ -91,8 +89,6 @@ public class CarServiceImpl implements CarService {
                     .setState(carDto.getState())
                     .setColor(carDto.getColor())
                     .setPricePerDay(carDto.getPricePerDay())
-//                    .setPhotoUrl(carDto.getPhotoUrl())
-//                    .setModel(carDto.getModel())
                     .setCarModel(CarModel.createDummyCarModelWithId(carDto.getId()))
                     .setRegistrationPlate(carDto.getRegistrationPlate())
                     .build();

@@ -106,7 +106,7 @@ public class MysqlCarModelDao implements CarModelDao {
     }
 
     @Override
-    public List<CarModel> findCarModelsWithPhotos() {
+    public List<CarModel> findCarsWithPhotos() {
         return daoTemplate.executeSelect(FIND_CAR_MODELS_WITH_PHOTOS_QUERY, mapper, Collections.emptyMap());
     }
 }

@@ -162,7 +162,7 @@ public class MysqlCarModelDaoTest {
 
         carModelDao.update(carModelWithId2.getId(), carModel2);
 
-        List<CarModel> carModelList = carModelDao.findCarModelsWithPhotos();
+        List<CarModel> carModelList = carModelDao.findCarsWithPhotos();
 
         assertThat(carModelList, allOf(
                 hasItem(carModel2),
@@ -171,7 +171,7 @@ public class MysqlCarModelDaoTest {
 
     @Test
     public void findCarModelsWithPhotosReturnsEmptyListOnEmptyTable() throws Exception {
-        List<CarModel> carList = carModelDao.findCarModelsWithPhotos();
+        List<CarModel> carList = carModelDao.findCarsWithPhotos();
 
         assertThat(carList, empty());
     }
@@ -181,7 +181,7 @@ public class MysqlCarModelDaoTest {
         carModelDao.create(carModel1);
         carModelDao.create(carModel2);
 
-        List<CarModel> carList = carModelDao.findCarModelsWithPhotos();
+        List<CarModel> carList = carModelDao.findCarsWithPhotos();
 
         assertThat(carList, empty());
     }

@@ -15,53 +15,47 @@ public class CarModelDto {
         return id;
     }
 
-    public CarModelDto setId(long id) {
+    public void setId(long id) {
         this.id = id;
-        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public CarModelDto setName(String name) {
+    public void setName(String name) {
         this.name = name;
-        return this;
     }
 
     public String getPhotoUrl() {
         return photoUrl;
     }
 
-    public CarModelDto setPhotoUrl(String photoUrl) {
+    public void setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
-        return this;
     }
 
     public int getDoorCount() {
         return doorCount;
     }
 
-    public CarModelDto setDoorCount(int doorCount) {
+    public void setDoorCount(int doorCount) {
         this.doorCount = doorCount;
-        return this;
     }
 
     public int getSeatCount() {
         return seatCount;
     }
 
-    public CarModelDto setSeatCount(int seatCount) {
+    public void setSeatCount(int seatCount) {
         this.seatCount = seatCount;
-        return this;
     }
 
     public int getHorsePowerCount() {
         return horsePowerCount;
     }
 
-    public CarModelDto setHorsePowerCount(int horsePowerCount) {
+    public void setHorsePowerCount(int horsePowerCount) {
         this.horsePowerCount = horsePowerCount;
-        return this;
     }
 }

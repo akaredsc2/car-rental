@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -109,6 +110,7 @@ public class CarServiceImplTest {
         carModelDto.setId(809);
 
         CarDto carDto = new CarDto();
+        carDto.setId(798);
         carDto.setCarModel(carModelDto);
         carDto.setColor("black");
         carDto.setPricePerDay(BigDecimal.ZERO);
@@ -120,7 +122,7 @@ public class CarServiceImplTest {
         carService.updateCar(carDto);
 
         InOrder inOrder = Mockito.inOrder(carDao, transaction);
-        inOrder.verify(carDao).update(anyLong(), any());
+        inOrder.verify(carDao).update(eq(carDto.getId()), any());
         inOrder.verify(transaction).commit();
         inOrder.verify(transaction).close();
     }

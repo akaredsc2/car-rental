@@ -9,39 +9,56 @@ import org.vitaly.service.impl.*;
  * Created by vitaly on 18.04.17.
  */
 public class ServiceFactoryImpl implements ServiceFactory {
-    private TransactionFactory transactionFactory;
+    private BillService billService;
+    private CarModelService carModelService;
+    private CarService carService;
+    private LocationService locationService;
+    private NotificationService notificationService;
+    private ReservationService reservationService;
+    private UserService userService;
 
     public ServiceFactoryImpl(TransactionFactory transactionFactory) {
-        this.transactionFactory = transactionFactory;
+        this.billService = new BillServiceImpl(transactionFactory);
+        this.carModelService = new CarModelServiceImpl(transactionFactory);
+        this.carService = new CarServiceImpl(transactionFactory);
+        this.locationService = new LocationServiceImpl(transactionFactory);
+        this.notificationService = new NotificationServiceImpl(transactionFactory);
+        this.reservationService = new ReservationServiceImpl(transactionFactory);
+        this.userService = new UserServiceImpl(transactionFactory);
     }
 
     @Override
-    public BillService createBillService() {
-        return new BillServiceImpl(transactionFactory);
+    public BillService getBillService() {
+        return billService;
     }
 
     @Override
-    public CarService createCarService() {
-        return new CarServiceImpl(transactionFactory);
+    public CarModelService getCarModelService() {
+        return carModelService;
     }
 
     @Override
-    public LocationService createLocationService() {
-        return new LocationServiceImpl(transactionFactory);
+    public CarService getCarService() {
+        return carService;
     }
 
     @Override
-    public NotificationService createNotificationService() {
-        return new NotificationServiceImpl(transactionFactory);
+    public LocationService getLocationService() {
+        return locationService;
     }
 
     @Override
-    public ReservationService createReservationService() {
-        return new ReservationServiceImpl(transactionFactory);
+    public NotificationService getNotificationService() {
+        return notificationService;
     }
 
     @Override
-    public UserService createUserService() {
-        return new UserServiceImpl(transactionFactory);
+    public ReservationService getReservationService() {
+        return reservationService;
+    }
+
+    @Override
+    public UserService getUserService() {
+        return userService;
     }
 }

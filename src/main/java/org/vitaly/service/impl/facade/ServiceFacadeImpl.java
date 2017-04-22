@@ -15,6 +15,7 @@ public class ServiceFacadeImpl implements ServiceFacade {
     private ServiceFactory serviceFactory;
 
     private ServiceFacadeImpl() {
+        init();
     }
 
     public static ServiceFacadeImpl getInstance() {
