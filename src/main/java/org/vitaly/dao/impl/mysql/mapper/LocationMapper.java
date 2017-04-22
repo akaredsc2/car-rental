@@ -21,6 +21,7 @@ public class LocationMapper implements Mapper<Location> {
                 .setCity(resultSet.getString(LOCATION_CITY))
                 .setStreet(resultSet.getString(LOCATION_STREET))
                 .setBuilding(resultSet.getString(LOCATION_BUILDING))
+                .setPhotoUrl(resultSet.getString(LOCATION_PHOTO_URL))
                 .setCars(new ArrayList<>())
                 .build();
     }

@@ -9,6 +9,7 @@ public class LocationDto {
     private String city;
     private String street;
     private String building;
+    private String photoUrl;
 
     public long getId() {
         return id;
@@ -48,5 +49,13 @@ public class LocationDto {
 
     public void setBuilding(String building) {
         this.building = building;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 }

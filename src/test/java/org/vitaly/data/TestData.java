@@ -90,6 +90,7 @@ public class TestData {
                 .setCity("Kotsjubinske")
                 .setStreet("Ponomarjova")
                 .setBuilding("18-a")
+                .setPhotoUrl("location1url")
                 .setCars(new ArrayList<>())
                 .build();
 
@@ -99,6 +100,7 @@ public class TestData {
                 .setCity("Odesa")
                 .setStreet("Peysivska")
                 .setBuilding("14")
+                .setPhotoUrl("location2url")
                 .setCars(new ArrayList<>())
                 .build();
 
@@ -228,6 +230,7 @@ public class TestData {
                     .setCity(storedLocation.getCity())
                     .setStreet(storedLocation.getStreet())
                     .setBuilding(storedLocation.getBuilding())
+                    .setPhotoUrl(storedLocation.getPhotoUrl())
                     .setCars(new ArrayList<>())
                     .build();
         }

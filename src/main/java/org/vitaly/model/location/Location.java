@@ -17,6 +17,7 @@ public class Location implements Entity {
     private String city;
     private String street;
     private String building;
+    private String photoUrl;
     private List<Car> cars;
 
     private Location(Builder builder) {
@@ -25,7 +26,18 @@ public class Location implements Entity {
         this.city = builder.city;
         this.street = builder.street;
         this.building = builder.building;
+        this.photoUrl = builder.photoUrl;
         this.cars = builder.cars;
+    }
+
+    public Location() {
+        this.id = -1;
+        this.state = "";
+        this.city = "";
+        this.street = "";
+        this.building = "";
+        this.photoUrl = "";
+        this.cars = new ArrayList<>();
     }
 
     @Override
@@ -33,24 +45,56 @@ public class Location implements Entity {
         return id;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public String getState() {
         return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 
     public String getCity() {
         return city;
     }
 
+    public void setCity(String city) {
+        this.city = city;
+    }
+
     public String getStreet() {
         return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
     }
 
     public String getBuilding() {
         return building;
     }
 
+    public void setBuilding(String building) {
+        this.building = building;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
+    }
+
     public List<Car> getCars() {
-        return new ArrayList<>(cars);
+        return cars;
+    }
+
+    public void setCars(List<Car> cars) {
+        this.cars = cars;
     }
 
     @Override
@@ -64,19 +108,10 @@ public class Location implements Entity {
 
         Location location = (Location) o;
 
-        if (!state.equals(location.state)) {
-            return false;
-        }
-        if (!city.equals(location.city)) {
-            return false;
-        }
-        if (!street.equals(location.street)) {
-            return false;
-        }
-        if (!building.equals(location.building)) {
-            return false;
-        }
-        return cars.equals(location.cars);
+        return state.equals(location.state)
+                && city.equals(location.city)
+                && street.equals(location.street)
+                && building.equals(location.building);
     }
 
     @Override
@@ -107,6 +142,7 @@ public class Location implements Entity {
         private String city;
         private String street;
         private String building;
+        private String photoUrl;
         private List<Car> cars;
 
         public Builder setId(long id) {
@@ -139,6 +175,11 @@ public class Location implements Entity {
             requireNotNull(building, "Building must not be null!");
 
             this.building = building;
+            return this;
+        }
+
+        public Builder setPhotoUrl(String photoUrl) {
+            this.photoUrl = photoUrl;
             return this;
         }
 

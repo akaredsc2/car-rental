@@ -17,4 +17,6 @@ public interface LocationService {
     Optional<Location> findLocationOfCar(CarDto carDto);
 
     List<Location> getAllMatchingLocations(Predicate<Location> locationPredicate);
+
+    boolean changeLocationPhotoUrl(LocationDto locationDto, String photoUrl);
 }

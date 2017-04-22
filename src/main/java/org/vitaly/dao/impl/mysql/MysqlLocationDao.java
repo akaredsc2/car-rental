@@ -28,12 +28,16 @@ public class MysqlLocationDao implements LocationDao {
             "SELECT * " +
                     "FROM location";
     private static final String CREATE_LOCATION_QUERY =
-            "INSERT INTO location (state, city, street, building) " +
-                    "VALUES (?, ?, ?, ?)";
+            "INSERT INTO location (state, city, street, building, photo_url) " +
+                    "VALUES (?, ?, ?, ?, ?)";
     private static final String FIND_LOCATION_BY_CAR_ID_QUERY =
             "SELECT * " +
                     "FROM location " +
                     "WHERE location_id IN (SELECT location_id FROM car WHERE car_id = ?)";
+    private static final String CHANGE_IMAGE_URL_QUERY =
+            "UPDATE location " +
+                    "SET photo_url = ? " +
+                    "WHERE location_id = ?";
 
     private static final String LOCATION_MUST_NOT_BE_NULL = "Location must not be null!";
 
@@ -88,6 +92,7 @@ public class MysqlLocationDao implements LocationDao {
         parameterMap.put(2, location.getCity());
         parameterMap.put(3, location.getStreet());
         parameterMap.put(4, location.getBuilding());
+        parameterMap.put(5, location.getPhotoUrl());
 
         Long createdId = daoTemplate.executeInsert(CREATE_LOCATION_QUERY, parameterMap);
         return Optional.ofNullable(createdId);
@@ -106,5 +111,14 @@ public class MysqlLocationDao implements LocationDao {
 
         Location foundLocation = daoTemplate.executeSelectOne(FIND_LOCATION_BY_CAR_ID_QUERY, mapper, parameterMap);
         return Optional.ofNullable(foundLocation);
+    }
+
+    @Override
+    public boolean changeImageUrl(long locationId, String imageUrl) {
+        HashMap<Integer, Object> parameterMap = new HashMap<>();
+        parameterMap.put(1, imageUrl);
+        parameterMap.put(2, locationId);
+
+        return daoTemplate.executeUpdate(CHANGE_IMAGE_URL_QUERY, parameterMap) > 0;
     }
 }

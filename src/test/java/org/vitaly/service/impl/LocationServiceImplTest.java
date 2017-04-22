@@ -65,4 +65,20 @@ public class LocationServiceImplTest {
         inOrder.verify(locationDao).getAll();
         inOrder.verify(transaction).close();
     }
+
+    @Test
+    public void changeLocationPhotoUrl() throws Exception {
+        LocationDto locationDto = new LocationDto();
+        locationDto.setId(10);
+        String photoUrl = "photoUrl";
+
+        when(transactionFactory.createTransaction()).thenReturn(transaction);
+        when(transaction.getLocationDao()).thenReturn(locationDao);
+        locationService.changeLocationPhotoUrl(locationDto, photoUrl);
+
+        InOrder inOrder = Mockito.inOrder(locationDao, transaction);
+        inOrder.verify(locationDao).changeImageUrl(locationDto.getId(), photoUrl);
+        inOrder.verify(transaction).commit();
+        inOrder.verify(transaction).close();
+    }
 }

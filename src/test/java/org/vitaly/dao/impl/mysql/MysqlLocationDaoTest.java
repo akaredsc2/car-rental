@@ -15,8 +15,7 @@ import org.vitaly.model.location.Location;
 import java.util.List;
 
 import static junit.framework.TestCase.*;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.vitaly.matcher.EntityIdMatcher.hasId;
@@ -142,5 +141,63 @@ public class MysqlLocationDaoTest {
         boolean isFound = locationDao.findLocationByCarId(-1).isPresent();
 
         assertFalse(isFound);
+    }
+
+    @Test
+    public void changingPhotoUrlOfExistingLocationToNotNull() throws Exception {
+        String newPhotoUrl = "photoUrl";
+
+        Location locationWithIdBeforeChange = TestUtil.createEntityWithId(location1, locationDao);
+        String photoUrlBeforeChange = locationWithIdBeforeChange.getPhotoUrl();
+        locationDao.changeImageUrl(locationWithIdBeforeChange.getId(), newPhotoUrl);
+
+        Location locationAfterChange = locationDao.findById(locationWithIdBeforeChange.getId())
+                .orElseThrow(AssertionError::new);
+
+        String photoUrlAfterChange = locationAfterChange.getPhotoUrl();
+
+        assertThat(photoUrlAfterChange, allOf(
+                not(equalTo(photoUrlBeforeChange)),
+                equalTo(newPhotoUrl)));
+    }
+
+    @Test
+    public void changingPhotoUrlOfExistingLocationToNotNullReturnsTrue() throws Exception {
+        String newPhotoUrl = "photoUrl";
+
+        Location locationWithIdBeforeChange = TestUtil.createEntityWithId(location1, locationDao);
+        boolean changeResult = locationDao.changeImageUrl(locationWithIdBeforeChange.getId(), newPhotoUrl);
+
+        assertTrue(changeResult);
+    }
+
+    @Test
+    public void changingPhotoUrlOfExistingLocationToNull() throws Exception {
+        Location locationWithIdBeforeChange = TestUtil.createEntityWithId(location1, locationDao);
+        locationDao.changeImageUrl(locationWithIdBeforeChange.getId(), null);
+
+        Location locationAfterChange = locationDao.findById(locationWithIdBeforeChange.getId())
+                .orElseThrow(AssertionError::new);
+
+        String photoUrlAfterChange = locationAfterChange.getPhotoUrl();
+
+        assertThat(photoUrlAfterChange, nullValue());
+    }
+
+    @Test
+    public void changingPhotoUrlOfExistingLocationToNullReturnsTrue() throws Exception {
+        Location locationWithIdBeforeChange = TestUtil.createEntityWithId(location1, locationDao);
+        boolean changeResult = locationDao.changeImageUrl(locationWithIdBeforeChange.getId(), null);
+
+        assertTrue(changeResult);
+    }
+
+    @Test
+    public void changingPhotoUrlOfNonExistingLocationReturnsFalse() throws Exception {
+        String newPhotoUrl = "photoUrl";
+
+        boolean changeResult = locationDao.changeImageUrl(-1, newPhotoUrl);
+
+        assertFalse(changeResult);
     }
 }

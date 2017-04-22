@@ -61,4 +61,17 @@ public class LocationServiceImpl implements LocationService {
                     .collect(Collectors.toList());
         }
     }
+
+    @Override
+    public boolean changeLocationPhotoUrl(LocationDto locationDto, String photoUrl) {
+        try (Transaction transaction = transactionFactory.createTransaction()) {
+            long locationId = locationDto.getId();
+            LocationDao locationDao = transaction.getLocationDao();
+            boolean isChanged = locationDao.changeImageUrl(locationId, photoUrl);
+
+            transaction.commit();
+
+            return isChanged;
+        }
+    }
 }

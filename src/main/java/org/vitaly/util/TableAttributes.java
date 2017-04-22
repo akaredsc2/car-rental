@@ -26,6 +26,8 @@ public class TableAttributes {
     public static final String LOCATION_CITY = "location.city";
     public static final String LOCATION_STREET = "location.street";
     public static final String LOCATION_BUILDING = "location.building";
+    public static final String LOCATION_PHOTO_URL = "location.photo_url";
+
 
     public static final String NOTIFICATION_NOTIFICATION_ID = "notification.notification_id";
     public static final String NOTIFICATION_NOTIFICATION_DATETIME = "notification.notification_datetime";
