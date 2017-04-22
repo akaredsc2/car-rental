@@ -1,6 +1,7 @@
 package org.vitaly.model.car;
 
 import org.vitaly.model.Entity;
+import org.vitaly.model.carModel.CarModel;
 
 import java.math.BigDecimal;
 
@@ -12,18 +13,16 @@ import static org.vitaly.util.InputChecker.requireNotNull;
 public class Car implements Entity {
     private long id;
     private CarState state;
-    private String model;
+    private CarModel carModel;
     private String registrationPlate;
-    private String photoUrl;
     private String color;
     private BigDecimal pricePerDay;
 
     private Car(Builder builder) {
         this.id = builder.id;
         this.state = builder.state;
-        this.model = builder.model;
+        this.carModel = builder.carModel;
         this.registrationPlate = builder.registrationPlate;
-        this.photoUrl = builder.photoUrl;
         this.color = builder.color;
         this.pricePerDay = builder.pricePerDay;
     }
@@ -33,32 +32,54 @@ public class Car implements Entity {
         return id;
     }
 
+    public Car setId(long id) {
+        this.id = id;
+        return this;
+    }
+
     public CarState getState() {
         return state;
+    }
+
+    public Car setState(CarState state) {
+        this.state = state;
+        return this;
+    }
+
+    public CarModel getCarModel() {
+        return carModel;
+    }
+
+    public Car setCarModel(CarModel carModel) {
+        this.carModel = carModel;
+        return this;
     }
 
     public String getRegistrationPlate() {
         return registrationPlate;
     }
 
-    public String getModel() {
-        return model;
-    }
-
-    public String getPhotoUrl() {
-        return photoUrl;
+    public Car setRegistrationPlate(String registrationPlate) {
+        this.registrationPlate = registrationPlate;
+        return this;
     }
 
     public String getColor() {
         return color;
     }
 
+    public Car setColor(String color) {
+        this.color = color;
+        return this;
+    }
+
     public BigDecimal getPricePerDay() {
         return pricePerDay;
     }
 
-    void setState(CarState state) {
-        this.state = state;
+    public Car setPricePerDay(BigDecimal pricePerDay) {
+        this.pricePerDay = pricePerDay;
+        return this;
     }
 
     public boolean makeAvailable() {
@@ -120,30 +141,18 @@ public class Car implements Entity {
 
         Car car = (Car) o;
 
-        if (!state.equals(car.state)) {
-            return false;
-        }
-        if (!model.equals(car.model)) {
-            return false;
-        }
-        if (!registrationPlate.equals(car.registrationPlate)) {
-            return false;
-        }
-        if (!photoUrl.equals(car.photoUrl)) {
-            return false;
-        }
-        if (!color.equals(car.color)) {
-            return false;
-        }
-        return pricePerDay.stripTrailingZeros().equals(car.pricePerDay.stripTrailingZeros());
+        return state.equals(car.state)
+                && carModel.getId() == car.carModel.getId()
+                && registrationPlate.equals(car.registrationPlate)
+                && color.equals(car.color)
+                && pricePerDay.stripTrailingZeros().equals(car.pricePerDay.stripTrailingZeros());
     }
 
     @Override
     public int hashCode() {
         int result = state.hashCode();
-        result = 31 * result + model.hashCode();
+        result = 31 * result + carModel.hashCode();
         result = 31 * result + registrationPlate.hashCode();
-        result = 31 * result + photoUrl.hashCode();
         result = 31 * result + color.hashCode();
         return result;
     }
@@ -151,9 +160,8 @@ public class Car implements Entity {
     public static class Builder {
         private long id;
         private CarState state;
-        private String model;
+        private CarModel carModel;
         private String registrationPlate;
-        private String photoUrl;
         private String color;
         private BigDecimal pricePerDay;
 
@@ -169,10 +177,10 @@ public class Car implements Entity {
             return this;
         }
 
-        public Builder setModel(String model) {
-            requireNotNull(model, "Model not be null!");
+        public Builder setCarModel(CarModel carModel) {
+            requireNotNull(carModel, "Car model must not be null!");
 
-            this.model = model;
+            this.carModel = carModel;
             return this;
         }
 
@@ -180,13 +188,6 @@ public class Car implements Entity {
             requireNotNull(registrationPlate, "Registration Plate must not be null!");
 
             this.registrationPlate = registrationPlate;
-            return this;
-        }
-
-        public Builder setPhotoUrl(String photoUrl) {
-            requireNotNull(photoUrl, "PhotoUrl must not be null!");
-
-            this.photoUrl = photoUrl;
             return this;
         }
 
@@ -213,9 +214,8 @@ public class Car implements Entity {
         return new Car.Builder()
                 .setId(id)
                 .setState(CarStateEnum.UNAVAILABLE.getState())
-                .setModel("")
+                .setCarModel(CarModel.createDummyCarModelWithId(-1))
                 .setRegistrationPlate("")
-                .setPhotoUrl("")
                 .setColor("")
                 .setPricePerDay(BigDecimal.ZERO)
                 .build();

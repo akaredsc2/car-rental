@@ -3,6 +3,7 @@ package org.vitaly.dao.impl.mysql.mapper;
 import org.vitaly.model.car.Car;
 import org.vitaly.model.car.CarState;
 import org.vitaly.model.car.CarStateEnum;
+import org.vitaly.model.carModel.CarModel;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,12 +21,14 @@ public class CarMapper implements Mapper<Car> {
                 .valueOf(resultSet.getString(CAR_CAR_STATUS).toUpperCase())
                 .getState();
 
+        long carModelId = resultSet.getLong(CAR_MODEL_ID);
+        CarModel carModel = CarModel.createDummyCarModelWithId(carModelId);
+
         return new Car.Builder()
                 .setId(resultSet.getLong(CAR_CAR_ID))
                 .setState(state)
-                .setModel(resultSet.getString(CAR_MODEL))
+                .setCarModel(carModel)
                 .setRegistrationPlate(resultSet.getString(CAR_REGISTRATION_PLATE))
-                .setPhotoUrl(resultSet.getString(CAR_PHOTO_URL))
                 .setColor(resultSet.getString(CAR_COLOR))
                 .setPricePerDay(resultSet.getBigDecimal(CAR_PRICE_PER_DAY))
                 .build();

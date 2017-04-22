@@ -4,8 +4,10 @@ import org.vitaly.dao.abstraction.CarDao;
 import org.vitaly.dao.abstraction.factory.TransactionFactory;
 import org.vitaly.dao.abstraction.transaction.Transaction;
 import org.vitaly.model.car.Car;
+import org.vitaly.model.carModel.CarModel;
 import org.vitaly.service.abstraction.CarService;
 import org.vitaly.service.impl.dto.CarDto;
+import org.vitaly.service.impl.dto.CarModelDto;
 import org.vitaly.service.impl.dto.LocationDto;
 
 import java.math.BigDecimal;
@@ -30,8 +32,9 @@ public class CarServiceImpl implements CarService {
                     .setState(carDto.getState())
                     .setColor(carDto.getColor())
                     .setPricePerDay(carDto.getPricePerDay())
-                    .setPhotoUrl(carDto.getPhotoUrl())
-                    .setModel(carDto.getModel())
+//                    .setPhotoUrl(carDto.getPhotoUrl())
+//                    .setModel(carDto.getModel())
+                    .setCarModel(CarModel.createDummyCarModelWithId(carDto.getId()))
                     .setRegistrationPlate(carDto.getRegistrationPlate())
                     .build();
 
@@ -54,10 +57,11 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public List<Car> findCarsByModel(String model) {
+    public List<Car> findCarsByModel(CarModelDto carModelDto) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
+            long carModelId = carModelDto.getId();
             CarDao carDao = transaction.getCarDao();
-            return carDao.findCarsByModel(model);
+            return carDao.findCarsByModel(carModelId);
         }
     }
 
@@ -87,8 +91,9 @@ public class CarServiceImpl implements CarService {
                     .setState(carDto.getState())
                     .setColor(carDto.getColor())
                     .setPricePerDay(carDto.getPricePerDay())
-                    .setPhotoUrl(carDto.getPhotoUrl())
-                    .setModel(carDto.getModel())
+//                    .setPhotoUrl(carDto.getPhotoUrl())
+//                    .setModel(carDto.getModel())
+                    .setCarModel(CarModel.createDummyCarModelWithId(carDto.getId()))
                     .setRegistrationPlate(carDto.getRegistrationPlate())
                     .build();
 

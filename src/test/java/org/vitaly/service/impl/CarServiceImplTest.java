@@ -9,6 +9,7 @@ import org.vitaly.dao.abstraction.transaction.Transaction;
 import org.vitaly.model.car.CarStateEnum;
 import org.vitaly.service.abstraction.CarService;
 import org.vitaly.service.impl.dto.CarDto;
+import org.vitaly.service.impl.dto.CarModelDto;
 import org.vitaly.service.impl.dto.LocationDto;
 
 import java.math.BigDecimal;
@@ -43,14 +44,15 @@ public class CarServiceImplTest {
 
     @Test
     public void findCarsByModel() throws Exception {
-        String model = "model";
+        CarModelDto carModelDto = new CarModelDto();
+        carModelDto.setId(79);
 
         when(transactionFactory.createTransaction()).thenReturn(transaction);
         when(transaction.getCarDao()).thenReturn(carDao);
-        carService.findCarsByModel(model);
+        carService.findCarsByModel(carModelDto);
 
         InOrder inOrder = Mockito.inOrder(carDao, transaction);
-        inOrder.verify(carDao).findCarsByModel(model);
+        inOrder.verify(carDao).findCarsByModel(carModelDto.getId());
         inOrder.verify(transaction).close();
     }
 
@@ -81,10 +83,12 @@ public class CarServiceImplTest {
 
     @Test
     public void addNewCar() throws Exception {
+        CarModelDto carModelDto = new CarModelDto();
+        carModelDto.setId(809);
+
         CarDto carDto = new CarDto();
-        carDto.setModel("model");
+        carDto.setCarModel(carModelDto);
         carDto.setColor("red");
-        carDto.setPhotoUrl("url");
         carDto.setPricePerDay(BigDecimal.ZERO);
         carDto.setRegistrationPlate("registration plate");
         carDto.setState(CarStateEnum.AVAILABLE.getState());
@@ -101,10 +105,12 @@ public class CarServiceImplTest {
 
     @Test
     public void updateCar() throws Exception {
+        CarModelDto carModelDto = new CarModelDto();
+        carModelDto.setId(809);
+
         CarDto carDto = new CarDto();
-        carDto.setModel("model 2");
+        carDto.setCarModel(carModelDto);
         carDto.setColor("black");
-        carDto.setPhotoUrl("url 2");
         carDto.setPricePerDay(BigDecimal.ZERO);
         carDto.setRegistrationPlate("not a registration plate");
         carDto.setState(CarStateEnum.AVAILABLE.getState());

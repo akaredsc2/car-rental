@@ -1,6 +1,7 @@
 package org.vitaly.service.impl.dto;
 
 import org.vitaly.model.car.CarState;
+import org.vitaly.model.carModel.CarModel;
 
 import java.math.BigDecimal;
 
@@ -10,9 +11,10 @@ import java.math.BigDecimal;
 public class CarDto {
     private long id;
     private CarState state;
-    private String model;
+//    private String model;
+    private CarModelDto carModel;
     private String registrationPlate;
-    private String photoUrl;
+//    private String photoUrl;
     private String color;
     private BigDecimal pricePerDay;
 
@@ -28,16 +30,16 @@ public class CarDto {
         return state;
     }
 
+    public CarModelDto getCarModel() {
+        return carModel;
+    }
+
+    public void setCarModel(CarModelDto carModel) {
+        this.carModel = carModel;
+    }
+
     public void setState(CarState state) {
         this.state = state;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
     }
 
     public String getRegistrationPlate() {
@@ -46,14 +48,6 @@ public class CarDto {
 
     public void setRegistrationPlate(String registrationPlate) {
         this.registrationPlate = registrationPlate;
-    }
-
-    public String getPhotoUrl() {
-        return photoUrl;
-    }
-
-    public void setPhotoUrl(String photoUrl) {
-        this.photoUrl = photoUrl;
     }
 
     public String getColor() {

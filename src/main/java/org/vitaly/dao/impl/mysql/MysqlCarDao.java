@@ -28,11 +28,11 @@ public class MysqlCarDao implements CarDao {
             "SELECT * " +
                     "FROM car";
     private static final String CREATE_QUERY =
-            "INSERT INTO car (car_status, model, registration_plate, photo_url, color, price_per_day) " +
-                    "VALUES (?, ?, ?, ?, ?, ?)";
+            "INSERT INTO car (car_status, model_id, registration_plate, color, price_per_day) " +
+                    "VALUES (?, ?, ?, ?, ?)";
     private static final String UPDATE_QUERY =
             "UPDATE car " +
-                    "SET car_status = ?, model = ?, registration_plate = ?, photo_url = ?, color = ?, price_per_day = ? " +
+                    "SET car_status = ?, model_id = ?, registration_plate = ?, color = ?, price_per_day = ? " +
                     "WHERE car_id = ?";
     private static final String ADD_CAR_TO_LOCATION_QUERY =
             "UPDATE car " +
@@ -45,14 +45,11 @@ public class MysqlCarDao implements CarDao {
     private static final String FIND_CAR_BY_MODEL_QUERY =
             "SELECT * " +
                     "FROM car " +
-                    "WHERE model = ?";
+                    "WHERE model_id = ?";
     private static final String FIND_CARS_WITH_PRICE_BETWEEN_QUERY =
             "SELECT * " +
                     "FROM car " +
                     "WHERE price_per_day BETWEEN ? AND ?";
-    private static final String FIND_ALL_CAR_MODELS_QUERY =
-            "SELECT DISTINCT model " +
-                    "FROM car";
 
     private static final String CAR_MUST_NOT_BE_NULL = "Car must not be null!";
 
@@ -108,11 +105,10 @@ public class MysqlCarDao implements CarDao {
 
     private void putCarParametersToMap(Car car, Map<Integer, Object> parameterMap) {
         parameterMap.put(1, car.getState().toString());
-        parameterMap.put(2, car.getModel());
+        parameterMap.put(2, car.getCarModel().getId());
         parameterMap.put(3, car.getRegistrationPlate());
-        parameterMap.put(4, car.getPhotoUrl());
-        parameterMap.put(5, car.getColor());
-        parameterMap.put(6, car.getPricePerDay());
+        parameterMap.put(4, car.getColor());
+        parameterMap.put(5, car.getPricePerDay());
     }
 
     @Override
@@ -144,11 +140,9 @@ public class MysqlCarDao implements CarDao {
     }
 
     @Override
-    public List<Car> findCarsByModel(String model) {
-        requireNotNull(model, "Model must not be null!");
-
+    public List<Car> findCarsByModel(long carModelId) {
         Map<Integer, Object> parameterMap = new HashMap<>();
-        parameterMap.put(1, model);
+        parameterMap.put(1, carModelId);
 
         return daoTemplate.executeSelect(FIND_CAR_BY_MODEL_QUERY, mapper, parameterMap);
     }
@@ -165,9 +159,9 @@ public class MysqlCarDao implements CarDao {
         return daoTemplate.executeSelect(FIND_CARS_WITH_PRICE_BETWEEN_QUERY, mapper, parameterMap);
     }
 
-    @Override
-    public List<String> findAllCarModels() {
-        return daoTemplate.executeSelect(FIND_ALL_CAR_MODELS_QUERY,
-                resultSet -> resultSet.getString(1), Collections.emptyMap());
-    }
+//    @Override
+//    public List<String> findAllCarModels() {
+//        return daoTemplate.executeSelect(FIND_ALL_CAR_MODELS_QUERY,
+//                resultSet -> resultSet.getString(1), Collections.emptyMap());
+//    }
 }

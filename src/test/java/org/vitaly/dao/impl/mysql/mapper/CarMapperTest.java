@@ -27,9 +27,8 @@ public class CarMapperTest {
 
         when(resultSet.getLong(CAR_CAR_ID)).thenReturn(expectedCar.getId());
         when(resultSet.getString(CAR_CAR_STATUS)).thenReturn(expectedCar.getState().toString());
-        when(resultSet.getString(CAR_MODEL)).thenReturn(expectedCar.getModel());
+        when(resultSet.getLong(CAR_MODEL_ID)).thenReturn(expectedCar.getCarModel().getId());
         when(resultSet.getString(CAR_REGISTRATION_PLATE)).thenReturn(expectedCar.getRegistrationPlate());
-        when(resultSet.getString(CAR_PHOTO_URL)).thenReturn(expectedCar.getPhotoUrl());
         when(resultSet.getString(CAR_COLOR)).thenReturn(expectedCar.getColor());
         when(resultSet.getBigDecimal(CAR_PRICE_PER_DAY)).thenReturn(expectedCar.getPricePerDay());
 

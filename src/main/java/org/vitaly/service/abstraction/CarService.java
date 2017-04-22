@@ -2,6 +2,7 @@ package org.vitaly.service.abstraction;
 
 import org.vitaly.model.car.Car;
 import org.vitaly.service.impl.dto.CarDto;
+import org.vitaly.service.impl.dto.CarModelDto;
 import org.vitaly.service.impl.dto.LocationDto;
 
 import java.math.BigDecimal;
@@ -16,7 +17,7 @@ public interface CarService {
 
     List<Car> findCarsAtLocation(LocationDto locationDto);
 
-    List<Car> findCarsByModel(String model);
+    List<Car> findCarsByModel(CarModelDto carModelDto);
 
     List<Car> findCarsWithPriceBetween(BigDecimal from, BigDecimal to);
 

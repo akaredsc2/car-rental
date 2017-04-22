@@ -3,6 +3,7 @@ package org.vitaly.data;
 import org.vitaly.model.bill.Bill;
 import org.vitaly.model.car.Car;
 import org.vitaly.model.car.CarStateEnum;
+import org.vitaly.model.carModel.CarModel;
 import org.vitaly.model.location.Location;
 import org.vitaly.model.notification.Notification;
 import org.vitaly.model.notification.NotificationStatus;
@@ -23,6 +24,7 @@ import java.util.Map;
 public class TestData {
     private static TestData instance = new TestData();
 
+    private Map<String, CarModel> carModelMap;
     private Map<String, Car> carMap;
     private Map<String, Location> locationMap;
     private Map<String, User> userMap;
@@ -30,11 +32,39 @@ public class TestData {
     private Map<String, Bill> billMap;
 
     private TestData() {
+        carModelMap = fillWithCarModels();
         carMap = fillWithCars();
         locationMap = fillWithLocations();
         userMap = fillWithUsers();
         notificationMap = fillWithNotifications();
         billMap = fillWithBills();
+    }
+
+    private Map<String, CarModel> fillWithCarModels() {
+        Map<String, CarModel> result = new HashMap<>();
+
+        CarModel carModel1 = new CarModel.Builder()
+                .setId(135)
+                .setName("Ford Focus")
+                .setPhotoUrl("none")
+                .setSeatCount(5)
+                .setDoorCount(4)
+                .setHorsePowerCount(150)
+                .build();
+
+        CarModel carModel2 = new CarModel.Builder()
+                .setId(416)
+                .setName("Ford Fiesta")
+                .setPhotoUrl("none")
+                .setSeatCount(2)
+                .setDoorCount(2)
+                .setHorsePowerCount(100)
+                .build();
+
+        result.put("carModel1", carModel1);
+        result.put("carModel2", carModel2);
+
+        return result;
     }
 
     public static TestData getInstance() {
@@ -47,9 +77,8 @@ public class TestData {
         Car car1 = new Car.Builder()
                 .setId(1L)
                 .setState(CarStateEnum.UNAVAILABLE.getState())
-                .setModel("Ford Focus")
+                .setCarModel(getCarModel("carModel1"))
                 .setRegistrationPlate("666 satan 666")
-                .setPhotoUrl("http://bit.ly/2o8TCb9")
                 .setColor("grey")
                 .setPricePerDay(BigDecimal.valueOf(100.0))
                 .build();
@@ -57,9 +86,8 @@ public class TestData {
         Car car2 = new Car.Builder()
                 .setId(2L)
                 .setState(CarStateEnum.UNAVAILABLE.getState())
-                .setModel("Ford Fiesta")
+                .setCarModel(getCarModel("carModel2"))
                 .setRegistrationPlate("777 lucky 777")
-                .setPhotoUrl("http://bit.ly/2mHkMc3")
                 .setColor("blue")
                 .setPricePerDay(BigDecimal.valueOf(120.0))
                 .build();
@@ -67,9 +95,8 @@ public class TestData {
         Car car3 = new Car.Builder()
                 .setId(3L)
                 .setState(CarStateEnum.UNAVAILABLE.getState())
-                .setModel("Ford Fiesta")
+                .setCarModel(getCarModel("carModel2"))
                 .setRegistrationPlate("13 unlucky 777")
-                .setPhotoUrl("http://bit.ly/2mHkMc3")
                 .setColor("blue")
                 .setPricePerDay(BigDecimal.valueOf(140.0))
                 .build();
@@ -202,6 +229,23 @@ public class TestData {
         return result;
     }
 
+    public CarModel getCarModel(String name) {
+        if (carModelMap.containsKey(name)) {
+            CarModel storedCarModel = carModelMap.get(name);
+
+            return new CarModel.Builder()
+                    .setId(storedCarModel.getId())
+                    .setName(storedCarModel.getName())
+                    .setPhotoUrl(storedCarModel.getPhotoUrl())
+                    .setDoorCount(storedCarModel.getDoorCount())
+                    .setSeatCount(storedCarModel.getSeatCount())
+                    .setHorsePowerCount(storedCarModel.getHorsePowerCount())
+                    .build();
+        }
+
+        return null;
+    }
+
     public Car getCar(String name) {
         if (carMap.containsKey(name)) {
             Car storedCar = carMap.get(name);
@@ -209,9 +253,8 @@ public class TestData {
             return new Car.Builder()
                     .setId(storedCar.getId())
                     .setState(storedCar.getState())
-                    .setModel(storedCar.getModel())
+                    .setCarModel(storedCar.getCarModel())
                     .setRegistrationPlate(storedCar.getRegistrationPlate())
-                    .setPhotoUrl(storedCar.getPhotoUrl())
                     .setColor(storedCar.getColor())
                     .setPricePerDay(storedCar.getPricePerDay())
                     .build();

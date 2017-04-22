@@ -15,17 +15,12 @@ public class CarBuilderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void setNullModelShouldThrowException() throws Exception {
-        builder.setModel(null);
+        builder.setCarModel(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void setNullRegistrationPlateShouldThrowException() throws Exception {
         builder.setRegistrationPlate(null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void setNullPhotoUrlShouldThrowException() throws Exception {
-        builder.setPhotoUrl(null);
     }
 
     @Test(expected = IllegalArgumentException.class)

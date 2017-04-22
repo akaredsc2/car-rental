@@ -15,7 +15,7 @@ public class TableAttributes {
 
     public static final String CAR_CAR_ID = "car.car_id";
     public static final String CAR_CAR_STATUS = "car.car_status";
-    public static final String CAR_MODEL = "car.model";
+    public static final String CAR_MODEL_ID = "car.model_id";
     public static final String CAR_REGISTRATION_PLATE = "car.registration_plate";
     public static final String CAR_PHOTO_URL = "car.photo_url";
     public static final String CAR_COLOR = "car.color";

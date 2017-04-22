@@ -16,9 +16,7 @@ import org.vitaly.model.car.UnavailableState;
 import org.vitaly.model.location.Location;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
@@ -231,8 +229,8 @@ public class MysqlCarDaoTest {
         car1 = TestUtil.createEntityWithId(car1, carDao);
         car2 = TestUtil.createEntityWithId(car2, carDao);
 
-        String targetModel = car1.getModel();
-
+//        String targetModel = car1.getModel();
+        long targetModel = car1.getCarModel().getId();
         List<Car> matchingCars = carDao.findCarsByModel(targetModel);
 
         assertThat(matchingCars, allOf(
@@ -245,16 +243,9 @@ public class MysqlCarDaoTest {
         car1 = TestUtil.createEntityWithId(car1, carDao);
         car2 = TestUtil.createEntityWithId(car2, carDao);
 
-        String targetModel = "tesla model s";
-
-        List<Car> matchingCars = carDao.findCarsByModel(targetModel);
+        List<Car> matchingCars = carDao.findCarsByModel(-1);
 
         assertThat(matchingCars, empty());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void findCarsByNullModelShouldThrowException() throws Exception {
-        carDao.findCarsByModel(null);
     }
 
     @Test
@@ -294,7 +285,7 @@ public class MysqlCarDaoTest {
     public void findCarsWithPriceBetweenNumberAndNullShouldThrowException() throws Exception {
         carDao.findCarsWithPriceBetween(BigDecimal.ONE, null);
     }
-
+/*
     @Test
     public void findAllModelsReturnsAllDistinctModels() throws Exception {
         car1 = TestUtil.createEntityWithId(car1, carDao);
@@ -318,5 +309,5 @@ public class MysqlCarDaoTest {
         List<String> foundModels = carDao.findAllCarModels();
 
         assertThat(foundModels, empty());
-    }
+    }*/
 }

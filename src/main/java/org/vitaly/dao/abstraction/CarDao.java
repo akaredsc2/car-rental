@@ -13,9 +13,7 @@ public interface CarDao extends AbstractDao<Car> {
 
     List<Car> findCarsAtLocation(long locationId);
 
-    List<Car> findCarsByModel(String model);
+    List<Car> findCarsByModel(long carModelId);
 
     List<Car> findCarsWithPriceBetween(BigDecimal from, BigDecimal to);
-
-    List<String> findAllCarModels();
 }
