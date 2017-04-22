@@ -5,6 +5,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.vitaly.dao.abstraction.CarDao;
+import org.vitaly.dao.abstraction.CarModelDao;
 import org.vitaly.dao.abstraction.ReservationDao;
 import org.vitaly.dao.abstraction.UserDao;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
@@ -13,6 +14,7 @@ import org.vitaly.dao.impl.mysql.connectionPool.MysqlConnectionPool;
 import org.vitaly.data.TestData;
 import org.vitaly.data.TestUtil;
 import org.vitaly.model.car.Car;
+import org.vitaly.model.carModel.CarModel;
 import org.vitaly.model.reservation.Reservation;
 import org.vitaly.model.reservation.ReservationState;
 import org.vitaly.model.reservation.ReservationStateEnum;
@@ -35,6 +37,7 @@ import static org.hamcrest.Matchers.iterableWithSize;
 public class MysqlReservationDaoTest {
     private static final String USERS_CLEAN_UP_QUERY = "delete from users";
     private static final String CAR_CLEAN_UP_QUERY = "delete from car";
+    private static final String MODEL_CLEAN_UP_QUERY = "delete from model";
 
     private static PooledConnection connection = MysqlConnectionPool.getTestInstance().getConnection();
     private static ReservationDao reservationDao = new MysqlReservationDao(connection);
@@ -69,9 +72,19 @@ public class MysqlReservationDaoTest {
         userDao.changeRole(admin.getId(), UserRole.ADMIN);
         admin = userDao.findById(admin.getId()).orElseThrow(AssertionError::new);
 
+        CarModel carModelFromTestData1 = TestData.getInstance().getCarModel("carModel1");
+        CarModel carModelFromTestData2 = TestData.getInstance().getCarModel("carModel2");
+        CarModelDao carModelDao = new MysqlCarModelDao(connection);
+        CarModel carModel1 = TestUtil.createEntityWithId(carModelFromTestData1, carModelDao);
+        CarModel carModel2 = TestUtil.createEntityWithId(carModelFromTestData2, carModelDao);
+
+        Car carFromTestData1 = TestData.getInstance().getCar("car1");
+        Car carFromTestData2 = TestData.getInstance().getCar("car2");
+        carFromTestData1.setCarModel(carModel1);
+        carFromTestData2.setCarModel(carModel2);
         CarDao carDao = new MysqlCarDao(connection);
-        car1 = TestUtil.createEntityWithId(TestData.getInstance().getCar("car1"), carDao);
-        car2 = TestUtil.createEntityWithId(TestData.getInstance().getCar("car2"), carDao);
+        MysqlReservationDaoTest.car1 = TestUtil.createEntityWithId(carFromTestData1, carDao);
+        MysqlReservationDaoTest.car2 = TestUtil.createEntityWithId(carFromTestData2, carDao);
 
         connection.commit();
     }
@@ -84,6 +97,8 @@ public class MysqlReservationDaoTest {
     @AfterClass
     public static void cleanUp() throws Exception {
         connection.prepareStatement(CAR_CLEAN_UP_QUERY)
+                .executeUpdate();
+        connection.prepareStatement(MODEL_CLEAN_UP_QUERY)
                 .executeUpdate();
         connection.prepareStatement(USERS_CLEAN_UP_QUERY)
                 .executeUpdate();

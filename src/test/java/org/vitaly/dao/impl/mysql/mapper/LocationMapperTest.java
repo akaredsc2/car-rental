@@ -30,6 +30,7 @@ public class LocationMapperTest {
         when(resultSet.getString(LOCATION_CITY)).thenReturn(expectedLocation.getCity());
         when(resultSet.getString(LOCATION_STREET)).thenReturn(expectedLocation.getStreet());
         when(resultSet.getString(LOCATION_BUILDING)).thenReturn(expectedLocation.getBuilding());
+        when(resultSet.getString(LOCATION_PHOTO_URL)).thenReturn(expectedLocation.getPhotoUrl());
 
         Location actualLocation = mapper.map(resultSet);
 

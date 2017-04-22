@@ -23,6 +23,7 @@ public class MysqlTransaction implements Transaction {
     private MapperFactory mapperFactory;
 
     private BillDao billDao;
+    private CarModelDao carModelDao;
     private CarDao carDao;
     private LocationDao locationDao;
     private NotificationDao notificationDao;
@@ -60,6 +61,14 @@ public class MysqlTransaction implements Transaction {
             billDao = new MysqlBillDao(mapperFactory.getBillMapper(), daoTemplate);
         }
         return billDao;
+    }
+
+    @Override
+    public CarModelDao getCarModelDao() {
+        if (carModelDao == null) {
+            carModelDao = new MysqlCarModelDao(mapperFactory.getCarModelMapper(), daoTemplate);
+        }
+        return carModelDao;
     }
 
     @Override

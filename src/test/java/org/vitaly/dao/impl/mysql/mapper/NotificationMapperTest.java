@@ -29,8 +29,8 @@ public class NotificationMapperTest {
         when(resultSet.getLong(NOTIFICATION_NOTIFICATION_ID)).thenReturn(expectedNotification.getId());
         when(resultSet.getTimestamp(NOTIFICATION_NOTIFICATION_DATETIME))
                 .thenReturn(Timestamp.valueOf(expectedNotification.getCreationDateTime()));
-        when(resultSet.getString(NOTIFICATION_NOTIFICATION_STATUS)).thenReturn(
-                expectedNotification.getStatus().toString());
+        when(resultSet.getString(NOTIFICATION_NOTIFICATION_STATUS))
+                .thenReturn(expectedNotification.getStatus().toString());
         when(resultSet.getString(NOTIFICATION_HEADER)).thenReturn(expectedNotification.getHeader());
         when(resultSet.getString(NOTIFICATION_CONTENT)).thenReturn(expectedNotification.getContent());
 

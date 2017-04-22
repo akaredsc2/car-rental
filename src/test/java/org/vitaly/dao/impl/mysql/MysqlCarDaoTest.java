@@ -5,6 +5,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.vitaly.dao.abstraction.CarDao;
+import org.vitaly.dao.abstraction.CarModelDao;
 import org.vitaly.dao.abstraction.LocationDao;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.exception.DaoException;
@@ -13,13 +14,13 @@ import org.vitaly.data.TestData;
 import org.vitaly.data.TestUtil;
 import org.vitaly.model.car.Car;
 import org.vitaly.model.car.UnavailableState;
+import org.vitaly.model.carModel.CarModel;
 import org.vitaly.model.location.Location;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
@@ -31,19 +32,33 @@ import static org.vitaly.matcher.EntityIdMatcher.hasId;
  */
 public class MysqlCarDaoTest {
     private static final String LOCATION_CLEAN_UP_QUERY = "delete from location";
+    private static final String MODEL_CLEAN_UP_QUERY = "delete from model";
 
     private static PooledConnection connection = MysqlConnectionPool.getTestInstance().getConnection();
     private static CarDao carDao = new MysqlCarDao(connection);
     private static Location location;
+    private static CarModel carModel1;
+    private static CarModel carModel2;
 
     private Car car1 = TestData.getInstance().getCar("car1");
     private Car car2 = TestData.getInstance().getCar("car2");
 
+    {
+        car1.setCarModel(carModel1);
+        car2.setCarModel(carModel2);
+    }
+
     @BeforeClass
     public static void init() throws Exception {
-        Location location1 = TestData.getInstance().getLocation("location1");
+        Location locationFromTestData = TestData.getInstance().getLocation("location1");
         LocationDao locationDao = new MysqlLocationDao(connection);
-        MysqlCarDaoTest.location = TestUtil.createEntityWithId(location1, locationDao);
+        location = TestUtil.createEntityWithId(locationFromTestData, locationDao);
+
+        CarModel carModelFromTestData1 = TestData.getInstance().getCarModel("carModel1");
+        CarModel carModelFromTestData2 = TestData.getInstance().getCarModel("carModel2");
+        CarModelDao carModelDao = new MysqlCarModelDao(connection);
+        carModel1 = TestUtil.createEntityWithId(carModelFromTestData1, carModelDao);
+        carModel2 = TestUtil.createEntityWithId(carModelFromTestData2, carModelDao);
 
         connection.commit();
     }
@@ -57,6 +72,8 @@ public class MysqlCarDaoTest {
     public static void cleanUp() throws Exception {
         connection.prepareStatement(LOCATION_CLEAN_UP_QUERY)
                 .executeUpdate();
+        connection.prepareStatement(MODEL_CLEAN_UP_QUERY)
+                .executeUpdate();
         connection.commit();
         connection.close();
     }
@@ -67,7 +84,7 @@ public class MysqlCarDaoTest {
 
         Car foundCar = carDao.findById(createdId).orElseThrow(AssertionError::new);
 
-        assertThat(foundCar, equalTo(car1));
+        assertEquals(foundCar, car1);
     }
 
     @Test
@@ -153,7 +170,7 @@ public class MysqlCarDaoTest {
     }
 
     @Test
-    public void updateExistingCarReturnsUpdatesCar() throws Exception {
+    public void updateExistingCarUpdatesCarInDatabase() throws Exception {
         long createId = carDao.create(car1).orElseThrow(AssertionError::new);
 
         carDao.update(createId, car2);
@@ -229,7 +246,6 @@ public class MysqlCarDaoTest {
         car1 = TestUtil.createEntityWithId(car1, carDao);
         car2 = TestUtil.createEntityWithId(car2, carDao);
 
-//        String targetModel = car1.getModel();
         long targetModel = car1.getCarModel().getId();
         List<Car> matchingCars = carDao.findCarsByModel(targetModel);
 
@@ -285,29 +301,4 @@ public class MysqlCarDaoTest {
     public void findCarsWithPriceBetweenNumberAndNullShouldThrowException() throws Exception {
         carDao.findCarsWithPriceBetween(BigDecimal.ONE, null);
     }
-/*
-    @Test
-    public void findAllModelsReturnsAllDistinctModels() throws Exception {
-        car1 = TestUtil.createEntityWithId(car1, carDao);
-        car2 = TestUtil.createEntityWithId(car2, carDao);
-        Car car3 = TestUtil.createEntityWithId(TestData.getInstance().getCar("car3"), carDao);
-
-        Set<String> actualModels = new HashSet<>();
-        actualModels.add(car1.getModel());
-        actualModels.add(car2.getModel());
-        actualModels.add(car3.getModel());
-
-        List<String> foundModels = carDao.findAllCarModels();
-
-        assertThat(foundModels, allOf(
-                iterableWithSize(2),
-                hasItems(actualModels.toArray(new String[0]))));
-    }
-
-    @Test
-    public void findAllModelsReturnsEmptyListOnEmptyCarTable() throws Exception {
-        List<String> foundModels = carDao.findAllCarModels();
-
-        assertThat(foundModels, empty());
-    }*/
 }

@@ -1,11 +1,13 @@
 package org.vitaly.model.carModel;
 
+import org.vitaly.model.Entity;
+
 import static org.vitaly.util.InputChecker.requireNotNull;
 
 /**
  * Created by vitaly on 2017-04-22.
  */
-public class CarModel {
+public class CarModel implements Entity {
     private long id;
     private String name;
     private String photoUrl;
@@ -22,6 +24,7 @@ public class CarModel {
         this.horsePowerCount = builder.horsePowerCount;
     }
 
+    @Override
     public long getId() {
         return id;
     }

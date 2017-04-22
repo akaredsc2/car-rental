@@ -1,7 +1,6 @@
 package org.vitaly.service.impl.dto;
 
 import org.vitaly.model.car.CarState;
-import org.vitaly.model.carModel.CarModel;
 
 import java.math.BigDecimal;
 

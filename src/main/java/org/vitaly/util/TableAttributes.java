@@ -13,11 +13,17 @@ public class TableAttributes {
     public static final String USERS_DRIVER_LICENCE_NUMBER = "users.driver_licence_number";
     public static final String USERS_ROLE = "users.role";
 
+    public static final String MODEL_MODEL_ID = "model.model_id";
+    public static final String MODEL_MODEL_NAME = "model.model_name";
+    public static final String MODEL_PHOTO_URL = "model.photo_url";
+    public static final String MODEL_DOORS = "model.doors";
+    public static final String MODEL_SEATS = "model.seats";
+    public static final String MODEL_HORSE_POWERS = "model.horse_powers";
+
     public static final String CAR_CAR_ID = "car.car_id";
     public static final String CAR_CAR_STATUS = "car.car_status";
     public static final String CAR_MODEL_ID = "car.model_id";
     public static final String CAR_REGISTRATION_PLATE = "car.registration_plate";
-    public static final String CAR_PHOTO_URL = "car.photo_url";
     public static final String CAR_COLOR = "car.color";
     public static final String CAR_PRICE_PER_DAY = "car.price_per_day";
 
@@ -27,7 +33,6 @@ public class TableAttributes {
     public static final String LOCATION_STREET = "location.street";
     public static final String LOCATION_BUILDING = "location.building";
     public static final String LOCATION_PHOTO_URL = "location.photo_url";
-
 
     public static final String NOTIFICATION_NOTIFICATION_ID = "notification.notification_id";
     public static final String NOTIFICATION_NOTIFICATION_DATETIME = "notification.notification_datetime";

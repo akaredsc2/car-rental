@@ -117,7 +117,7 @@ public class MysqlCarDao implements CarDao {
 
         Map<Integer, Object> parameterMap = new HashMap<>();
         putCarParametersToMap(car, parameterMap);
-        parameterMap.put(7, id);
+        parameterMap.put(6, id);
 
         return daoTemplate.executeUpdate(UPDATE_QUERY, parameterMap);
     }
@@ -158,10 +158,4 @@ public class MysqlCarDao implements CarDao {
 
         return daoTemplate.executeSelect(FIND_CARS_WITH_PRICE_BETWEEN_QUERY, mapper, parameterMap);
     }
-
-//    @Override
-//    public List<String> findAllCarModels() {
-//        return daoTemplate.executeSelect(FIND_ALL_CAR_MODELS_QUERY,
-//                resultSet -> resultSet.getString(1), Collections.emptyMap());
-//    }
 }

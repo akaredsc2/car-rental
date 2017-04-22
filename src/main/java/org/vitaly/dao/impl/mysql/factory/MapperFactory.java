@@ -3,6 +3,7 @@ package org.vitaly.dao.impl.mysql.factory;
 import org.vitaly.dao.impl.mysql.mapper.*;
 import org.vitaly.model.bill.Bill;
 import org.vitaly.model.car.Car;
+import org.vitaly.model.carModel.CarModel;
 import org.vitaly.model.location.Location;
 import org.vitaly.model.notification.Notification;
 import org.vitaly.model.reservation.Reservation;
@@ -13,6 +14,7 @@ import org.vitaly.model.user.User;
  */
 public class MapperFactory {
     private Mapper<Bill> billMapper;
+    private Mapper<CarModel> carModelMapper;
     private Mapper<Car> carMapper;
     private Mapper<Location> locationMapper;
     private Mapper<Notification> notificationMapper;
@@ -21,6 +23,7 @@ public class MapperFactory {
 
     public MapperFactory() {
         this.billMapper = new BillMapper();
+        this.carModelMapper = new CarModelMapper();
         this.carMapper = new CarMapper();
         this.locationMapper = new LocationMapper();
         this.notificationMapper = new NotificationMapper();
@@ -30,6 +33,10 @@ public class MapperFactory {
 
     public Mapper<Bill> getBillMapper() {
         return billMapper;
+    }
+
+    public Mapper<CarModel> getCarModelMapper() {
+        return carModelMapper;
     }
 
     public Mapper<Car> getCarMapper() {

@@ -4,10 +4,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.vitaly.dao.abstraction.BillDao;
-import org.vitaly.dao.abstraction.CarDao;
-import org.vitaly.dao.abstraction.ReservationDao;
-import org.vitaly.dao.abstraction.UserDao;
+import org.vitaly.dao.abstraction.*;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.exception.DaoException;
 import org.vitaly.dao.impl.mysql.connectionPool.MysqlConnectionPool;
@@ -15,6 +12,7 @@ import org.vitaly.data.TestData;
 import org.vitaly.data.TestUtil;
 import org.vitaly.model.bill.Bill;
 import org.vitaly.model.car.Car;
+import org.vitaly.model.carModel.CarModel;
 import org.vitaly.model.reservation.Reservation;
 import org.vitaly.model.user.User;
 
@@ -36,6 +34,7 @@ public class MysqlBillDaoTest {
     private static final String USERS_CLEAN_UP_QUERY = "delete from users";
     private static final String CAR_CLEAN_UP_QUERY = "delete from car";
     private static final String RESERVATION_CLEAN_UP_QUERY = "delete from reservation";
+    private static final String MODEL_CLEAN_UP_QUERY = "delete from model";
 
     private static PooledConnection connection = MysqlConnectionPool.getTestInstance().getConnection();
     private static BillDao billDao;
@@ -51,8 +50,14 @@ public class MysqlBillDaoTest {
         UserDao userDao = new MysqlUserDao(connection);
         User user = TestUtil.createEntityWithId(TestData.getInstance().getUser("client1"), userDao);
 
+        CarModel carModelFromTestData = TestData.getInstance().getCarModel("carModel1");
+        CarModelDao carModelDao = new MysqlCarModelDao(connection);
+        CarModel carModel = TestUtil.createEntityWithId(carModelFromTestData, carModelDao);
+
+        Car carFromTestData = TestData.getInstance().getCar("car1");
+        carFromTestData.setCarModel(carModel);
         CarDao carDao = new MysqlCarDao(connection);
-        Car car = TestUtil.createEntityWithId(TestData.getInstance().getCar("car1"), carDao);
+        Car car = TestUtil.createEntityWithId(carFromTestData, carDao);
 
         Reservation temp = new Reservation.Builder()
                 .setClient(user)
@@ -78,6 +83,8 @@ public class MysqlBillDaoTest {
         connection.prepareStatement(USERS_CLEAN_UP_QUERY)
                 .executeUpdate();
         connection.prepareStatement(CAR_CLEAN_UP_QUERY)
+                .executeUpdate();
+        connection.prepareStatement(MODEL_CLEAN_UP_QUERY)
                 .executeUpdate();
         connection.commit();
         connection.close();

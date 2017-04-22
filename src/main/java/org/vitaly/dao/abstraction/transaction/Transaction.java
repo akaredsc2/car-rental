@@ -8,6 +8,8 @@ import org.vitaly.dao.abstraction.*;
 public interface Transaction extends AutoCloseable {
     BillDao getBillDao();
 
+    CarModelDao getCarModelDao();
+
     CarDao getCarDao();
 
     LocationDao getLocationDao();

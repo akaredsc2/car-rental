@@ -4,12 +4,14 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Test;
 import org.vitaly.dao.abstraction.CarDao;
+import org.vitaly.dao.abstraction.CarModelDao;
 import org.vitaly.dao.abstraction.LocationDao;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.impl.mysql.connectionPool.MysqlConnectionPool;
 import org.vitaly.data.TestData;
 import org.vitaly.data.TestUtil;
 import org.vitaly.model.car.Car;
+import org.vitaly.model.carModel.CarModel;
 import org.vitaly.model.location.Location;
 
 import java.util.List;
@@ -124,7 +126,12 @@ public class MysqlLocationDaoTest {
 
     @Test
     public void findLocationOfExistingCarReturnsLocation() throws Exception {
+        CarModel carModel = TestData.getInstance().getCarModel("carModel1");
+        CarModelDao carModelDao = new MysqlCarModelDao(connection);
+        carModel = TestUtil.createEntityWithId(carModel, carModelDao);
+
         Car car = TestData.getInstance().getCar("car1");
+        car.setCarModel(carModel);
         CarDao carDao = new MysqlCarDao(connection);
         car = TestUtil.createEntityWithId(car, carDao);
 

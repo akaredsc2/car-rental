@@ -40,6 +40,10 @@ public class TestData {
         billMap = fillWithBills();
     }
 
+    public static TestData getInstance() {
+        return instance;
+    }
+
     private Map<String, CarModel> fillWithCarModels() {
         Map<String, CarModel> result = new HashMap<>();
 
@@ -65,10 +69,6 @@ public class TestData {
         result.put("carModel2", carModel2);
 
         return result;
-    }
-
-    public static TestData getInstance() {
-        return instance;
     }
 
     private Map<String, Car> fillWithCars() {
