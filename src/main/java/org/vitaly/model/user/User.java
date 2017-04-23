@@ -1,8 +1,12 @@
 package org.vitaly.model.user;
 
 import org.vitaly.model.Entity;
+import org.vitaly.model.notification.Notification;
+import org.vitaly.model.reservation.Reservation;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 
 import static org.vitaly.util.InputChecker.requireNotNull;
 
@@ -19,6 +23,9 @@ public class User implements Entity {
     private String driverLicenceNumber;
     private UserRole role;
 
+    private List<Reservation> reservations;
+    private List<Notification> notifications;
+
     private User(Builder builder) {
         this.id = builder.id;
         this.login = builder.login;
@@ -28,6 +35,9 @@ public class User implements Entity {
         this.passportNumber = builder.passportNumber;
         this.driverLicenceNumber = builder.driverLicenceNumber;
         this.role = builder.role;
+
+        this.reservations = builder.reservations;
+        this.notifications = builder.notifications;
     }
 
     @Override
@@ -63,6 +73,14 @@ public class User implements Entity {
         return role;
     }
 
+    public List<Reservation> getReservations() {
+        return reservations;
+    }
+
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -74,25 +92,13 @@ public class User implements Entity {
 
         User user = (User) o;
 
-        if (!login.equals(user.login)) {
-            return false;
-        }
-        if (!password.equals(user.password)) {
-            return false;
-        }
-        if (!fullName.equals(user.fullName)) {
-            return false;
-        }
-        if (!birthDate.equals(user.birthDate)) {
-            return false;
-        }
-        if (!passportNumber.equals(user.passportNumber)) {
-            return false;
-        }
-        if (!driverLicenceNumber.equals(user.driverLicenceNumber)) {
-            return false;
-        }
-        return role == user.role;
+        return login.equals(user.login)
+                && password.equals(user.password)
+                && fullName.equals(user.fullName)
+                && birthDate.equals(user.birthDate)
+                && passportNumber.equals(user.passportNumber)
+                && driverLicenceNumber.equals(user.driverLicenceNumber)
+                && role == user.role;
     }
 
     @Override
@@ -118,6 +124,8 @@ public class User implements Entity {
                 ", passportNumber='" + passportNumber + '\'' +
                 ", driverLicenceNumber='" + driverLicenceNumber + '\'' +
                 ", role=" + role +
+                ", reservations=" + reservations +
+                ", notifications=" + notifications +
                 '}';
     }
 
@@ -130,6 +138,9 @@ public class User implements Entity {
         private String passportNumber;
         private String driverLicenceNumber;
         private UserRole role;
+
+        private List<Reservation> reservations;
+        private List<Notification> notifications;
 
         public Builder setId(long id) {
             this.id = id;
@@ -185,6 +196,16 @@ public class User implements Entity {
             return this;
         }
 
+        public Builder setReservations(List<Reservation> reservations) {
+            this.reservations = reservations;
+            return this;
+        }
+
+        public Builder setNotifications(List<Notification> notifications) {
+            this.notifications = notifications;
+            return this;
+        }
+
         public User build() {
             return new User(this);
         }
@@ -200,6 +221,8 @@ public class User implements Entity {
                 .setPassword("")
                 .setDriverLicenceNumber("")
                 .setRole(UserRole.CLIENT)
+                .setReservations(Collections.emptyList())
+                .setNotifications(Collections.emptyList())
                 .build();
     }
 
@@ -213,6 +236,8 @@ public class User implements Entity {
                 .setPassword("")
                 .setDriverLicenceNumber("")
                 .setRole(UserRole.ADMIN)
+                .setReservations(Collections.emptyList())
+                .setNotifications(Collections.emptyList())
                 .build();
     }
 }

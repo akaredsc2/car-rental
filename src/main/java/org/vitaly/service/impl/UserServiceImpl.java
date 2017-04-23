@@ -8,6 +8,7 @@ import org.vitaly.model.user.UserRole;
 import org.vitaly.service.abstraction.UserService;
 import org.vitaly.service.impl.dto.UserDto;
 
+import java.util.Collections;
 import java.util.Optional;
 
 /**
@@ -31,6 +32,8 @@ public class UserServiceImpl implements UserService {
                     .setPassportNumber(userDto.getPassportNumber())
                     .setDriverLicenceNumber(userDto.getDriverLicenceNumber())
                     .setRole(UserRole.CLIENT)
+                    .setReservations(Collections.emptyList())
+                    .setNotifications(Collections.emptyList())
                     .build();
 
             UserDao userDao = transaction.getUserDao();

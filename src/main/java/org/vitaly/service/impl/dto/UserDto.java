@@ -3,6 +3,7 @@ package org.vitaly.service.impl.dto;
 import org.vitaly.model.user.UserRole;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * Created by vitaly on 2017-04-20.
@@ -16,6 +17,9 @@ public class UserDto {
     private String passportNumber;
     private String driverLicenceNumber;
     private UserRole role;
+
+    private List<ReservationDto> reservationDtoList;
+    private List<NotificationDto> notificationDtoList;
 
     public long getId() {
         return id;
@@ -79,5 +83,23 @@ public class UserDto {
 
     public void setRole(UserRole role) {
         this.role = role;
+    }
+
+    public List<ReservationDto> getReservationDtoList() {
+        return reservationDtoList;
+    }
+
+    public UserDto setReservationDtoList(List<ReservationDto> reservationDtoList) {
+        this.reservationDtoList = reservationDtoList;
+        return this;
+    }
+
+    public List<NotificationDto> getNotificationDtoList() {
+        return notificationDtoList;
+    }
+
+    public UserDto setNotificationDtoList(List<NotificationDto> notificationDtoList) {
+        this.notificationDtoList = notificationDtoList;
+        return this;
     }
 }
