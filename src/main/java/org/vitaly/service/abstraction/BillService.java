@@ -13,9 +13,9 @@ import java.util.function.Predicate;
 public interface BillService {
     void createNewBill(BillDto billDto);
 
-    List<Bill> getAllMatchingBills(Predicate<Bill> predicate);
+    List<BillDto> getAllMatchingBills(Predicate<Bill> predicate);
 
-    List<Bill> findBillsForReservation(ReservationDto reservationDto);
+    List<BillDto> findBillsForReservation(ReservationDto reservationDto);
 
     void markAsPaid(BillDto billDto);
 }

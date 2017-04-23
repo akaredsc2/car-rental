@@ -29,11 +29,11 @@ public class CarDto {
         return state;
     }
 
-    public CarModelDto getCarModel() {
+    public CarModelDto getCarModelDto() {
         return carModel;
     }
 
-    public void setCarModel(CarModelDto carModel) {
+    public void setCarModelDto(CarModelDto carModel) {
         this.carModel = carModel;
     }
 

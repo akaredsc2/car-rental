@@ -14,9 +14,9 @@ import java.util.function.Predicate;
 public interface LocationService {
     boolean addNewLocation(LocationDto locationDto);
 
-    Optional<Location> findLocationOfCar(CarDto carDto);
+    Optional<LocationDto> findLocationOfCar(CarDto carDto);
 
-    List<Location> getAllMatchingLocations(Predicate<Location> locationPredicate);
+    List<LocationDto> getAllMatchingLocations(Predicate<Location> locationPredicate);
 
     boolean changeLocationPhotoUrl(LocationDto locationDto, String photoUrl);
 }

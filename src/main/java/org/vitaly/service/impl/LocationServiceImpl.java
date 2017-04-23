@@ -7,6 +7,7 @@ import org.vitaly.model.location.Location;
 import org.vitaly.service.abstraction.LocationService;
 import org.vitaly.service.impl.dto.CarDto;
 import org.vitaly.service.impl.dto.LocationDto;
+import org.vitaly.service.impl.dtoMapper.LocationDtoMapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,12 +27,7 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public boolean addNewLocation(LocationDto locationDto) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
-            Location location = new Location.Builder()
-                    .setState(locationDto.getState())
-                    .setCity(locationDto.getCity())
-                    .setStreet(locationDto.getStreet())
-                    .setBuilding(locationDto.getBuilding())
-                    .build();
+            Location location = new LocationDtoMapper().mapDtoToEntity(locationDto);
 
             LocationDao locationDao = transaction.getLocationDao();
             boolean isLocationCreated = locationDao.create(location).isPresent();
@@ -43,21 +39,27 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public Optional<Location> findLocationOfCar(CarDto carDto) {
+    public Optional<LocationDto> findLocationOfCar(CarDto carDto) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
+            LocationDtoMapper mapper = new LocationDtoMapper();
+
             long carId = carDto.getId();
             LocationDao locationDao = transaction.getLocationDao();
-            return locationDao.findLocationByCarId(carId);
+            return locationDao.findLocationByCarId(carId)
+                    .map(mapper::mapEntityToDto);
         }
     }
 
     @Override
-    public List<Location> getAllMatchingLocations(Predicate<Location> locationPredicate) {
+    public List<LocationDto> getAllMatchingLocations(Predicate<Location> locationPredicate) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
+            LocationDtoMapper mapper = new LocationDtoMapper();
+
             LocationDao locationDao = transaction.getLocationDao();
             return locationDao.getAll()
                     .stream()
                     .filter(locationPredicate)
+                    .map(mapper::mapEntityToDto)
                     .collect(Collectors.toList());
         }
     }

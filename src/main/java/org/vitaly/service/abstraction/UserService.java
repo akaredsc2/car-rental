@@ -1,6 +1,5 @@
 package org.vitaly.service.abstraction;
 
-import org.vitaly.model.user.User;
 import org.vitaly.model.user.UserRole;
 import org.vitaly.service.impl.dto.UserDto;
 
@@ -12,7 +11,7 @@ import java.util.Optional;
 public interface UserService {
     boolean registerNewUser(UserDto userDto);
 
-    Optional<User> authenticate(String login, String password);
+    Optional<UserDto> authenticate(String login, String password);
 
     void changeRole(UserDto userDto, UserRole role);
 

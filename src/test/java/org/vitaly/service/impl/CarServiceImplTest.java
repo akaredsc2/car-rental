@@ -15,7 +15,6 @@ import org.vitaly.service.impl.dto.LocationDto;
 import java.math.BigDecimal;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -88,7 +87,7 @@ public class CarServiceImplTest {
         carModelDto.setId(809);
 
         CarDto carDto = new CarDto();
-        carDto.setCarModel(carModelDto);
+        carDto.setCarModelDto(carModelDto);
         carDto.setColor("red");
         carDto.setPricePerDay(BigDecimal.ZERO);
         carDto.setRegistrationPlate("registration plate");
@@ -111,7 +110,7 @@ public class CarServiceImplTest {
 
         CarDto carDto = new CarDto();
         carDto.setId(798);
-        carDto.setCarModel(carModelDto);
+        carDto.setCarModelDto(carModelDto);
         carDto.setColor("black");
         carDto.setPricePerDay(BigDecimal.ZERO);
         carDto.setRegistrationPlate("not a registration plate");

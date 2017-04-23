@@ -14,13 +14,13 @@ import java.util.function.Predicate;
 public interface ReservationService {
     void createNewReservation(ReservationDto reservationDto);
 
-    List<Reservation> getAllMatchingReservations(Predicate<Reservation> predicate);
+    List<ReservationDto> getAllMatchingReservations(Predicate<Reservation> predicate);
 
-    List<Reservation> findReservationsOfClient(UserDto clientDto);
+    List<ReservationDto> findReservationsOfClient(UserDto clientDto);
 
-    List<Reservation> findReservationsAssignedToAdmin(UserDto adminDto);
+    List<ReservationDto> findReservationsAssignedToAdmin(UserDto adminDto);
 
-    List<Reservation> findReservationsWithoutAdmin();
+    List<ReservationDto> findReservationsWithoutAdmin();
 
     void changeReservationState(ReservationDto reservationDto, ReservationState reservationState);
 

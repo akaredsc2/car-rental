@@ -15,13 +15,13 @@ import java.util.function.Predicate;
 public interface CarService {
     boolean addNewCar(CarDto carDto);
 
-    List<Car> findCarsAtLocation(LocationDto locationDto);
+    List<CarDto> findCarsAtLocation(LocationDto locationDto);
 
-    List<Car> findCarsByModel(CarModelDto carModelDto);
+    List<CarDto> findCarsByModel(CarModelDto carModelDto);
 
-    List<Car> findCarsWithPriceBetween(BigDecimal from, BigDecimal to);
+    List<CarDto> findCarsWithPriceBetween(BigDecimal from, BigDecimal to);
 
-    List<Car> getAllMatchingCars(Predicate<Car> carPredicate);
+    List<CarDto> getAllMatchingCars(Predicate<Car> carPredicate);
 
     void updateCar(CarDto carDto);
 

@@ -1,5 +1,7 @@
 package org.vitaly.service.impl.dto;
 
+import java.util.List;
+
 /**
  * Created by vitaly on 2017-04-20.
  */
@@ -10,6 +12,7 @@ public class LocationDto {
     private String street;
     private String building;
     private String photoUrl;
+    private List<CarDto> carDtoList;
 
     public long getId() {
         return id;
@@ -57,5 +60,13 @@ public class LocationDto {
 
     public void setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
+    }
+
+    public List<CarDto> getCarDtoList() {
+        return carDtoList;
+    }
+
+    public void setCarDtoList(List<CarDto> carDtoList) {
+        this.carDtoList = carDtoList;
     }
 }

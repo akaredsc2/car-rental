@@ -1,6 +1,5 @@
 package org.vitaly.service.abstraction;
 
-import org.vitaly.model.notification.Notification;
 import org.vitaly.service.impl.dto.NotificationDto;
 import org.vitaly.service.impl.dto.UserDto;
 
@@ -12,7 +11,7 @@ import java.util.List;
 public interface NotificationService {
     void sendNotificationToUser(UserDto userDto, NotificationDto notificationDto);
 
-    List<Notification> findNotificationsOfUser(UserDto userDto);
+    List<NotificationDto> findNotificationsOfUser(UserDto userDto);
 
     void markNotificationAsViewed(NotificationDto notificationDto);
 }

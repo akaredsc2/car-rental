@@ -8,9 +8,10 @@ import org.vitaly.service.abstraction.NotificationService;
 import org.vitaly.service.exception.ServiceException;
 import org.vitaly.service.impl.dto.NotificationDto;
 import org.vitaly.service.impl.dto.UserDto;
+import org.vitaly.service.impl.dtoMapper.NotificationDtoMapper;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by vitaly on 2017-04-10.
@@ -25,11 +26,8 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void sendNotificationToUser(UserDto userDto, NotificationDto notificationDto) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
-            Notification notification = new Notification.Builder()
-                    .setCreationDateTime(LocalDateTime.now())
-                    .setContent(notificationDto.getContent())
-                    .setHeader(notificationDto.getHeader())
-                    .build();
+            Notification notification = new NotificationDtoMapper().mapDtoToEntity(notificationDto);
+
             NotificationDao notificationDao = transaction.getNotificationDao();
 
             long createdNotificationId = notificationDao.create(notification).orElseThrow(ServiceException::new);
@@ -41,11 +39,16 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public List<Notification> findNotificationsOfUser(UserDto userDto) {
+    public List<NotificationDto> findNotificationsOfUser(UserDto userDto) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
+            NotificationDtoMapper mapper = new NotificationDtoMapper();
+
             long userId = userDto.getId();
             NotificationDao notificationDao = transaction.getNotificationDao();
-            return notificationDao.findNotificationsByUserId(userId);
+            return notificationDao.findNotificationsByUserId(userId)
+                    .stream()
+                    .map(mapper::mapEntityToDto)
+                    .collect(Collectors.toList());
         }
     }
 

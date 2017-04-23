@@ -6,6 +6,7 @@ import org.mockito.Mockito;
 import org.vitaly.dao.abstraction.NotificationDao;
 import org.vitaly.dao.abstraction.factory.TransactionFactory;
 import org.vitaly.dao.abstraction.transaction.Transaction;
+import org.vitaly.model.notification.NotificationStatus;
 import org.vitaly.service.abstraction.NotificationService;
 import org.vitaly.service.impl.dto.NotificationDto;
 import org.vitaly.service.impl.dto.UserDto;
@@ -33,6 +34,7 @@ public class NotificationServiceImplTest {
         notificationDto.setCreationDateTime(LocalDateTime.now());
         notificationDto.setHeader("header");
         notificationDto.setContent("content");
+        notificationDto.setStatus(NotificationStatus.VIEWED);
 
         when(transactionFactory.createTransaction()).thenReturn(transaction);
         when(transaction.getNotificationDao()).thenReturn(notificationDao);

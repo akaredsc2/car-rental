@@ -10,6 +10,8 @@ import org.vitaly.service.abstraction.LocationService;
 import org.vitaly.service.impl.dto.CarDto;
 import org.vitaly.service.impl.dto.LocationDto;
 
+import java.util.Collections;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -30,6 +32,7 @@ public class LocationServiceImplTest {
         locationDto.setCity("city");
         locationDto.setStreet("street");
         locationDto.setBuilding("building");
+        locationDto.setCarDtoList(Collections.emptyList());
 
         when(transactionFactory.createTransaction()).thenReturn(transaction);
         when(transaction.getLocationDao()).thenReturn(locationDao);

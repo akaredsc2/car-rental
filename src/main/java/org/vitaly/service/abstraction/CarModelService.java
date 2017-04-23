@@ -12,9 +12,9 @@ import java.util.function.Predicate;
 public interface CarModelService {
     boolean addCarModel(CarModelDto carModelDto);
 
-    List<CarModel> getAllMatchingCarModels(Predicate<CarModel> carModelPredicate);
+    List<CarModelDto> getAllMatchingCarModels(Predicate<CarModel> carModelPredicate);
 
     void updateCarModel(CarModelDto carModelDto);
 
-    List<CarModel> findCarsWithPhotos();
+    List<CarModelDto> findCarsWithPhotos();
 }

@@ -7,8 +7,8 @@ import org.vitaly.model.bill.Bill;
 import org.vitaly.service.abstraction.BillService;
 import org.vitaly.service.impl.dto.BillDto;
 import org.vitaly.service.impl.dto.ReservationDto;
+import org.vitaly.service.impl.dtoMapper.BillDtoMapper;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -26,11 +26,7 @@ public class BillServiceImpl implements BillService {
     @Override
     public void createNewBill(BillDto billDto) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
-            Bill bill = new Bill.Builder()
-                    .setDescription(billDto.getDescription())
-                    .setCashAmount(billDto.getCashAmount())
-                    .setCreationDateTime(LocalDateTime.now())
-                    .build();
+            Bill bill = new BillDtoMapper().mapDtoToEntity(billDto);
 
             BillDao billDao = transaction.getBillDao();
             billDao.create(bill);
@@ -40,22 +36,30 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
-    public List<Bill> getAllMatchingBills(Predicate<Bill> predicate) {
+    public List<BillDto> getAllMatchingBills(Predicate<Bill> predicate) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
+            BillDtoMapper mapper = new BillDtoMapper();
+
             BillDao billDao = transaction.getBillDao();
             return billDao.getAll()
                     .stream()
                     .filter(predicate)
+                    .map(mapper::mapEntityToDto)
                     .collect(Collectors.toList());
         }
     }
 
     @Override
-    public List<Bill> findBillsForReservation(ReservationDto reservationDto) {
+    public List<BillDto> findBillsForReservation(ReservationDto reservationDto) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
+            BillDtoMapper mapper = new BillDtoMapper();
+
             long reservationId = reservationDto.getId();
             BillDao billDao = transaction.getBillDao();
-            return billDao.findBillsForReservation(reservationId);
+            return billDao.findBillsForReservation(reservationId)
+                    .stream()
+                    .map(mapper::mapEntityToDto)
+                    .collect(Collectors.toList());
         }
     }
 

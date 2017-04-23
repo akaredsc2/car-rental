@@ -3,14 +3,12 @@ package org.vitaly.service.impl;
 import org.vitaly.dao.abstraction.ReservationDao;
 import org.vitaly.dao.abstraction.factory.TransactionFactory;
 import org.vitaly.dao.abstraction.transaction.Transaction;
-import org.vitaly.model.car.Car;
 import org.vitaly.model.reservation.Reservation;
 import org.vitaly.model.reservation.ReservationState;
-import org.vitaly.model.user.User;
 import org.vitaly.service.abstraction.ReservationService;
-import org.vitaly.service.impl.dto.CarDto;
 import org.vitaly.service.impl.dto.ReservationDto;
 import org.vitaly.service.impl.dto.UserDto;
+import org.vitaly.service.impl.dtoMapper.ReservationDtoMapper;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -29,20 +27,7 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public void createNewReservation(ReservationDto reservationDto) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
-            UserDto clientDto = reservationDto.getClient();
-            long clientId = clientDto.getId();
-            User dummyClient = User.createDummyClientWithId(clientId);
-
-            CarDto carDto = reservationDto.getCar();
-            long carId = carDto.getId();
-            Car dummyCar = Car.createDummyCarWithId(carId);
-
-            Reservation reservation = new Reservation.Builder()
-                    .setClient(dummyClient)
-                    .setCar(dummyCar)
-                    .setPickUpDatetime(reservationDto.getPickUpDatetime())
-                    .setDropOffDatetime(reservationDto.getDropOffDatetime())
-                    .build();
+            Reservation reservation = new ReservationDtoMapper().mapDtoToEntity(reservationDto);
 
             ReservationDao reservationDao = transaction.getReservationDao();
             reservationDao.create(reservation);
@@ -52,39 +37,57 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public List<Reservation> getAllMatchingReservations(Predicate<Reservation> predicate) {
+    public List<ReservationDto> getAllMatchingReservations(Predicate<Reservation> predicate) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
+            ReservationDtoMapper mapper = new ReservationDtoMapper();
+
             ReservationDao reservationDao = transaction.getReservationDao();
             return reservationDao.getAll()
                     .stream()
                     .filter(predicate)
+                    .map(mapper::mapEntityToDto)
                     .collect(Collectors.toList());
         }
     }
 
     @Override
-    public List<Reservation> findReservationsOfClient(UserDto clientDto) {
+    public List<ReservationDto> findReservationsOfClient(UserDto clientDto) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
+            ReservationDtoMapper mapper = new ReservationDtoMapper();
+
             long clientId = clientDto.getId();
             ReservationDao reservationDao = transaction.getReservationDao();
-            return reservationDao.findReservationsByClientId(clientId);
+            return reservationDao.findReservationsByClientId(clientId)
+                    .stream()
+                    .map(mapper::mapEntityToDto)
+                    .collect(Collectors.toList());
         }
     }
 
     @Override
-    public List<Reservation> findReservationsAssignedToAdmin(UserDto adminDto) {
+    public List<ReservationDto> findReservationsAssignedToAdmin(UserDto adminDto) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
+            ReservationDtoMapper mapper = new ReservationDtoMapper();
+
             long clientId = adminDto.getId();
             ReservationDao reservationDao = transaction.getReservationDao();
-            return reservationDao.findReservationsByAdminId(clientId);
+            return reservationDao.findReservationsByAdminId(clientId)
+                    .stream()
+                    .map(mapper::mapEntityToDto)
+                    .collect(Collectors.toList());
         }
     }
 
     @Override
-    public List<Reservation> findReservationsWithoutAdmin() {
+    public List<ReservationDto> findReservationsWithoutAdmin() {
         try (Transaction transaction = transactionFactory.createTransaction()) {
+            ReservationDtoMapper mapper = new ReservationDtoMapper();
+
             ReservationDao reservationDao = transaction.getReservationDao();
-            return reservationDao.findReservationsWithoutAdmin();
+            return reservationDao.findReservationsWithoutAdmin()
+                    .stream()
+                    .map(mapper::mapEntityToDto)
+                    .collect(Collectors.toList());
         }
     }
 

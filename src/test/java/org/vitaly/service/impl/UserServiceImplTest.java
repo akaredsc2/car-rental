@@ -10,6 +10,7 @@ import org.vitaly.service.abstraction.UserService;
 import org.vitaly.service.impl.dto.UserDto;
 
 import java.time.LocalDate;
+import java.util.Collections;
 
 import static org.mockito.Mockito.*;
 
@@ -31,6 +32,8 @@ public class UserServiceImplTest {
         userDto.setBirthDate(LocalDate.now());
         userDto.setPassportNumber("passport");
         userDto.setDriverLicenceNumber("driver licence number");
+        userDto.setReservationDtoList(Collections.emptyList());
+        userDto.setNotificationDtoList(Collections.emptyList());
 
         when(transactionFactory.createTransaction()).thenReturn(transaction);
         when(transaction.getUserDao()).thenReturn(userDao);

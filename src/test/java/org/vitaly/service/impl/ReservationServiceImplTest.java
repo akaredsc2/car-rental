@@ -39,6 +39,7 @@ public class ReservationServiceImplTest {
         reservationDto.setCar(carDto);
         reservationDto.setPickUpDatetime(LocalDateTime.now());
         reservationDto.setDropOffDatetime(LocalDateTime.now().plusDays(1));
+        reservationDto.setState(ReservationStateEnum.APPROVED.getState());
 
         when(transactionFactory.createTransaction()).thenReturn(transaction);
         when(transaction.getReservationDao()).thenReturn(reservationDao);
