@@ -57,16 +57,10 @@ public class Bill implements Entity {
 
         Bill bill = (Bill) o;
 
-        if (isPaid != bill.isPaid) {
-            return false;
-        }
-        if (!description.equals(bill.description)) {
-            return false;
-        }
-        if (!cashAmount.stripTrailingZeros().equals(bill.cashAmount.stripTrailingZeros())) {
-            return false;
-        }
-        return creationDateTime.until(bill.creationDateTime, ChronoUnit.SECONDS) == 0;
+        return isPaid == bill.isPaid
+                && description.equals(bill.description)
+                && cashAmount.stripTrailingZeros().equals(bill.cashAmount.stripTrailingZeros())
+                && creationDateTime.until(bill.creationDateTime, ChronoUnit.SECONDS) == 0;
     }
 
     @Override

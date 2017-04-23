@@ -17,6 +17,9 @@ public class ReservationDto {
     private ReservationState state;
     private String rejectionReason;
 
+    private BillDto billForServiceDto;
+    private BillDto billForDamageDto;
+
     public long getId() {
         return id;
     }
@@ -79,5 +82,23 @@ public class ReservationDto {
 
     public void setRejectionReason(String rejectionReason) {
         this.rejectionReason = rejectionReason;
+    }
+
+    public BillDto getBillForServiceDto() {
+        return billForServiceDto;
+    }
+
+    public ReservationDto setBillForServiceDto(BillDto billForServiceDto) {
+        this.billForServiceDto = billForServiceDto;
+        return this;
+    }
+
+    public BillDto getBillForDamageDto() {
+        return billForDamageDto;
+    }
+
+    public ReservationDto setBillForDamageDto(BillDto billForDamageDto) {
+        this.billForDamageDto = billForDamageDto;
+        return this;
     }
 }

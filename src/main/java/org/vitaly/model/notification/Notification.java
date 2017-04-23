@@ -57,16 +57,10 @@ public class Notification implements Entity {
 
         Notification that = (Notification) o;
 
-        if (creationDateTime.until(that.creationDateTime, ChronoUnit.SECONDS) != 0) {
-            return false;
-        }
-        if (status != that.status) {
-            return false;
-        }
-        if (!header.equals(that.header)) {
-            return false;
-        }
-        return content.equals(that.content);
+        return creationDateTime.until(that.creationDateTime, ChronoUnit.SECONDS) == 0
+                && status == that.status
+                && header.equals(that.header)
+                && content.equals(that.content);
     }
 
     @Override

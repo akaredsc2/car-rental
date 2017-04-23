@@ -1,6 +1,7 @@
 package org.vitaly.model.reservation;
 
 import org.vitaly.model.Entity;
+import org.vitaly.model.bill.Bill;
 import org.vitaly.model.car.Car;
 import org.vitaly.model.user.User;
 
@@ -22,6 +23,9 @@ public class Reservation implements Entity {
     private LocalDateTime dropOffDatetime;
     private ReservationState state;
     private String rejectionReason;
+
+    private Bill billForService;
+    private Bill billForDamage;
 
     private Reservation(Builder builder) {
         this.id = builder.id;
@@ -70,6 +74,14 @@ public class Reservation implements Entity {
         return rejectionReason;
     }
 
+    public Bill getBillForService() {
+        return billForService;
+    }
+
+    public Bill getBillForDamage() {
+        return billForDamage;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -81,34 +93,18 @@ public class Reservation implements Entity {
 
         Reservation that = (Reservation) o;
 
-        if (!Objects.equals(this.client.getId(), that.client.getId())) {
-            return false;
-        }
-        if (admin != null ? !Objects.equals(this.admin.getId(), that.admin.getId()) : that.admin != null) {
-            return false;
-        }
-        if (!Objects.equals(this.car.getId(), that.car.getId())) {
-            return false;
-        }
-        if (pickUpDatetime.until(that.pickUpDatetime, ChronoUnit.SECONDS) != 0) {
-            return false;
-        }
-        if (dropOffDatetime.until(that.dropOffDatetime, ChronoUnit.SECONDS) != 0) {
-            return false;
-        }
-        if (!state.equals(that.state)) {
-            return false;
-        }
-        return rejectionReason != null ? rejectionReason.equals(that.rejectionReason) : that.rejectionReason == null;
+        return Objects.equals(this.client.getId(), that.client.getId())
+                && Objects.equals(this.car.getId(), that.car.getId())
+                && pickUpDatetime.until(that.pickUpDatetime, ChronoUnit.SECONDS) == 0
+                && dropOffDatetime.until(that.dropOffDatetime, ChronoUnit.SECONDS) == 0
+                && state.equals(that.state);
     }
 
     @Override
     public int hashCode() {
         int result = client.hashCode();
-        result = 31 * result + (admin != null ? admin.hashCode() : 0);
         result = 31 * result + car.hashCode();
         result = 31 * result + state.hashCode();
-        result = 31 * result + (rejectionReason != null ? rejectionReason.hashCode() : 0);
         return result;
     }
 
@@ -118,11 +114,13 @@ public class Reservation implements Entity {
                 "id=" + id +
                 ", client=" + client +
                 ", admin=" + admin +
-                ", car=" + car.getId() +
+                ", car=" + car +
                 ", pickUpDatetime=" + pickUpDatetime +
                 ", dropOffDatetime=" + dropOffDatetime +
                 ", state=" + state +
                 ", rejectionReason='" + rejectionReason + '\'' +
+                ", billForService=" + billForService +
+                ", billForDamage=" + billForDamage +
                 '}';
     }
 
@@ -135,6 +133,9 @@ public class Reservation implements Entity {
         private LocalDateTime dropOffDatetime;
         private ReservationState state;
         private String rejectionReason;
+
+        private Bill billForService;
+        private Bill billForDamage;
 
         public Builder setId(long id) {
             this.id = id;
@@ -183,6 +184,16 @@ public class Reservation implements Entity {
 
         public Builder setRejectionReason(String rejectionReason) {
             this.rejectionReason = rejectionReason;
+            return this;
+        }
+
+        public Builder setBillForService(Bill billForService) {
+            this.billForService = billForService;
+            return this;
+        }
+
+        public Builder setBillForDamage(Bill billForDamage) {
+            this.billForDamage = billForDamage;
             return this;
         }
 
