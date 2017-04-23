@@ -2,8 +2,6 @@ package org.vitaly.model.carModel;
 
 import org.vitaly.model.Entity;
 
-import static org.vitaly.util.InputChecker.requireNotNull;
-
 /**
  * Created by vitaly on 2017-04-22.
  */
@@ -125,8 +123,6 @@ public class CarModel implements Entity {
         }
 
         public Builder setName(String name) {
-            requireNotNull(name, "Name must not be null!");
-
             this.name = name;
             return this;
         }

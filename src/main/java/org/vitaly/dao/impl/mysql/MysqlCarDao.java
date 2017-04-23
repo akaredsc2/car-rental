@@ -52,6 +52,8 @@ public class MysqlCarDao implements CarDao {
                     "WHERE price_per_day BETWEEN ? AND ?";
 
     private static final String CAR_MUST_NOT_BE_NULL = "Car must not be null!";
+    private static final String FROM_NUMBER_MUST_NOT_BE_NULL = "From number must not be null!";
+    private static final String TO_NUMBER_MUST_NOT_BE_NULL = "To number must not be null!";
 
     private Mapper<Car> mapper;
     private DaoTemplate daoTemplate;
@@ -149,8 +151,8 @@ public class MysqlCarDao implements CarDao {
 
     @Override
     public List<Car> findCarsWithPriceBetween(BigDecimal from, BigDecimal to) {
-        requireNotNull(from, "From number must not be null!");
-        requireNotNull(to, "To number must not be null!");
+        requireNotNull(from, FROM_NUMBER_MUST_NOT_BE_NULL);
+        requireNotNull(to, TO_NUMBER_MUST_NOT_BE_NULL);
 
         Map<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, from);

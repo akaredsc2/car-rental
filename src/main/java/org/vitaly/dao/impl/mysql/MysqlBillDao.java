@@ -1,5 +1,7 @@
 package org.vitaly.dao.impl.mysql;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.vitaly.dao.abstraction.BillDao;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.impl.mysql.mapper.BillMapper;
@@ -12,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
-import static org.vitaly.util.ExceptionThrower.unsupported;
 import static org.vitaly.util.InputChecker.requireNotNull;
 
 /**
@@ -42,6 +43,10 @@ public class MysqlBillDao implements BillDao {
                     "SET is_paid = ? " +
                     "WHERE bill_id = ?";
 
+    private static final String BILL_MUST_NOT_BE_NULL = "Bill must not be null!";
+
+    private static Logger logger = LogManager.getLogger(MysqlBillDao.class.getName());
+
     private Mapper<Bill> mapper;
     private DaoTemplate daoTemplate;
 
@@ -65,8 +70,9 @@ public class MysqlBillDao implements BillDao {
 
     @Override
     public Optional<Long> findIdOfEntity(Bill entity) {
-        unsupported();
-        return null;
+        RuntimeException e = new UnsupportedOperationException();
+        logger.error(e);
+        throw e;
     }
 
     @Override
@@ -76,7 +82,7 @@ public class MysqlBillDao implements BillDao {
 
     @Override
     public Optional<Long> create(Bill bill) {
-        requireNotNull(bill, "Bill must not be null!");
+        requireNotNull(bill, BILL_MUST_NOT_BE_NULL);
 
         HashMap<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, bill.getDescription());
@@ -89,8 +95,9 @@ public class MysqlBillDao implements BillDao {
 
     @Override
     public int update(long id, Bill entity) {
-        unsupported();
-        return 0;
+        RuntimeException e = new UnsupportedOperationException();
+        logger.error(e);
+        throw e;
     }
 
     @Override

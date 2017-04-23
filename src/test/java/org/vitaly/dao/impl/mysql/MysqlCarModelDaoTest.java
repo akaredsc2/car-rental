@@ -155,6 +155,11 @@ public class MysqlCarModelDaoTest {
         assertEquals(updateCount, 0);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void updateNullCarModelShouldThrowException() throws Exception {
+        carModelDao.update(1, null);
+    }
+
     @Test
     public void findCarModelsWithPhotosReturnsMatchingCars() throws Exception {
         carModelDao.create(carModel1);

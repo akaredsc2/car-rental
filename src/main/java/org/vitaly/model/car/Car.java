@@ -5,8 +5,6 @@ import org.vitaly.model.carModel.CarModel;
 
 import java.math.BigDecimal;
 
-import static org.vitaly.util.InputChecker.requireNotNull;
-
 /**
  * Created by vitaly on 2017-03-26.
  */
@@ -171,36 +169,26 @@ public class Car implements Entity {
         }
 
         public Builder setState(CarState state) {
-            requireNotNull(state, "State must not be null!");
-
             this.state = state;
             return this;
         }
 
         public Builder setCarModel(CarModel carModel) {
-            requireNotNull(carModel, "Car model must not be null!");
-
             this.carModel = carModel;
             return this;
         }
 
         public Builder setRegistrationPlate(String registrationPlate) {
-            requireNotNull(registrationPlate, "Registration Plate must not be null!");
-
             this.registrationPlate = registrationPlate;
             return this;
         }
 
         public Builder setColor(String color) {
-            requireNotNull(color, "Color must not be null!");
-
             this.color = color;
             return this;
         }
 
         public Builder setPricePerDay(BigDecimal pricePerDay) {
-            requireNotNull(pricePerDay, "PricePerDay must not be null!");
-
             this.pricePerDay = pricePerDay;
             return this;
         }

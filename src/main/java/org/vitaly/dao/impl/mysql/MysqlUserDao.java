@@ -1,5 +1,7 @@
 package org.vitaly.dao.impl.mysql;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.vitaly.dao.abstraction.UserDao;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.impl.mysql.mapper.Mapper;
@@ -11,7 +13,6 @@ import org.vitaly.model.user.UserRole;
 import java.sql.Date;
 import java.util.*;
 
-import static org.vitaly.util.ExceptionThrower.unsupported;
 import static org.vitaly.util.InputChecker.requireNotNull;
 
 /**
@@ -50,6 +51,8 @@ public class MysqlUserDao implements UserDao {
     private static final String ROLE_MUST_NOT_BE_NULL = "Role must not be null!";
     private static final String USER_MUST_NOT_BE_NULL = "User must not be null!";
     private static final String NEW_PASSWORD_MUST_NOT_BE_NULL = "New password must not be null!";
+
+    private static Logger logger = LogManager.getLogger(MysqlUserDao.class.getName());
 
     private Mapper<User> mapper;
     private DaoTemplate daoTemplate;
@@ -109,8 +112,9 @@ public class MysqlUserDao implements UserDao {
 
     @Override
     public int update(long id, User entity) {
-        unsupported();
-        return 0;
+        RuntimeException e = new UnsupportedOperationException();
+        logger.error(e);
+        throw e;
     }
 
     @Override

@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
+import static org.vitaly.util.InputChecker.*;
+
 /**
  * Created by vitaly on 2017-04-22.
  */
@@ -39,6 +41,7 @@ public class MysqlCarModelDao implements CarModelDao {
             "SELECT * " +
                     "FROM model " +
                     "WHERE photo_url IS NOT NULL";
+    private static final String CAR_MODEL_MUST_NOT_BE_NULL = "Car model must not be null!";
 
     private Mapper<CarModel> mapper;
     private DaoTemplate daoTemplate;
@@ -63,7 +66,7 @@ public class MysqlCarModelDao implements CarModelDao {
 
     @Override
     public Optional<Long> findIdOfEntity(CarModel carModel) {
-        InputChecker.requireNotNull(carModel, "Car model must not be null!");
+        requireNotNull(carModel, CAR_MODEL_MUST_NOT_BE_NULL);
 
         HashMap<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, carModel.getName());
@@ -80,7 +83,7 @@ public class MysqlCarModelDao implements CarModelDao {
 
     @Override
     public Optional<Long> create(CarModel carModel) {
-        InputChecker.requireNotNull(carModel, "Car model must not be null!");
+        requireNotNull(carModel, CAR_MODEL_MUST_NOT_BE_NULL);
 
         HashMap<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, carModel.getName());
@@ -94,6 +97,8 @@ public class MysqlCarModelDao implements CarModelDao {
 
     @Override
     public int update(long id, CarModel carModel) {
+        requireNotNull(carModel, CAR_MODEL_MUST_NOT_BE_NULL);
+
         HashMap<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, carModel.getName());
         parameterMap.put(2, carModel.getPhotoUrl());

@@ -5,8 +5,6 @@ import org.vitaly.model.Entity;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-import static org.vitaly.util.InputChecker.requireNotNull;
-
 /**
  * Created by vitaly on 2017-04-06.
  */
@@ -96,29 +94,21 @@ public class Notification implements Entity {
         }
 
         public Builder setCreationDateTime(LocalDateTime creationDateTime) {
-            requireNotNull(creationDateTime, "Creation datetime must not be null!");
-
             this.creationDateTime = creationDateTime;
             return this;
         }
 
         public Builder setStatus(NotificationStatus status) {
-            requireNotNull(status, "Notification status must not be null!");
-
             this.status = status;
             return this;
         }
 
         public Builder setHeader(String header) {
-            requireNotNull(header, "Notification header must not be null!");
-
             this.header = header;
             return this;
         }
 
         public Builder setContent(String content) {
-            requireNotNull(content, "Notification content must not be null!");
-
             this.content = content;
             return this;
         }

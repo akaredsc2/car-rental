@@ -8,8 +8,6 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
-import static org.vitaly.util.InputChecker.requireNotNull;
-
 /**
  * Created by vitaly on 2017-03-28.
  */
@@ -148,50 +146,36 @@ public class User implements Entity {
         }
 
         public Builder setLogin(String login) {
-            requireNotNull(login, "Login must not be null!");
-
             this.login = login;
             return this;
         }
 
         public Builder setPassword(String password) {
-            requireNotNull(password, "Password must not be null!");
-
             this.password = password;
             return this;
         }
 
         public Builder setFullName(String fullName) {
-            requireNotNull(fullName, "Full name must not be null!");
-
             this.fullName = fullName;
             return this;
         }
 
         public Builder setBirthDate(LocalDate birthDate) {
-            requireNotNull(birthDate, "Birth date must not be null!");
-
             this.birthDate = birthDate;
             return this;
         }
 
         public Builder setPassportNumber(String passportNumber) {
-            requireNotNull(passportNumber, "Passport number must not be null!");
-
             this.passportNumber = passportNumber;
             return this;
         }
 
         public Builder setDriverLicenceNumber(String driverLicenceNumber) {
-            requireNotNull(driverLicenceNumber, "Driver licence number must not be null!");
-
             this.driverLicenceNumber = driverLicenceNumber;
             return this;
         }
 
         public Builder setRole(UserRole role) {
-            requireNotNull(role, "User role must not be null!");
-
             this.role = role;
             return this;
         }

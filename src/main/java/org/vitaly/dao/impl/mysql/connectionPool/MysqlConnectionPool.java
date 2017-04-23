@@ -126,22 +126,16 @@ public class MysqlConnectionPool implements ConnectionPool {
         private int defaultTransactionIsolation;
 
         public Builder setUrl(String url) {
-            requireNotNull(url, "Url must not be null!");
-
             this.url = url;
             return this;
         }
 
         public Builder setUsername(String username) {
-            requireNotNull(url, "Username must not be null!");
-
             this.username = username;
             return this;
         }
 
         public Builder setPassword(String password) {
-            requireNotNull(url, "Password must not be null!");
-
             this.password = password;
             return this;
         }

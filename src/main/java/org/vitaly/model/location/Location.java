@@ -6,8 +6,6 @@ import org.vitaly.model.car.Car;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.vitaly.util.InputChecker.requireNotNull;
-
 /**
  * Created by vitaly on 2017-03-26.
  */
@@ -151,29 +149,21 @@ public class Location implements Entity {
         }
 
         public Builder setState(String state) {
-            requireNotNull(state, "State must not be null!");
-
             this.state = state;
             return this;
         }
 
         public Builder setCity(String city) {
-            requireNotNull(city, "City must not be null!");
-
             this.city = city;
             return this;
         }
 
         public Builder setStreet(String street) {
-            requireNotNull(street, "Street must not be null!");
-
             this.street = street;
             return this;
         }
 
         public Builder setBuilding(String building) {
-            requireNotNull(building, "Building must not be null!");
-
             this.building = building;
             return this;
         }
@@ -184,8 +174,6 @@ public class Location implements Entity {
         }
 
         public Builder setCars(List<Car> cars) {
-            requireNotNull(cars, "Cars must not be null!");
-
             this.cars = cars;
             return this;
         }
