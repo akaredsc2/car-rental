@@ -1,5 +1,7 @@
 package org.vitaly.service.impl.dto;
 
+import java.util.Objects;
+
 /**
  * Created by vitaly on 2017-04-22.
  */
@@ -57,5 +59,35 @@ public class CarModelDto {
 
     public void setHorsePowerCount(int horsePowerCount) {
         this.horsePowerCount = horsePowerCount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        CarModelDto that = (CarModelDto) o;
+
+        return id == that.id
+                && doorCount == that.doorCount
+                && seatCount == that.seatCount
+                && horsePowerCount == that.horsePowerCount
+                && Objects.equals(name, that.name)
+                && Objects.equals(photoUrl, that.photoUrl);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (photoUrl != null ? photoUrl.hashCode() : 0);
+        result = 31 * result + doorCount;
+        result = 31 * result + seatCount;
+        result = 31 * result + horsePowerCount;
+        return result;
     }
 }

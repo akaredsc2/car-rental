@@ -15,8 +15,12 @@ public class LocationDtoMapper implements DtoMapper<Location, LocationDto> {
 
     @Override
     public Location mapDtoToEntity(LocationDto dto) {
+//        DtoMapper<Car, CarDto> carDtoMapper = new CarDtoMapper();
+
         List<Car> cars = dto.getCarDtoList()
                 .stream()
+
+                // TODO: 23.04.17 consider replacing fith dto mapper
                 .map(carDto -> Car.createDummyCarWithId(carDto.getId()))
                 .collect(Collectors.toList());
 

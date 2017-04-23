@@ -5,6 +5,7 @@ import org.vitaly.model.car.Car;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by vitaly on 2017-03-26.
@@ -106,19 +107,22 @@ public class Location implements Entity {
 
         Location location = (Location) o;
 
-        return state.equals(location.state)
-                && city.equals(location.city)
-                && street.equals(location.street)
-                && building.equals(location.building);
+        return Objects.equals(state, location.state)
+                && Objects.equals(city, location.city)
+                && Objects.equals(street, location.street)
+                && Objects.equals(building, location.building)
+                && Objects.equals(photoUrl, location.photoUrl)
+                && Objects.equals(cars, location.cars);
     }
 
     @Override
     public int hashCode() {
-        int result = state.hashCode();
-        result = 31 * result + city.hashCode();
-        result = 31 * result + street.hashCode();
-        result = 31 * result + building.hashCode();
-        result = 31 * result + cars.hashCode();
+        int result = state != null ? state.hashCode() : 0;
+        result = 31 * result + (city != null ? city.hashCode() : 0);
+        result = 31 * result + (street != null ? street.hashCode() : 0);
+        result = 31 * result + (building != null ? building.hashCode() : 0);
+        result = 31 * result + (photoUrl != null ? photoUrl.hashCode() : 0);
+        result = 31 * result + (cars != null ? cars.hashCode() : 0);
         return result;
     }
 

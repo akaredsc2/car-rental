@@ -3,6 +3,7 @@ package org.vitaly.service.impl.dto;
 import org.vitaly.model.notification.NotificationStatus;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * Created by vitaly on 2017-04-20.
@@ -52,5 +53,33 @@ public class NotificationDto {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        NotificationDto that = (NotificationDto) o;
+
+        return id == that.id
+                && (Objects.equals(creationDateTime, that.creationDateTime))
+                && status == that.status
+                && Objects.equals(header, that.header)
+                && Objects.equals(content, that.content);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (creationDateTime != null ? creationDateTime.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (header != null ? header.hashCode() : 0);
+        result = 31 * result + (content != null ? content.hashCode() : 0);
+        return result;
     }
 }

@@ -1,6 +1,7 @@
 package org.vitaly.service.impl.dto;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by vitaly on 2017-04-20.
@@ -68,5 +69,37 @@ public class LocationDto {
 
     public void setCarDtoList(List<CarDto> carDtoList) {
         this.carDtoList = carDtoList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        LocationDto that = (LocationDto) o;
+
+        return id == that.id
+                && Objects.equals(state, that.state)
+                && Objects.equals(city, that.city)
+                && Objects.equals(street, that.street)
+                && Objects.equals(building, that.building)
+                && Objects.equals(photoUrl, that.photoUrl)
+                && Objects.equals(carDtoList, that.carDtoList);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (state != null ? state.hashCode() : 0);
+        result = 31 * result + (city != null ? city.hashCode() : 0);
+        result = 31 * result + (street != null ? street.hashCode() : 0);
+        result = 31 * result + (building != null ? building.hashCode() : 0);
+        result = 31 * result + (photoUrl != null ? photoUrl.hashCode() : 0);
+        result = 31 * result + (carDtoList != null ? carDtoList.hashCode() : 0);
+        return result;
     }
 }

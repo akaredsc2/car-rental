@@ -12,8 +12,9 @@ public class CarDtoMapper implements DtoMapper<Car, CarDto> {
 
     @Override
     public Car mapDtoToEntity(CarDto dto) {
-        long carModelId = dto.getCarModelDto().getId();
-        CarModel carModel = CarModel.createDummyCarModelWithId(carModelId);
+        // TODO: 23.04.17 replace with factory
+        CarModelDto carModelDto = dto.getCarModelDto();
+        CarModel carModel = new CarModelDtoMapper().mapDtoToEntity(carModelDto);
 
         return new Car.Builder()
                 .setId(dto.getId())
@@ -27,6 +28,8 @@ public class CarDtoMapper implements DtoMapper<Car, CarDto> {
 
     @Override
     public CarDto mapEntityToDto(Car entity) {
+
+        // TODO: 23.04.17 replace with factory
         CarModelDto carModelDto = new CarModelDtoMapper().mapEntityToDto(entity.getCarModel());
 
         CarDto carDto = new CarDto();

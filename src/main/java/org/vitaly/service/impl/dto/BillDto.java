@@ -2,6 +2,7 @@ package org.vitaly.service.impl.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * Created by vitaly on 2017-04-20.
@@ -51,5 +52,33 @@ public class BillDto {
 
     public void setCreationDateTime(LocalDateTime creationDateTime) {
         this.creationDateTime = creationDateTime;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        BillDto billDto = (BillDto) o;
+
+        return id == billDto.id
+                && isPaid == billDto.isPaid
+                && (Objects.equals(description, billDto.description))
+                && (Objects.equals(cashAmount, billDto.cashAmount))
+                && (Objects.equals(creationDateTime, billDto.creationDateTime));
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (isPaid ? 1 : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (cashAmount != null ? cashAmount.hashCode() : 0);
+        result = 31 * result + (creationDateTime != null ? creationDateTime.hashCode() : 0);
+        return result;
     }
 }

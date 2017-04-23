@@ -17,6 +17,8 @@ public class ReservationDtoMapper implements DtoMapper<Reservation, ReservationD
     @Override
     public Reservation mapDtoToEntity(ReservationDto dto) {
         UserDto clientDto = dto.getClient();
+
+        // TODO: 23.04.17 consider using other dto mappers
         User dummyClient = User.createDummyClientWithId(clientDto.getId());
 
         // TODO: 23.04.17 refactor
@@ -61,7 +63,7 @@ public class ReservationDtoMapper implements DtoMapper<Reservation, ReservationD
     public ReservationDto mapEntityToDto(Reservation entity) {
         ReservationDto reservationDto = new ReservationDto();
 
-        // TODO: 23.04.17 consider using user and car dto mappers
+        // TODO: 23.04.17 consider using user, car and bill dto mappers
         UserDto clientDto = new UserDto();
         clientDto.setId(entity.getClient().getId());
 
