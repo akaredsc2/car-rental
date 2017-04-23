@@ -4,6 +4,9 @@ package org.vitaly.model.reservation;
  * Created by vitaly on 2017-04-08.
  */
 public class PickedUpState extends ReservationState {
+    PickedUpState() {
+    }
+
     @Override
     boolean dropOff(Reservation reservation) {
         reservation.setState(ReservationStateEnum.DROPPED.getState());

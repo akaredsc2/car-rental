@@ -4,6 +4,9 @@ package org.vitaly.model.car;
  * Created by vitaly on 2017-03-26.
  */
 public class MaintainedState extends CarState {
+    MaintainedState() {
+    }
+
     @Override
     boolean makeUnavailable(Car car) {
         car.setState(CarStateEnum.UNAVAILABLE.getState());

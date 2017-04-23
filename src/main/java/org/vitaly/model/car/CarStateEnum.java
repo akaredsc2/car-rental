@@ -11,7 +11,7 @@ public enum CarStateEnum {
     UNAVAILABLE(new UnavailableState()),
     MAINTAINED(new MaintainedState());
 
-    private CarState state;
+    private final CarState state;
 
     CarStateEnum(CarState state) {
         this.state = state;
