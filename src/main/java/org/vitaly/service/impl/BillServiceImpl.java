@@ -7,7 +7,8 @@ import org.vitaly.model.bill.Bill;
 import org.vitaly.service.abstraction.BillService;
 import org.vitaly.service.impl.dto.BillDto;
 import org.vitaly.service.impl.dto.ReservationDto;
-import org.vitaly.service.impl.dtoMapper.BillDtoMapper;
+import org.vitaly.service.impl.dtoMapper.DtoMapper;
+import org.vitaly.service.impl.factory.DtoMapperFactory;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -18,15 +19,21 @@ import java.util.stream.Collectors;
  */
 public class BillServiceImpl implements BillService {
     private TransactionFactory transactionFactory;
+    private DtoMapperFactory dtoMapperFactory;
 
-    public BillServiceImpl(TransactionFactory transactionFactory) {
+    BillServiceImpl(TransactionFactory transactionFactory) {
+        this(transactionFactory, new DtoMapperFactory());
+    }
+
+    public BillServiceImpl(TransactionFactory transactionFactory, DtoMapperFactory dtoMapperFactory) {
         this.transactionFactory = transactionFactory;
+        this.dtoMapperFactory = dtoMapperFactory;
     }
 
     @Override
     public void createNewBill(BillDto billDto) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
-            Bill bill = new BillDtoMapper().mapDtoToEntity(billDto);
+            Bill bill = dtoMapperFactory.getBillDtoMapper().mapDtoToEntity(billDto);
 
             BillDao billDao = transaction.getBillDao();
             billDao.create(bill);
@@ -38,7 +45,7 @@ public class BillServiceImpl implements BillService {
     @Override
     public List<BillDto> getAllMatchingBills(Predicate<Bill> predicate) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
-            BillDtoMapper mapper = new BillDtoMapper();
+            DtoMapper<Bill, BillDto> mapper = dtoMapperFactory.getBillDtoMapper();
 
             BillDao billDao = transaction.getBillDao();
             return billDao.getAll()
@@ -52,7 +59,7 @@ public class BillServiceImpl implements BillService {
     @Override
     public List<BillDto> findBillsForReservation(ReservationDto reservationDto) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
-            BillDtoMapper mapper = new BillDtoMapper();
+            DtoMapper<Bill, BillDto> mapper = dtoMapperFactory.getBillDtoMapper();
 
             long reservationId = reservationDto.getId();
             BillDao billDao = transaction.getBillDao();

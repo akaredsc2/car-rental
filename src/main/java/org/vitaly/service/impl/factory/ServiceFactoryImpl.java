@@ -18,13 +18,15 @@ public class ServiceFactoryImpl implements ServiceFactory {
     private UserService userService;
 
     public ServiceFactoryImpl(TransactionFactory transactionFactory) {
-        this.billService = new BillServiceImpl(transactionFactory);
-        this.carModelService = new CarModelServiceImpl(transactionFactory);
-        this.carService = new CarServiceImpl(transactionFactory);
-        this.locationService = new LocationServiceImpl(transactionFactory);
-        this.notificationService = new NotificationServiceImpl(transactionFactory);
-        this.reservationService = new ReservationServiceImpl(transactionFactory);
-        this.userService = new UserServiceImpl(transactionFactory);
+        DtoMapperFactory dtoMapperFactory = new DtoMapperFactory();
+
+        this.billService = new BillServiceImpl(transactionFactory, dtoMapperFactory);
+        this.carModelService = new CarModelServiceImpl(transactionFactory, dtoMapperFactory);
+        this.carService = new CarServiceImpl(transactionFactory, dtoMapperFactory);
+        this.locationService = new LocationServiceImpl(transactionFactory, dtoMapperFactory);
+        this.notificationService = new NotificationServiceImpl(transactionFactory, dtoMapperFactory);
+        this.reservationService = new ReservationServiceImpl(transactionFactory, dtoMapperFactory);
+        this.userService = new UserServiceImpl(transactionFactory, dtoMapperFactory);
     }
 
     @Override

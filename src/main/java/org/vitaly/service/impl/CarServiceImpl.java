@@ -8,7 +8,8 @@ import org.vitaly.service.abstraction.CarService;
 import org.vitaly.service.impl.dto.CarDto;
 import org.vitaly.service.impl.dto.CarModelDto;
 import org.vitaly.service.impl.dto.LocationDto;
-import org.vitaly.service.impl.dtoMapper.CarDtoMapper;
+import org.vitaly.service.impl.dtoMapper.DtoMapper;
+import org.vitaly.service.impl.factory.DtoMapperFactory;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -20,15 +21,21 @@ import java.util.stream.Collectors;
  */
 public class CarServiceImpl implements CarService {
     private TransactionFactory transactionFactory;
+    private DtoMapperFactory dtoMapperFactory;
 
-    public CarServiceImpl(TransactionFactory transactionFactory) {
+    CarServiceImpl(TransactionFactory transactionFactory) {
+        this(transactionFactory, new DtoMapperFactory());
+    }
+
+    public CarServiceImpl(TransactionFactory transactionFactory, DtoMapperFactory dtoMapperFactory) {
         this.transactionFactory = transactionFactory;
+        this.dtoMapperFactory = dtoMapperFactory;
     }
 
     @Override
     public boolean addNewCar(CarDto carDto) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
-            Car car = new CarDtoMapper().mapDtoToEntity(carDto);
+            Car car = dtoMapperFactory.getCarDtoMapper().mapDtoToEntity(carDto);
             CarDao carDao = transaction.getCarDao();
             boolean isCarCreated = carDao.create(car).isPresent();
 
@@ -41,7 +48,7 @@ public class CarServiceImpl implements CarService {
     @Override
     public List<CarDto> findCarsAtLocation(LocationDto locationDto) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
-            CarDtoMapper mapper = new CarDtoMapper();
+            DtoMapper<Car, CarDto> mapper = dtoMapperFactory.getCarDtoMapper();
 
             long locationId = locationDto.getId();
             CarDao carDao = transaction.getCarDao();
@@ -55,7 +62,7 @@ public class CarServiceImpl implements CarService {
     @Override
     public List<CarDto> findCarsByModel(CarModelDto carModelDto) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
-            CarDtoMapper mapper = new CarDtoMapper();
+            DtoMapper<Car, CarDto> mapper = dtoMapperFactory.getCarDtoMapper();
 
             long carModelId = carModelDto.getId();
             CarDao carDao = transaction.getCarDao();
@@ -69,7 +76,7 @@ public class CarServiceImpl implements CarService {
     @Override
     public List<CarDto> findCarsWithPriceBetween(BigDecimal from, BigDecimal to) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
-            CarDtoMapper mapper = new CarDtoMapper();
+            DtoMapper<Car, CarDto> mapper = dtoMapperFactory.getCarDtoMapper();
 
             CarDao carDao = transaction.getCarDao();
             return carDao.findCarsWithPriceBetween(from, to)
@@ -82,7 +89,7 @@ public class CarServiceImpl implements CarService {
     @Override
     public List<CarDto> getAllMatchingCars(Predicate<Car> carPredicate) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
-            CarDtoMapper mapper = new CarDtoMapper();
+            DtoMapper<Car, CarDto> mapper = dtoMapperFactory.getCarDtoMapper();
 
             CarDao carDao = transaction.getCarDao();
             return carDao.getAll()
@@ -96,7 +103,7 @@ public class CarServiceImpl implements CarService {
     @Override
     public void updateCar(CarDto carDto) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
-            Car car = new CarDtoMapper().mapDtoToEntity(carDto);
+            Car car = dtoMapperFactory.getCarDtoMapper().mapDtoToEntity(carDto);
 
             CarDao carDao = transaction.getCarDao();
             carDao.update(carDto.getId(), car);

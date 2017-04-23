@@ -7,7 +7,8 @@ import org.vitaly.model.user.User;
 import org.vitaly.model.user.UserRole;
 import org.vitaly.service.abstraction.UserService;
 import org.vitaly.service.impl.dto.UserDto;
-import org.vitaly.service.impl.dtoMapper.UserDtoMapper;
+import org.vitaly.service.impl.dtoMapper.DtoMapper;
+import org.vitaly.service.impl.factory.DtoMapperFactory;
 
 import java.util.Optional;
 
@@ -16,16 +17,22 @@ import java.util.Optional;
  */
 public class UserServiceImpl implements UserService {
     private TransactionFactory transactionFactory;
+    private DtoMapperFactory dtoMapperFactory;
 
-    public UserServiceImpl(TransactionFactory transactionFactory) {
+    UserServiceImpl(TransactionFactory transactionFactory) {
+        this(transactionFactory, new DtoMapperFactory());
+    }
+
+    public UserServiceImpl(TransactionFactory transactionFactory, DtoMapperFactory dtoMapperFactory) {
         this.transactionFactory = transactionFactory;
+        this.dtoMapperFactory = dtoMapperFactory;
     }
 
     @Override
     public boolean registerNewUser(UserDto userDto) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
             userDto.setRole(UserRole.CLIENT);
-            User user = new UserDtoMapper().mapDtoToEntity(userDto);
+            User user = dtoMapperFactory.getUserDtoMapper().mapDtoToEntity(userDto);
 
             UserDao userDao = transaction.getUserDao();
             boolean isUserCreated = userDao.create(user).isPresent();
@@ -39,7 +46,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<UserDto> authenticate(String login, String password) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
-            UserDtoMapper mapper = new UserDtoMapper();
+            DtoMapper<User, UserDto> mapper = dtoMapperFactory.getUserDtoMapper();
 
             UserDao userDao = transaction.getUserDao();
             return userDao.authenticate(login, password)

@@ -7,7 +7,8 @@ import org.vitaly.model.location.Location;
 import org.vitaly.service.abstraction.LocationService;
 import org.vitaly.service.impl.dto.CarDto;
 import org.vitaly.service.impl.dto.LocationDto;
-import org.vitaly.service.impl.dtoMapper.LocationDtoMapper;
+import org.vitaly.service.impl.dtoMapper.DtoMapper;
+import org.vitaly.service.impl.factory.DtoMapperFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,15 +20,21 @@ import java.util.stream.Collectors;
  */
 public class LocationServiceImpl implements LocationService {
     private TransactionFactory transactionFactory;
+    private DtoMapperFactory dtoMapperFactory;
 
-    public LocationServiceImpl(TransactionFactory transactionFactory) {
+    LocationServiceImpl(TransactionFactory transactionFactory) {
+        this(transactionFactory, new DtoMapperFactory());
+    }
+
+    public LocationServiceImpl(TransactionFactory transactionFactory, DtoMapperFactory dtoMapperFactory) {
         this.transactionFactory = transactionFactory;
+        this.dtoMapperFactory = dtoMapperFactory;
     }
 
     @Override
     public boolean addNewLocation(LocationDto locationDto) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
-            Location location = new LocationDtoMapper().mapDtoToEntity(locationDto);
+            Location location = dtoMapperFactory.getLocationDtoMapper().mapDtoToEntity(locationDto);
 
             LocationDao locationDao = transaction.getLocationDao();
             boolean isLocationCreated = locationDao.create(location).isPresent();
@@ -41,7 +48,7 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public Optional<LocationDto> findLocationOfCar(CarDto carDto) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
-            LocationDtoMapper mapper = new LocationDtoMapper();
+            DtoMapper<Location, LocationDto> mapper = dtoMapperFactory.getLocationDtoMapper();
 
             long carId = carDto.getId();
             LocationDao locationDao = transaction.getLocationDao();
@@ -53,7 +60,7 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public List<LocationDto> getAllMatchingLocations(Predicate<Location> locationPredicate) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
-            LocationDtoMapper mapper = new LocationDtoMapper();
+            DtoMapper<Location, LocationDto> mapper = dtoMapperFactory.getLocationDtoMapper();
 
             LocationDao locationDao = transaction.getLocationDao();
             return locationDao.getAll()

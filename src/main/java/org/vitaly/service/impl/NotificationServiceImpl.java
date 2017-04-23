@@ -8,7 +8,9 @@ import org.vitaly.service.abstraction.NotificationService;
 import org.vitaly.service.exception.ServiceException;
 import org.vitaly.service.impl.dto.NotificationDto;
 import org.vitaly.service.impl.dto.UserDto;
+import org.vitaly.service.impl.dtoMapper.DtoMapper;
 import org.vitaly.service.impl.dtoMapper.NotificationDtoMapper;
+import org.vitaly.service.impl.factory.DtoMapperFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,15 +20,21 @@ import java.util.stream.Collectors;
  */
 public class NotificationServiceImpl implements NotificationService {
     private TransactionFactory transactionFactory;
+    private DtoMapperFactory dtoMapperFactory;
 
-    public NotificationServiceImpl(TransactionFactory transactionFactory) {
+    NotificationServiceImpl(TransactionFactory transactionFactory) {
+        this(transactionFactory, new DtoMapperFactory());
+    }
+
+    public NotificationServiceImpl(TransactionFactory transactionFactory, DtoMapperFactory dtoMapperFactory) {
         this.transactionFactory = transactionFactory;
+        this.dtoMapperFactory = dtoMapperFactory;
     }
 
     @Override
     public void sendNotificationToUser(UserDto userDto, NotificationDto notificationDto) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
-            Notification notification = new NotificationDtoMapper().mapDtoToEntity(notificationDto);
+            Notification notification = dtoMapperFactory.getNotificationDtoMapper().mapDtoToEntity(notificationDto);
 
             NotificationDao notificationDao = transaction.getNotificationDao();
 
@@ -41,7 +49,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public List<NotificationDto> findNotificationsOfUser(UserDto userDto) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
-            NotificationDtoMapper mapper = new NotificationDtoMapper();
+            DtoMapper<Notification, NotificationDto> mapper = dtoMapperFactory.getNotificationDtoMapper();
 
             long userId = userDto.getId();
             NotificationDao notificationDao = transaction.getNotificationDao();

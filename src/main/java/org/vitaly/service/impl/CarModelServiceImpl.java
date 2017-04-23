@@ -6,7 +6,8 @@ import org.vitaly.dao.abstraction.transaction.Transaction;
 import org.vitaly.model.carModel.CarModel;
 import org.vitaly.service.abstraction.CarModelService;
 import org.vitaly.service.impl.dto.CarModelDto;
-import org.vitaly.service.impl.dtoMapper.CarModelDtoMapper;
+import org.vitaly.service.impl.dtoMapper.DtoMapper;
+import org.vitaly.service.impl.factory.DtoMapperFactory;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -17,15 +18,21 @@ import java.util.stream.Collectors;
  */
 public class CarModelServiceImpl implements CarModelService {
     private TransactionFactory transactionFactory;
+    private DtoMapperFactory dtoMapperFactory;
 
-    public CarModelServiceImpl(TransactionFactory transactionFactory) {
+    CarModelServiceImpl(TransactionFactory transactionFactory) {
+        this(transactionFactory, new DtoMapperFactory());
+    }
+
+    public CarModelServiceImpl(TransactionFactory transactionFactory, DtoMapperFactory dtoMapperFactory) {
         this.transactionFactory = transactionFactory;
+        this.dtoMapperFactory = dtoMapperFactory;
     }
 
     @Override
     public boolean addCarModel(CarModelDto carModelDto) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
-            CarModel carModel = new CarModelDtoMapper().mapDtoToEntity(carModelDto);
+            CarModel carModel = dtoMapperFactory.getCarModelDtoMapper().mapDtoToEntity(carModelDto);
             CarModelDao carModelDao = transaction.getCarModelDao();
             boolean isCreated = carModelDao.create(carModel).isPresent();
 
@@ -38,7 +45,8 @@ public class CarModelServiceImpl implements CarModelService {
     @Override
     public List<CarModelDto> getAllMatchingCarModels(Predicate<CarModel> carModelPredicate) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
-            CarModelDtoMapper mapper = new CarModelDtoMapper();
+            DtoMapper<CarModel, CarModelDto> mapper = dtoMapperFactory.getCarModelDtoMapper();
+
             CarModelDao carModelDao = transaction.getCarModelDao();
             return carModelDao.getAll()
                     .stream()
@@ -51,7 +59,7 @@ public class CarModelServiceImpl implements CarModelService {
     @Override
     public void updateCarModel(CarModelDto carModelDto) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
-            CarModel carModel = new CarModelDtoMapper().mapDtoToEntity(carModelDto);
+            CarModel carModel = dtoMapperFactory.getCarModelDtoMapper().mapDtoToEntity(carModelDto);
             CarModelDao carModelDao = transaction.getCarModelDao();
             carModelDao.update(carModelDto.getId(), carModel);
 
@@ -62,7 +70,8 @@ public class CarModelServiceImpl implements CarModelService {
     @Override
     public List<CarModelDto> findCarsWithPhotos() {
         try (Transaction transaction = transactionFactory.createTransaction()) {
-            CarModelDtoMapper mapper = new CarModelDtoMapper();
+            DtoMapper<CarModel, CarModelDto> mapper = dtoMapperFactory.getCarModelDtoMapper();
+
             CarModelDao carModelDao = transaction.getCarModelDao();
             return carModelDao.findCarsWithPhotos()
                     .stream()
