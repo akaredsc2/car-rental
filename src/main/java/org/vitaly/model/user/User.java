@@ -21,9 +21,6 @@ public class User implements Entity {
     private String driverLicenceNumber;
     private UserRole role;
 
-    private List<Reservation> reservations;
-    private List<Notification> notifications;
-
     private User(Builder builder) {
         this.id = builder.id;
         this.login = builder.login;
@@ -33,9 +30,6 @@ public class User implements Entity {
         this.passportNumber = builder.passportNumber;
         this.driverLicenceNumber = builder.driverLicenceNumber;
         this.role = builder.role;
-
-        this.reservations = builder.reservations;
-        this.notifications = builder.notifications;
     }
 
     @Override
@@ -69,14 +63,6 @@ public class User implements Entity {
 
     public UserRole getRole() {
         return role;
-    }
-
-    public List<Reservation> getReservations() {
-        return reservations;
-    }
-
-    public List<Notification> getNotifications() {
-        return notifications;
     }
 
     @Override
@@ -122,8 +108,6 @@ public class User implements Entity {
                 ", passportNumber='" + passportNumber + '\'' +
                 ", driverLicenceNumber='" + driverLicenceNumber + '\'' +
                 ", role=" + role +
-                ", reservations=" + reservations +
-                ", notifications=" + notifications +
                 '}';
     }
 
@@ -136,9 +120,6 @@ public class User implements Entity {
         private String passportNumber;
         private String driverLicenceNumber;
         private UserRole role;
-
-        private List<Reservation> reservations;
-        private List<Notification> notifications;
 
         public Builder setId(long id) {
             this.id = id;
@@ -180,16 +161,6 @@ public class User implements Entity {
             return this;
         }
 
-        public Builder setReservations(List<Reservation> reservations) {
-            this.reservations = reservations;
-            return this;
-        }
-
-        public Builder setNotifications(List<Notification> notifications) {
-            this.notifications = notifications;
-            return this;
-        }
-
         public User build() {
             return new User(this);
         }
@@ -205,8 +176,6 @@ public class User implements Entity {
                 .setPassword("")
                 .setDriverLicenceNumber("")
                 .setRole(UserRole.CLIENT)
-                .setReservations(Collections.emptyList())
-                .setNotifications(Collections.emptyList())
                 .build();
     }
 
@@ -220,8 +189,6 @@ public class User implements Entity {
                 .setPassword("")
                 .setDriverLicenceNumber("")
                 .setRole(UserRole.ADMIN)
-                .setReservations(Collections.emptyList())
-                .setNotifications(Collections.emptyList())
                 .build();
     }
 }

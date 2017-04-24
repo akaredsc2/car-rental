@@ -1,12 +1,9 @@
 package org.vitaly.service.impl.dtoMapper;
 
-import org.vitaly.model.car.Car;
 import org.vitaly.model.location.Location;
-import org.vitaly.service.impl.dto.CarDto;
 import org.vitaly.service.impl.dto.LocationDto;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Collections;
 
 /**
  * Created by vitaly on 23.04.17.
@@ -15,15 +12,6 @@ public class LocationDtoMapper implements DtoMapper<Location, LocationDto> {
 
     @Override
     public Location mapDtoToEntity(LocationDto dto) {
-//        DtoMapper<Car, CarDto> carDtoMapper = new CarDtoMapper();
-
-        List<Car> cars = dto.getCarDtoList()
-                .stream()
-
-                // TODO: 23.04.17 consider replacing fith dto mapper
-                .map(carDto -> Car.createDummyCarWithId(carDto.getId()))
-                .collect(Collectors.toList());
-
         return new Location.Builder()
                 .setId(dto.getId())
                 .setState(dto.getState())
@@ -31,19 +19,11 @@ public class LocationDtoMapper implements DtoMapper<Location, LocationDto> {
                 .setStreet(dto.getStreet())
                 .setBuilding(dto.getBuilding())
                 .setPhotoUrl(dto.getPhotoUrl())
-                .setCars(cars)
                 .build();
     }
 
     @Override
     public LocationDto mapEntityToDto(Location entity) {
-        CarDtoMapper carDtoMapper = new CarDtoMapper();
-
-        List<CarDto> carDtoList = entity.getCars()
-                .stream()
-                .map(carDtoMapper::mapEntityToDto)
-                .collect(Collectors.toList());
-
         LocationDto locationDto = new LocationDto();
 
         locationDto.setId(entity.getId());
@@ -52,7 +32,7 @@ public class LocationDtoMapper implements DtoMapper<Location, LocationDto> {
         locationDto.setStreet(entity.getStreet());
         locationDto.setBuilding(entity.getBuilding());
         locationDto.setPhotoUrl(entity.getPhotoUrl());
-        locationDto.setCarDtoList(carDtoList);
+        locationDto.setCarDtoList(Collections.emptyList());
 
         return locationDto;
     }

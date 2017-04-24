@@ -20,6 +20,10 @@ import org.vitaly.model.reservation.ReservationState;
 import org.vitaly.model.reservation.ReservationStateEnum;
 import org.vitaly.model.user.User;
 import org.vitaly.model.user.UserRole;
+import org.vitaly.service.impl.dto.CarDto;
+import org.vitaly.service.impl.dto.CarModelDto;
+import org.vitaly.service.impl.dtoMapper.CarDtoMapper;
+import org.vitaly.service.impl.dtoMapper.CarModelDtoMapper;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -78,10 +82,21 @@ public class MysqlReservationDaoTest {
         CarModel carModel1 = TestUtil.createEntityWithId(carModelFromTestData1, carModelDao);
         CarModel carModel2 = TestUtil.createEntityWithId(carModelFromTestData2, carModelDao);
 
+        CarModelDtoMapper carModelDtoMapper = new CarModelDtoMapper();
+        CarModelDto carModelDto1 = carModelDtoMapper.mapEntityToDto(carModel1);
+        CarModelDto carModelDto2 = carModelDtoMapper.mapEntityToDto(carModel2);
+
         Car carFromTestData1 = TestData.getInstance().getCar("car1");
         Car carFromTestData2 = TestData.getInstance().getCar("car2");
-        carFromTestData1.setCarModel(carModel1);
-        carFromTestData2.setCarModel(carModel2);
+
+        CarDtoMapper carDtoMapper = new CarDtoMapper();
+        CarDto carDto1 = carDtoMapper.mapEntityToDto(carFromTestData1);
+        CarDto carDto2 = carDtoMapper.mapEntityToDto(carFromTestData2);
+        carDto1.setCarModelDto(carModelDto1);
+        carDto2.setCarModelDto(carModelDto2);
+        carFromTestData1 = carDtoMapper.mapDtoToEntity(carDto1);
+        carFromTestData2 = carDtoMapper.mapDtoToEntity(carDto2);
+
         CarDao carDao = new MysqlCarDao(connection);
         MysqlReservationDaoTest.car1 = TestUtil.createEntityWithId(carFromTestData1, carDao);
         MysqlReservationDaoTest.car2 = TestUtil.createEntityWithId(carFromTestData2, carDao);

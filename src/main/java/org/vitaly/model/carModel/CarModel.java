@@ -27,48 +27,24 @@ public class CarModel implements Entity {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getPhotoUrl() {
         return photoUrl;
     }
 
-    public void setPhotoUrl(String photoUrl) {
-        this.photoUrl = photoUrl;
-    }
-
     public int getDoorCount() {
         return doorCount;
-    }
-
-    public void setDoorCount(int doorCount) {
-        this.doorCount = doorCount;
     }
 
     public int getSeatCount() {
         return seatCount;
     }
 
-    public void setSeatCount(int seatCount) {
-        this.seatCount = seatCount;
-    }
-
     public int getHorsePowerCount() {
         return horsePowerCount;
-    }
-
-    public void setHorsePowerCount(int horsePowerCount) {
-        this.horsePowerCount = horsePowerCount;
     }
 
     @Override

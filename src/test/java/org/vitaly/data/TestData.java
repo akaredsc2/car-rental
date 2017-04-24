@@ -14,7 +14,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -118,7 +117,6 @@ public class TestData {
                 .setStreet("Ponomarjova")
                 .setBuilding("18-a")
                 .setPhotoUrl("location1url")
-                .setCars(new ArrayList<>())
                 .build();
 
         Location location2 = new Location.Builder()
@@ -128,7 +126,6 @@ public class TestData {
                 .setStreet("Peysivska")
                 .setBuilding("14")
                 .setPhotoUrl("location2url")
-                .setCars(new ArrayList<>())
                 .build();
 
         result.put("location1", location1);
@@ -274,7 +271,6 @@ public class TestData {
                     .setStreet(storedLocation.getStreet())
                     .setBuilding(storedLocation.getBuilding())
                     .setPhotoUrl(storedLocation.getPhotoUrl())
-                    .setCars(new ArrayList<>())
                     .build();
         }
 

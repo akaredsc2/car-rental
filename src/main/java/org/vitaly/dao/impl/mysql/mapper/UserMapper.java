@@ -6,7 +6,6 @@ import org.vitaly.model.user.UserRole;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Collections;
 
 import static org.vitaly.util.TableAttributes.*;
 
@@ -29,8 +28,6 @@ public class UserMapper implements Mapper<User> {
                 .setPassportNumber(resultSet.getString(USERS_PASSPORT_NUMBER))
                 .setDriverLicenceNumber(resultSet.getString(USERS_DRIVER_LICENCE_NUMBER))
                 .setRole(role)
-                .setReservations(Collections.emptyList())
-                .setNotifications(Collections.emptyList())
                 .build();
     }
 }

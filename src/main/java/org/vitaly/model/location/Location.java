@@ -1,10 +1,7 @@
 package org.vitaly.model.location;
 
 import org.vitaly.model.Entity;
-import org.vitaly.model.car.Car;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -17,7 +14,6 @@ public class Location implements Entity {
     private String street;
     private String building;
     private String photoUrl;
-    private List<Car> cars;
 
     private Location(Builder builder) {
         this.id = builder.id;
@@ -26,17 +22,6 @@ public class Location implements Entity {
         this.street = builder.street;
         this.building = builder.building;
         this.photoUrl = builder.photoUrl;
-        this.cars = builder.cars;
-    }
-
-    public Location() {
-        this.id = -1;
-        this.state = "";
-        this.city = "";
-        this.street = "";
-        this.building = "";
-        this.photoUrl = "";
-        this.cars = new ArrayList<>();
     }
 
     @Override
@@ -44,56 +29,24 @@ public class Location implements Entity {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public String getState() {
         return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
     }
 
     public String getCity() {
         return city;
     }
 
-    public void setCity(String city) {
-        this.city = city;
-    }
-
     public String getStreet() {
         return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
     }
 
     public String getBuilding() {
         return building;
     }
 
-    public void setBuilding(String building) {
-        this.building = building;
-    }
-
     public String getPhotoUrl() {
         return photoUrl;
-    }
-
-    public void setPhotoUrl(String photoUrl) {
-        this.photoUrl = photoUrl;
-    }
-
-    public List<Car> getCars() {
-        return cars;
-    }
-
-    public void setCars(List<Car> cars) {
-        this.cars = cars;
     }
 
     @Override
@@ -111,8 +64,7 @@ public class Location implements Entity {
                 && Objects.equals(city, location.city)
                 && Objects.equals(street, location.street)
                 && Objects.equals(building, location.building)
-                && Objects.equals(photoUrl, location.photoUrl)
-                && Objects.equals(cars, location.cars);
+                && Objects.equals(photoUrl, location.photoUrl);
     }
 
     @Override
@@ -122,7 +74,6 @@ public class Location implements Entity {
         result = 31 * result + (street != null ? street.hashCode() : 0);
         result = 31 * result + (building != null ? building.hashCode() : 0);
         result = 31 * result + (photoUrl != null ? photoUrl.hashCode() : 0);
-        result = 31 * result + (cars != null ? cars.hashCode() : 0);
         return result;
     }
 
@@ -134,7 +85,6 @@ public class Location implements Entity {
                 ", city='" + city + '\'' +
                 ", street='" + street + '\'' +
                 ", building='" + building + '\'' +
-                ", cars=" + cars +
                 '}';
     }
 
@@ -145,7 +95,6 @@ public class Location implements Entity {
         private String street;
         private String building;
         private String photoUrl;
-        private List<Car> cars;
 
         public Builder setId(long id) {
             this.id = id;
@@ -174,11 +123,6 @@ public class Location implements Entity {
 
         public Builder setPhotoUrl(String photoUrl) {
             this.photoUrl = photoUrl;
-            return this;
-        }
-
-        public Builder setCars(List<Car> cars) {
-            this.cars = cars;
             return this;
         }
 

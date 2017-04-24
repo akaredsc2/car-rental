@@ -30,54 +30,28 @@ public class Car implements Entity {
         return id;
     }
 
-    public Car setId(long id) {
-        this.id = id;
-        return this;
-    }
-
     public CarState getState() {
         return state;
     }
 
-    public Car setState(CarState state) {
+    void setState(CarState state) {
         this.state = state;
-        return this;
     }
 
     public CarModel getCarModel() {
         return carModel;
     }
 
-    public Car setCarModel(CarModel carModel) {
-        this.carModel = carModel;
-        return this;
-    }
-
     public String getRegistrationPlate() {
         return registrationPlate;
-    }
-
-    public Car setRegistrationPlate(String registrationPlate) {
-        this.registrationPlate = registrationPlate;
-        return this;
     }
 
     public String getColor() {
         return color;
     }
 
-    public Car setColor(String color) {
-        this.color = color;
-        return this;
-    }
-
     public BigDecimal getPricePerDay() {
         return pricePerDay;
-    }
-
-    public Car setPricePerDay(BigDecimal pricePerDay) {
-        this.pricePerDay = pricePerDay;
-        return this;
     }
 
     public boolean makeAvailable() {

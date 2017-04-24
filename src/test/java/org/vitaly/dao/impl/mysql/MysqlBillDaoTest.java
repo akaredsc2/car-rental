@@ -15,6 +15,10 @@ import org.vitaly.model.car.Car;
 import org.vitaly.model.carModel.CarModel;
 import org.vitaly.model.reservation.Reservation;
 import org.vitaly.model.user.User;
+import org.vitaly.service.impl.dto.CarDto;
+import org.vitaly.service.impl.dto.CarModelDto;
+import org.vitaly.service.impl.dtoMapper.CarDtoMapper;
+import org.vitaly.service.impl.dtoMapper.CarModelDtoMapper;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -54,8 +58,17 @@ public class MysqlBillDaoTest {
         CarModelDao carModelDao = new MysqlCarModelDao(connection);
         CarModel carModel = TestUtil.createEntityWithId(carModelFromTestData, carModelDao);
 
+        CarModelDtoMapper carModelDtoMapper = new CarModelDtoMapper();
+        CarModelDto carModelDto = carModelDtoMapper.mapEntityToDto(carModel);
+
         Car carFromTestData = TestData.getInstance().getCar("car1");
-        carFromTestData.setCarModel(carModel);
+
+        CarDtoMapper carDtoMapper = new CarDtoMapper();
+        CarDto carDto = carDtoMapper.mapEntityToDto(carFromTestData);
+        carDto.setCarModelDto(carModelDto);
+
+        carFromTestData = carDtoMapper.mapDtoToEntity(carDto);
+
         CarDao carDao = new MysqlCarDao(connection);
         Car car = TestUtil.createEntityWithId(carFromTestData, carDao);
 

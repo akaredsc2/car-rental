@@ -16,6 +16,10 @@ import org.vitaly.model.car.Car;
 import org.vitaly.model.car.UnavailableState;
 import org.vitaly.model.carModel.CarModel;
 import org.vitaly.model.location.Location;
+import org.vitaly.service.impl.dto.CarDto;
+import org.vitaly.service.impl.dto.CarModelDto;
+import org.vitaly.service.impl.dtoMapper.CarDtoMapper;
+import org.vitaly.service.impl.dtoMapper.CarModelDtoMapper;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -44,8 +48,19 @@ public class MysqlCarDaoTest {
     private Car car2 = TestData.getInstance().getCar("car2");
 
     {
-        car1.setCarModel(carModel1);
-        car2.setCarModel(carModel2);
+        CarModelDtoMapper carModelDtoMapper = new CarModelDtoMapper();
+        CarModelDto carModelDto1 = carModelDtoMapper.mapEntityToDto(carModel1);
+        CarModelDto carModelDto2 = carModelDtoMapper.mapEntityToDto(carModel2);
+
+        CarDtoMapper carDtoMapper = new CarDtoMapper();
+        CarDto carDto1 = carDtoMapper.mapEntityToDto(car1);
+        CarDto carDto2 = carDtoMapper.mapEntityToDto(car2);
+
+        carDto1.setCarModelDto(carModelDto1);
+        carDto2.setCarModelDto(carModelDto2);
+
+        car1 = carDtoMapper.mapDtoToEntity(carDto1);
+        car2 = carDtoMapper.mapDtoToEntity(carDto2);
     }
 
     @BeforeClass

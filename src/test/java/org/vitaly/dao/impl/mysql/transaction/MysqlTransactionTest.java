@@ -37,10 +37,12 @@ public class MysqlTransactionTest {
     }
 
     @Test
-    public void closeCallsConnectionClose() throws Exception {
+    public void closeCallsConnectionRollbackAndClose() throws Exception {
         transaction.close();
 
-        verify(connection).close();
+        InOrder inOrder = inOrder(connection);
+        inOrder.verify(connection).rollback();
+        inOrder.verify(connection).close();
     }
 
     @Test

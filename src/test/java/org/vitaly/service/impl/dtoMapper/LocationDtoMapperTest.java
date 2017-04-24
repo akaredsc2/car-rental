@@ -2,15 +2,10 @@ package org.vitaly.service.impl.dtoMapper;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.vitaly.model.car.Car;
 import org.vitaly.model.location.Location;
-import org.vitaly.service.impl.dto.CarDto;
 import org.vitaly.service.impl.dto.LocationDto;
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -34,15 +29,6 @@ public class LocationDtoMapperTest {
         String street = "ponomarjova";
         String building = "14";
         String photoUrl = "url3";
-        List<Car> carList = Arrays.asList(
-                Car.createDummyCarWithId(6),
-                Car.createDummyCarWithId(7));
-
-        CarDtoMapper carDtoMapper = new CarDtoMapper();
-        List<CarDto> carDtoList = carList
-                .stream()
-                .map(carDtoMapper::mapEntityToDto)
-                .collect(Collectors.toList());
 
         expectedLocationDto = new LocationDto();
         expectedLocationDto.setId(id);
@@ -51,7 +37,7 @@ public class LocationDtoMapperTest {
         expectedLocationDto.setStreet(street);
         expectedLocationDto.setBuilding(building);
         expectedLocationDto.setPhotoUrl(photoUrl);
-        expectedLocationDto.setCarDtoList(carDtoList);
+        expectedLocationDto.setCarDtoList(Collections.emptyList());
 
         expectedLocation = new Location.Builder()
                 .setId(id)
@@ -60,7 +46,6 @@ public class LocationDtoMapperTest {
                 .setStreet(street)
                 .setBuilding(building)
                 .setPhotoUrl(photoUrl)
-                .setCars(carList)
                 .build();
     }
 

@@ -13,6 +13,10 @@ import org.vitaly.data.TestUtil;
 import org.vitaly.model.car.Car;
 import org.vitaly.model.carModel.CarModel;
 import org.vitaly.model.location.Location;
+import org.vitaly.service.impl.dto.CarDto;
+import org.vitaly.service.impl.dto.CarModelDto;
+import org.vitaly.service.impl.dtoMapper.CarDtoMapper;
+import org.vitaly.service.impl.dtoMapper.CarModelDtoMapper;
 
 import java.util.List;
 
@@ -130,8 +134,16 @@ public class MysqlLocationDaoTest {
         CarModelDao carModelDao = new MysqlCarModelDao(connection);
         carModel = TestUtil.createEntityWithId(carModel, carModelDao);
 
+        CarModelDtoMapper carModelDtoMapper = new CarModelDtoMapper();
+        CarModelDto carModelDto = carModelDtoMapper.mapEntityToDto(carModel);
+
         Car car = TestData.getInstance().getCar("car1");
-        car.setCarModel(carModel);
+
+        CarDtoMapper carDtoMapper = new CarDtoMapper();
+        CarDto carDto = carDtoMapper.mapEntityToDto(car);
+        carDto.setCarModelDto(carModelDto);
+        car = carDtoMapper.mapDtoToEntity(carDto);
+
         CarDao carDao = new MysqlCarDao(connection);
         car = TestUtil.createEntityWithId(car, carDao);
 

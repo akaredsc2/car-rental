@@ -22,9 +22,6 @@ public class Reservation implements Entity {
     private ReservationState state;
     private String rejectionReason;
 
-    private Bill billForService;
-    private Bill billForDamage;
-
     private Reservation(Builder builder) {
         this.id = builder.id;
         this.client = builder.client;
@@ -34,9 +31,6 @@ public class Reservation implements Entity {
         this.dropOffDatetime = builder.dropOffDatetime;
         this.state = builder.state;
         this.rejectionReason = builder.rejectionReason;
-
-        this.billForService = builder.billForService;
-        this.billForDamage = builder.billForDamage;
     }
 
     public long getId() {
@@ -73,14 +67,6 @@ public class Reservation implements Entity {
 
     public String getRejectionReason() {
         return rejectionReason;
-    }
-
-    public Bill getBillForService() {
-        return billForService;
-    }
-
-    public Bill getBillForDamage() {
-        return billForDamage;
     }
 
     @Override
@@ -120,8 +106,6 @@ public class Reservation implements Entity {
                 ", dropOffDatetime=" + dropOffDatetime +
                 ", state=" + state +
                 ", rejectionReason='" + rejectionReason + '\'' +
-                ", billForService=" + billForService +
-                ", billForDamage=" + billForDamage +
                 '}';
     }
 
@@ -134,9 +118,6 @@ public class Reservation implements Entity {
         private LocalDateTime dropOffDatetime;
         private ReservationState state;
         private String rejectionReason;
-
-        private Bill billForService;
-        private Bill billForDamage;
 
         public Builder setId(long id) {
             this.id = id;
@@ -175,16 +156,6 @@ public class Reservation implements Entity {
 
         public Builder setRejectionReason(String rejectionReason) {
             this.rejectionReason = rejectionReason;
-            return this;
-        }
-
-        public Builder setBillForService(Bill billForService) {
-            this.billForService = billForService;
-            return this;
-        }
-
-        public Builder setBillForDamage(Bill billForDamage) {
-            this.billForDamage = billForDamage;
             return this;
         }
 
