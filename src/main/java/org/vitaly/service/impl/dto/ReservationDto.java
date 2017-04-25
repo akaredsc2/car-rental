@@ -3,6 +3,7 @@ package org.vitaly.service.impl.dto;
 import org.vitaly.model.reservation.ReservationState;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * Created by vitaly on 2017-04-20.
@@ -100,5 +101,43 @@ public class ReservationDto {
     public ReservationDto setBillForDamageDto(BillDto billForDamageDto) {
         this.billForDamageDto = billForDamageDto;
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        ReservationDto that = (ReservationDto) o;
+
+        return id == that.id
+                && Objects.equals(client, that.client)
+                && Objects.equals(admin, that.admin)
+                && Objects.equals(car, that.car)
+                && Objects.equals(pickUpDatetime, that.pickUpDatetime)
+                && Objects.equals(dropOffDatetime, that.dropOffDatetime)
+                && Objects.equals(state, that.state)
+                && Objects.equals(rejectionReason, that.rejectionReason)
+                && Objects.equals(billForServiceDto, that.billForServiceDto)
+                && Objects.equals(billForDamageDto, that.billForDamageDto);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + (client != null ? client.hashCode() : 0);
+        result = 31 * result + (admin != null ? admin.hashCode() : 0);
+        result = 31 * result + (car != null ? car.hashCode() : 0);
+        result = 31 * result + (pickUpDatetime != null ? pickUpDatetime.hashCode() : 0);
+        result = 31 * result + (dropOffDatetime != null ? dropOffDatetime.hashCode() : 0);
+        result = 31 * result + (state != null ? state.hashCode() : 0);
+        result = 31 * result + (rejectionReason != null ? rejectionReason.hashCode() : 0);
+        result = 31 * result + (billForServiceDto != null ? billForServiceDto.hashCode() : 0);
+        result = 31 * result + (billForDamageDto != null ? billForDamageDto.hashCode() : 0);
+        return result;
     }
 }

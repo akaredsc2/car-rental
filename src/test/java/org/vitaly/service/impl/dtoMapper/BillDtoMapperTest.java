@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.vitaly.model.bill.Bill;
 import org.vitaly.service.impl.dto.BillDto;
+import org.vitaly.service.impl.factory.DtoMapperFactory;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -18,7 +19,7 @@ import static org.vitaly.matcher.EntityIdMatcher.hasId;
  * Created by vitaly on 23.04.17.
  */
 public class BillDtoMapperTest {
-    private DtoMapper<Bill, BillDto> mapper = new BillDtoMapper();
+    private DtoMapper<Bill, BillDto> mapper = DtoMapperFactory.getInstance().getBillDtoMapper();
     private BillDto expectedBillDto;
     private Bill expectedBill;
 

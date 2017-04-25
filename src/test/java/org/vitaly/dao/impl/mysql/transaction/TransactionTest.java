@@ -8,7 +8,6 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.vitaly.dao.abstraction.connectionPool.ConnectionPool;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.impl.mysql.connectionPool.MysqlConnectionPool;
 

@@ -8,6 +8,7 @@ import org.vitaly.model.car.CarStateEnum;
 import org.vitaly.model.carModel.CarModel;
 import org.vitaly.service.impl.dto.CarDto;
 import org.vitaly.service.impl.dto.CarModelDto;
+import org.vitaly.service.impl.factory.DtoMapperFactory;
 
 import java.math.BigDecimal;
 
@@ -21,7 +22,7 @@ import static org.vitaly.matcher.EntityIdMatcher.hasId;
  * Created by vitaly on 23.04.17.
  */
 public class CarDtoMapperTest {
-    private DtoMapper<Car, CarDto> mapper = new CarDtoMapper();
+    private DtoMapper<Car, CarDto> mapper = DtoMapperFactory.getInstance().getCarDtoMapper();
     private CarDto expectedCarDto;
     private Car expectedCar;
 

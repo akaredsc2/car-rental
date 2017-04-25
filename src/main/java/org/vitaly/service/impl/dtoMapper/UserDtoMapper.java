@@ -3,6 +3,8 @@ package org.vitaly.service.impl.dtoMapper;
 import org.vitaly.model.user.User;
 import org.vitaly.service.impl.dto.UserDto;
 
+import java.util.Collections;
+
 /**
  * Created by vitaly on 23.04.17.
  */
@@ -34,6 +36,8 @@ public class UserDtoMapper implements DtoMapper<User, UserDto> {
         userDto.setPassportNumber(entity.getPassportNumber());
         userDto.setDriverLicenceNumber(entity.getDriverLicenceNumber());
         userDto.setRole(entity.getRole());
+        userDto.setReservationDtoList(Collections.emptyList());
+        userDto.setNotificationDtoList(Collections.emptyList());
 
         return userDto;
     }

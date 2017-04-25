@@ -76,7 +76,6 @@ public class DaoTemplate {
         }
     }
 
-    // TODO: 2017-04-07 add transaction isolation
     public Long executeInsert(String query, Map<Integer, Object> parameterMap) {
         Long insertedId = null;
 
@@ -101,7 +100,6 @@ public class DaoTemplate {
         return insertedId;
     }
 
-    // TODO: 2017-04-07 add transaction isolation
     public int executeUpdate(String query, Map<Integer, Object> parameterMap) {
         try (PooledConnection connection = MysqlConnectionPool.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {

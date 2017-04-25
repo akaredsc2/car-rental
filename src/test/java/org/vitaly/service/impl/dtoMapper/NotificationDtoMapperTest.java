@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.vitaly.model.notification.Notification;
 import org.vitaly.model.notification.NotificationStatus;
 import org.vitaly.service.impl.dto.NotificationDto;
+import org.vitaly.service.impl.factory.DtoMapperFactory;
 
 import java.time.LocalDateTime;
 
@@ -18,7 +19,7 @@ import static org.vitaly.matcher.EntityIdMatcher.hasId;
  * Created by vitaly on 23.04.17.
  */
 public class NotificationDtoMapperTest {
-    private DtoMapper<Notification, NotificationDto> mapper = new NotificationDtoMapper();
+    private DtoMapper<Notification, NotificationDto> mapper = DtoMapperFactory.getInstance().getNotificationDtoMapper();
     private NotificationDto expectedNotificationDto;
     private Notification expectedNotification;
 

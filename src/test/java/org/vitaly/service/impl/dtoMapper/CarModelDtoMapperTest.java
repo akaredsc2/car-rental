@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.vitaly.model.carModel.CarModel;
 import org.vitaly.service.impl.dto.CarModelDto;
+import org.vitaly.service.impl.factory.DtoMapperFactory;
 
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -15,7 +16,7 @@ import static org.vitaly.matcher.EntityIdMatcher.hasId;
  * Created by vitaly on 23.04.17.
  */
 public class CarModelDtoMapperTest {
-    private DtoMapper<CarModel, CarModelDto> mapper = new CarModelDtoMapper();
+    private DtoMapper<CarModel, CarModelDto> mapper = DtoMapperFactory.getInstance().getCarModelDtoMapper();
     private CarModelDto expectedCarModelDto;
     private CarModel expectedCarModel;
 

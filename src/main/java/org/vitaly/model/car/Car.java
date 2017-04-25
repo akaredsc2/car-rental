@@ -78,30 +78,6 @@ public class Car implements Entity {
         return state.doReturn(this);
     }
 
-    public boolean canMakeAvailable() {
-        return state.canMakeAvailable();
-    }
-
-    public boolean canMakeUnavailable() {
-        return state.canMakeUnavailable();
-    }
-
-    public boolean canMaintain() {
-        return state.canMaintain();
-    }
-
-    public boolean canReserve() {
-        return state.canReserve();
-    }
-
-    public boolean canServe() {
-        return state.canServe();
-    }
-
-    public boolean canReturn() {
-        return state.canReturn();
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {

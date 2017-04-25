@@ -6,6 +6,7 @@ import org.vitaly.model.user.User;
 import org.vitaly.service.impl.dto.CarDto;
 import org.vitaly.service.impl.dto.ReservationDto;
 import org.vitaly.service.impl.dto.UserDto;
+import org.vitaly.service.impl.factory.DtoMapperFactory;
 
 /**
  * Created by vitaly on 23.04.17.
@@ -15,19 +16,22 @@ public class ReservationDtoMapper implements DtoMapper<Reservation, ReservationD
     @Override
     public Reservation mapDtoToEntity(ReservationDto dto) {
         UserDto clientDto = dto.getClient();
+        User dummyClient = DtoMapperFactory.getInstance()
+                .getUserDtoMapper()
+                .mapDtoToEntity(clientDto);
 
-        // TODO: 23.04.17 consider using other dto mappers
-        User dummyClient = User.createDummyClientWithId(clientDto.getId());
-
-        // TODO: 23.04.17 refactor
         UserDto adminDto = dto.getAdmin();
         User dummyAdmin = null;
         if (adminDto != null) {
-            dummyAdmin = User.createDummyAdminWithId(adminDto.getId());
+            dummyAdmin = DtoMapperFactory.getInstance()
+                    .getUserDtoMapper()
+                    .mapDtoToEntity(adminDto);
         }
 
         CarDto carDto = dto.getCar();
-        Car dummyCar = Car.createDummyCarWithId(carDto.getId());
+        Car dummyCar = DtoMapperFactory.getInstance()
+                .getCarDtoMapper()
+                .mapDtoToEntity(carDto);
 
         return new Reservation.Builder()
                 .setId(dto.getId())
@@ -43,22 +47,23 @@ public class ReservationDtoMapper implements DtoMapper<Reservation, ReservationD
 
     @Override
     public ReservationDto mapEntityToDto(Reservation entity) {
-        ReservationDto reservationDto = new ReservationDto();
-
-        // TODO: 23.04.17 consider using user, car and bill dto mappers
-        UserDto clientDto = new UserDto();
-        clientDto.setId(entity.getClient().getId());
+        User client = entity.getClient();
+        UserDto clientDto = DtoMapperFactory.getInstance().getUserDtoMapper().mapEntityToDto(client);
 
         UserDto adminDto = null;
         User admin = entity.getAdmin();
         if (admin != null) {
-            adminDto = new UserDto();
-            adminDto.setId(admin.getId());
+            adminDto = DtoMapperFactory.getInstance()
+                    .getUserDtoMapper()
+                    .mapEntityToDto(admin);
         }
 
-        CarDto carDto = new CarDto();
-        carDto.setId(entity.getCar().getId());
+        Car car = entity.getCar();
+        CarDto carDto = DtoMapperFactory.getInstance()
+                .getCarDtoMapper()
+                .mapEntityToDto(car);
 
+        ReservationDto reservationDto = new ReservationDto();
         reservationDto.setId(entity.getId());
         reservationDto.setClient(clientDto);
         reservationDto.setAdmin(adminDto);

@@ -11,14 +11,18 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.vitaly.dao.abstraction.ReservationDao;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
 import org.vitaly.dao.impl.mysql.transaction.Transaction;
+import org.vitaly.model.car.Car;
 import org.vitaly.model.reservation.ReservationState;
 import org.vitaly.model.reservation.ReservationStateEnum;
+import org.vitaly.model.user.User;
 import org.vitaly.service.abstraction.ReservationService;
 import org.vitaly.service.impl.dto.CarDto;
 import org.vitaly.service.impl.dto.ReservationDto;
 import org.vitaly.service.impl.dto.UserDto;
+import org.vitaly.service.impl.factory.DtoMapperFactory;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -37,10 +41,16 @@ public class ReservationServiceImplTest {
 
     @Test
     public void createNewReservationForUser() throws Exception {
-        UserDto clientDto = new UserDto();
-        clientDto.setId(1);
-        CarDto carDto = new CarDto();
-        carDto.setId(2);
+        UserDto clientDto = DtoMapperFactory.getInstance()
+                .getUserDtoMapper()
+                .mapEntityToDto(
+                        User.createDummyAdminWithId(3464));
+
+        CarDto carDto = DtoMapperFactory.getInstance()
+                .getCarDtoMapper()
+                .mapEntityToDto(
+                        Car.createDummyCarWithId(1));
+
         ReservationDto reservationDto = new ReservationDto();
         reservationDto.setClient(clientDto);
         reservationDto.setCar(carDto);
@@ -49,6 +59,7 @@ public class ReservationServiceImplTest {
         reservationDto.setState(ReservationStateEnum.APPROVED.getState());
 
         stab();
+        when(reservationDao.create(any())).thenReturn(Optional.empty());
         reservationService.createNewReservation(reservationDto);
 
         InOrder inOrder = Mockito.inOrder(reservationDao, transaction);

@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.vitaly.model.location.Location;
 import org.vitaly.service.impl.dto.LocationDto;
+import org.vitaly.service.impl.factory.DtoMapperFactory;
 
 import java.util.Collections;
 
@@ -17,7 +18,7 @@ import static org.vitaly.matcher.EntityIdMatcher.hasId;
  * Created by vitaly on 23.04.17.
  */
 public class LocationDtoMapperTest {
-    private DtoMapper<Location, LocationDto> mapper = new LocationDtoMapper();
+    private DtoMapper<Location, LocationDto> mapper = DtoMapperFactory.getInstance().getLocationDtoMapper();
     private LocationDto expectedLocationDto;
     private Location expectedLocation;
 
