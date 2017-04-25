@@ -48,17 +48,19 @@ public class MysqlBillDaoTest {
     private static PooledConnection connection = MysqlConnectionPool.getInstance().getConnection();
     private static Reservation reservation;
 
-    private BillDao billDao = new MysqlBillDao(connection);
+    private BillDao billDao = new MysqlBillDao();
     private Bill bill1 = TestData.getInstance().getBill("bill1");
     private Bill bill2 = TestData.getInstance().getBill("bill2");
 
     @BeforeClass
     public static void init() throws SQLException {
-        UserDao userDao = new MysqlUserDao(connection);
+        connection.setInTransaction(true);
+
+        UserDao userDao = new MysqlUserDao();
         User user = TestUtil.createEntityWithId(TestData.getInstance().getUser("client1"), userDao);
 
         CarModel carModelFromTestData = TestData.getInstance().getCarModel("carModel1");
-        CarModelDao carModelDao = new MysqlCarModelDao(connection);
+        CarModelDao carModelDao = new MysqlCarModelDao();
         CarModel carModel = TestUtil.createEntityWithId(carModelFromTestData, carModelDao);
 
         CarModelDtoMapper carModelDtoMapper = new CarModelDtoMapper();
@@ -68,7 +70,7 @@ public class MysqlBillDaoTest {
 
         CarDtoMapper carDtoMapper = new CarDtoMapper();
         car = TestUtil.setEntityAttribute(car, CarDto::setCarModelDto, carModelDto, carDtoMapper);
-        CarDao carDao = new MysqlCarDao(connection);
+        CarDao carDao = new MysqlCarDao();
         car = TestUtil.createEntityWithId(car, carDao);
 
         Reservation temp = new Reservation.Builder()
@@ -77,7 +79,7 @@ public class MysqlBillDaoTest {
                 .setPickUpDatetime(LocalDateTime.now())
                 .setDropOffDatetime(LocalDateTime.now().plusDays(2))
                 .build();
-        ReservationDao reservationDao = new MysqlReservationDao(connection);
+        ReservationDao reservationDao = new MysqlReservationDao();
         reservation = TestUtil.createEntityWithId(temp, reservationDao);
 
         connection.commit();

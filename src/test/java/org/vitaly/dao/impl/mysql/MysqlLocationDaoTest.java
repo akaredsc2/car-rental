@@ -2,6 +2,7 @@ package org.vitaly.dao.impl.mysql;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.vitaly.dao.abstraction.CarDao;
 import org.vitaly.dao.abstraction.CarModelDao;
@@ -36,9 +37,14 @@ public class MysqlLocationDaoTest {
 
     private static PooledConnection connection = MysqlConnectionPool.getInstance().getConnection();
 
-    private LocationDao locationDao = new MysqlLocationDao(connection);
+    private LocationDao locationDao = new MysqlLocationDao();
     private Location location1 = TestData.getInstance().getLocation("location1");
     private Location location2 = TestData.getInstance().getLocation("location2");
+
+    @BeforeClass
+    public static void init() throws Exception {
+        connection.setInTransaction(true);
+    }
 
     @After
     public void tearDown() throws Exception {
@@ -135,7 +141,7 @@ public class MysqlLocationDaoTest {
     @Test
     public void findLocationOfExistingCarReturnsLocation() throws Exception {
         CarModel carModel = TestData.getInstance().getCarModel("carModel1");
-        CarModelDao carModelDao = new MysqlCarModelDao(connection);
+        CarModelDao carModelDao = new MysqlCarModelDao();
         carModel = TestUtil.createEntityWithId(carModel, carModelDao);
 
         CarModelDtoMapper carModelDtoMapper = new CarModelDtoMapper();
@@ -148,7 +154,7 @@ public class MysqlLocationDaoTest {
         carDto.setCarModelDto(carModelDto);
         car = carDtoMapper.mapDtoToEntity(carDto);
 
-        CarDao carDao = new MysqlCarDao(connection);
+        CarDao carDao = new MysqlCarDao();
         car = TestUtil.createEntityWithId(car, carDao);
 
         location1 = TestUtil.createEntityWithId(location1, locationDao);

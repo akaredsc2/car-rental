@@ -3,7 +3,6 @@ package org.vitaly.dao.impl.mysql;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.vitaly.dao.abstraction.LocationDao;
-import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.impl.mysql.factory.ResultSetMapperFactory;
 import org.vitaly.dao.impl.mysql.mapper.Mapper;
 import org.vitaly.dao.impl.mysql.template.DaoTemplate;
@@ -44,16 +43,6 @@ public class MysqlLocationDao implements LocationDao {
 
     private static Logger logger = LogManager.getLogger(MysqlLocationDao.class.getName());
 
-    private DaoTemplate daoTemplate;
-
-    public MysqlLocationDao(PooledConnection connection) {
-        this(new DaoTemplate(connection));
-    }
-
-    public MysqlLocationDao(DaoTemplate daoTemplate) {
-        this.daoTemplate = daoTemplate;
-    }
-
     @Override
     public Optional<Location> findById(long id) {
         return findLocationUsingQuery(id, FIND_BY_ID_QUERY);
@@ -69,7 +58,7 @@ public class MysqlLocationDao implements LocationDao {
         parameterMap.put(3, location.getStreet());
         parameterMap.put(4, location.getBuilding());
 
-        Long foundId = daoTemplate
+        Long foundId = DaoTemplate.getInstance()
                 .executeSelectOne(FIND_ID_OF_LOCATION_QUERY, resultSet -> resultSet.getLong(1), parameterMap);
 
         return Optional.ofNullable(foundId);
@@ -78,7 +67,8 @@ public class MysqlLocationDao implements LocationDao {
     @Override
     public List<Location> getAll() {
         Mapper<Location> mapper = ResultSetMapperFactory.getInstance().getLocationMapper();
-        return daoTemplate.executeSelect(GET_ALL_QUERY, mapper, Collections.emptyMap());
+        return DaoTemplate.getInstance()
+                .executeSelect(GET_ALL_QUERY, mapper, Collections.emptyMap());
     }
 
     @Override
@@ -92,7 +82,8 @@ public class MysqlLocationDao implements LocationDao {
         parameterMap.put(4, location.getBuilding());
         parameterMap.put(5, location.getPhotoUrl());
 
-        Long createdId = daoTemplate.executeInsert(CREATE_LOCATION_QUERY, parameterMap);
+        Long createdId = DaoTemplate.getInstance()
+                .executeInsert(CREATE_LOCATION_QUERY, parameterMap);
         return Optional.ofNullable(createdId);
     }
 
@@ -113,7 +104,8 @@ public class MysqlLocationDao implements LocationDao {
         parameterMap.put(1, carId);
 
         Mapper<Location> mapper = ResultSetMapperFactory.getInstance().getLocationMapper();
-        Location foundLocation = daoTemplate.executeSelectOne(findLocationByCarIdQuery, mapper, parameterMap);
+        Location foundLocation = DaoTemplate.getInstance()
+                .executeSelectOne(findLocationByCarIdQuery, mapper, parameterMap);
         return Optional.ofNullable(foundLocation);
     }
 
@@ -123,6 +115,7 @@ public class MysqlLocationDao implements LocationDao {
         parameterMap.put(1, imageUrl);
         parameterMap.put(2, locationId);
 
-        return daoTemplate.executeUpdate(CHANGE_IMAGE_URL_QUERY, parameterMap) > 0;
+        return DaoTemplate.getInstance()
+                .executeUpdate(CHANGE_IMAGE_URL_QUERY, parameterMap) > 0;
     }
 }

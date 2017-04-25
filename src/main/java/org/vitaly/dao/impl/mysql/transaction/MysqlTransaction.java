@@ -7,7 +7,6 @@ import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.abstraction.transaction.Transaction;
 import org.vitaly.dao.exception.DaoException;
 import org.vitaly.dao.impl.mysql.*;
-import org.vitaly.dao.impl.mysql.template.DaoTemplate;
 
 import java.sql.SQLException;
 
@@ -18,7 +17,6 @@ public class MysqlTransaction implements Transaction {
     private static Logger logger = LogManager.getLogger(MysqlTransaction.class.getName());
 
     private PooledConnection pooledConnection;
-    private DaoTemplate daoTemplate;
 
     private BillDao billDao;
     private CarModelDao carModelDao;
@@ -36,7 +34,6 @@ public class MysqlTransaction implements Transaction {
 
     private MysqlTransaction(PooledConnection pooledConnection, boolean autoCommitBeforeTransaction) {
         this.pooledConnection = pooledConnection;
-        this.daoTemplate = new DaoTemplate(pooledConnection);
         this.autoCommitBeforeTransaction = autoCommitBeforeTransaction;
     }
 
@@ -51,7 +48,7 @@ public class MysqlTransaction implements Transaction {
     @Override
     public BillDao getBillDao() {
         if (billDao == null) {
-            billDao = new MysqlBillDao(daoTemplate);
+            billDao = new MysqlBillDao();
         }
         return billDao;
     }
@@ -59,7 +56,7 @@ public class MysqlTransaction implements Transaction {
     @Override
     public CarModelDao getCarModelDao() {
         if (carModelDao == null) {
-            carModelDao = new MysqlCarModelDao(daoTemplate);
+            carModelDao = new MysqlCarModelDao();
         }
         return carModelDao;
     }
@@ -67,7 +64,7 @@ public class MysqlTransaction implements Transaction {
     @Override
     public CarDao getCarDao() {
         if (carDao == null) {
-            carDao = new MysqlCarDao(daoTemplate);
+            carDao = new MysqlCarDao();
         }
         return carDao;
     }
@@ -75,7 +72,7 @@ public class MysqlTransaction implements Transaction {
     @Override
     public LocationDao getLocationDao() {
         if (locationDao == null) {
-            locationDao = new MysqlLocationDao(daoTemplate);
+            locationDao = new MysqlLocationDao();
         }
         return locationDao;
     }
@@ -83,7 +80,7 @@ public class MysqlTransaction implements Transaction {
     @Override
     public NotificationDao getNotificationDao() {
         if (notificationDao == null) {
-            notificationDao = new MysqlNotificationDao(daoTemplate);
+            notificationDao = new MysqlNotificationDao();
         }
         return notificationDao;
     }
@@ -91,7 +88,7 @@ public class MysqlTransaction implements Transaction {
     @Override
     public ReservationDao getReservationDao() {
         if (reservationDao == null) {
-            reservationDao = new MysqlReservationDao(daoTemplate);
+            reservationDao = new MysqlReservationDao();
         }
         return reservationDao;
     }
@@ -99,7 +96,7 @@ public class MysqlTransaction implements Transaction {
     @Override
     public UserDao getUserDao() {
         if (userDao == null) {
-            userDao = new MysqlUserDao(daoTemplate);
+            userDao = new MysqlUserDao();
         }
         return userDao;
     }

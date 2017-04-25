@@ -33,14 +33,16 @@ public class MysqlNotificationDaoTest {
     private static PooledConnection connection = MysqlConnectionPool.getInstance().getConnection();
     private static long userId;
 
-    private NotificationDao notificationDao = new MysqlNotificationDao(connection);
+    private NotificationDao notificationDao = new MysqlNotificationDao();
     private Notification notification1 = TestData.getInstance().getNotification("notification1");
     private Notification notification2 = TestData.getInstance().getNotification("notification2");
 
     @BeforeClass
     public static void init() throws Exception {
+        connection.setInTransaction(true);
+
         User client1 = TestData.getInstance().getUser("client1");
-        UserDao userDao = new MysqlUserDao(connection);
+        UserDao userDao = new MysqlUserDao();
         userId = userDao.create(client1).orElseThrow(AssertionError::new);
 
         connection.commit();

@@ -44,19 +44,21 @@ public class MysqlCarDaoTest {
     private static CarModel carModel1;
     private static CarModel carModel2;
 
-    private CarDao carDao = new MysqlCarDao(connection);
+    private CarDao carDao = new MysqlCarDao();
     private Car car1 = TestData.getInstance().getCar("car1");
     private Car car2 = TestData.getInstance().getCar("car2");
 
     @BeforeClass
     public static void init() throws Exception {
+        connection.setInTransaction(true);
+
         Location locationFromTestData = TestData.getInstance().getLocation("location1");
-        LocationDao locationDao = new MysqlLocationDao(connection);
+        LocationDao locationDao = new MysqlLocationDao();
         locationId = TestUtil.createEntityWithId(locationFromTestData, locationDao).getId();
 
         CarModel carModelFromTestData1 = TestData.getInstance().getCarModel("carModel1");
         CarModel carModelFromTestData2 = TestData.getInstance().getCarModel("carModel2");
-        CarModelDao carModelDao = new MysqlCarModelDao(connection);
+        CarModelDao carModelDao = new MysqlCarModelDao();
         carModel1 = TestUtil.createEntityWithId(carModelFromTestData1, carModelDao);
         carModel2 = TestUtil.createEntityWithId(carModelFromTestData2, carModelDao);
 

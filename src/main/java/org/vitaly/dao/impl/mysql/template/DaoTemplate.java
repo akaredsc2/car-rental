@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.exception.DaoException;
+import org.vitaly.dao.impl.mysql.connectionPool.MysqlConnectionPool;
 import org.vitaly.dao.impl.mysql.mapper.Mapper;
 
 import java.sql.PreparedStatement;
@@ -24,16 +25,20 @@ public class DaoTemplate {
     private static final int ERROR_CODE_DUPLICATE_ENTRY = 1062;
 
     private static Logger logger = LogManager.getLogger(DaoTemplate.class.getName());
-    private PooledConnection connection;
+    private static DaoTemplate instance = new DaoTemplate();
 
-    public DaoTemplate(PooledConnection connection) {
-        this.connection = connection;
+    private DaoTemplate() {
+    }
+
+    public static DaoTemplate getInstance() {
+        return instance;
     }
 
     public <T> List<T> executeSelect(String query, Mapper<T> mapper, Map<Integer, Object> parameterMap) {
         List<T> result = new ArrayList<>();
 
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        try (PooledConnection connection = MysqlConnectionPool.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             setQueryParameters(statement, parameterMap);
 
             statement.executeQuery();
@@ -75,7 +80,8 @@ public class DaoTemplate {
     public Long executeInsert(String query, Map<Integer, Object> parameterMap) {
         Long insertedId = null;
 
-        try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (PooledConnection connection = MysqlConnectionPool.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setQueryParameters(statement, parameterMap);
 
             statement.executeUpdate();
@@ -97,7 +103,8 @@ public class DaoTemplate {
 
     // TODO: 2017-04-07 add transaction isolation
     public int executeUpdate(String query, Map<Integer, Object> parameterMap) {
-        try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (PooledConnection connection = MysqlConnectionPool.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setQueryParameters(statement, parameterMap);
 
             return statement.executeUpdate();

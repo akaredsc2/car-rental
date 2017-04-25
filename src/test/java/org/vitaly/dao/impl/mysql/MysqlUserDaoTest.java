@@ -2,6 +2,7 @@ package org.vitaly.dao.impl.mysql;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.vitaly.dao.abstraction.UserDao;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
@@ -30,10 +31,15 @@ public class MysqlUserDaoTest {
 
     private static PooledConnection connection = MysqlConnectionPool.getInstance().getConnection();
 
-    private UserDao userDao = new MysqlUserDao(connection);
+    private UserDao userDao = new MysqlUserDao();
     private User client1 = TestData.getInstance().getUser("client1");
     private User client2 = TestData.getInstance().getUser("client2");
     private User admin = TestData.getInstance().getUser("admin");
+
+    @BeforeClass
+    public static void init() throws Exception {
+        connection.setInTransaction(true);
+    }
 
     @After
     public void tearDown() throws Exception {

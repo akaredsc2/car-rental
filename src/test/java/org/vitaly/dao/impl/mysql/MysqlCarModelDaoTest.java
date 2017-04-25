@@ -2,6 +2,7 @@ package org.vitaly.dao.impl.mysql;
 
 import junit.framework.AssertionFailedError;
 import org.junit.After;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.vitaly.dao.abstraction.CarModelDao;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
@@ -30,9 +31,14 @@ public class MysqlCarModelDaoTest {
 
     private static PooledConnection connection = MysqlConnectionPool.getInstance().getConnection();
 
-    private CarModelDao carModelDao = new MysqlCarModelDao(connection);
+    private CarModelDao carModelDao = new MysqlCarModelDao();
     private CarModel carModel1 = TestData.getInstance().getCarModel("carModel1");
     private CarModel carModel2 = TestData.getInstance().getCarModel("carModel2");
+
+    @BeforeClass
+    public static void init() throws Exception {
+        connection.setInTransaction(true);
+    }
 
     @After
     public void tearDown() throws Exception {

@@ -54,7 +54,7 @@ public class MysqlReservationDaoTest {
     private static Car car1;
     private static Car car2;
 
-    private ReservationDao reservationDao = new MysqlReservationDao(connection);
+    private ReservationDao reservationDao = new MysqlReservationDao();
     private Reservation reservation1 = new Reservation.Builder()
             .setClient(client1)
             .setCar(car1)
@@ -71,7 +71,9 @@ public class MysqlReservationDaoTest {
 
     @BeforeClass
     public static void init() throws SQLException {
-        UserDao userDao = new MysqlUserDao(connection);
+        connection.setInTransaction(true);
+
+        UserDao userDao = new MysqlUserDao();
         client1 = TestUtil.createEntityWithId(TestData.getInstance().getUser("client1"), userDao);
         client2 = TestUtil.createEntityWithId(TestData.getInstance().getUser("client2"), userDao);
 
@@ -81,7 +83,7 @@ public class MysqlReservationDaoTest {
 
         CarModel carModelFromTestData1 = TestData.getInstance().getCarModel("carModel1");
         CarModel carModelFromTestData2 = TestData.getInstance().getCarModel("carModel2");
-        CarModelDao carModelDao = new MysqlCarModelDao(connection);
+        CarModelDao carModelDao = new MysqlCarModelDao();
         CarModel carModel1 = TestUtil.createEntityWithId(carModelFromTestData1, carModelDao);
         CarModel carModel2 = TestUtil.createEntityWithId(carModelFromTestData2, carModelDao);
 
@@ -100,7 +102,7 @@ public class MysqlReservationDaoTest {
         carFromTestData1 = carDtoMapper.mapDtoToEntity(carDto1);
         carFromTestData2 = carDtoMapper.mapDtoToEntity(carDto2);
 
-        CarDao carDao = new MysqlCarDao(connection);
+        CarDao carDao = new MysqlCarDao();
         MysqlReservationDaoTest.car1 = TestUtil.createEntityWithId(carFromTestData1, carDao);
         MysqlReservationDaoTest.car2 = TestUtil.createEntityWithId(carFromTestData2, carDao);
 

@@ -3,7 +3,6 @@ package org.vitaly.dao.impl.mysql;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.vitaly.dao.abstraction.UserDao;
-import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.impl.mysql.factory.ResultSetMapperFactory;
 import org.vitaly.dao.impl.mysql.mapper.Mapper;
 import org.vitaly.dao.impl.mysql.template.DaoTemplate;
@@ -54,23 +53,14 @@ public class MysqlUserDao implements UserDao {
 
     private static Logger logger = LogManager.getLogger(MysqlUserDao.class.getName());
 
-    private DaoTemplate daoTemplate;
-
-    public MysqlUserDao(PooledConnection connection) {
-        this(new DaoTemplate(connection));
-    }
-
-    public MysqlUserDao(DaoTemplate daoTemplate) {
-        this.daoTemplate = daoTemplate;
-    }
-
     @Override
     public Optional<User> findById(long id) {
         Map<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, id);
 
         Mapper<User> mapper = ResultSetMapperFactory.getInstance().getUserMapper();
-        User user = daoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
+        User user = DaoTemplate.getInstance()
+                .executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
         return Optional.ofNullable(user);
     }
 
@@ -81,7 +71,7 @@ public class MysqlUserDao implements UserDao {
         Map<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, user.getLogin());
 
-        Long foundId = daoTemplate
+        Long foundId = DaoTemplate.getInstance()
                 .executeSelectOne(FIND_ID_OF_USER_QUERY, resultSet -> resultSet.getLong(1), parameterMap);
 
         return Optional.ofNullable(foundId);
@@ -90,7 +80,8 @@ public class MysqlUserDao implements UserDao {
     @Override
     public List<User> getAll() {
         Mapper<User> mapper = ResultSetMapperFactory.getInstance().getUserMapper();
-        return daoTemplate.executeSelect(GET_ALL_QUERY, mapper, Collections.emptyMap());
+        return DaoTemplate.getInstance()
+                .executeSelect(GET_ALL_QUERY, mapper, Collections.emptyMap());
     }
 
     @Override
@@ -105,7 +96,8 @@ public class MysqlUserDao implements UserDao {
         parameterMap.put(5, user.getPassportNumber());
         parameterMap.put(6, user.getDriverLicenceNumber());
 
-        Long createdId = daoTemplate.executeInsert(CREATE_QUERY, parameterMap);
+        Long createdId = DaoTemplate.getInstance()
+                .executeInsert(CREATE_QUERY, parameterMap);
         return Optional.ofNullable(createdId);
     }
 
@@ -126,7 +118,8 @@ public class MysqlUserDao implements UserDao {
         parameterMap.put(2, password);
 
         Mapper<User> mapper = ResultSetMapperFactory.getInstance().getUserMapper();
-        User authenticatedUser = daoTemplate.executeSelectOne(AUTHENTICATE_QUERY, mapper, parameterMap);
+        User authenticatedUser = DaoTemplate.getInstance()
+                .executeSelectOne(AUTHENTICATE_QUERY, mapper, parameterMap);
         return Optional.ofNullable(authenticatedUser);
     }
 
@@ -138,7 +131,8 @@ public class MysqlUserDao implements UserDao {
         parameterMap.put(1, role.toString().toLowerCase());
         parameterMap.put(2, userId);
 
-        daoTemplate.executeUpdate(CHANGE_ROLE_QUERY, parameterMap);
+        DaoTemplate.getInstance()
+                .executeUpdate(CHANGE_ROLE_QUERY, parameterMap);
     }
 
     @Override
@@ -149,6 +143,7 @@ public class MysqlUserDao implements UserDao {
         parameterMap.put(1, newPassword);
         parameterMap.put(2, userId);
 
-        daoTemplate.executeUpdate(CHANGE_PASSWORD_QUERY, parameterMap);
+        DaoTemplate.getInstance()
+                .executeUpdate(CHANGE_PASSWORD_QUERY, parameterMap);
     }
 }

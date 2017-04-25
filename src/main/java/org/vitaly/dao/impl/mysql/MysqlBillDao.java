@@ -3,7 +3,6 @@ package org.vitaly.dao.impl.mysql;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.vitaly.dao.abstraction.BillDao;
-import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.impl.mysql.factory.ResultSetMapperFactory;
 import org.vitaly.dao.impl.mysql.mapper.Mapper;
 import org.vitaly.dao.impl.mysql.template.DaoTemplate;
@@ -47,23 +46,14 @@ public class MysqlBillDao implements BillDao {
 
     private static Logger logger = LogManager.getLogger(MysqlBillDao.class.getName());
 
-    private DaoTemplate daoTemplate;
-
-    public MysqlBillDao(PooledConnection connection) {
-        this(new DaoTemplate(connection));
-    }
-
-    public MysqlBillDao(DaoTemplate daoTemplate) {
-        this.daoTemplate = daoTemplate;
-    }
-
     @Override
     public Optional<Bill> findById(long id) {
         HashMap<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, id);
 
         Mapper<Bill> mapper = ResultSetMapperFactory.getInstance().getBillMapper();
-        Bill foundBill = daoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
+        Bill foundBill = DaoTemplate.getInstance()
+                .executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
         return Optional.ofNullable(foundBill);
     }
 
@@ -77,7 +67,8 @@ public class MysqlBillDao implements BillDao {
     @Override
     public List<Bill> getAll() {
         Mapper<Bill> mapper = ResultSetMapperFactory.getInstance().getBillMapper();
-        return daoTemplate.executeSelect(GET_ALL_QUERY, mapper, Collections.emptyMap());
+        return DaoTemplate.getInstance()
+                .executeSelect(GET_ALL_QUERY, mapper, Collections.emptyMap());
     }
 
     @Override
@@ -89,7 +80,8 @@ public class MysqlBillDao implements BillDao {
         parameterMap.put(2, bill.getCashAmount());
         parameterMap.put(3, bill.getCreationDateTime());
 
-        Long createdId = daoTemplate.executeInsert(CREATE_QUERY, parameterMap);
+        Long createdId = DaoTemplate.getInstance()
+                .executeInsert(CREATE_QUERY, parameterMap);
         return Optional.ofNullable(createdId);
     }
 
@@ -106,7 +98,8 @@ public class MysqlBillDao implements BillDao {
         parameterMap.put(1, reservationId);
 
         Mapper<Bill> mapper = ResultSetMapperFactory.getInstance().getBillMapper();
-        return daoTemplate.executeSelect(FIND_BILLS_FOR_RESERVATION_QUERY, mapper, parameterMap);
+        return DaoTemplate.getInstance()
+                .executeSelect(FIND_BILLS_FOR_RESERVATION_QUERY, mapper, parameterMap);
     }
 
     @Override
@@ -115,7 +108,8 @@ public class MysqlBillDao implements BillDao {
         parameterMap.put(1, reservationId);
         parameterMap.put(2, billId);
 
-        return daoTemplate.executeUpdate(ADD_BILL_TO_RESERVATION_QUERY, parameterMap) > 0;
+        return DaoTemplate.getInstance()
+                .executeUpdate(ADD_BILL_TO_RESERVATION_QUERY, parameterMap) > 0;
     }
 
     @Override
@@ -124,6 +118,7 @@ public class MysqlBillDao implements BillDao {
         parameterMap.put(1, true);
         parameterMap.put(2, billId);
 
-        return daoTemplate.executeUpdate(MARK_AS_PAID_QUERY, parameterMap) > 0;
+        return DaoTemplate.getInstance()
+                .executeUpdate(MARK_AS_PAID_QUERY, parameterMap) > 0;
     }
 }

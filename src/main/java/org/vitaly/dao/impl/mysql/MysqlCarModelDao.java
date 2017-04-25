@@ -1,7 +1,6 @@
 package org.vitaly.dao.impl.mysql;
 
 import org.vitaly.dao.abstraction.CarModelDao;
-import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.impl.mysql.factory.ResultSetMapperFactory;
 import org.vitaly.dao.impl.mysql.mapper.Mapper;
 import org.vitaly.dao.impl.mysql.template.DaoTemplate;
@@ -42,23 +41,14 @@ public class MysqlCarModelDao implements CarModelDao {
                     "WHERE photo_url IS NOT NULL";
     private static final String CAR_MODEL_MUST_NOT_BE_NULL = "Car model must not be null!";
 
-    private DaoTemplate daoTemplate;
-
-    public MysqlCarModelDao(PooledConnection connection) {
-        this(new DaoTemplate(connection));
-    }
-
-    public MysqlCarModelDao(DaoTemplate daoTemplate) {
-        this.daoTemplate = daoTemplate;
-    }
-
     @Override
     public Optional<CarModel> findById(long id) {
         HashMap<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, id);
 
         Mapper<CarModel> mapper = ResultSetMapperFactory.getInstance().getCarModelMapper();
-        CarModel foundCarModel = daoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
+        CarModel foundCarModel = DaoTemplate.getInstance()
+                .executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
         return Optional.ofNullable(foundCarModel);
     }
 
@@ -69,15 +59,16 @@ public class MysqlCarModelDao implements CarModelDao {
         HashMap<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, carModel.getName());
 
-        Long foundModelId = daoTemplate.executeSelectOne(FIND_ID_OF_ENTITY_QUERY,
-                resultSet -> resultSet.getLong(1), parameterMap);
+        Long foundModelId = DaoTemplate.getInstance()
+                .executeSelectOne(FIND_ID_OF_ENTITY_QUERY, resultSet -> resultSet.getLong(1), parameterMap);
         return Optional.ofNullable(foundModelId);
     }
 
     @Override
     public List<CarModel> getAll() {
         Mapper<CarModel> mapper = ResultSetMapperFactory.getInstance().getCarModelMapper();
-        return daoTemplate.executeSelect(GET_ALL_QUERY, mapper, Collections.emptyMap());
+        return DaoTemplate.getInstance()
+                .executeSelect(GET_ALL_QUERY, mapper, Collections.emptyMap());
     }
 
     @Override
@@ -90,7 +81,8 @@ public class MysqlCarModelDao implements CarModelDao {
         parameterMap.put(3, carModel.getSeatCount());
         parameterMap.put(4, carModel.getHorsePowerCount());
 
-        Long createdId = daoTemplate.executeInsert(CREATE_QUERY, parameterMap);
+        Long createdId = DaoTemplate.getInstance()
+                .executeInsert(CREATE_QUERY, parameterMap);
         return Optional.ofNullable(createdId);
     }
 
@@ -106,12 +98,14 @@ public class MysqlCarModelDao implements CarModelDao {
         parameterMap.put(5, carModel.getHorsePowerCount());
         parameterMap.put(6, id);
 
-        return daoTemplate.executeUpdate(UPDATE_QUERY, parameterMap);
+        return DaoTemplate.getInstance()
+                .executeUpdate(UPDATE_QUERY, parameterMap);
     }
 
     @Override
     public List<CarModel> findCarsWithPhotos() {
         Mapper<CarModel> mapper = ResultSetMapperFactory.getInstance().getCarModelMapper();
-        return daoTemplate.executeSelect(FIND_CAR_MODELS_WITH_PHOTOS_QUERY, mapper, Collections.emptyMap());
+        return DaoTemplate.getInstance()
+                .executeSelect(FIND_CAR_MODELS_WITH_PHOTOS_QUERY, mapper, Collections.emptyMap());
     }
 }
