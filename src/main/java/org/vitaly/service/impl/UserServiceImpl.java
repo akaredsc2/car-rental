@@ -3,6 +3,7 @@ package org.vitaly.service.impl;
 import org.vitaly.dao.abstraction.UserDao;
 import org.vitaly.dao.abstraction.factory.TransactionFactory;
 import org.vitaly.dao.abstraction.transaction.Transaction;
+import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
 import org.vitaly.model.user.User;
 import org.vitaly.model.user.UserRole;
 import org.vitaly.service.abstraction.UserService;
@@ -34,7 +35,7 @@ public class UserServiceImpl implements UserService {
             userDto.setRole(UserRole.CLIENT);
             User user = dtoMapperFactory.getUserDtoMapper().mapDtoToEntity(userDto);
 
-            UserDao userDao = transaction.getUserDao();
+            UserDao userDao = MysqlDaoFactory.getInstance().getUserDao();
             boolean isUserCreated = userDao.create(user).isPresent();
 
             transaction.commit();
@@ -45,20 +46,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserDto> authenticate(String login, String password) {
-        try (Transaction transaction = transactionFactory.createTransaction()) {
-            DtoMapper<User, UserDto> mapper = dtoMapperFactory.getUserDtoMapper();
+        DtoMapper<User, UserDto> mapper = dtoMapperFactory.getUserDtoMapper();
 
-            UserDao userDao = transaction.getUserDao();
-            return userDao.authenticate(login, password)
-                    .map(mapper::mapEntityToDto);
-        }
+        UserDao userDao = MysqlDaoFactory.getInstance().getUserDao();
+        return userDao.authenticate(login, password)
+                .map(mapper::mapEntityToDto);
     }
 
     @Override
     public void changeRole(UserDto userDto, UserRole newRole) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
             long userId = userDto.getId();
-            UserDao userDao = transaction.getUserDao();
+            UserDao userDao = MysqlDaoFactory.getInstance().getUserDao();
             userDao.changeRole(userId, newRole);
 
             transaction.commit();
@@ -69,7 +68,7 @@ public class UserServiceImpl implements UserService {
     public void changePassword(UserDto userDto, String newPassword) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
             long userId = userDto.getId();
-            UserDao userDao = transaction.getUserDao();
+            UserDao userDao = MysqlDaoFactory.getInstance().getUserDao();
             userDao.changePassword(userId, newPassword);
 
             transaction.commit();

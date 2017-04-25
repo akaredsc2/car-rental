@@ -1,25 +1,36 @@
 package org.vitaly.service.impl;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.vitaly.dao.abstraction.CarModelDao;
 import org.vitaly.dao.abstraction.factory.TransactionFactory;
 import org.vitaly.dao.abstraction.transaction.Transaction;
+import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
 import org.vitaly.service.abstraction.CarModelService;
 import org.vitaly.service.impl.dto.CarModelDto;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import java.util.Optional;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by vitaly on 2017-04-22.
  */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(MysqlDaoFactory.class)
+@PowerMockIgnore("javax.management.*")
 public class CarModelServiceImplTest {
     private TransactionFactory transactionFactory = mock(TransactionFactory.class);
     private Transaction transaction = mock(Transaction.class);
+    private MysqlDaoFactory daoFactory = mock(MysqlDaoFactory.class);
     private CarModelDao carModelDao = mock(CarModelDao.class);
     private CarModelService carModelService = new CarModelServiceImpl(transactionFactory);
 
@@ -31,8 +42,8 @@ public class CarModelServiceImplTest {
         carModelDto.setDoorCount(4);
         carModelDto.setHorsePowerCount(200);
 
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
-        when(transaction.getCarModelDao()).thenReturn(carModelDao);
+        stab();
+        when(carModelDao.create(any())).thenReturn(Optional.empty());
         carModelService.addCarModel(carModelDto);
 
         InOrder inOrder = Mockito.inOrder(transaction, carModelDao);
@@ -41,15 +52,19 @@ public class CarModelServiceImplTest {
         inOrder.verify(transaction).close();
     }
 
+    private void stab() {
+        PowerMockito.mockStatic(MysqlDaoFactory.class);
+        PowerMockito.when(MysqlDaoFactory.getInstance()).thenReturn(daoFactory);
+        when(transactionFactory.createTransaction()).thenReturn(transaction);
+        when(daoFactory.getCarModelDao()).thenReturn(carModelDao);
+    }
+
     @Test
     public void getAllMatchingCarModels() throws Exception {
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
-        when(transaction.getCarModelDao()).thenReturn(carModelDao);
+        stab();
         carModelService.getAllMatchingCarModels(x -> true);
 
-        InOrder inOrder = Mockito.inOrder(transaction, carModelDao);
-        inOrder.verify(carModelDao).getAll();
-        inOrder.verify(transaction).close();
+        verify(carModelDao).getAll();
     }
 
     @Test
@@ -59,8 +74,7 @@ public class CarModelServiceImplTest {
         carModelDto.setName("");
         carModelDto.setPhotoUrl("url");
 
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
-        when(transaction.getCarModelDao()).thenReturn(carModelDao);
+        stab();
         carModelService.updateCarModel(carModelDto);
 
         InOrder inOrder = Mockito.inOrder(transaction, carModelDao);
@@ -71,12 +85,9 @@ public class CarModelServiceImplTest {
 
     @Test
     public void findCarsWithPhotos() throws Exception {
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
-        when(transaction.getCarModelDao()).thenReturn(carModelDao);
+        stab();
         carModelService.findCarsWithPhotos();
 
-        InOrder inOrder = Mockito.inOrder(transaction, carModelDao);
-        inOrder.verify(carModelDao).findCarsWithPhotos();
-        inOrder.verify(transaction).close();
+        verify(carModelDao).findCarsWithPhotos();
     }
 }

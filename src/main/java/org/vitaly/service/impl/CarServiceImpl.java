@@ -3,6 +3,7 @@ package org.vitaly.service.impl;
 import org.vitaly.dao.abstraction.CarDao;
 import org.vitaly.dao.abstraction.factory.TransactionFactory;
 import org.vitaly.dao.abstraction.transaction.Transaction;
+import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
 import org.vitaly.model.car.Car;
 import org.vitaly.service.abstraction.CarService;
 import org.vitaly.service.impl.dto.CarDto;
@@ -36,7 +37,7 @@ public class CarServiceImpl implements CarService {
     public boolean addNewCar(CarDto carDto) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
             Car car = dtoMapperFactory.getCarDtoMapper().mapDtoToEntity(carDto);
-            CarDao carDao = transaction.getCarDao();
+            CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
             boolean isCarCreated = carDao.create(car).isPresent();
 
             transaction.commit();
@@ -47,57 +48,49 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public List<CarDto> findCarsAtLocation(LocationDto locationDto) {
-        try (Transaction transaction = transactionFactory.createTransaction()) {
-            DtoMapper<Car, CarDto> mapper = dtoMapperFactory.getCarDtoMapper();
+        DtoMapper<Car, CarDto> mapper = dtoMapperFactory.getCarDtoMapper();
 
-            long locationId = locationDto.getId();
-            CarDao carDao = transaction.getCarDao();
-            return carDao.findCarsAtLocation(locationId)
-                    .stream()
-                    .map(mapper::mapEntityToDto)
-                    .collect(Collectors.toList());
-        }
+        long locationId = locationDto.getId();
+        CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
+        return carDao.findCarsAtLocation(locationId)
+                .stream()
+                .map(mapper::mapEntityToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<CarDto> findCarsByModel(CarModelDto carModelDto) {
-        try (Transaction transaction = transactionFactory.createTransaction()) {
-            DtoMapper<Car, CarDto> mapper = dtoMapperFactory.getCarDtoMapper();
+        DtoMapper<Car, CarDto> mapper = dtoMapperFactory.getCarDtoMapper();
 
-            long carModelId = carModelDto.getId();
-            CarDao carDao = transaction.getCarDao();
-            return carDao.findCarsByModel(carModelId)
-                    .stream()
-                    .map(mapper::mapEntityToDto)
-                    .collect(Collectors.toList());
-        }
+        long carModelId = carModelDto.getId();
+        CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
+        return carDao.findCarsByModel(carModelId)
+                .stream()
+                .map(mapper::mapEntityToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<CarDto> findCarsWithPriceBetween(BigDecimal from, BigDecimal to) {
-        try (Transaction transaction = transactionFactory.createTransaction()) {
-            DtoMapper<Car, CarDto> mapper = dtoMapperFactory.getCarDtoMapper();
+        DtoMapper<Car, CarDto> mapper = dtoMapperFactory.getCarDtoMapper();
 
-            CarDao carDao = transaction.getCarDao();
-            return carDao.findCarsWithPriceBetween(from, to)
-                    .stream()
-                    .map(mapper::mapEntityToDto)
-                    .collect(Collectors.toList());
-        }
+        CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
+        return carDao.findCarsWithPriceBetween(from, to)
+                .stream()
+                .map(mapper::mapEntityToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<CarDto> getAllMatchingCars(Predicate<Car> carPredicate) {
-        try (Transaction transaction = transactionFactory.createTransaction()) {
-            DtoMapper<Car, CarDto> mapper = dtoMapperFactory.getCarDtoMapper();
+        DtoMapper<Car, CarDto> mapper = dtoMapperFactory.getCarDtoMapper();
 
-            CarDao carDao = transaction.getCarDao();
-            return carDao.getAll()
-                    .stream()
-                    .filter(carPredicate)
-                    .map(mapper::mapEntityToDto)
-                    .collect(Collectors.toList());
-        }
+        CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
+        return carDao.getAll()
+                .stream()
+                .filter(carPredicate)
+                .map(mapper::mapEntityToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -105,7 +98,7 @@ public class CarServiceImpl implements CarService {
         try (Transaction transaction = transactionFactory.createTransaction()) {
             Car car = dtoMapperFactory.getCarDtoMapper().mapDtoToEntity(carDto);
 
-            CarDao carDao = transaction.getCarDao();
+            CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
             carDao.update(carDto.getId(), car);
 
             transaction.commit();
@@ -118,7 +111,7 @@ public class CarServiceImpl implements CarService {
             long carId = carDto.getId();
             long locationId = locationDto.getId();
 
-            CarDao carDao = transaction.getCarDao();
+            CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
             carDao.moveCarToLocation(carId, locationId);
 
             transaction.commit();

@@ -1,11 +1,17 @@
 package org.vitaly.service.impl;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.vitaly.dao.abstraction.CarDao;
 import org.vitaly.dao.abstraction.factory.TransactionFactory;
 import org.vitaly.dao.abstraction.transaction.Transaction;
+import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
 import org.vitaly.model.car.CarStateEnum;
 import org.vitaly.service.abstraction.CarService;
 import org.vitaly.service.impl.dto.CarDto;
@@ -13,18 +19,22 @@ import org.vitaly.service.impl.dto.CarModelDto;
 import org.vitaly.service.impl.dto.LocationDto;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by vitaly on 2017-04-20.
  */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(MysqlDaoFactory.class)
+@PowerMockIgnore("javax.management.*")
 public class CarServiceImplTest {
     private TransactionFactory transactionFactory = mock(TransactionFactory.class);
     private Transaction transaction = mock(Transaction.class);
+    private MysqlDaoFactory daoFactory = mock(MysqlDaoFactory.class);
     private CarDao carDao = mock(CarDao.class);
     private CarService carService = new CarServiceImpl(transactionFactory);
 
@@ -33,13 +43,17 @@ public class CarServiceImplTest {
         LocationDto locationDto = new LocationDto();
         locationDto.setId(798);
 
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
-        when(transaction.getCarDao()).thenReturn(carDao);
+        stab();
         carService.findCarsAtLocation(locationDto);
 
-        InOrder inOrder = Mockito.inOrder(carDao, transaction);
-        inOrder.verify(carDao).findCarsAtLocation(locationDto.getId());
-        inOrder.verify(transaction).close();
+        verify(carDao).findCarsAtLocation(locationDto.getId());
+    }
+
+    private void stab() {
+        PowerMockito.mockStatic(MysqlDaoFactory.class);
+        PowerMockito.when(MysqlDaoFactory.getInstance()).thenReturn(daoFactory);
+        when(transactionFactory.createTransaction()).thenReturn(transaction);
+        when(daoFactory.getCarDao()).thenReturn(carDao);
     }
 
     @Test
@@ -47,13 +61,10 @@ public class CarServiceImplTest {
         CarModelDto carModelDto = new CarModelDto();
         carModelDto.setId(79);
 
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
-        when(transaction.getCarDao()).thenReturn(carDao);
+        stab();
         carService.findCarsByModel(carModelDto);
 
-        InOrder inOrder = Mockito.inOrder(carDao, transaction);
-        inOrder.verify(carDao).findCarsByModel(carModelDto.getId());
-        inOrder.verify(transaction).close();
+        verify(carDao).findCarsByModel(carModelDto.getId());
     }
 
     @Test
@@ -61,24 +72,18 @@ public class CarServiceImplTest {
         BigDecimal from = BigDecimal.ONE;
         BigDecimal to = BigDecimal.TEN;
 
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
-        when(transaction.getCarDao()).thenReturn(carDao);
+        stab();
         carService.findCarsWithPriceBetween(from, to);
 
-        InOrder inOrder = Mockito.inOrder(carDao, transaction);
-        inOrder.verify(carDao).findCarsWithPriceBetween(from, to);
-        inOrder.verify(transaction).close();
+        verify(carDao).findCarsWithPriceBetween(from, to);
     }
 
     @Test
     public void getAllMatchingCars() throws Exception {
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
-        when(transaction.getCarDao()).thenReturn(carDao);
+        stab();
         carService.getAllMatchingCars(x -> true);
 
-        InOrder inOrder = Mockito.inOrder(carDao, transaction);
-        inOrder.verify(carDao).getAll();
-        inOrder.verify(transaction).close();
+        verify(carDao).getAll();
     }
 
     @Test
@@ -93,8 +98,8 @@ public class CarServiceImplTest {
         carDto.setRegistrationPlate("registration plate");
         carDto.setState(CarStateEnum.AVAILABLE.getState());
 
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
-        when(transaction.getCarDao()).thenReturn(carDao);
+        stab();
+        when(carDao.create(any())).thenReturn(Optional.empty());
         carService.addNewCar(carDto);
 
         InOrder inOrder = Mockito.inOrder(carDao, transaction);
@@ -116,8 +121,7 @@ public class CarServiceImplTest {
         carDto.setRegistrationPlate("not a registration plate");
         carDto.setState(CarStateEnum.AVAILABLE.getState());
 
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
-        when(transaction.getCarDao()).thenReturn(carDao);
+        stab();
         carService.updateCar(carDto);
 
         InOrder inOrder = Mockito.inOrder(carDao, transaction);
@@ -133,8 +137,7 @@ public class CarServiceImplTest {
         CarDto carDto = new CarDto();
         carDto.setId(2);
 
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
-        when(transaction.getCarDao()).thenReturn(carDao);
+        stab();
         carService.moveCarToLocation(carDto, locationDto);
 
         InOrder inOrder = Mockito.inOrder(carDao, transaction);

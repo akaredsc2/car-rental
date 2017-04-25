@@ -3,6 +3,7 @@ package org.vitaly.service.impl;
 import org.vitaly.dao.abstraction.BillDao;
 import org.vitaly.dao.abstraction.factory.TransactionFactory;
 import org.vitaly.dao.abstraction.transaction.Transaction;
+import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
 import org.vitaly.model.bill.Bill;
 import org.vitaly.service.abstraction.BillService;
 import org.vitaly.service.impl.dto.BillDto;
@@ -35,7 +36,7 @@ public class BillServiceImpl implements BillService {
         try (Transaction transaction = transactionFactory.createTransaction()) {
             Bill bill = dtoMapperFactory.getBillDtoMapper().mapDtoToEntity(billDto);
 
-            BillDao billDao = transaction.getBillDao();
+            BillDao billDao = MysqlDaoFactory.getInstance().getBillDao();
             billDao.create(bill);
 
             transaction.commit();
@@ -44,37 +45,33 @@ public class BillServiceImpl implements BillService {
 
     @Override
     public List<BillDto> getAllMatchingBills(Predicate<Bill> predicate) {
-        try (Transaction transaction = transactionFactory.createTransaction()) {
-            DtoMapper<Bill, BillDto> mapper = dtoMapperFactory.getBillDtoMapper();
+        DtoMapper<Bill, BillDto> mapper = dtoMapperFactory.getBillDtoMapper();
 
-            BillDao billDao = transaction.getBillDao();
-            return billDao.getAll()
-                    .stream()
-                    .filter(predicate)
-                    .map(mapper::mapEntityToDto)
-                    .collect(Collectors.toList());
-        }
+        BillDao billDao = MysqlDaoFactory.getInstance().getBillDao();
+        return billDao.getAll()
+                .stream()
+                .filter(predicate)
+                .map(mapper::mapEntityToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<BillDto> findBillsForReservation(ReservationDto reservationDto) {
-        try (Transaction transaction = transactionFactory.createTransaction()) {
-            DtoMapper<Bill, BillDto> mapper = dtoMapperFactory.getBillDtoMapper();
+        DtoMapper<Bill, BillDto> mapper = dtoMapperFactory.getBillDtoMapper();
 
-            long reservationId = reservationDto.getId();
-            BillDao billDao = transaction.getBillDao();
-            return billDao.findBillsForReservation(reservationId)
-                    .stream()
-                    .map(mapper::mapEntityToDto)
-                    .collect(Collectors.toList());
-        }
+        long reservationId = reservationDto.getId();
+        BillDao billDao = MysqlDaoFactory.getInstance().getBillDao();
+        return billDao.findBillsForReservation(reservationId)
+                .stream()
+                .map(mapper::mapEntityToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     public void markAsPaid(BillDto billDto) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
             long billId = billDto.getId();
-            BillDao billDao = transaction.getBillDao();
+            BillDao billDao = MysqlDaoFactory.getInstance().getBillDao();
             billDao.markAsPaid(billId);
 
             transaction.commit();

@@ -1,11 +1,17 @@
 package org.vitaly.service.impl;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.vitaly.dao.abstraction.BillDao;
 import org.vitaly.dao.abstraction.factory.TransactionFactory;
 import org.vitaly.dao.abstraction.transaction.Transaction;
+import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
 import org.vitaly.service.abstraction.BillService;
 import org.vitaly.service.impl.dto.BillDto;
 import org.vitaly.service.impl.dto.ReservationDto;
@@ -13,16 +19,19 @@ import org.vitaly.service.impl.dto.ReservationDto;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by vitaly on 2017-04-20.
  */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(MysqlDaoFactory.class)
+@PowerMockIgnore("javax.management.*")
 public class BillServiceImplTest {
     private TransactionFactory transactionFactory = mock(TransactionFactory.class);
     private Transaction transaction = mock(Transaction.class);
+    private MysqlDaoFactory daoFactory = mock(MysqlDaoFactory.class);
     private BillDao billDao = mock(BillDao.class);
     private BillService billService = new BillServiceImpl(transactionFactory);
 
@@ -33,8 +42,7 @@ public class BillServiceImplTest {
         billDto.setCreationDateTime(LocalDateTime.now());
         billDto.setDescription("description");
 
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
-        when(transaction.getBillDao()).thenReturn(billDao);
+        stab();
         billService.createNewBill(billDto);
 
         InOrder inOrder = Mockito.inOrder(billDao, transaction);
@@ -43,15 +51,19 @@ public class BillServiceImplTest {
         inOrder.verify(transaction).close();
     }
 
+    private void stab() {
+        PowerMockito.mockStatic(MysqlDaoFactory.class);
+        PowerMockito.when(MysqlDaoFactory.getInstance()).thenReturn(daoFactory);
+        when(transactionFactory.createTransaction()).thenReturn(transaction);
+        when(daoFactory.getBillDao()).thenReturn(billDao);
+    }
+
     @Test
     public void getAllMatchingBills() throws Exception {
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
-        when(transaction.getBillDao()).thenReturn(billDao);
+        stab();
         billService.getAllMatchingBills(x -> true);
 
-        InOrder inOrder = Mockito.inOrder(billDao, transaction);
-        inOrder.verify(billDao).getAll();
-        inOrder.verify(transaction).close();
+        verify(billDao).getAll();
     }
 
     @Test
@@ -59,13 +71,10 @@ public class BillServiceImplTest {
         ReservationDto reservationDto = new ReservationDto();
         reservationDto.setId(237);
 
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
-        when(transaction.getBillDao()).thenReturn(billDao);
+        stab();
         billService.findBillsForReservation(reservationDto);
 
-        InOrder inOrder = Mockito.inOrder(billDao, transaction);
-        inOrder.verify(billDao).findBillsForReservation(reservationDto.getId());
-        inOrder.verify(transaction).close();
+        verify(billDao).findBillsForReservation(reservationDto.getId());
     }
 
     @Test
@@ -73,8 +82,7 @@ public class BillServiceImplTest {
         BillDto billDto = new BillDto();
         billDto.setId(189);
 
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
-        when(transaction.getBillDao()).thenReturn(billDao);
+        stab();
         billService.markAsPaid(billDto);
 
         InOrder inOrder = Mockito.inOrder(billDao, transaction);

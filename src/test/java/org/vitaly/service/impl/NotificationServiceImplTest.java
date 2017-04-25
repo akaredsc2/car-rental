@@ -1,11 +1,17 @@
 package org.vitaly.service.impl;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.vitaly.dao.abstraction.NotificationDao;
 import org.vitaly.dao.abstraction.factory.TransactionFactory;
 import org.vitaly.dao.abstraction.transaction.Transaction;
+import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
 import org.vitaly.model.notification.NotificationStatus;
 import org.vitaly.service.abstraction.NotificationService;
 import org.vitaly.service.impl.dto.NotificationDto;
@@ -14,15 +20,18 @@ import org.vitaly.service.impl.dto.UserDto;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 /**
  * Created by vitaly on 2017-04-20.
  */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(MysqlDaoFactory.class)
+@PowerMockIgnore("javax.management.*")
 public class NotificationServiceImplTest {
     private TransactionFactory transactionFactory = mock(TransactionFactory.class);
     private Transaction transaction = mock(Transaction.class);
+    private MysqlDaoFactory daoFactory = mock(MysqlDaoFactory.class);
     private NotificationDao notificationDao = mock(NotificationDao.class);
     private NotificationService notificationService = new NotificationServiceImpl(transactionFactory);
 
@@ -35,10 +44,9 @@ public class NotificationServiceImplTest {
         notificationDto.setHeader("header");
         notificationDto.setContent("content");
         notificationDto.setStatus(NotificationStatus.VIEWED);
-
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
-        when(transaction.getNotificationDao()).thenReturn(notificationDao);
         long createdNotificationId = 1L;
+
+        stab();
         when(notificationDao.create(any())).thenReturn(Optional.of(createdNotificationId));
         notificationService.sendNotificationToUser(userDto, notificationDto);
 
@@ -49,18 +57,21 @@ public class NotificationServiceImplTest {
         inOrder.verify(transaction).close();
     }
 
+    private void stab() {
+        PowerMockito.mockStatic(MysqlDaoFactory.class);
+        PowerMockito.when(MysqlDaoFactory.getInstance()).thenReturn(daoFactory);
+        when(transactionFactory.createTransaction()).thenReturn(transaction);
+        when(daoFactory.getNotificationDao()).thenReturn(notificationDao);
+    }
+
     @Test
     public void findNotificationsOfUser() throws Exception {
         UserDto userDto = new UserDto();
         userDto.setId(10);
 
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
-        when(transaction.getNotificationDao()).thenReturn(notificationDao);
-        notificationService.findNotificationsOfUser(userDto);
+        stab();notificationService.findNotificationsOfUser(userDto);
 
-        InOrder inOrder = inOrder(notificationDao, transaction);
-        inOrder.verify(notificationDao).findNotificationsByUserId(userDto.getId());
-        inOrder.verify(transaction).close();
+        verify(notificationDao).findNotificationsByUserId(userDto.getId());
     }
 
     @Test
@@ -68,8 +79,7 @@ public class NotificationServiceImplTest {
         NotificationDto notificationDto = new NotificationDto();
         notificationDto.setId(234);
 
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
-        when(transaction.getNotificationDao()).thenReturn(notificationDao);
+        stab();
         notificationService.markNotificationAsViewed(notificationDto);
 
         InOrder inOrder = Mockito.inOrder(notificationDao, transaction);

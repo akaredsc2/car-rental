@@ -3,6 +3,7 @@ package org.vitaly.service.impl;
 import org.vitaly.dao.abstraction.NotificationDao;
 import org.vitaly.dao.abstraction.factory.TransactionFactory;
 import org.vitaly.dao.abstraction.transaction.Transaction;
+import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
 import org.vitaly.model.notification.Notification;
 import org.vitaly.service.abstraction.NotificationService;
 import org.vitaly.service.exception.ServiceException;
@@ -35,7 +36,7 @@ public class NotificationServiceImpl implements NotificationService {
         try (Transaction transaction = transactionFactory.createTransaction()) {
             Notification notification = dtoMapperFactory.getNotificationDtoMapper().mapDtoToEntity(notificationDto);
 
-            NotificationDao notificationDao = transaction.getNotificationDao();
+            NotificationDao notificationDao = MysqlDaoFactory.getInstance().getNotificationDao();
 
             long createdNotificationId = notificationDao.create(notification).orElseThrow(ServiceException::new);
             long userId = userDto.getId();
@@ -47,23 +48,21 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public List<NotificationDto> findNotificationsOfUser(UserDto userDto) {
-        try (Transaction transaction = transactionFactory.createTransaction()) {
-            DtoMapper<Notification, NotificationDto> mapper = dtoMapperFactory.getNotificationDtoMapper();
+        DtoMapper<Notification, NotificationDto> mapper = dtoMapperFactory.getNotificationDtoMapper();
 
-            long userId = userDto.getId();
-            NotificationDao notificationDao = transaction.getNotificationDao();
-            return notificationDao.findNotificationsByUserId(userId)
-                    .stream()
-                    .map(mapper::mapEntityToDto)
-                    .collect(Collectors.toList());
-        }
+        long userId = userDto.getId();
+        NotificationDao notificationDao = MysqlDaoFactory.getInstance().getNotificationDao();
+        return notificationDao.findNotificationsByUserId(userId)
+                .stream()
+                .map(mapper::mapEntityToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     public void markNotificationAsViewed(NotificationDto notificationDto) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
             long notificationId = notificationDto.getId();
-            NotificationDao notificationDao = transaction.getNotificationDao();
+            NotificationDao notificationDao = MysqlDaoFactory.getInstance().getNotificationDao();
             notificationDao.markNotificationAsViewed(notificationId);
 
             transaction.commit();

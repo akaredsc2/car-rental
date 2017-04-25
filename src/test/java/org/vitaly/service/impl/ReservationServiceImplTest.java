@@ -1,11 +1,17 @@
 package org.vitaly.service.impl;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.vitaly.dao.abstraction.ReservationDao;
 import org.vitaly.dao.abstraction.factory.TransactionFactory;
 import org.vitaly.dao.abstraction.transaction.Transaction;
+import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
 import org.vitaly.model.reservation.ReservationState;
 import org.vitaly.model.reservation.ReservationStateEnum;
 import org.vitaly.service.abstraction.ReservationService;
@@ -15,16 +21,19 @@ import org.vitaly.service.impl.dto.UserDto;
 
 import java.time.LocalDateTime;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by vitaly on 2017-04-20.
  */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(MysqlDaoFactory.class)
+@PowerMockIgnore("javax.management.*")
 public class ReservationServiceImplTest {
     private TransactionFactory transactionFactory = mock(TransactionFactory.class);
     private Transaction transaction = mock(Transaction.class);
+    private MysqlDaoFactory daoFactory = mock(MysqlDaoFactory.class);
     private ReservationDao reservationDao = mock(ReservationDao.class);
     private ReservationService reservationService = new ReservationServiceImpl(transactionFactory);
 
@@ -41,8 +50,7 @@ public class ReservationServiceImplTest {
         reservationDto.setDropOffDatetime(LocalDateTime.now().plusDays(1));
         reservationDto.setState(ReservationStateEnum.APPROVED.getState());
 
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
-        when(transaction.getReservationDao()).thenReturn(reservationDao);
+        stab();
         reservationService.createNewReservation(reservationDto);
 
         InOrder inOrder = Mockito.inOrder(reservationDao, transaction);
@@ -51,15 +59,19 @@ public class ReservationServiceImplTest {
         inOrder.verify(transaction).close();
     }
 
+    private void stab() {
+        PowerMockito.mockStatic(MysqlDaoFactory.class);
+        PowerMockito.when(MysqlDaoFactory.getInstance()).thenReturn(daoFactory);
+        when(transactionFactory.createTransaction()).thenReturn(transaction);
+        when(daoFactory.getReservationDao()).thenReturn(reservationDao);
+    }
+
     @Test
     public void getAllMatchingReservations() throws Exception {
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
-        when(transaction.getReservationDao()).thenReturn(reservationDao);
+        stab();
         reservationService.getAllMatchingReservations(x -> true);
 
-        InOrder inOrder = Mockito.inOrder(reservationDao, transaction);
-        inOrder.verify(reservationDao).getAll();
-        inOrder.verify(transaction).close();
+        verify(reservationDao).getAll();
     }
 
     @Test
@@ -67,13 +79,10 @@ public class ReservationServiceImplTest {
         UserDto userDto = new UserDto();
         userDto.setId(3);
 
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
-        when(transaction.getReservationDao()).thenReturn(reservationDao);
+        stab();
         reservationService.findReservationsOfClient(userDto);
 
-        InOrder inOrder = Mockito.inOrder(reservationDao, transaction);
-        inOrder.verify(reservationDao).findReservationsByClientId(userDto.getId());
-        inOrder.verify(transaction).close();
+        verify(reservationDao).findReservationsByClientId(userDto.getId());
     }
 
     @Test
@@ -81,25 +90,18 @@ public class ReservationServiceImplTest {
         UserDto adminDto = new UserDto();
         adminDto.setId(5);
 
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
-        when(transaction.getReservationDao()).thenReturn(reservationDao);
+        stab();
         reservationService.findReservationsAssignedToAdmin(adminDto);
 
-        InOrder inOrder = Mockito.inOrder(reservationDao, transaction);
-        inOrder.verify(reservationDao).findReservationsByAdminId(adminDto.getId());
-        inOrder.verify(transaction).close();
-
+        verify(reservationDao).findReservationsByAdminId(adminDto.getId());
     }
 
     @Test
     public void findReservationsWithoutAdmin() throws Exception {
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
-        when(transaction.getReservationDao()).thenReturn(reservationDao);
+        stab();
         reservationService.findReservationsWithoutAdmin();
 
-        InOrder inOrder = Mockito.inOrder(reservationDao, transaction);
-        inOrder.verify(reservationDao).findReservationsWithoutAdmin();
-        inOrder.verify(transaction).close();
+        verify(reservationDao).findReservationsWithoutAdmin();
     }
 
     @Test
@@ -108,8 +110,7 @@ public class ReservationServiceImplTest {
         reservationDto.setId(34);
         ReservationState reservationState = ReservationStateEnum.PICKED.getState();
 
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
-        when(transaction.getReservationDao()).thenReturn(reservationDao);
+        stab();
         reservationService.changeReservationState(reservationDto, reservationState);
 
         InOrder inOrder = Mockito.inOrder(reservationDao, transaction);
@@ -125,8 +126,7 @@ public class ReservationServiceImplTest {
         UserDto adminDto = new UserDto();
         adminDto.setId(790);
 
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
-        when(transaction.getReservationDao()).thenReturn(reservationDao);
+        stab();
         reservationService.assignReservationToAdmin(reservationDto, adminDto);
 
         InOrder inOrder = Mockito.inOrder(reservationDao, transaction);
@@ -141,8 +141,7 @@ public class ReservationServiceImplTest {
         reservationDto.setId(549);
         String reason = "reason";
 
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
-        when(transaction.getReservationDao()).thenReturn(reservationDao);
+        stab();
         reservationService.addRejectionReasonToReservation(reservationDto, reason);
 
         InOrder inOrder = Mockito.inOrder(reservationDao, transaction);

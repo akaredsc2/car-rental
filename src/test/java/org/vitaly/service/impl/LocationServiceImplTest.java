@@ -1,27 +1,37 @@
 package org.vitaly.service.impl;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.vitaly.dao.abstraction.LocationDao;
 import org.vitaly.dao.abstraction.factory.TransactionFactory;
 import org.vitaly.dao.abstraction.transaction.Transaction;
+import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
 import org.vitaly.service.abstraction.LocationService;
 import org.vitaly.service.impl.dto.CarDto;
 import org.vitaly.service.impl.dto.LocationDto;
 
 import java.util.Collections;
+import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by vitaly on 2017-04-20.
  */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(MysqlDaoFactory.class)
+@PowerMockIgnore("javax.management.*")
 public class LocationServiceImplTest {
     private TransactionFactory transactionFactory = mock(TransactionFactory.class);
     private Transaction transaction = mock(Transaction.class);
+    private MysqlDaoFactory daoFactory = mock(MysqlDaoFactory.class);
     private LocationDao locationDao = mock(LocationDao.class);
     private LocationService locationService = new LocationServiceImpl(transactionFactory);
 
@@ -34,8 +44,8 @@ public class LocationServiceImplTest {
         locationDto.setBuilding("building");
         locationDto.setCarDtoList(Collections.emptyList());
 
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
-        when(transaction.getLocationDao()).thenReturn(locationDao);
+        stab();
+        when(locationDao.create(any())).thenReturn(Optional.empty());
         locationService.addNewLocation(locationDto);
 
         InOrder inOrder = Mockito.inOrder(locationDao, transaction);
@@ -44,29 +54,31 @@ public class LocationServiceImplTest {
         inOrder.verify(transaction).close();
     }
 
+    private void stab() {
+        PowerMockito.mockStatic(MysqlDaoFactory.class);
+        PowerMockito.when(MysqlDaoFactory.getInstance()).thenReturn(daoFactory);
+        when(transactionFactory.createTransaction()).thenReturn(transaction);
+        when(daoFactory.getLocationDao()).thenReturn(locationDao);
+    }
+
     @Test
     public void findLocationOfCar() throws Exception {
         CarDto carDto = new CarDto();
         carDto.setId(23);
 
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
-        when(transaction.getLocationDao()).thenReturn(locationDao);
+        stab();
+        when(locationDao.findLocationByCarId(carDto.getId())).thenReturn(Optional.empty());
         locationService.findLocationOfCar(carDto);
 
-        InOrder inOrder = Mockito.inOrder(locationDao, transaction);
-        inOrder.verify(locationDao).findLocationByCarId(carDto.getId());
-        inOrder.verify(transaction).close();
+        verify(locationDao).findLocationByCarId(carDto.getId());
     }
 
     @Test
     public void getAllLocationsMatchingPredicate() throws Exception {
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
-        when(transaction.getLocationDao()).thenReturn(locationDao);
+        stab();
         locationService.getAllMatchingLocations(x -> true);
 
-        InOrder inOrder = Mockito.inOrder(locationDao, transaction);
-        inOrder.verify(locationDao).getAll();
-        inOrder.verify(transaction).close();
+        verify(locationDao).getAll();
     }
 
     @Test
@@ -75,8 +87,7 @@ public class LocationServiceImplTest {
         locationDto.setId(10);
         String photoUrl = "photoUrl";
 
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
-        when(transaction.getLocationDao()).thenReturn(locationDao);
+        stab();
         locationService.changeLocationPhotoUrl(locationDto, photoUrl);
 
         InOrder inOrder = Mockito.inOrder(locationDao, transaction);

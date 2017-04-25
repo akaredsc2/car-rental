@@ -2,11 +2,9 @@ package org.vitaly.dao.impl.mysql.transaction;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.vitaly.dao.abstraction.*;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.abstraction.transaction.Transaction;
 import org.vitaly.dao.exception.DaoException;
-import org.vitaly.dao.impl.mysql.*;
 
 import java.sql.SQLException;
 
@@ -17,15 +15,6 @@ public class MysqlTransaction implements Transaction {
     private static Logger logger = LogManager.getLogger(MysqlTransaction.class.getName());
 
     private PooledConnection pooledConnection;
-
-    private BillDao billDao;
-    private CarModelDao carModelDao;
-    private CarDao carDao;
-    private LocationDao locationDao;
-    private NotificationDao notificationDao;
-    private ReservationDao reservationDao;
-    private UserDao userDao;
-
     private boolean autoCommitBeforeTransaction;
 
     MysqlTransaction(PooledConnection pooledConnection) {
@@ -43,62 +32,6 @@ public class MysqlTransaction implements Transaction {
         pooledConnection.setAutoCommit(false);
         pooledConnection.setInTransaction(true);
         return new MysqlTransaction(pooledConnection, autoCommitBeforeTransaction);
-    }
-
-    @Override
-    public BillDao getBillDao() {
-        if (billDao == null) {
-            billDao = new MysqlBillDao();
-        }
-        return billDao;
-    }
-
-    @Override
-    public CarModelDao getCarModelDao() {
-        if (carModelDao == null) {
-            carModelDao = new MysqlCarModelDao();
-        }
-        return carModelDao;
-    }
-
-    @Override
-    public CarDao getCarDao() {
-        if (carDao == null) {
-            carDao = new MysqlCarDao();
-        }
-        return carDao;
-    }
-
-    @Override
-    public LocationDao getLocationDao() {
-        if (locationDao == null) {
-            locationDao = new MysqlLocationDao();
-        }
-        return locationDao;
-    }
-
-    @Override
-    public NotificationDao getNotificationDao() {
-        if (notificationDao == null) {
-            notificationDao = new MysqlNotificationDao();
-        }
-        return notificationDao;
-    }
-
-    @Override
-    public ReservationDao getReservationDao() {
-        if (reservationDao == null) {
-            reservationDao = new MysqlReservationDao();
-        }
-        return reservationDao;
-    }
-
-    @Override
-    public UserDao getUserDao() {
-        if (userDao == null) {
-            userDao = new MysqlUserDao();
-        }
-        return userDao;
     }
 
     @Override

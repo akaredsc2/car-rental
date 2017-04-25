@@ -3,6 +3,7 @@ package org.vitaly.service.impl;
 import org.vitaly.dao.abstraction.ReservationDao;
 import org.vitaly.dao.abstraction.factory.TransactionFactory;
 import org.vitaly.dao.abstraction.transaction.Transaction;
+import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
 import org.vitaly.model.reservation.Reservation;
 import org.vitaly.model.reservation.ReservationState;
 import org.vitaly.service.abstraction.ReservationService;
@@ -36,7 +37,7 @@ public class ReservationServiceImpl implements ReservationService {
         try (Transaction transaction = transactionFactory.createTransaction()) {
             Reservation reservation = dtoMapperFactory.getReservationDtoMapper().mapDtoToEntity(reservationDto);
 
-            ReservationDao reservationDao = transaction.getReservationDao();
+            ReservationDao reservationDao = MysqlDaoFactory.getInstance().getReservationDao();
             reservationDao.create(reservation);
 
             transaction.commit();
@@ -45,64 +46,56 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public List<ReservationDto> getAllMatchingReservations(Predicate<Reservation> predicate) {
-        try (Transaction transaction = transactionFactory.createTransaction()) {
-            DtoMapper<Reservation, ReservationDto> mapper = dtoMapperFactory.getReservationDtoMapper();
+        DtoMapper<Reservation, ReservationDto> mapper = dtoMapperFactory.getReservationDtoMapper();
 
-            ReservationDao reservationDao = transaction.getReservationDao();
-            return reservationDao.getAll()
-                    .stream()
-                    .filter(predicate)
-                    .map(mapper::mapEntityToDto)
-                    .collect(Collectors.toList());
-        }
+        ReservationDao reservationDao = MysqlDaoFactory.getInstance().getReservationDao();
+        return reservationDao.getAll()
+                .stream()
+                .filter(predicate)
+                .map(mapper::mapEntityToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<ReservationDto> findReservationsOfClient(UserDto clientDto) {
-        try (Transaction transaction = transactionFactory.createTransaction()) {
-            DtoMapper<Reservation, ReservationDto> mapper = dtoMapperFactory.getReservationDtoMapper();
+        DtoMapper<Reservation, ReservationDto> mapper = dtoMapperFactory.getReservationDtoMapper();
 
-            long clientId = clientDto.getId();
-            ReservationDao reservationDao = transaction.getReservationDao();
-            return reservationDao.findReservationsByClientId(clientId)
-                    .stream()
-                    .map(mapper::mapEntityToDto)
-                    .collect(Collectors.toList());
-        }
+        long clientId = clientDto.getId();
+        ReservationDao reservationDao = MysqlDaoFactory.getInstance().getReservationDao();
+        return reservationDao.findReservationsByClientId(clientId)
+                .stream()
+                .map(mapper::mapEntityToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<ReservationDto> findReservationsAssignedToAdmin(UserDto adminDto) {
-        try (Transaction transaction = transactionFactory.createTransaction()) {
-            DtoMapper<Reservation, ReservationDto> mapper = dtoMapperFactory.getReservationDtoMapper();
+        DtoMapper<Reservation, ReservationDto> mapper = dtoMapperFactory.getReservationDtoMapper();
 
-            long clientId = adminDto.getId();
-            ReservationDao reservationDao = transaction.getReservationDao();
-            return reservationDao.findReservationsByAdminId(clientId)
-                    .stream()
-                    .map(mapper::mapEntityToDto)
-                    .collect(Collectors.toList());
-        }
+        long clientId = adminDto.getId();
+        ReservationDao reservationDao = MysqlDaoFactory.getInstance().getReservationDao();
+        return reservationDao.findReservationsByAdminId(clientId)
+                .stream()
+                .map(mapper::mapEntityToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<ReservationDto> findReservationsWithoutAdmin() {
-        try (Transaction transaction = transactionFactory.createTransaction()) {
-            DtoMapper<Reservation, ReservationDto> mapper = dtoMapperFactory.getReservationDtoMapper();
+        DtoMapper<Reservation, ReservationDto> mapper = dtoMapperFactory.getReservationDtoMapper();
 
-            ReservationDao reservationDao = transaction.getReservationDao();
-            return reservationDao.findReservationsWithoutAdmin()
-                    .stream()
-                    .map(mapper::mapEntityToDto)
-                    .collect(Collectors.toList());
-        }
+        ReservationDao reservationDao = MysqlDaoFactory.getInstance().getReservationDao();
+        return reservationDao.findReservationsWithoutAdmin()
+                .stream()
+                .map(mapper::mapEntityToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     public void changeReservationState(ReservationDto reservationDto, ReservationState reservationState) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
             long reservationId = reservationDto.getId();
-            ReservationDao reservationDao = transaction.getReservationDao();
+            ReservationDao reservationDao = MysqlDaoFactory.getInstance().getReservationDao();
             reservationDao.changeReservationState(reservationId, reservationState);
 
             transaction.commit();
@@ -114,7 +107,7 @@ public class ReservationServiceImpl implements ReservationService {
         try (Transaction transaction = transactionFactory.createTransaction()) {
             long reservationId = reservationDto.getId();
             long adminId = adminDto.getId();
-            ReservationDao reservationDao = transaction.getReservationDao();
+            ReservationDao reservationDao = MysqlDaoFactory.getInstance().getReservationDao();
             reservationDao.addAdminToReservation(reservationId, adminId);
 
             transaction.commit();
@@ -125,7 +118,7 @@ public class ReservationServiceImpl implements ReservationService {
     public void addRejectionReasonToReservation(ReservationDto reservationDto, String reason) {
         try (Transaction transaction = transactionFactory.createTransaction()) {
             long reservationId = reservationDto.getId();
-            ReservationDao reservationDao = transaction.getReservationDao();
+            ReservationDao reservationDao = MysqlDaoFactory.getInstance().getReservationDao();
             reservationDao.addRejectionReason(reservationId, reason);
 
             transaction.commit();
