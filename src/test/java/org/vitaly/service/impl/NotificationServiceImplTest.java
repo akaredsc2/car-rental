@@ -9,9 +9,8 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.vitaly.dao.abstraction.NotificationDao;
-import org.vitaly.dao.abstraction.factory.TransactionFactory;
-import org.vitaly.dao.abstraction.transaction.Transaction;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
+import org.vitaly.dao.impl.mysql.transaction.Transaction;
 import org.vitaly.model.notification.NotificationStatus;
 import org.vitaly.service.abstraction.NotificationService;
 import org.vitaly.service.impl.dto.NotificationDto;
@@ -26,14 +25,13 @@ import static org.mockito.Mockito.*;
  * Created by vitaly on 2017-04-20.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(MysqlDaoFactory.class)
+@PrepareForTest({MysqlDaoFactory.class, Transaction.class})
 @PowerMockIgnore("javax.management.*")
 public class NotificationServiceImplTest {
-    private TransactionFactory transactionFactory = mock(TransactionFactory.class);
     private Transaction transaction = mock(Transaction.class);
     private MysqlDaoFactory daoFactory = mock(MysqlDaoFactory.class);
     private NotificationDao notificationDao = mock(NotificationDao.class);
-    private NotificationService notificationService = new NotificationServiceImpl(transactionFactory);
+    private NotificationService notificationService = new NotificationServiceImpl();
 
     @Test
     public void sendNotificationToUser() throws Exception {
@@ -58,9 +56,10 @@ public class NotificationServiceImplTest {
     }
 
     private void stab() {
+        PowerMockito.mockStatic(Transaction.class);
+        PowerMockito.when(Transaction.startTransaction()).thenReturn(transaction);
         PowerMockito.mockStatic(MysqlDaoFactory.class);
         PowerMockito.when(MysqlDaoFactory.getInstance()).thenReturn(daoFactory);
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
         when(daoFactory.getNotificationDao()).thenReturn(notificationDao);
     }
 
@@ -69,7 +68,8 @@ public class NotificationServiceImplTest {
         UserDto userDto = new UserDto();
         userDto.setId(10);
 
-        stab();notificationService.findNotificationsOfUser(userDto);
+        stab();
+        notificationService.findNotificationsOfUser(userDto);
 
         verify(notificationDao).findNotificationsByUserId(userDto.getId());
     }

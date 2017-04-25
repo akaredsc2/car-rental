@@ -9,9 +9,8 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.vitaly.dao.abstraction.BillDao;
-import org.vitaly.dao.abstraction.factory.TransactionFactory;
-import org.vitaly.dao.abstraction.transaction.Transaction;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
+import org.vitaly.dao.impl.mysql.transaction.Transaction;
 import org.vitaly.service.abstraction.BillService;
 import org.vitaly.service.impl.dto.BillDto;
 import org.vitaly.service.impl.dto.ReservationDto;
@@ -26,14 +25,13 @@ import static org.mockito.Mockito.*;
  * Created by vitaly on 2017-04-20.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(MysqlDaoFactory.class)
+@PrepareForTest({MysqlDaoFactory.class, Transaction.class})
 @PowerMockIgnore("javax.management.*")
 public class BillServiceImplTest {
-    private TransactionFactory transactionFactory = mock(TransactionFactory.class);
     private Transaction transaction = mock(Transaction.class);
     private MysqlDaoFactory daoFactory = mock(MysqlDaoFactory.class);
     private BillDao billDao = mock(BillDao.class);
-    private BillService billService = new BillServiceImpl(transactionFactory);
+    private BillService billService = new BillServiceImpl();
 
     @Test
     public void createNewBill() throws Exception {
@@ -52,9 +50,10 @@ public class BillServiceImplTest {
     }
 
     private void stab() {
+        PowerMockito.mockStatic(Transaction.class);
+        PowerMockito.when(Transaction.startTransaction()).thenReturn(transaction);
         PowerMockito.mockStatic(MysqlDaoFactory.class);
         PowerMockito.when(MysqlDaoFactory.getInstance()).thenReturn(daoFactory);
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
         when(daoFactory.getBillDao()).thenReturn(billDao);
     }
 

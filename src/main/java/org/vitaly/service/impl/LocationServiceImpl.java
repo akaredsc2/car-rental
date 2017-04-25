@@ -1,9 +1,8 @@
 package org.vitaly.service.impl;
 
 import org.vitaly.dao.abstraction.LocationDao;
-import org.vitaly.dao.abstraction.factory.TransactionFactory;
-import org.vitaly.dao.abstraction.transaction.Transaction;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
+import org.vitaly.dao.impl.mysql.transaction.Transaction;
 import org.vitaly.model.location.Location;
 import org.vitaly.service.abstraction.LocationService;
 import org.vitaly.service.impl.dto.CarDto;
@@ -20,22 +19,13 @@ import java.util.stream.Collectors;
  * Created by vitaly on 2017-04-10.
  */
 public class LocationServiceImpl implements LocationService {
-    private TransactionFactory transactionFactory;
-    private DtoMapperFactory dtoMapperFactory;
-
-    LocationServiceImpl(TransactionFactory transactionFactory) {
-        this(transactionFactory, new DtoMapperFactory());
-    }
-
-    public LocationServiceImpl(TransactionFactory transactionFactory, DtoMapperFactory dtoMapperFactory) {
-        this.transactionFactory = transactionFactory;
-        this.dtoMapperFactory = dtoMapperFactory;
-    }
 
     @Override
     public boolean addNewLocation(LocationDto locationDto) {
-        try (Transaction transaction = transactionFactory.createTransaction()) {
-            Location location = dtoMapperFactory.getLocationDtoMapper().mapDtoToEntity(locationDto);
+        try (Transaction transaction = Transaction.startTransaction()) {
+            Location location = DtoMapperFactory.getInstance()
+                    .getLocationDtoMapper()
+                    .mapDtoToEntity(locationDto);
 
             LocationDao locationDao = MysqlDaoFactory.getInstance().getLocationDao();
             boolean isLocationCreated = locationDao.create(location).isPresent();
@@ -48,7 +38,7 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public Optional<LocationDto> findLocationOfCar(CarDto carDto) {
-        DtoMapper<Location, LocationDto> mapper = dtoMapperFactory.getLocationDtoMapper();
+        DtoMapper<Location, LocationDto> mapper = DtoMapperFactory.getInstance().getLocationDtoMapper();
 
         long carId = carDto.getId();
         LocationDao locationDao = MysqlDaoFactory.getInstance().getLocationDao();
@@ -58,7 +48,7 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public List<LocationDto> getAllMatchingLocations(Predicate<Location> locationPredicate) {
-        DtoMapper<Location, LocationDto> mapper = dtoMapperFactory.getLocationDtoMapper();
+        DtoMapper<Location, LocationDto> mapper = DtoMapperFactory.getInstance().getLocationDtoMapper();
 
         LocationDao locationDao = MysqlDaoFactory.getInstance().getLocationDao();
         return locationDao.getAll()
@@ -70,7 +60,7 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public boolean changeLocationPhotoUrl(LocationDto locationDto, String photoUrl) {
-        try (Transaction transaction = transactionFactory.createTransaction()) {
+        try (Transaction transaction = Transaction.startTransaction()) {
             long locationId = locationDto.getId();
             LocationDao locationDao = MysqlDaoFactory.getInstance().getLocationDao();
             boolean isChanged = locationDao.changeImageUrl(locationId, photoUrl);

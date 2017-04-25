@@ -14,6 +14,8 @@ import org.vitaly.service.impl.dtoMapper.*;
  * Created by vitaly on 23.04.17.
  */
 public class DtoMapperFactory {
+    private static DtoMapperFactory instance = new DtoMapperFactory();
+
     private DtoMapper<Bill, BillDto> billDtoMapper;
     private DtoMapper<CarModel, CarModelDto> carModelDtoMapper;
     private DtoMapper<Car, CarDto> carDtoMapper;
@@ -30,6 +32,10 @@ public class DtoMapperFactory {
         this.notificationDtoMapper = new NotificationDtoMapper();
         this.reservationDtoMapper = new ReservationDtoMapper();
         this.userDtoMapper = new UserDtoMapper();
+    }
+
+    public static DtoMapperFactory getInstance() {
+        return instance;
     }
 
     public DtoMapper<Bill, BillDto> getBillDtoMapper() {

@@ -9,9 +9,8 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.vitaly.dao.abstraction.CarDao;
-import org.vitaly.dao.abstraction.factory.TransactionFactory;
-import org.vitaly.dao.abstraction.transaction.Transaction;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
+import org.vitaly.dao.impl.mysql.transaction.Transaction;
 import org.vitaly.model.car.CarStateEnum;
 import org.vitaly.service.abstraction.CarService;
 import org.vitaly.service.impl.dto.CarDto;
@@ -29,14 +28,13 @@ import static org.mockito.Mockito.*;
  * Created by vitaly on 2017-04-20.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(MysqlDaoFactory.class)
+@PrepareForTest({MysqlDaoFactory.class, Transaction.class})
 @PowerMockIgnore("javax.management.*")
 public class CarServiceImplTest {
-    private TransactionFactory transactionFactory = mock(TransactionFactory.class);
     private Transaction transaction = mock(Transaction.class);
     private MysqlDaoFactory daoFactory = mock(MysqlDaoFactory.class);
     private CarDao carDao = mock(CarDao.class);
-    private CarService carService = new CarServiceImpl(transactionFactory);
+    private CarService carService = new CarServiceImpl();
 
     @Test
     public void findCarsAtLocation() throws Exception {
@@ -50,9 +48,10 @@ public class CarServiceImplTest {
     }
 
     private void stab() {
+        PowerMockito.mockStatic(Transaction.class);
+        PowerMockito.when(Transaction.startTransaction()).thenReturn(transaction);
         PowerMockito.mockStatic(MysqlDaoFactory.class);
         PowerMockito.when(MysqlDaoFactory.getInstance()).thenReturn(daoFactory);
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
         when(daoFactory.getCarDao()).thenReturn(carDao);
     }
 

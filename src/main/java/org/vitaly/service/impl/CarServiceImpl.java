@@ -1,9 +1,8 @@
 package org.vitaly.service.impl;
 
 import org.vitaly.dao.abstraction.CarDao;
-import org.vitaly.dao.abstraction.factory.TransactionFactory;
-import org.vitaly.dao.abstraction.transaction.Transaction;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
+import org.vitaly.dao.impl.mysql.transaction.Transaction;
 import org.vitaly.model.car.Car;
 import org.vitaly.service.abstraction.CarService;
 import org.vitaly.service.impl.dto.CarDto;
@@ -21,22 +20,13 @@ import java.util.stream.Collectors;
  * Created by vitaly on 2017-04-10.
  */
 public class CarServiceImpl implements CarService {
-    private TransactionFactory transactionFactory;
-    private DtoMapperFactory dtoMapperFactory;
-
-    CarServiceImpl(TransactionFactory transactionFactory) {
-        this(transactionFactory, new DtoMapperFactory());
-    }
-
-    public CarServiceImpl(TransactionFactory transactionFactory, DtoMapperFactory dtoMapperFactory) {
-        this.transactionFactory = transactionFactory;
-        this.dtoMapperFactory = dtoMapperFactory;
-    }
 
     @Override
     public boolean addNewCar(CarDto carDto) {
-        try (Transaction transaction = transactionFactory.createTransaction()) {
-            Car car = dtoMapperFactory.getCarDtoMapper().mapDtoToEntity(carDto);
+        try (Transaction transaction = Transaction.startTransaction()) {
+            Car car = DtoMapperFactory.getInstance()
+                    .getCarDtoMapper()
+                    .mapDtoToEntity(carDto);
             CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
             boolean isCarCreated = carDao.create(car).isPresent();
 
@@ -48,7 +38,7 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public List<CarDto> findCarsAtLocation(LocationDto locationDto) {
-        DtoMapper<Car, CarDto> mapper = dtoMapperFactory.getCarDtoMapper();
+        DtoMapper<Car, CarDto> mapper = DtoMapperFactory.getInstance().getCarDtoMapper();
 
         long locationId = locationDto.getId();
         CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
@@ -60,7 +50,7 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public List<CarDto> findCarsByModel(CarModelDto carModelDto) {
-        DtoMapper<Car, CarDto> mapper = dtoMapperFactory.getCarDtoMapper();
+        DtoMapper<Car, CarDto> mapper = DtoMapperFactory.getInstance().getCarDtoMapper();
 
         long carModelId = carModelDto.getId();
         CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
@@ -72,7 +62,7 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public List<CarDto> findCarsWithPriceBetween(BigDecimal from, BigDecimal to) {
-        DtoMapper<Car, CarDto> mapper = dtoMapperFactory.getCarDtoMapper();
+        DtoMapper<Car, CarDto> mapper = DtoMapperFactory.getInstance().getCarDtoMapper();
 
         CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
         return carDao.findCarsWithPriceBetween(from, to)
@@ -83,7 +73,7 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public List<CarDto> getAllMatchingCars(Predicate<Car> carPredicate) {
-        DtoMapper<Car, CarDto> mapper = dtoMapperFactory.getCarDtoMapper();
+        DtoMapper<Car, CarDto> mapper = DtoMapperFactory.getInstance().getCarDtoMapper();
 
         CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
         return carDao.getAll()
@@ -95,8 +85,10 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public void updateCar(CarDto carDto) {
-        try (Transaction transaction = transactionFactory.createTransaction()) {
-            Car car = dtoMapperFactory.getCarDtoMapper().mapDtoToEntity(carDto);
+        try (Transaction transaction = Transaction.startTransaction()) {
+            Car car = DtoMapperFactory.getInstance()
+                    .getCarDtoMapper()
+                    .mapDtoToEntity(carDto);
 
             CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
             carDao.update(carDto.getId(), car);
@@ -107,7 +99,7 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public void moveCarToLocation(CarDto carDto, LocationDto locationDto) {
-        try (Transaction transaction = transactionFactory.createTransaction()) {
+        try (Transaction transaction = Transaction.startTransaction()) {
             long carId = carDto.getId();
             long locationId = locationDto.getId();
 

@@ -9,9 +9,8 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.vitaly.dao.abstraction.ReservationDao;
-import org.vitaly.dao.abstraction.factory.TransactionFactory;
-import org.vitaly.dao.abstraction.transaction.Transaction;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
+import org.vitaly.dao.impl.mysql.transaction.Transaction;
 import org.vitaly.model.reservation.ReservationState;
 import org.vitaly.model.reservation.ReservationStateEnum;
 import org.vitaly.service.abstraction.ReservationService;
@@ -28,14 +27,13 @@ import static org.mockito.Mockito.*;
  * Created by vitaly on 2017-04-20.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(MysqlDaoFactory.class)
+@PrepareForTest({MysqlDaoFactory.class, Transaction.class})
 @PowerMockIgnore("javax.management.*")
 public class ReservationServiceImplTest {
-    private TransactionFactory transactionFactory = mock(TransactionFactory.class);
     private Transaction transaction = mock(Transaction.class);
     private MysqlDaoFactory daoFactory = mock(MysqlDaoFactory.class);
     private ReservationDao reservationDao = mock(ReservationDao.class);
-    private ReservationService reservationService = new ReservationServiceImpl(transactionFactory);
+    private ReservationService reservationService = new ReservationServiceImpl();
 
     @Test
     public void createNewReservationForUser() throws Exception {
@@ -60,9 +58,10 @@ public class ReservationServiceImplTest {
     }
 
     private void stab() {
+        PowerMockito.mockStatic(Transaction.class);
+        PowerMockito.when(Transaction.startTransaction()).thenReturn(transaction);
         PowerMockito.mockStatic(MysqlDaoFactory.class);
         PowerMockito.when(MysqlDaoFactory.getInstance()).thenReturn(daoFactory);
-        when(transactionFactory.createTransaction()).thenReturn(transaction);
         when(daoFactory.getReservationDao()).thenReturn(reservationDao);
     }
 

@@ -1,9 +1,8 @@
 package org.vitaly.service.impl;
 
 import org.vitaly.dao.abstraction.UserDao;
-import org.vitaly.dao.abstraction.factory.TransactionFactory;
-import org.vitaly.dao.abstraction.transaction.Transaction;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
+import org.vitaly.dao.impl.mysql.transaction.Transaction;
 import org.vitaly.model.user.User;
 import org.vitaly.model.user.UserRole;
 import org.vitaly.service.abstraction.UserService;
@@ -17,23 +16,14 @@ import java.util.Optional;
  * Created by vitaly on 2017-04-10.
  */
 public class UserServiceImpl implements UserService {
-    private TransactionFactory transactionFactory;
-    private DtoMapperFactory dtoMapperFactory;
-
-    UserServiceImpl(TransactionFactory transactionFactory) {
-        this(transactionFactory, new DtoMapperFactory());
-    }
-
-    public UserServiceImpl(TransactionFactory transactionFactory, DtoMapperFactory dtoMapperFactory) {
-        this.transactionFactory = transactionFactory;
-        this.dtoMapperFactory = dtoMapperFactory;
-    }
 
     @Override
     public boolean registerNewUser(UserDto userDto) {
-        try (Transaction transaction = transactionFactory.createTransaction()) {
+        try (Transaction transaction = Transaction.startTransaction()) {
             userDto.setRole(UserRole.CLIENT);
-            User user = dtoMapperFactory.getUserDtoMapper().mapDtoToEntity(userDto);
+            User user = DtoMapperFactory.getInstance()
+                    .getUserDtoMapper()
+                    .mapDtoToEntity(userDto);
 
             UserDao userDao = MysqlDaoFactory.getInstance().getUserDao();
             boolean isUserCreated = userDao.create(user).isPresent();
@@ -46,7 +36,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserDto> authenticate(String login, String password) {
-        DtoMapper<User, UserDto> mapper = dtoMapperFactory.getUserDtoMapper();
+        DtoMapper<User, UserDto> mapper = DtoMapperFactory.getInstance().getUserDtoMapper();
 
         UserDao userDao = MysqlDaoFactory.getInstance().getUserDao();
         return userDao.authenticate(login, password)
@@ -55,7 +45,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changeRole(UserDto userDto, UserRole newRole) {
-        try (Transaction transaction = transactionFactory.createTransaction()) {
+        try (Transaction transaction = Transaction.startTransaction()) {
             long userId = userDto.getId();
             UserDao userDao = MysqlDaoFactory.getInstance().getUserDao();
             userDao.changeRole(userId, newRole);
@@ -66,7 +56,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changePassword(UserDto userDto, String newPassword) {
-        try (Transaction transaction = transactionFactory.createTransaction()) {
+        try (Transaction transaction = Transaction.startTransaction()) {
             long userId = userDto.getId();
             UserDao userDao = MysqlDaoFactory.getInstance().getUserDao();
             userDao.changePassword(userId, newPassword);
