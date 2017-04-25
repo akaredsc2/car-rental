@@ -1,12 +1,8 @@
 package org.vitaly.model.user;
 
 import org.vitaly.model.Entity;
-import org.vitaly.model.notification.Notification;
-import org.vitaly.model.reservation.Reservation;
 
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Created by vitaly on 2017-03-28.

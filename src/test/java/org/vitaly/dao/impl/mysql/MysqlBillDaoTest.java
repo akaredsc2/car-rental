@@ -1,5 +1,6 @@
 package org.vitaly.dao.impl.mysql;
 
+import junit.framework.AssertionFailedError;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -40,17 +41,19 @@ public class MysqlBillDaoTest {
     private static final String RESERVATION_CLEAN_UP_QUERY = "delete from reservation";
     private static final String MODEL_CLEAN_UP_QUERY = "delete from model";
 
-    private static PooledConnection connection = MysqlConnectionPool.getTestInstance().getConnection();
-    private static BillDao billDao;
+    static {
+        MysqlConnectionPool.configureConnectionPool(MysqlConnectionPool.TEST_CONNECTION_PROPERTIES);
+    }
+
+    private static PooledConnection connection = MysqlConnectionPool.getInstance().getConnection();
     private static Reservation reservation;
 
+    private BillDao billDao = new MysqlBillDao(connection);
     private Bill bill1 = TestData.getInstance().getBill("bill1");
     private Bill bill2 = TestData.getInstance().getBill("bill2");
 
     @BeforeClass
     public static void init() throws SQLException {
-        billDao = new MysqlBillDao(connection);
-
         UserDao userDao = new MysqlUserDao(connection);
         User user = TestUtil.createEntityWithId(TestData.getInstance().getUser("client1"), userDao);
 
@@ -61,16 +64,12 @@ public class MysqlBillDaoTest {
         CarModelDtoMapper carModelDtoMapper = new CarModelDtoMapper();
         CarModelDto carModelDto = carModelDtoMapper.mapEntityToDto(carModel);
 
-        Car carFromTestData = TestData.getInstance().getCar("car1");
+        Car car = TestData.getInstance().getCar("car1");
 
         CarDtoMapper carDtoMapper = new CarDtoMapper();
-        CarDto carDto = carDtoMapper.mapEntityToDto(carFromTestData);
-        carDto.setCarModelDto(carModelDto);
-
-        carFromTestData = carDtoMapper.mapDtoToEntity(carDto);
-
+        car = TestUtil.setEntityAttribute(car, CarDto::setCarModelDto, carModelDto, carDtoMapper);
         CarDao carDao = new MysqlCarDao(connection);
-        Car car = TestUtil.createEntityWithId(carFromTestData, carDao);
+        car = TestUtil.createEntityWithId(car, carDao);
 
         Reservation temp = new Reservation.Builder()
                 .setClient(user)
@@ -170,7 +169,16 @@ public class MysqlBillDaoTest {
 
     @Test
     public void findBillsForExistingReservationIdReturnsListOfBills() throws Exception {
+        long bill1Id = billDao.create(bill1).orElseThrow(AssertionFailedError::new);
+        long bill2Id = billDao.create(bill2).orElseThrow(AssertionFailedError::new);
+        billDao.addBillToReservation(bill1Id, reservation.getId());
+        billDao.addBillToReservation(bill2Id, reservation.getId());
 
+        List<Bill> billsForReservation = billDao.findBillsForReservation(reservation.getId());
+
+        assertThat(billsForReservation, allOf(
+                iterableWithSize(2),
+                hasItems(bill1, bill2)));
     }
 
     @Test

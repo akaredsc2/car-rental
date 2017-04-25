@@ -1,7 +1,6 @@
 package org.vitaly.model.reservation;
 
 import org.vitaly.model.Entity;
-import org.vitaly.model.bill.Bill;
 import org.vitaly.model.car.Car;
 import org.vitaly.model.user.User;
 

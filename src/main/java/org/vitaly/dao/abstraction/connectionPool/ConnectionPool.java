@@ -5,4 +5,6 @@ package org.vitaly.dao.abstraction.connectionPool;
  */
 public interface ConnectionPool {
     PooledConnection getConnection();
+
+    void freeConnection();
 }

@@ -1,5 +1,6 @@
 package org.vitaly.dao.impl.mysql.connectionPool;
 
+import org.vitaly.dao.abstraction.connectionPool.ConnectionPool;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 
 import java.sql.Connection;
@@ -11,9 +12,13 @@ import java.sql.SQLException;
  */
 public class MysqlPooledConnection implements PooledConnection {
     private Connection connection;
+    private ConnectionPool connectionPool;
+    private boolean isInTransaction;
 
-    MysqlPooledConnection(Connection connection) {
+    MysqlPooledConnection(Connection connection, ConnectionPool connectionPool) {
         this.connection = connection;
+        this.connectionPool = connectionPool;
+        this.isInTransaction = false;
     }
 
     @Override
@@ -24,6 +29,16 @@ public class MysqlPooledConnection implements PooledConnection {
     @Override
     public boolean getAutoCommit() throws SQLException {
         return connection.getAutoCommit();
+    }
+
+    @Override
+    public boolean isInTransaction() {
+        return isInTransaction;
+    }
+
+    @Override
+    public void setInTransaction(boolean isInTransaction) {
+        this.isInTransaction = isInTransaction;
     }
 
     @Override
@@ -48,6 +63,9 @@ public class MysqlPooledConnection implements PooledConnection {
 
     @Override
     public void close() throws SQLException {
-        connection.close();
+        if (!isInTransaction) {
+            connection.close();
+            connectionPool.freeConnection();
+        }
     }
 }

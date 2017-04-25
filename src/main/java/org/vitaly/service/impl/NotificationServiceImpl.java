@@ -9,7 +9,6 @@ import org.vitaly.service.exception.ServiceException;
 import org.vitaly.service.impl.dto.NotificationDto;
 import org.vitaly.service.impl.dto.UserDto;
 import org.vitaly.service.impl.dtoMapper.DtoMapper;
-import org.vitaly.service.impl.dtoMapper.NotificationDtoMapper;
 import org.vitaly.service.impl.factory.DtoMapperFactory;
 
 import java.util.List;

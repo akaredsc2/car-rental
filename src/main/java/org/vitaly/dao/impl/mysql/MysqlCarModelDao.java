@@ -6,14 +6,13 @@ import org.vitaly.dao.impl.mysql.mapper.CarModelMapper;
 import org.vitaly.dao.impl.mysql.mapper.Mapper;
 import org.vitaly.dao.impl.mysql.template.DaoTemplate;
 import org.vitaly.model.carModel.CarModel;
-import org.vitaly.util.InputChecker;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
-import static org.vitaly.util.InputChecker.*;
+import static org.vitaly.util.InputChecker.requireNotNull;
 
 /**
  * Created by vitaly on 2017-04-22.

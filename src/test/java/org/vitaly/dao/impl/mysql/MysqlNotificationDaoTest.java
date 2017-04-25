@@ -2,6 +2,7 @@ package org.vitaly.dao.impl.mysql;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.vitaly.dao.abstraction.NotificationDao;
 import org.vitaly.dao.abstraction.UserDao;
@@ -13,7 +14,6 @@ import org.vitaly.model.notification.Notification;
 import org.vitaly.model.notification.NotificationStatus;
 import org.vitaly.model.user.User;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import static junit.framework.TestCase.*;
@@ -26,25 +26,25 @@ import static org.hamcrest.Matchers.*;
 public class MysqlNotificationDaoTest {
     private static final String USERS_CLEAN_UP_QUERY = "delete from users";
 
-    private static PooledConnection connection = MysqlConnectionPool.getTestInstance().getConnection();
-    private static NotificationDao notificationDao = new MysqlNotificationDao(connection);
-
-    private static final long userId;
-
     static {
+        MysqlConnectionPool.configureConnectionPool(MysqlConnectionPool.TEST_CONNECTION_PROPERTIES);
+    }
+
+    private static PooledConnection connection = MysqlConnectionPool.getInstance().getConnection();
+    private static long userId;
+
+    private NotificationDao notificationDao = new MysqlNotificationDao(connection);
+    private Notification notification1 = TestData.getInstance().getNotification("notification1");
+    private Notification notification2 = TestData.getInstance().getNotification("notification2");
+
+    @BeforeClass
+    public static void init() throws Exception {
         User client1 = TestData.getInstance().getUser("client1");
         UserDao userDao = new MysqlUserDao(connection);
         userId = userDao.create(client1).orElseThrow(AssertionError::new);
 
-        try {
-            connection.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        connection.commit();
     }
-
-    private Notification notification1 = TestData.getInstance().getNotification("notification1");
-    private Notification notification2 = TestData.getInstance().getNotification("notification2");
 
     @After
     public void tearDown() throws Exception {

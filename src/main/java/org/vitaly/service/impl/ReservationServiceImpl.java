@@ -9,7 +9,6 @@ import org.vitaly.service.abstraction.ReservationService;
 import org.vitaly.service.impl.dto.ReservationDto;
 import org.vitaly.service.impl.dto.UserDto;
 import org.vitaly.service.impl.dtoMapper.DtoMapper;
-import org.vitaly.service.impl.dtoMapper.ReservationDtoMapper;
 import org.vitaly.service.impl.factory.DtoMapperFactory;
 
 import java.util.List;

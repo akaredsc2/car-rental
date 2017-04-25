@@ -43,15 +43,18 @@ public class MysqlReservationDaoTest {
     private static final String CAR_CLEAN_UP_QUERY = "delete from car";
     private static final String MODEL_CLEAN_UP_QUERY = "delete from model";
 
-    private static PooledConnection connection = MysqlConnectionPool.getTestInstance().getConnection();
-    private static ReservationDao reservationDao = new MysqlReservationDao(connection);
+    static {
+        MysqlConnectionPool.configureConnectionPool(MysqlConnectionPool.TEST_CONNECTION_PROPERTIES);
+    }
 
+    private static PooledConnection connection = MysqlConnectionPool.getInstance().getConnection();
     private static User client1;
     private static User client2;
     private static User admin;
     private static Car car1;
     private static Car car2;
 
+    private ReservationDao reservationDao = new MysqlReservationDao(connection);
     private Reservation reservation1 = new Reservation.Builder()
             .setClient(client1)
             .setCar(car1)

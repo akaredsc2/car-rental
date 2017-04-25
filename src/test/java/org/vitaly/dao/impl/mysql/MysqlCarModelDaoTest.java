@@ -24,9 +24,13 @@ import static org.vitaly.matcher.EntityIdMatcher.hasId;
  * Created by vitaly on 2017-04-22.
  */
 public class MysqlCarModelDaoTest {
-    private static PooledConnection connection = MysqlConnectionPool.getTestInstance().getConnection();
-    private static CarModelDao carModelDao = new MysqlCarModelDao(connection);
+    static {
+        MysqlConnectionPool.configureConnectionPool(MysqlConnectionPool.TEST_CONNECTION_PROPERTIES);
+    }
 
+    private static PooledConnection connection = MysqlConnectionPool.getInstance().getConnection();
+
+    private CarModelDao carModelDao = new MysqlCarModelDao(connection);
     private CarModel carModel1 = TestData.getInstance().getCarModel("carModel1");
     private CarModel carModel2 = TestData.getInstance().getCarModel("carModel2");
 

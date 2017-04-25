@@ -13,7 +13,6 @@ import static org.mockito.Mockito.*;
  */
 public class MysqlTransactionTest {
     private PooledConnection connection = mock(PooledConnection.class);
-    private Transaction transaction = new MysqlTransaction(connection);
 
     @Test
     public void createTransactionSetsAutoCommitFalse() throws Exception {
@@ -23,7 +22,16 @@ public class MysqlTransactionTest {
     }
 
     @Test
+    public void createTransactionSetsIsInTransactionToTrue() throws Exception {
+        MysqlTransaction.createTransaction(connection);
+
+        verify(connection).setInTransaction(true);
+    }
+
+    @Test
     public void commitCallsConnectionCommit() throws Exception {
+        Transaction transaction = new MysqlTransaction(connection);
+
         transaction.commit();
 
         verify(connection).commit();
@@ -31,6 +39,8 @@ public class MysqlTransactionTest {
 
     @Test
     public void rollbackCallsConnectionRollback() throws Exception {
+        Transaction transaction = new MysqlTransaction(connection);
+
         transaction.rollback();
 
         verify(connection).rollback();
@@ -38,11 +48,22 @@ public class MysqlTransactionTest {
 
     @Test
     public void closeCallsConnectionRollbackAndClose() throws Exception {
+        Transaction transaction = new MysqlTransaction(connection);
+
         transaction.close();
 
         InOrder inOrder = inOrder(connection);
         inOrder.verify(connection).rollback();
         inOrder.verify(connection).close();
+    }
+
+    @Test
+    public void closeSetsIsInTransactionToFalse() throws Exception {
+        Transaction transaction = new MysqlTransaction(connection);
+
+        transaction.close();
+
+        verify(connection).setInTransaction(false);
     }
 
     @Test

@@ -4,7 +4,6 @@ import org.vitaly.model.location.Location;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import static org.vitaly.util.TableAttributes.*;
 

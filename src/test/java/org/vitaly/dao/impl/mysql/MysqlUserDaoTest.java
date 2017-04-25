@@ -24,9 +24,13 @@ import static org.vitaly.matcher.EntityIdMatcher.hasId;
  * Created by vitaly on 2017-03-28.
  */
 public class MysqlUserDaoTest {
-    private static PooledConnection connection = MysqlConnectionPool.getTestInstance().getConnection();
-    private static UserDao userDao = new MysqlUserDao(connection);
+    static {
+        MysqlConnectionPool.configureConnectionPool(MysqlConnectionPool.TEST_CONNECTION_PROPERTIES);
+    }
 
+    private static PooledConnection connection = MysqlConnectionPool.getInstance().getConnection();
+
+    private UserDao userDao = new MysqlUserDao(connection);
     private User client1 = TestData.getInstance().getUser("client1");
     private User client2 = TestData.getInstance().getUser("client2");
     private User admin = TestData.getInstance().getUser("admin");

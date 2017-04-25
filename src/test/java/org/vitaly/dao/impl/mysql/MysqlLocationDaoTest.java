@@ -30,9 +30,13 @@ import static org.vitaly.matcher.EntityIdMatcher.hasId;
  * Created by vitaly on 2017-03-26.
  */
 public class MysqlLocationDaoTest {
-    private static PooledConnection connection = MysqlConnectionPool.getTestInstance().getConnection();
-    private static LocationDao locationDao = new MysqlLocationDao(connection);
+    static {
+        MysqlConnectionPool.configureConnectionPool(MysqlConnectionPool.TEST_CONNECTION_PROPERTIES);
+    }
 
+    private static PooledConnection connection = MysqlConnectionPool.getInstance().getConnection();
+
+    private LocationDao locationDao = new MysqlLocationDao(connection);
     private Location location1 = TestData.getInstance().getLocation("location1");
     private Location location2 = TestData.getInstance().getLocation("location2");
 

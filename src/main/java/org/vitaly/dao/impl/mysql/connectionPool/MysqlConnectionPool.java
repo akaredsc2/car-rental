@@ -19,9 +19,11 @@ import static org.vitaly.util.InputChecker.requireNotNull;
  * Created by vitaly on 2017-03-25.
  */
 public class MysqlConnectionPool implements ConnectionPool {
-    private static final String PATH_SEPARATOR = System.getProperty("file.separator");
-    private static final String CONNECTION_PROPERTIES = "db" + PATH_SEPARATOR + "connection.properties";
-    private static final String TEST_CONNECTION_PROPERTIES = "db" + PATH_SEPARATOR + "test_connection.properties";
+    public static final String CONNECTION_PROPERTIES =
+            "db" + System.getProperty("file.separator") + "connection.properties";
+    public static final String TEST_CONNECTION_PROPERTIES =
+            "db" + System.getProperty("file.separator") + "test_connection.properties";
+
     private static final String DB_URL = "db.url";
     private static final String DB_USER = "db.user";
     private static final String DB_PASS = "db.pass";
@@ -35,22 +37,13 @@ public class MysqlConnectionPool implements ConnectionPool {
     private static Logger logger = LogManager.getLogger(MysqlPooledConnection.class.getName());
 
     private static MysqlConnectionPool instance;
-    private static MysqlConnectionPool testInstance;
 
+    private final ThreadLocal<PooledConnection> pooledConnectionThreadLocal;
     private BasicDataSource basicDataSource;
 
-    static {
-        try {
-            instance = createConnectionPoolFromProperties(CONNECTION_PROPERTIES);
-            testInstance = createConnectionPoolFromProperties(TEST_CONNECTION_PROPERTIES);
-        } catch (ClassNotFoundException e) {
-            logger.fatal("Fatal error while loading driver class", e);
-        } catch (IOException e) {
-            logger.fatal("Fatal error while initializing connection pool.", e);
-        }
-    }
-
     private MysqlConnectionPool(Builder builder) {
+        pooledConnectionThreadLocal = new ThreadLocal<>();
+
         basicDataSource = new BasicDataSource();
         basicDataSource.setUrl(createUrl(builder));
         basicDataSource.setUsername(builder.username);
@@ -58,6 +51,26 @@ public class MysqlConnectionPool implements ConnectionPool {
         basicDataSource.setMaxTotal(builder.maxTotal);
         basicDataSource.setDefaultAutoCommit(builder.defaultAutoCommit);
         basicDataSource.setDefaultTransactionIsolation(builder.defaultTransactionIsolation);
+    }
+
+    private String createUrl(Builder builder) {
+        String url = builder.url;
+        if (!builder.useSsl) {
+            url += USE_SSL_FALSE;
+        }
+        return url;
+    }
+
+    public static void configureConnectionPool(String fileName) {
+        requireNotNull(fileName, "Connection pool configuration properties file name must not be null!");
+
+        try {
+            instance = createConnectionPoolFromProperties(fileName);
+        } catch (IOException e) {
+            logger.fatal("Fatal error while initializing connection pool.", e);
+        } catch (ClassNotFoundException e) {
+            logger.fatal("Fatal error while loading driver class", e);
+        }
     }
 
     private static MysqlConnectionPool createConnectionPoolFromProperties(String fileName)
@@ -88,27 +101,22 @@ public class MysqlConnectionPool implements ConnectionPool {
                 .build();
     }
 
-    private String createUrl(Builder builder) {
-        String url = builder.url;
-        if (!builder.useSsl) {
-            url += USE_SSL_FALSE;
-        }
-        return url;
-    }
-
     public static MysqlConnectionPool getInstance() {
         return instance;
-    }
-
-    public static MysqlConnectionPool getTestInstance() {
-        return testInstance;
     }
 
     @Override
     public PooledConnection getConnection() {
         try {
-            Connection connection = basicDataSource.getConnection();
-            return new MysqlPooledConnection(connection);
+            PooledConnection pooledConnection = pooledConnectionThreadLocal.get();
+
+            if (pooledConnection == null) {
+                Connection connection = basicDataSource.getConnection();
+                pooledConnection = new MysqlPooledConnection(connection, this);
+                pooledConnectionThreadLocal.set(pooledConnection);
+            }
+
+            return pooledConnection;
         } catch (SQLException e) {
             String message = "Error while getting connection from pool.";
             logger.error(message, e);
@@ -116,7 +124,12 @@ public class MysqlConnectionPool implements ConnectionPool {
         }
     }
 
-    static class Builder {
+    @Override
+    public void freeConnection() {
+        pooledConnectionThreadLocal.remove();
+    }
+
+    private static class Builder {
         private String url;
         private String username;
         private String password;

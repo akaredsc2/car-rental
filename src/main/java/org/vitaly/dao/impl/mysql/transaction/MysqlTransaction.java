@@ -52,6 +52,7 @@ public class MysqlTransaction implements Transaction {
             throws SQLException {
         boolean autoCommitBeforeTransaction = pooledConnection.getAutoCommit();
         pooledConnection.setAutoCommit(false);
+        pooledConnection.setInTransaction(true);
         return new MysqlTransaction(pooledConnection, mapperFactory, autoCommitBeforeTransaction);
     }
 
@@ -140,6 +141,7 @@ public class MysqlTransaction implements Transaction {
             rollback();
 
             pooledConnection.setAutoCommit(autoCommitBeforeTransaction);
+            pooledConnection.setInTransaction(false);
             pooledConnection.close();
         } catch (SQLException e) {
             String message = "Failed to close pooledConnection";
