@@ -4,8 +4,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.vitaly.dao.abstraction.ReservationDao;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
+import org.vitaly.dao.impl.mysql.factory.ResultSetMapperFactory;
 import org.vitaly.dao.impl.mysql.mapper.Mapper;
-import org.vitaly.dao.impl.mysql.mapper.ReservationMapper;
 import org.vitaly.dao.impl.mysql.template.DaoTemplate;
 import org.vitaly.model.reservation.Reservation;
 import org.vitaly.model.reservation.ReservationState;
@@ -64,15 +64,13 @@ public class MysqlReservationDao implements ReservationDao {
 
     private static Logger logger = LogManager.getLogger(MysqlReservationDao.class.getName());
 
-    private Mapper<Reservation> mapper;
     private DaoTemplate daoTemplate;
 
     public MysqlReservationDao(PooledConnection connection) {
-        this(new ReservationMapper(), new DaoTemplate(connection));
+        this(new DaoTemplate(connection));
     }
 
-    public MysqlReservationDao(Mapper<Reservation> mapper, DaoTemplate daoTemplate) {
-        this.mapper = mapper;
+    public MysqlReservationDao(DaoTemplate daoTemplate) {
         this.daoTemplate = daoTemplate;
     }
 
@@ -81,6 +79,7 @@ public class MysqlReservationDao implements ReservationDao {
         HashMap<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, id);
 
+        Mapper<Reservation> mapper = ResultSetMapperFactory.getInstance().getReservationMapper();
         Reservation reservation = daoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
         return Optional.ofNullable(reservation);
     }
@@ -94,6 +93,7 @@ public class MysqlReservationDao implements ReservationDao {
 
     @Override
     public List<Reservation> getAll() {
+        Mapper<Reservation> mapper = ResultSetMapperFactory.getInstance().getReservationMapper();
         return daoTemplate.executeSelect(GET_ALL_QUERY, mapper, Collections.emptyMap());
     }
 
@@ -124,6 +124,7 @@ public class MysqlReservationDao implements ReservationDao {
         HashMap<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, clientId);
 
+        Mapper<Reservation> mapper = ResultSetMapperFactory.getInstance().getReservationMapper();
         return daoTemplate.executeSelect(FIND_RESERVATIONS_BY_CLIENT_ID_QUERY, mapper, parameterMap);
     }
 
@@ -132,6 +133,7 @@ public class MysqlReservationDao implements ReservationDao {
         HashMap<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, adminId);
 
+        Mapper<Reservation> mapper = ResultSetMapperFactory.getInstance().getReservationMapper();
         return daoTemplate.executeSelect(FIND_RESERVATIONS_BY_ADMIN_ID_QUERY, mapper, parameterMap);
     }
 
@@ -168,6 +170,7 @@ public class MysqlReservationDao implements ReservationDao {
 
     @Override
     public List<Reservation> findReservationsWithoutAdmin() {
+        Mapper<Reservation> mapper = ResultSetMapperFactory.getInstance().getReservationMapper();
         return daoTemplate.executeSelect(FIND_RESERVATIONS_WITHOUT_ADMIN_QUERY, mapper, Collections.emptyMap());
     }
 }

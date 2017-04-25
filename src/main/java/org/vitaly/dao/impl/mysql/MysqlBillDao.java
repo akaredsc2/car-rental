@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.vitaly.dao.abstraction.BillDao;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
-import org.vitaly.dao.impl.mysql.mapper.BillMapper;
+import org.vitaly.dao.impl.mysql.factory.ResultSetMapperFactory;
 import org.vitaly.dao.impl.mysql.mapper.Mapper;
 import org.vitaly.dao.impl.mysql.template.DaoTemplate;
 import org.vitaly.model.bill.Bill;
@@ -47,15 +47,13 @@ public class MysqlBillDao implements BillDao {
 
     private static Logger logger = LogManager.getLogger(MysqlBillDao.class.getName());
 
-    private Mapper<Bill> mapper;
     private DaoTemplate daoTemplate;
 
     public MysqlBillDao(PooledConnection connection) {
-        this(new BillMapper(), new DaoTemplate(connection));
+        this(new DaoTemplate(connection));
     }
 
-    public MysqlBillDao(Mapper<Bill> mapper, DaoTemplate daoTemplate) {
-        this.mapper = mapper;
+    public MysqlBillDao(DaoTemplate daoTemplate) {
         this.daoTemplate = daoTemplate;
     }
 
@@ -64,6 +62,7 @@ public class MysqlBillDao implements BillDao {
         HashMap<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, id);
 
+        Mapper<Bill> mapper = ResultSetMapperFactory.getInstance().getBillMapper();
         Bill foundBill = daoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
         return Optional.ofNullable(foundBill);
     }
@@ -77,6 +76,7 @@ public class MysqlBillDao implements BillDao {
 
     @Override
     public List<Bill> getAll() {
+        Mapper<Bill> mapper = ResultSetMapperFactory.getInstance().getBillMapper();
         return daoTemplate.executeSelect(GET_ALL_QUERY, mapper, Collections.emptyMap());
     }
 
@@ -105,6 +105,7 @@ public class MysqlBillDao implements BillDao {
         HashMap<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, reservationId);
 
+        Mapper<Bill> mapper = ResultSetMapperFactory.getInstance().getBillMapper();
         return daoTemplate.executeSelect(FIND_BILLS_FOR_RESERVATION_QUERY, mapper, parameterMap);
     }
 

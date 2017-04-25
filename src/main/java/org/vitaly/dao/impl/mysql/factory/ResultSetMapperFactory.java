@@ -12,7 +12,9 @@ import org.vitaly.model.user.User;
 /**
  * Created by vitaly on 18.04.17.
  */
-public class MapperFactory {
+public class ResultSetMapperFactory {
+    private static ResultSetMapperFactory instance = new ResultSetMapperFactory();
+
     private Mapper<Bill> billMapper;
     private Mapper<CarModel> carModelMapper;
     private Mapper<Car> carMapper;
@@ -21,7 +23,7 @@ public class MapperFactory {
     private Mapper<Reservation> reservationMapper;
     private Mapper<User> userMapper;
 
-    public MapperFactory() {
+    private ResultSetMapperFactory() {
         this.billMapper = new BillMapper();
         this.carModelMapper = new CarModelMapper();
         this.carMapper = new CarMapper();
@@ -29,6 +31,10 @@ public class MapperFactory {
         this.notificationMapper = new NotificationMapper();
         this.reservationMapper = new ReservationMapper();
         this.userMapper = new UserMapper();
+    }
+
+    public static ResultSetMapperFactory getInstance() {
+        return instance;
     }
 
     public Mapper<Bill> getBillMapper() {

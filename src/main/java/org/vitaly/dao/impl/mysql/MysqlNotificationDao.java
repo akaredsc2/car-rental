@@ -4,8 +4,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.vitaly.dao.abstraction.NotificationDao;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
+import org.vitaly.dao.impl.mysql.factory.ResultSetMapperFactory;
 import org.vitaly.dao.impl.mysql.mapper.Mapper;
-import org.vitaly.dao.impl.mysql.mapper.NotificationMapper;
 import org.vitaly.dao.impl.mysql.template.DaoTemplate;
 import org.vitaly.model.notification.Notification;
 import org.vitaly.model.notification.NotificationStatus;
@@ -45,15 +45,13 @@ public class MysqlNotificationDao implements NotificationDao {
 
     private static Logger logger = LogManager.getLogger(MysqlNotificationDao.class.getName());
 
-    private Mapper<Notification> mapper;
     private DaoTemplate daoTemplate;
 
     public MysqlNotificationDao(PooledConnection connection) {
-        this(new NotificationMapper(), new DaoTemplate(connection));
+        this(new DaoTemplate(connection));
     }
 
-    public MysqlNotificationDao(Mapper<Notification> mapper, DaoTemplate daoTemplate) {
-        this.mapper = mapper;
+    public MysqlNotificationDao(DaoTemplate daoTemplate) {
         this.daoTemplate = daoTemplate;
     }
 
@@ -62,6 +60,7 @@ public class MysqlNotificationDao implements NotificationDao {
         Map<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, id);
 
+        Mapper<Notification> mapper = ResultSetMapperFactory.getInstance().getNotificationMapper();
         Notification notification = daoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
         return Optional.ofNullable(notification);
     }
@@ -75,6 +74,7 @@ public class MysqlNotificationDao implements NotificationDao {
 
     @Override
     public List<Notification> getAll() {
+        Mapper<Notification> mapper = ResultSetMapperFactory.getInstance().getNotificationMapper();
         return daoTemplate.executeSelect(GET_ALL_QUERY, mapper, Collections.emptyMap());
     }
 
@@ -104,6 +104,7 @@ public class MysqlNotificationDao implements NotificationDao {
         Map<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, userId);
 
+        Mapper<Notification> mapper = ResultSetMapperFactory.getInstance().getNotificationMapper();
         return daoTemplate.executeSelect(FIND_NOTIFICATIONS_BY_USER_ID, mapper, parameterMap);
     }
 

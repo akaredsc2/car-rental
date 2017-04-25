@@ -2,7 +2,7 @@ package org.vitaly.dao.impl.mysql;
 
 import org.vitaly.dao.abstraction.CarModelDao;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
-import org.vitaly.dao.impl.mysql.mapper.CarModelMapper;
+import org.vitaly.dao.impl.mysql.factory.ResultSetMapperFactory;
 import org.vitaly.dao.impl.mysql.mapper.Mapper;
 import org.vitaly.dao.impl.mysql.template.DaoTemplate;
 import org.vitaly.model.carModel.CarModel;
@@ -42,15 +42,13 @@ public class MysqlCarModelDao implements CarModelDao {
                     "WHERE photo_url IS NOT NULL";
     private static final String CAR_MODEL_MUST_NOT_BE_NULL = "Car model must not be null!";
 
-    private Mapper<CarModel> mapper;
     private DaoTemplate daoTemplate;
 
     public MysqlCarModelDao(PooledConnection connection) {
-        this(new CarModelMapper(), new DaoTemplate(connection));
+        this(new DaoTemplate(connection));
     }
 
-    public MysqlCarModelDao(Mapper<CarModel> mapper, DaoTemplate daoTemplate) {
-        this.mapper = mapper;
+    public MysqlCarModelDao(DaoTemplate daoTemplate) {
         this.daoTemplate = daoTemplate;
     }
 
@@ -59,6 +57,7 @@ public class MysqlCarModelDao implements CarModelDao {
         HashMap<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, id);
 
+        Mapper<CarModel> mapper = ResultSetMapperFactory.getInstance().getCarModelMapper();
         CarModel foundCarModel = daoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
         return Optional.ofNullable(foundCarModel);
     }
@@ -77,6 +76,7 @@ public class MysqlCarModelDao implements CarModelDao {
 
     @Override
     public List<CarModel> getAll() {
+        Mapper<CarModel> mapper = ResultSetMapperFactory.getInstance().getCarModelMapper();
         return daoTemplate.executeSelect(GET_ALL_QUERY, mapper, Collections.emptyMap());
     }
 
@@ -111,6 +111,7 @@ public class MysqlCarModelDao implements CarModelDao {
 
     @Override
     public List<CarModel> findCarsWithPhotos() {
+        Mapper<CarModel> mapper = ResultSetMapperFactory.getInstance().getCarModelMapper();
         return daoTemplate.executeSelect(FIND_CAR_MODELS_WITH_PHOTOS_QUERY, mapper, Collections.emptyMap());
     }
 }

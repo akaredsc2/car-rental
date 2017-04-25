@@ -2,7 +2,7 @@ package org.vitaly.dao.impl.mysql;
 
 import org.vitaly.dao.abstraction.CarDao;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
-import org.vitaly.dao.impl.mysql.mapper.CarMapper;
+import org.vitaly.dao.impl.mysql.factory.ResultSetMapperFactory;
 import org.vitaly.dao.impl.mysql.mapper.Mapper;
 import org.vitaly.dao.impl.mysql.template.DaoTemplate;
 import org.vitaly.model.car.Car;
@@ -55,15 +55,13 @@ public class MysqlCarDao implements CarDao {
     private static final String FROM_NUMBER_MUST_NOT_BE_NULL = "From number must not be null!";
     private static final String TO_NUMBER_MUST_NOT_BE_NULL = "To number must not be null!";
 
-    private Mapper<Car> mapper;
     private DaoTemplate daoTemplate;
 
     public MysqlCarDao(PooledConnection connection) {
-        this(new CarMapper(), new DaoTemplate(connection));
+        this(new DaoTemplate(connection));
     }
 
-    public MysqlCarDao(Mapper<Car> mapper, DaoTemplate daoTemplate) {
-        this.mapper = mapper;
+    public MysqlCarDao(DaoTemplate daoTemplate) {
         this.daoTemplate = daoTemplate;
     }
 
@@ -72,6 +70,7 @@ public class MysqlCarDao implements CarDao {
         Map<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, id);
 
+        Mapper<Car> mapper = ResultSetMapperFactory.getInstance().getCarMapper();
         Car car = daoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
         return Optional.ofNullable(car);
     }
@@ -91,6 +90,7 @@ public class MysqlCarDao implements CarDao {
 
     @Override
     public List<Car> getAll() {
+        Mapper<Car> mapper = ResultSetMapperFactory.getInstance().getCarMapper();
         return daoTemplate.executeSelect(GET_ALL_QUERY, mapper, Collections.emptyMap());
     }
 
@@ -138,6 +138,7 @@ public class MysqlCarDao implements CarDao {
         Map<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, locationId);
 
+        Mapper<Car> mapper = ResultSetMapperFactory.getInstance().getCarMapper();
         return daoTemplate.executeSelect(GET_CARS_AT_LOCATION_QUERY, mapper, parameterMap);
     }
 
@@ -146,6 +147,7 @@ public class MysqlCarDao implements CarDao {
         Map<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, carModelId);
 
+        Mapper<Car> mapper = ResultSetMapperFactory.getInstance().getCarMapper();
         return daoTemplate.executeSelect(FIND_CAR_BY_MODEL_QUERY, mapper, parameterMap);
     }
 
@@ -158,6 +160,7 @@ public class MysqlCarDao implements CarDao {
         parameterMap.put(1, from);
         parameterMap.put(2, to);
 
+        Mapper<Car> mapper = ResultSetMapperFactory.getInstance().getCarMapper();
         return daoTemplate.executeSelect(FIND_CARS_WITH_PRICE_BETWEEN_QUERY, mapper, parameterMap);
     }
 }

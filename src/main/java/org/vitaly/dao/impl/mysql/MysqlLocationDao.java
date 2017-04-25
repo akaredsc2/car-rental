@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.vitaly.dao.abstraction.LocationDao;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
-import org.vitaly.dao.impl.mysql.mapper.LocationMapper;
+import org.vitaly.dao.impl.mysql.factory.ResultSetMapperFactory;
 import org.vitaly.dao.impl.mysql.mapper.Mapper;
 import org.vitaly.dao.impl.mysql.template.DaoTemplate;
 import org.vitaly.model.location.Location;
@@ -44,25 +44,19 @@ public class MysqlLocationDao implements LocationDao {
 
     private static Logger logger = LogManager.getLogger(MysqlLocationDao.class.getName());
 
-    private Mapper<Location> mapper;
     private DaoTemplate daoTemplate;
 
     public MysqlLocationDao(PooledConnection connection) {
-        this(new LocationMapper(), new DaoTemplate(connection));
+        this(new DaoTemplate(connection));
     }
 
-    public MysqlLocationDao(Mapper<Location> mapper, DaoTemplate daoTemplate) {
-        this.mapper = mapper;
+    public MysqlLocationDao(DaoTemplate daoTemplate) {
         this.daoTemplate = daoTemplate;
     }
 
     @Override
     public Optional<Location> findById(long id) {
-        Map<Integer, Object> parameterMap = new HashMap<>();
-        parameterMap.put(1, id);
-
-        Location location = daoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
-        return Optional.ofNullable(location);
+        return findLocationUsingQuery(id, FIND_BY_ID_QUERY);
     }
 
     @Override
@@ -83,6 +77,7 @@ public class MysqlLocationDao implements LocationDao {
 
     @Override
     public List<Location> getAll() {
+        Mapper<Location> mapper = ResultSetMapperFactory.getInstance().getLocationMapper();
         return daoTemplate.executeSelect(GET_ALL_QUERY, mapper, Collections.emptyMap());
     }
 
@@ -110,10 +105,15 @@ public class MysqlLocationDao implements LocationDao {
 
     @Override
     public Optional<Location> findLocationByCarId(long carId) {
+        return findLocationUsingQuery(carId, FIND_LOCATION_BY_CAR_ID_QUERY);
+    }
+
+    private Optional<Location> findLocationUsingQuery(long carId, String findLocationByCarIdQuery) {
         Map<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, carId);
 
-        Location foundLocation = daoTemplate.executeSelectOne(FIND_LOCATION_BY_CAR_ID_QUERY, mapper, parameterMap);
+        Mapper<Location> mapper = ResultSetMapperFactory.getInstance().getLocationMapper();
+        Location foundLocation = daoTemplate.executeSelectOne(findLocationByCarIdQuery, mapper, parameterMap);
         return Optional.ofNullable(foundLocation);
     }
 

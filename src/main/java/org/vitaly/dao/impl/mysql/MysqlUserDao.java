@@ -4,8 +4,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.vitaly.dao.abstraction.UserDao;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
+import org.vitaly.dao.impl.mysql.factory.ResultSetMapperFactory;
 import org.vitaly.dao.impl.mysql.mapper.Mapper;
-import org.vitaly.dao.impl.mysql.mapper.UserMapper;
 import org.vitaly.dao.impl.mysql.template.DaoTemplate;
 import org.vitaly.model.user.User;
 import org.vitaly.model.user.UserRole;
@@ -54,15 +54,13 @@ public class MysqlUserDao implements UserDao {
 
     private static Logger logger = LogManager.getLogger(MysqlUserDao.class.getName());
 
-    private Mapper<User> mapper;
     private DaoTemplate daoTemplate;
 
     public MysqlUserDao(PooledConnection connection) {
-        this(new UserMapper(), new DaoTemplate(connection));
+        this(new DaoTemplate(connection));
     }
 
-    public MysqlUserDao(Mapper<User> mapper, DaoTemplate daoTemplate) {
-        this.mapper = mapper;
+    public MysqlUserDao(DaoTemplate daoTemplate) {
         this.daoTemplate = daoTemplate;
     }
 
@@ -71,8 +69,8 @@ public class MysqlUserDao implements UserDao {
         Map<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, id);
 
+        Mapper<User> mapper = ResultSetMapperFactory.getInstance().getUserMapper();
         User user = daoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
-
         return Optional.ofNullable(user);
     }
 
@@ -91,6 +89,7 @@ public class MysqlUserDao implements UserDao {
 
     @Override
     public List<User> getAll() {
+        Mapper<User> mapper = ResultSetMapperFactory.getInstance().getUserMapper();
         return daoTemplate.executeSelect(GET_ALL_QUERY, mapper, Collections.emptyMap());
     }
 
@@ -126,8 +125,8 @@ public class MysqlUserDao implements UserDao {
         parameterMap.put(1, login);
         parameterMap.put(2, password);
 
+        Mapper<User> mapper = ResultSetMapperFactory.getInstance().getUserMapper();
         User authenticatedUser = daoTemplate.executeSelectOne(AUTHENTICATE_QUERY, mapper, parameterMap);
-
         return Optional.ofNullable(authenticatedUser);
     }
 
