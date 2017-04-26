@@ -60,7 +60,7 @@ public class Reservation implements Entity {
         return state;
     }
 
-    public void setState(ReservationState state) {
+    void setState(ReservationState state) {
         this.state = state;
     }
 

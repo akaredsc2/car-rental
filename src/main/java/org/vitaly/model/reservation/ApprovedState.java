@@ -14,8 +14,8 @@ public class ApprovedState extends ReservationState {
     }
 
     @Override
-    boolean pickUp(Reservation reservation) {
-        reservation.setState(ReservationStateEnum.PICKED.getState());
+    boolean activate(Reservation reservation) {
+        reservation.setState(ReservationStateEnum.ACTIVE.getState());
         return true;
     }
 
@@ -25,7 +25,7 @@ public class ApprovedState extends ReservationState {
     }
 
     @Override
-    boolean canPickUp() {
+    boolean canActivate() {
         return true;
     }
 

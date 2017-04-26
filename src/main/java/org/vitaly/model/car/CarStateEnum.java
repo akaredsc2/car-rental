@@ -8,8 +8,7 @@ public enum CarStateEnum {
     RESERVED(new ReservedState()),
     SERVED(new ServedState()),
     RETURNED(new ReturnedState()),
-    UNAVAILABLE(new UnavailableState()),
-    MAINTAINED(new MaintainedState());
+    UNAVAILABLE(new UnavailableState());
 
     private final CarState state;
 

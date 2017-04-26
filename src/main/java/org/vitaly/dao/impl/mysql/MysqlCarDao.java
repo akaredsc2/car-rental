@@ -60,8 +60,7 @@ public class MysqlCarDao implements CarDao {
         parameterMap.put(1, id);
 
         Mapper<Car> mapper = ResultSetMapperFactory.getInstance().getCarMapper();
-        Car car = DaoTemplate.getInstance()
-                .executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
+        Car car = DaoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
         return Optional.ofNullable(car);
     }
 
@@ -72,8 +71,8 @@ public class MysqlCarDao implements CarDao {
         Map<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, car.getRegistrationPlate());
 
-        Long foundId = DaoTemplate.getInstance()
-                .executeSelectOne(FIND_ID_OF_CAR_QUERY, resultSet -> resultSet.getLong(1), parameterMap);
+        Long foundId =
+                DaoTemplate.executeSelectOne(FIND_ID_OF_CAR_QUERY, resultSet -> resultSet.getLong(1), parameterMap);
 
         return Optional.ofNullable(foundId);
     }
@@ -81,8 +80,7 @@ public class MysqlCarDao implements CarDao {
     @Override
     public List<Car> getAll() {
         Mapper<Car> mapper = ResultSetMapperFactory.getInstance().getCarMapper();
-        return DaoTemplate.getInstance()
-                .executeSelect(GET_ALL_QUERY, mapper, Collections.emptyMap());
+        return DaoTemplate.executeSelect(GET_ALL_QUERY, mapper, Collections.emptyMap());
     }
 
     @Override
@@ -92,8 +90,7 @@ public class MysqlCarDao implements CarDao {
         Map<Integer, Object> parameterMap = new HashMap<>();
         putCarParametersToMap(car, parameterMap);
 
-        Long createdId = DaoTemplate.getInstance()
-                .executeInsert(CREATE_QUERY, parameterMap);
+        Long createdId = DaoTemplate.executeInsert(CREATE_QUERY, parameterMap);
         return Optional.ofNullable(createdId);
     }
 
@@ -113,8 +110,7 @@ public class MysqlCarDao implements CarDao {
         putCarParametersToMap(car, parameterMap);
         parameterMap.put(6, id);
 
-        return DaoTemplate.getInstance()
-                .executeUpdate(UPDATE_QUERY, parameterMap);
+        return DaoTemplate.executeUpdate(UPDATE_QUERY, parameterMap);
     }
 
     @Override
@@ -123,8 +119,7 @@ public class MysqlCarDao implements CarDao {
         parameterMap.put(1, locationId);
         parameterMap.put(2, carId);
 
-        return DaoTemplate.getInstance()
-                .executeUpdate(ADD_CAR_TO_LOCATION_QUERY, parameterMap) > 0;
+        return DaoTemplate.executeUpdate(ADD_CAR_TO_LOCATION_QUERY, parameterMap) > 0;
     }
 
     @Override
@@ -133,8 +128,7 @@ public class MysqlCarDao implements CarDao {
         parameterMap.put(1, locationId);
 
         Mapper<Car> mapper = ResultSetMapperFactory.getInstance().getCarMapper();
-        return DaoTemplate.getInstance()
-                .executeSelect(GET_CARS_AT_LOCATION_QUERY, mapper, parameterMap);
+        return DaoTemplate.executeSelect(GET_CARS_AT_LOCATION_QUERY, mapper, parameterMap);
     }
 
     @Override
@@ -143,8 +137,7 @@ public class MysqlCarDao implements CarDao {
         parameterMap.put(1, carModelId);
 
         Mapper<Car> mapper = ResultSetMapperFactory.getInstance().getCarMapper();
-        return DaoTemplate.getInstance()
-                .executeSelect(FIND_CAR_BY_MODEL_QUERY, mapper, parameterMap);
+        return DaoTemplate.executeSelect(FIND_CAR_BY_MODEL_QUERY, mapper, parameterMap);
     }
 
     @Override
@@ -157,7 +150,6 @@ public class MysqlCarDao implements CarDao {
         parameterMap.put(2, to);
 
         Mapper<Car> mapper = ResultSetMapperFactory.getInstance().getCarMapper();
-        return DaoTemplate.getInstance()
-                .executeSelect(FIND_CARS_WITH_PRICE_BETWEEN_QUERY, mapper, parameterMap);
+        return DaoTemplate.executeSelect(FIND_CARS_WITH_PRICE_BETWEEN_QUERY, mapper, parameterMap);
     }
 }

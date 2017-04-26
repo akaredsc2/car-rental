@@ -16,11 +16,11 @@ public abstract class ReservationState {
         return false;
     }
 
-    boolean pickUp(Reservation reservation) {
+    boolean activate(Reservation reservation) {
         return false;
     }
 
-    boolean dropOff(Reservation reservation) {
+    boolean close(Reservation reservation) {
         return false;
     }
 
@@ -36,11 +36,11 @@ public abstract class ReservationState {
         return false;
     }
 
-    boolean canPickUp() {
+    boolean canActivate() {
         return false;
     }
 
-    boolean canDropOff() {
+    boolean canClose() {
         return false;
     }
 }

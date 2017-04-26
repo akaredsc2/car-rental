@@ -62,10 +62,6 @@ public class Car implements Entity {
         return state.makeUnavailable(this);
     }
 
-    public boolean maintain() {
-        return state.maintain(this);
-    }
-
     public boolean reserve() {
         return state.reserve(this);
     }

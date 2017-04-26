@@ -12,10 +12,6 @@ public abstract class CarState {
         return false;
     }
 
-    boolean maintain(Car car) {
-        return false;
-    }
-
     boolean reserve(Car car) {
         return false;
     }
@@ -33,10 +29,6 @@ public abstract class CarState {
     }
 
     boolean canMakeUnavailable() {
-        return false;
-    }
-
-    boolean canMaintain() {
         return false;
     }
 

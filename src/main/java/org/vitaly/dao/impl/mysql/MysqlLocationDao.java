@@ -58,8 +58,8 @@ public class MysqlLocationDao implements LocationDao {
         parameterMap.put(3, location.getStreet());
         parameterMap.put(4, location.getBuilding());
 
-        Long foundId = DaoTemplate.getInstance()
-                .executeSelectOne(FIND_ID_OF_LOCATION_QUERY, resultSet -> resultSet.getLong(1), parameterMap);
+        Long foundId =
+                DaoTemplate.executeSelectOne(FIND_ID_OF_LOCATION_QUERY, resultSet -> resultSet.getLong(1), parameterMap);
 
         return Optional.ofNullable(foundId);
     }
@@ -67,8 +67,7 @@ public class MysqlLocationDao implements LocationDao {
     @Override
     public List<Location> getAll() {
         Mapper<Location> mapper = ResultSetMapperFactory.getInstance().getLocationMapper();
-        return DaoTemplate.getInstance()
-                .executeSelect(GET_ALL_QUERY, mapper, Collections.emptyMap());
+        return DaoTemplate.executeSelect(GET_ALL_QUERY, mapper, Collections.emptyMap());
     }
 
     @Override
@@ -82,8 +81,7 @@ public class MysqlLocationDao implements LocationDao {
         parameterMap.put(4, location.getBuilding());
         parameterMap.put(5, location.getPhotoUrl());
 
-        Long createdId = DaoTemplate.getInstance()
-                .executeInsert(CREATE_LOCATION_QUERY, parameterMap);
+        Long createdId = DaoTemplate.executeInsert(CREATE_LOCATION_QUERY, parameterMap);
         return Optional.ofNullable(createdId);
     }
 
@@ -104,8 +102,7 @@ public class MysqlLocationDao implements LocationDao {
         parameterMap.put(1, carId);
 
         Mapper<Location> mapper = ResultSetMapperFactory.getInstance().getLocationMapper();
-        Location foundLocation = DaoTemplate.getInstance()
-                .executeSelectOne(findLocationByCarIdQuery, mapper, parameterMap);
+        Location foundLocation = DaoTemplate.executeSelectOne(findLocationByCarIdQuery, mapper, parameterMap);
         return Optional.ofNullable(foundLocation);
     }
 
@@ -115,7 +112,6 @@ public class MysqlLocationDao implements LocationDao {
         parameterMap.put(1, imageUrl);
         parameterMap.put(2, locationId);
 
-        return DaoTemplate.getInstance()
-                .executeUpdate(CHANGE_IMAGE_URL_QUERY, parameterMap) > 0;
+        return DaoTemplate.executeUpdate(CHANGE_IMAGE_URL_QUERY, parameterMap) > 0;
     }
 }

@@ -2,29 +2,28 @@ package org.vitaly.model.reservation;
 
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Created by vitaly on 09.04.17.
  */
-public class PickedUpStateTest {
-    private ReservationState state = new PickedUpState();
+public class ClosedStateTest {
+    private ReservationState state = new ClosedState();
     private Reservation reservation = new Reservation.Builder()
             .setState(state)
             .build();
 
     @Test
-    public void pickedUpStateCanOnlyBecomeDroppedOff() throws Exception {
-        boolean canChangeState = !state.canApprove()
-                && !state.canCancel()
-                && !state.canReject()
-                && !state.canPickUp()
-                && state.canDropOff();
+    public void rejectedReservationCannotChangeState() throws Exception {
+        boolean canChangeState = state.canApprove()
+                || state.canCancel()
+                || state.canReject()
+                || state.canActivate()
+                || state.canClose();
 
-        assertTrue(canChangeState);
+        assertFalse(canChangeState);
     }
 
     @Test
@@ -44,7 +43,7 @@ public class PickedUpStateTest {
     }
 
     @Test
-    public void cancelDoesNotChangesReservationState() throws Exception {
+    public void cancelDoesNotChangeReservationState() throws Exception {
         state.cancel(reservation);
         ReservationState afterChange = reservation.getState();
 
@@ -52,20 +51,18 @@ public class PickedUpStateTest {
     }
 
     @Test
-    public void pickUpDoesNotChangeReservationState() throws Exception {
-        state.pickUp(reservation);
+    public void activateDoesNotChangeReservationState() throws Exception {
+        state.activate(reservation);
         ReservationState afterChange = reservation.getState();
 
         assertThat(afterChange, equalTo(state));
     }
 
     @Test
-    public void dropOffChangesReservationState() throws Exception {
-        state.dropOff(reservation);
+    public void closeDoesNotChangeReservationState() throws Exception {
+        state.close(reservation);
         ReservationState afterChange = reservation.getState();
 
-        assertThat(afterChange, allOf(
-                not(equalTo(state)),
-                instanceOf(DroppedOffState.class)));
+        assertThat(afterChange, equalTo(state));
     }
 }

@@ -81,8 +81,7 @@ CREATE TABLE car (
                            'reserved',
                            'served',
                            'returned',
-                           'unavailable',
-                           'maintained') NOT NULL DEFAULT 'unavailable',
+                           'unavailable') NOT NULL DEFAULT 'unavailable',
   model_id           BIGINT              NOT NULL,
   registration_plate VARCHAR(20)         NOT NULL,
   color              VARCHAR(20)         NOT NULL,
@@ -110,8 +109,8 @@ CREATE TABLE reservation (
                            'approved',
                            'rejected',
                            'canceled',
-                           'picked',
-                           'dropped') NOT NULL DEFAULT 'new',
+                           'active',
+                           'closed') NOT NULL DEFAULT 'new',
   rejection_reason   VARCHAR(128)              DEFAULT NULL,
 
   PRIMARY KEY (reservation_id)

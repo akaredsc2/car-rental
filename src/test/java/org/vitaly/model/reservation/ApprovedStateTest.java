@@ -17,12 +17,12 @@ public class ApprovedStateTest {
             .build();
 
     @Test
-    public void approvedStateCanOnlyBecomeCanceledOrPickedUp() throws Exception {
+    public void approvedStateCanOnlyBecomeCanceledOrActive() throws Exception {
         boolean canChangeState = !state.canApprove()
                 && state.canCancel()
                 && !state.canReject()
-                && state.canPickUp()
-                && !state.canDropOff();
+                && state.canActivate()
+                && !state.canClose();
 
         assertTrue(canChangeState);
     }
@@ -54,18 +54,18 @@ public class ApprovedStateTest {
     }
 
     @Test
-    public void pickUpChangesReservationState() throws Exception {
-        state.pickUp(reservation);
+    public void activateChangesReservationState() throws Exception {
+        state.activate(reservation);
         ReservationState afterChange = reservation.getState();
 
         assertThat(afterChange, allOf(
                 not(equalTo(state)),
-                instanceOf(PickedUpState.class)));
+                instanceOf(ActiveState.class)));
     }
 
     @Test
-    public void dropOffDoesNotChangeReservationState() throws Exception {
-        state.dropOff(reservation);
+    public void closeDoesNotChangeReservationState() throws Exception {
+        state.close(reservation);
         ReservationState afterChange = reservation.getState();
 
         assertThat(afterChange, equalTo(state));

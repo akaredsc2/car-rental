@@ -14,18 +14,7 @@ public class UnavailableState extends CarState {
     }
 
     @Override
-    boolean maintain(Car car) {
-        car.setState(CarStateEnum.MAINTAINED.getState());
-        return true;
-    }
-
-    @Override
     boolean canMakeAvailable() {
-        return true;
-    }
-
-    @Override
-    boolean canMaintain() {
         return true;
     }
 

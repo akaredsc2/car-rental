@@ -16,23 +16,24 @@ public class ReservedStateTest {
             .build();
 
     @Test
-    public void reservedCarCanOnlyBecomeServed() throws Exception {
+    public void reservedCarCanOnlyBecomeServedAndAvailable() throws Exception {
         boolean canChangeState =
-                !state.canMakeAvailable()
+                state.canMakeAvailable()
                         && !state.canReserve()
                         && state.canServe()
                         && !state.canReturn()
-                        && !state.canMakeUnavailable()
-                        && !state.canMaintain();
+                        && !state.canMakeUnavailable();
 
         assertTrue(canChangeState);
     }
 
     @Test
-    public void makeAvailableDoesNotChangeCarState() throws Exception {
+    public void makeAvailableDoesChangeCarStateToAvailable() throws Exception {
         state.makeAvailable(car);
 
-        assertThat(car.getState(), equalTo(state));
+        assertThat(car.getState(), allOf(
+                not(equalTo(state)),
+                instanceOf(AvailableState.class)));
     }
 
     @Test
@@ -61,13 +62,6 @@ public class ReservedStateTest {
     @Test
     public void makeUnavailableDoesNotChangeCarState() throws Exception {
         state.makeUnavailable(car);
-
-        assertThat(car.getState(), equalTo(state));
-    }
-
-    @Test
-    public void maintainDoesNotChangeCarState() throws Exception {
-        state.maintain(car);
 
         assertThat(car.getState(), equalTo(state));
     }

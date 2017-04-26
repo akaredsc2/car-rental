@@ -118,7 +118,7 @@ public class ReservationServiceImplTest {
     public void changeReservationState() throws Exception {
         ReservationDto reservationDto = new ReservationDto();
         reservationDto.setId(34);
-        ReservationState reservationState = ReservationStateEnum.PICKED.getState();
+        ReservationState reservationState = ReservationStateEnum.ACTIVE.getState();
 
         stab();
         reservationService.changeReservationState(reservationDto, reservationState);

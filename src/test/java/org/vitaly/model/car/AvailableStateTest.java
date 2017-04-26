@@ -22,8 +22,7 @@ public class AvailableStateTest {
                         && state.canReserve()
                         && !state.canServe()
                         && !state.canReturn()
-                        && state.canMakeUnavailable()
-                        && !state.canMaintain();
+                        && state.canMakeUnavailable();
 
         assertTrue(canChangeState);
     }
@@ -65,12 +64,5 @@ public class AvailableStateTest {
         assertThat(car.getState(), allOf(
                 not(equalTo(state)),
                 instanceOf(UnavailableState.class)));
-    }
-
-    @Test
-    public void maintainDoesNotChangeCarState() throws Exception {
-        state.maintain(car);
-
-        assertThat(car.getState(), equalTo(state));
     }
 }

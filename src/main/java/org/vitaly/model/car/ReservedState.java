@@ -8,8 +8,19 @@ public class ReservedState extends CarState {
     }
 
     @Override
+    boolean makeAvailable(Car car) {
+        car.setState(CarStateEnum.AVAILABLE.getState());
+        return true;
+    }
+
+    @Override
     boolean serve(Car car) {
         car.setState(CarStateEnum.SERVED.getState());
+        return true;
+    }
+
+    @Override
+    boolean canMakeAvailable() {
         return true;
     }
 

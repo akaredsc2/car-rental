@@ -59,8 +59,7 @@ public class MysqlUserDao implements UserDao {
         parameterMap.put(1, id);
 
         Mapper<User> mapper = ResultSetMapperFactory.getInstance().getUserMapper();
-        User user = DaoTemplate.getInstance()
-                .executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
+        User user = DaoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
         return Optional.ofNullable(user);
     }
 
@@ -71,8 +70,8 @@ public class MysqlUserDao implements UserDao {
         Map<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, user.getLogin());
 
-        Long foundId = DaoTemplate.getInstance()
-                .executeSelectOne(FIND_ID_OF_USER_QUERY, resultSet -> resultSet.getLong(1), parameterMap);
+        Long foundId =
+                DaoTemplate.executeSelectOne(FIND_ID_OF_USER_QUERY, resultSet -> resultSet.getLong(1), parameterMap);
 
         return Optional.ofNullable(foundId);
     }
@@ -80,8 +79,7 @@ public class MysqlUserDao implements UserDao {
     @Override
     public List<User> getAll() {
         Mapper<User> mapper = ResultSetMapperFactory.getInstance().getUserMapper();
-        return DaoTemplate.getInstance()
-                .executeSelect(GET_ALL_QUERY, mapper, Collections.emptyMap());
+        return DaoTemplate.executeSelect(GET_ALL_QUERY, mapper, Collections.emptyMap());
     }
 
     @Override
@@ -96,8 +94,7 @@ public class MysqlUserDao implements UserDao {
         parameterMap.put(5, user.getPassportNumber());
         parameterMap.put(6, user.getDriverLicenceNumber());
 
-        Long createdId = DaoTemplate.getInstance()
-                .executeInsert(CREATE_QUERY, parameterMap);
+        Long createdId = DaoTemplate.executeInsert(CREATE_QUERY, parameterMap);
         return Optional.ofNullable(createdId);
     }
 
@@ -118,8 +115,7 @@ public class MysqlUserDao implements UserDao {
         parameterMap.put(2, password);
 
         Mapper<User> mapper = ResultSetMapperFactory.getInstance().getUserMapper();
-        User authenticatedUser = DaoTemplate.getInstance()
-                .executeSelectOne(AUTHENTICATE_QUERY, mapper, parameterMap);
+        User authenticatedUser = DaoTemplate.executeSelectOne(AUTHENTICATE_QUERY, mapper, parameterMap);
         return Optional.ofNullable(authenticatedUser);
     }
 
@@ -131,8 +127,7 @@ public class MysqlUserDao implements UserDao {
         parameterMap.put(1, role.toString().toLowerCase());
         parameterMap.put(2, userId);
 
-        DaoTemplate.getInstance()
-                .executeUpdate(CHANGE_ROLE_QUERY, parameterMap);
+        DaoTemplate.executeUpdate(CHANGE_ROLE_QUERY, parameterMap);
     }
 
     @Override
@@ -143,7 +138,6 @@ public class MysqlUserDao implements UserDao {
         parameterMap.put(1, newPassword);
         parameterMap.put(2, userId);
 
-        DaoTemplate.getInstance()
-                .executeUpdate(CHANGE_PASSWORD_QUERY, parameterMap);
+        DaoTemplate.executeUpdate(CHANGE_PASSWORD_QUERY, parameterMap);
     }
 }

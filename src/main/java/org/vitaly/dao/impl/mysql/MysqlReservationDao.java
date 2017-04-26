@@ -69,8 +69,7 @@ public class MysqlReservationDao implements ReservationDao {
         parameterMap.put(1, id);
 
         Mapper<Reservation> mapper = ResultSetMapperFactory.getInstance().getReservationMapper();
-        Reservation reservation = DaoTemplate.getInstance()
-                .executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
+        Reservation reservation = DaoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
         return Optional.ofNullable(reservation);
     }
 
@@ -84,8 +83,7 @@ public class MysqlReservationDao implements ReservationDao {
     @Override
     public List<Reservation> getAll() {
         Mapper<Reservation> mapper = ResultSetMapperFactory.getInstance().getReservationMapper();
-        return DaoTemplate.getInstance()
-                .executeSelect(GET_ALL_QUERY, mapper, Collections.emptyMap());
+        return DaoTemplate.executeSelect(GET_ALL_QUERY, mapper, Collections.emptyMap());
     }
 
     @Override
@@ -99,8 +97,7 @@ public class MysqlReservationDao implements ReservationDao {
         parameterMap.put(4, Timestamp.valueOf(reservation.getDropOffDatetime()));
         parameterMap.put(5, ZoneOffset.UTC.toString());
 
-        Long createdId = DaoTemplate.getInstance()
-                .executeInsert(CREATE_QUERY, parameterMap);
+        Long createdId = DaoTemplate.executeInsert(CREATE_QUERY, parameterMap);
         return Optional.ofNullable(createdId);
     }
 
@@ -117,8 +114,7 @@ public class MysqlReservationDao implements ReservationDao {
         parameterMap.put(1, clientId);
 
         Mapper<Reservation> mapper = ResultSetMapperFactory.getInstance().getReservationMapper();
-        return DaoTemplate.getInstance()
-                .executeSelect(FIND_RESERVATIONS_BY_CLIENT_ID_QUERY, mapper, parameterMap);
+        return DaoTemplate.executeSelect(FIND_RESERVATIONS_BY_CLIENT_ID_QUERY, mapper, parameterMap);
     }
 
     @Override
@@ -127,8 +123,7 @@ public class MysqlReservationDao implements ReservationDao {
         parameterMap.put(1, adminId);
 
         Mapper<Reservation> mapper = ResultSetMapperFactory.getInstance().getReservationMapper();
-        return DaoTemplate.getInstance()
-                .executeSelect(FIND_RESERVATIONS_BY_ADMIN_ID_QUERY, mapper, parameterMap);
+        return DaoTemplate.executeSelect(FIND_RESERVATIONS_BY_ADMIN_ID_QUERY, mapper, parameterMap);
     }
 
     @Override
@@ -137,8 +132,7 @@ public class MysqlReservationDao implements ReservationDao {
         parameterMap.put(1, adminId);
         parameterMap.put(2, reservationId);
 
-        return DaoTemplate.getInstance()
-                .executeUpdate(ADD_ADMIN_TO_RESERVATION_QUERY, parameterMap) > 0;
+        return DaoTemplate.executeUpdate(ADD_ADMIN_TO_RESERVATION_QUERY, parameterMap) > 0;
     }
 
     @Override
@@ -149,8 +143,7 @@ public class MysqlReservationDao implements ReservationDao {
         parameterMap.put(1, state.toString());
         parameterMap.put(2, reservationId);
 
-        return DaoTemplate.getInstance()
-                .executeUpdate(CHANGE_RESERVATION_STATE_QUERY, parameterMap) > 0;
+        return DaoTemplate.executeUpdate(CHANGE_RESERVATION_STATE_QUERY, parameterMap) > 0;
     }
 
     @Override
@@ -161,14 +154,12 @@ public class MysqlReservationDao implements ReservationDao {
         parameterMap.put(1, rejectionReason);
         parameterMap.put(2, reservationId);
 
-        return DaoTemplate.getInstance()
-                .executeUpdate(ADD_REJECTION_REASON_QUERY, parameterMap) > 0;
+        return DaoTemplate.executeUpdate(ADD_REJECTION_REASON_QUERY, parameterMap) > 0;
     }
 
     @Override
     public List<Reservation> findReservationsWithoutAdmin() {
         Mapper<Reservation> mapper = ResultSetMapperFactory.getInstance().getReservationMapper();
-        return DaoTemplate.getInstance()
-                .executeSelect(FIND_RESERVATIONS_WITHOUT_ADMIN_QUERY, mapper, Collections.emptyMap());
+        return DaoTemplate.executeSelect(FIND_RESERVATIONS_WITHOUT_ADMIN_QUERY, mapper, Collections.emptyMap());
     }
 }

@@ -25,16 +25,8 @@ public class DaoTemplate {
     private static final int ERROR_CODE_DUPLICATE_ENTRY = 1062;
 
     private static Logger logger = LogManager.getLogger(DaoTemplate.class.getName());
-    private static DaoTemplate instance = new DaoTemplate();
 
-    private DaoTemplate() {
-    }
-
-    public static DaoTemplate getInstance() {
-        return instance;
-    }
-
-    public <T> List<T> executeSelect(String query, Mapper<T> mapper, Map<Integer, Object> parameterMap) {
+    public static <T> List<T> executeSelect(String query, Mapper<T> mapper, Map<Integer, Object> parameterMap) {
         List<T> result = new ArrayList<>();
 
         try (PooledConnection connection = MysqlConnectionPool.getInstance().getConnection();
@@ -59,14 +51,14 @@ public class DaoTemplate {
         }
     }
 
-    private void setQueryParameters(PreparedStatement statement, Map<Integer, Object> parameterMap)
+    private static void setQueryParameters(PreparedStatement statement, Map<Integer, Object> parameterMap)
             throws SQLException {
         for (Integer i : parameterMap.keySet()) {
             statement.setObject(i, parameterMap.get(i));
         }
     }
 
-    public <T> T executeSelectOne(String query, Mapper<T> mapper, Map<Integer, Object> parameterMap) {
+    public static <T> T executeSelectOne(String query, Mapper<T> mapper, Map<Integer, Object> parameterMap) {
         List<T> result = executeSelect(query, mapper, parameterMap);
 
         if (result.isEmpty()) {
@@ -76,7 +68,7 @@ public class DaoTemplate {
         }
     }
 
-    public Long executeInsert(String query, Map<Integer, Object> parameterMap) {
+    public static Long executeInsert(String query, Map<Integer, Object> parameterMap) {
         Long insertedId = null;
 
         try (PooledConnection connection = MysqlConnectionPool.getInstance().getConnection();
@@ -100,7 +92,7 @@ public class DaoTemplate {
         return insertedId;
     }
 
-    public int executeUpdate(String query, Map<Integer, Object> parameterMap) {
+    public static int executeUpdate(String query, Map<Integer, Object> parameterMap) {
         try (PooledConnection connection = MysqlConnectionPool.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setQueryParameters(statement, parameterMap);
