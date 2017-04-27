@@ -1,17 +1,13 @@
 package org.vitaly.servlet;
 
-import org.vitaly.dao.abstraction.connectionPool.ConnectionPool;
-import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
-import org.vitaly.dao.impl.mysql.connectionPool.MysqlConnectionPool;
-import org.vitaly.model.user.User;
+import org.vitaly.controller.abstraction.command.Command;
+import org.vitaly.controller.impl.factory.CommandFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Optional;
 
 /**
  * Created by vitaly on 2017-04-11.
@@ -28,35 +24,9 @@ public class CarRentalServlet extends HttpServlet {
     }
 
     private void process(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String command = req.getParameter("command");
+        String commandParameter = req.getParameter("param_command");
 
-        if (command != null) {
-            if (command.equals("log_in")) {
-                String userLogin = req.getParameter("user_login");
-                String userPassword = req.getParameter("user_password");
-
-                ConnectionPool pool = MysqlConnectionPool.getInstance();
-                PooledConnection connection = pool.getConnection();
-//                UserService userService = new UserServiceImpl(connection);
-
-//                Optional<User> user = userService.authenticate(userLogin, userPassword);
-                Optional<User> user = Optional.empty();
-
-                if (user.isPresent()) {
-                    HttpSession session = req.getSession();
-                    session.setAttribute("user", user.get());
-                    getServletContext().getRequestDispatcher("/home.jsp").forward(req, resp);
-                } else {
-                    req.setAttribute("error", "user not found");
-                    getServletContext().getRequestDispatcher("/error.jsp").forward(req, resp);
-                }
-            } else {
-                req.setAttribute("error", "command not found");
-                getServletContext().getRequestDispatcher("/error.jsp").forward(req, resp);
-            }
-        } else {
-            req.setAttribute("error", "command not supplied");
-            getServletContext().getRequestDispatcher("/error.jsp").forward(req, resp);
-        }
+        Command command = CommandFactory.getInstance().getCommand(commandParameter);
+        command.execute(req, resp);
     }
 }

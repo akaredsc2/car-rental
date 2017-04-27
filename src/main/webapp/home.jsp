@@ -11,13 +11,14 @@
     <title>Home</title>
 </head>
 <body>
-Hello, ${sessionScope.user.id}<br>
-${sessionScope.user.login}<br>
-${sessionScope.user.password}<br>
-${sessionScope.user.fullName}<br>
-${sessionScope.user.birthDate}<br>
-${sessionScope.user.passportNumber}<br>
-${sessionScope.user.driverLicenceNumber}<br>
-${sessionScope.user.role}<br>
+Hello,
+${sessionScope.session_attr_user.id}<br>
+${sessionScope.session_attr_user.login}<br>
+${sessionScope.session_attr_user.password}<br>
+${sessionScope.session_attr_user.fullName}<br>
+${sessionScope.session_attr_user.birthDate}<br>
+${sessionScope.session_attr_user.passportNumber}<br>
+${sessionScope.session_attr_user.driverLicenceNumber}<br>
+${sessionScope.session_attr_user.role}<br>
 </body>
 </html>

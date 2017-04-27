@@ -13,13 +13,14 @@
 <body>
 <form method="post" action="CarRental">
     <label>
-        Login : <input type="text" name="user_login" required>
+        Login : <input type="text" name="param_user_login" required>
     </label>
     <label>
-        Password : <input type="password" name="user_password" required>
+        Password : <input type="password" name="param_user_password" required>
     </label>
-    <input type="hidden" name="command" value="log_in">
+    <input type="hidden" name="param_command" value="log_in">
     <input type="submit">
 </form>
+<a href="registration.jsp">register new user</a>
 </body>
 </html>
