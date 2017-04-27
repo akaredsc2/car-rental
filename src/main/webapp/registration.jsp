@@ -6,38 +6,42 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<fmt:setBundle basename="parameters" var="par"/>
+<fmt:setLocale value="uk_UA"/>
+<fmt:setBundle basename="info" var="reg"/>
 <html>
 <head>
-    <title>Registration</title>
+    <title><fmt:message key="reg.title" bundle="${reg}"/></title>
 </head>
 <body>
 <form method="post" action="CarRental">
     <label>
-        login
-        <input type="text" name="param_user_login" required>
-    </label>
+        <fmt:message key="reg.login" bundle="${reg}"/>
+        <input type="text" name="<fmt:message key="param.user.login" bundle="${par}"/>" required>
+    </label><br>
     <label>
-        password
-        <input type="password" name="param_user_password" required>
-    </label>
+        <fmt:message key="reg.password" bundle="${reg}"/>
+        <input type="password" name="<fmt:message key="param.user.password" bundle="${par}"/>" required>
+    </label><br>
     <label>
-        full name
-        <input type="text" name="param_user_full_name" required>
+        <fmt:message key="reg.name" bundle="${reg}"/>
+        <input type="text" name="<fmt:message key="param.user.name" bundle="${par}"/>" required>
     </label>
-    <label>
-        birth date
-        <input type="datetime-local" name="param_user_birth_date" required>
+    <label><br>
+        <fmt:message key="reg.birthday" bundle="${reg}"/>
+        <input type="datetime-local" name="<fmt:message key="param.user.birthday" bundle="${par}"/>" required>
     </label>
-    <label>
-        passport number
-        <input type="text" name="param_user_passport_number" required>
+    <label><br>
+        <fmt:message key="reg.passport" bundle="${reg}"/>
+        <input type="text" name="<fmt:message key="param.user.passport" bundle="${par}"/>" required>
     </label>
-    <label>
-        driver licence number
-        <input type="text" name="param_user_driver_licence_number" required>
-    </label>
+    <label><br>
+        <fmt:message key="reg.driver" bundle="${reg}"/>
+        <input type="text" name="<fmt:message key="param.user.driver" bundle="${par}"/>" required>
+    </label><br>
 
-    <input type="hidden" name="param_command" value="registration">
+    <input type="hidden" name="<fmt:message key="param.command" bundle="${par}"/>" value="registration">
     <input type="submit">
 </form>
 <a href="index.jsp">index</a>

@@ -1,7 +1,7 @@
 package org.vitaly.controller.impl.factory;
 
 import org.vitaly.controller.abstraction.command.Command;
-import org.vitaly.controller.impl.command.LoginCommand;
+import org.vitaly.controller.impl.command.SignInCommand;
 import org.vitaly.controller.impl.command.RegistrationCommand;
 import org.vitaly.controller.impl.command.WrongCommand;
 
@@ -18,7 +18,7 @@ public class CommandFactory {
 
     private CommandFactory() {
         commandMap = new HashMap<>();
-        commandMap.put("log_in", new LoginCommand());
+        commandMap.put("sign_in", new SignInCommand());
         commandMap.put("registration", new RegistrationCommand());
 
         WRONG_COMMAND = new WrongCommand();

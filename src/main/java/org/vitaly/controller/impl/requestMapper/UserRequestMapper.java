@@ -9,6 +9,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.ResourceBundle;
+
+import static org.vitaly.util.Properties.*;
 
 /**
  * Created by vitaly on 2017-04-27.
@@ -17,22 +20,24 @@ public class UserRequestMapper implements RequestMapper<UserDto> {
 
     @Override
     public UserDto map(HttpServletRequest request) {
-        String idString = request.getParameter("param_user_id");
+        ResourceBundle parameters = ResourceBundle.getBundle(PARAMETERS);
+
+        String idString = request.getParameter(parameters.getString(PARAM_USER_ID));
         long id = (idString == null) ? 0 : Long.valueOf(idString);
 
-        String login = request.getParameter("param_user_login");
-        String password = request.getParameter("param_user_password");
-        String fullName = request.getParameter("param_user_full_name");
+        String login = request.getParameter(parameters.getString(PARAM_USER_LOGIN));
+        String password = request.getParameter(parameters.getString(PARAM_USER_PASSWORD));
+        String fullName = request.getParameter(parameters.getString(PARAM_USER_NAME));
 
-        String birthDateString = request.getParameter("param_user_birth_date");
-        LocalDate birthDate =
+        String birthDateString = request.getParameter(parameters.getString(PARAM_USER_BIRTHDAY));
+        LocalDate birthday =
                 (birthDateString == null) ?
                         null :
                         LocalDateTime.parse(birthDateString, DateTimeFormatter.ISO_DATE_TIME).toLocalDate();
 
-        String passportNumber = request.getParameter("param_user_passport_number");
-        String licenceNumber = request.getParameter("param_user_driver_licence_number");
-        String roleString = request.getParameter("param_user_role");
+        String passportNumber = request.getParameter(parameters.getString(PARAM_USER_PASSPORT));
+        String licenceNumber = request.getParameter(parameters.getString(PARAM_USER_DRIVER));
+        String roleString = request.getParameter(parameters.getString(PARAM_USER_ROLE));
 
         UserRole userRole = Arrays.stream(UserRole.values())
                 .map(UserRole::toString)
@@ -46,7 +51,7 @@ public class UserRequestMapper implements RequestMapper<UserDto> {
         userDto.setLogin(login);
         userDto.setPassword(password);
         userDto.setFullName(fullName);
-        userDto.setBirthDate(birthDate);
+        userDto.setBirthDate(birthday);
         userDto.setPassportNumber(passportNumber);
         userDto.setDriverLicenceNumber(licenceNumber);
         userDto.setRole(userRole);

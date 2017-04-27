@@ -6,19 +6,26 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<fmt:setBundle basename="parameters" var="par"/>
+<fmt:setLocale value="uk_UA"/>
+<fmt:setBundle basename="info" var="in"/>
 <html>
 <head>
-    <title>Index</title>
+    <title><fmt:message key="sign.in.title" bundle="${in}"/></title>
 </head>
 <body>
 <form method="post" action="CarRental">
     <label>
-        Login : <input type="text" name="param_user_login" required>
-    </label>
+        <fmt:message key="sign.in.login" bundle="${in}"/>
+        <input type="text" name="<fmt:message key="param.user.login" bundle="${par}"/>" required>
+    </label><br>
     <label>
-        Password : <input type="password" name="param_user_password" required>
-    </label>
-    <input type="hidden" name="param_command" value="log_in">
+        <fmt:message key="sign.in.password" bundle="${in}"/>
+        <input type="password" name="<fmt:message key="param.user.password" bundle="${par}"/>" required>
+    </label><br>
+
+    <input type="hidden" name="<fmt:message key="param.command" bundle="${par}"/>" value="sign_in">
     <input type="submit">
 </form>
 <a href="registration.jsp">register new user</a>

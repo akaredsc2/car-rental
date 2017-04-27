@@ -14,7 +14,7 @@ import java.io.IOException;
 /**
  * Created by vitaly on 2017-04-27.
  */
-public class LoginCommand implements Command {
+public class SignInCommand implements Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         RequestMapper<UserDto> userMapper = new UserRequestMapper();
