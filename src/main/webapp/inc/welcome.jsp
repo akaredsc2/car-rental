@@ -10,9 +10,10 @@
 <c:if test="${!empty sessionScope.session_user}">
     <form method="post" action="CarRental">
         <fmt:message key="welcome.greetings" bundle="${info}"/>
-        <c:out value="${sessionScope.session_user.fullName}"/>!<br>
+        <c:out value="${sessionScope.session_user.fullName}"/> !
 
         <input type="hidden" name="<fmt:message key="param.command" bundle="${par}"/>" value="sign_out">
         <input type="submit" value="<fmt:message key="welcome.leave" bundle="${info}"/>"/>
-    </form><br>
+    </form>
+    <br>
 </c:if>

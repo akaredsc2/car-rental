@@ -2,7 +2,7 @@ package org.vitaly.controller.impl.command;
 
 import org.vitaly.controller.abstraction.command.Command;
 import org.vitaly.controller.impl.factory.RequestMapperFactory;
-import org.vitaly.service.impl.dto.UserDto;
+import org.vitaly.service.impl.dto.CarModelDto;
 import org.vitaly.service.impl.factory.ServiceFactory;
 
 import javax.servlet.ServletException;
@@ -13,26 +13,25 @@ import java.io.IOException;
 import static org.vitaly.util.PropertyNames.ATTR_ERROR;
 
 /**
- * Created by vitaly on 2017-04-27.
+ * Created by vitaly on 28.04.17.
  */
-public class RegistrationCommand implements Command {
-
+public class AddCarModelCommand implements Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        UserDto userDto = RequestMapperFactory.getInstance()
-                .getUserRequestMapper()
+        CarModelDto carModelDto = RequestMapperFactory.getInstance()
+                .getCarModelRequestMapper()
                 .map(request);
 
-        // TODO: 2017-04-27 validation
+        // TODO: 28.04.17 validation
 
-        boolean isRegistered = ServiceFactory.getInstance()
-                .getUserService()
-                .registerNewUser(userDto);
+        boolean isAdded = ServiceFactory.getInstance()
+                .getCarModelService()
+                .addCarModel(carModelDto);
 
-        if (isRegistered) {
-            request.getServletContext().getRequestDispatcher("/index.jsp").forward(request, response);
+        if (isAdded) {
+            request.getServletContext().getRequestDispatcher("/home.jsp").forward(request, response);
         } else {
-            request.setAttribute(ATTR_ERROR, "registration failed");
+            request.setAttribute(ATTR_ERROR, "failed to add car model");
             request.getServletContext().getRequestDispatcher("/error.jsp").forward(request, response);
         }
     }

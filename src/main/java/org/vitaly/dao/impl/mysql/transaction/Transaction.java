@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.exception.DaoException;
 import org.vitaly.dao.impl.mysql.connectionPool.MysqlConnectionPool;
+import org.vitaly.dao.impl.mysql.connectionPool.MysqlPooledConnection;
 
 import java.sql.SQLException;
 
@@ -13,6 +14,9 @@ import java.sql.SQLException;
  */
 public class Transaction implements AutoCloseable {
     private static Logger logger = LogManager.getLogger(Transaction.class.getName());
+
+    // TODO: 28.04.17 move from connection pool
+//    private static ThreadLocal<MysqlPooledConnection> .....
 
     private boolean autoCommitBeforeTransaction;
 
@@ -59,6 +63,7 @@ public class Transaction implements AutoCloseable {
 
     }
 
+    // TODO: 28.04.17 remove
     @Override
     public void close() {
         try {
@@ -74,4 +79,9 @@ public class Transaction implements AutoCloseable {
             throw new DaoException(message, e);
         }
     }
+
+    // TODO: 28.04.17 implement
+//    public MysqlPooledConnection getConnection() {
+//
+//    }
 }

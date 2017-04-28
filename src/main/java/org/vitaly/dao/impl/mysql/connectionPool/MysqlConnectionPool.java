@@ -61,6 +61,7 @@ public class MysqlConnectionPool implements ConnectionPool {
         return url;
     }
 
+    // TODO: 28.04.17 remove
     public static void configureConnectionPool(String fileName) {
         requireNotNull(fileName, "Connection pool configuration properties file name must not be null!");
 
@@ -73,6 +74,7 @@ public class MysqlConnectionPool implements ConnectionPool {
         }
     }
 
+    // TODO: 28.04.17 initialize at load. create separate connection pool for tests
     private static MysqlConnectionPool createConnectionPoolFromProperties(String fileName)
             throws IOException, ClassNotFoundException {
         InputStream input = MysqlConnectionPool.class.getClassLoader().getResourceAsStream(fileName);
@@ -105,6 +107,7 @@ public class MysqlConnectionPool implements ConnectionPool {
         return instance;
     }
 
+    // TODO: 28.04.17 simply return connection. consider synchronization
     @Override
     public PooledConnection getConnection() {
         try {
@@ -124,11 +127,13 @@ public class MysqlConnectionPool implements ConnectionPool {
         }
     }
 
+    // TODO: 28.04.17 remove
     @Override
     public void freeConnection() {
         pooledConnectionThreadLocal.remove();
     }
 
+    // TODO: 28.04.17 remove
     private static class Builder {
         private String url;
         private String username;

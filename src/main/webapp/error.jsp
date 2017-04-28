@@ -13,7 +13,7 @@
 <c:import url="inc/welcome.jsp"/>
 <fmt:message key="error.general" bundle="${info}"/><br>
 
-${requestScope.error}
+${requestScope.attr_error}<br>
 
 <c:choose>
     <c:when test="${empty sessionScope.session_user}">
