@@ -22,8 +22,14 @@ public class PropertyNames {
     public static final String PARAM_MODEL_SEAT = "param.model.seat";
     public static final String PARAM_MODEL_HORSE = "param.model.horse";
 
-    public static final String PARAM_COMMAND = "param.command";
+    public static final String PARAM_LOCATION_ID = "param.location.id";
+    public static final String PARAM_LOCATION_PHOTO = "param.location.photo";
+    public static final String PARAM_LOCATION_STATE = "param.location.state";
+    public static final String PARAM_LOCATION_CITY = "param.location.city";
+    public static final String PARAM_LOCATION_STREET = "param.location.street";
+    public static final String PARAM_LOCATION_BUILDING = "param.location.building";
 
+    public static final String PARAM_COMMAND = "param.command";
 
     // TODO: 28.04.17 read as request attribute or rework
 //    public static final String ATTR_ERROR = "attr.error";

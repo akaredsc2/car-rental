@@ -12,5 +12,6 @@
 <body>
 <c:import url="inc/welcome.jsp"/>
 <a href="add_car_model.jsp"><fmt:message key="model.add.href" bundle="${info}"/></a>
+<a href="add_location.jsp"><fmt:message key="location.add.href" bundle="${info}"/></a>
 </body>
 </html>

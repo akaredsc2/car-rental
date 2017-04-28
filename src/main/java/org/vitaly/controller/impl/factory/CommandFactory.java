@@ -20,6 +20,7 @@ public class CommandFactory {
         commandMap.put("sign_out", new SignOutCommand());
         commandMap.put("registration", new RegistrationCommand());
         commandMap.put("add_car_model", new AddCarModelCommand());
+        commandMap.put("add_location", new AddLocationCommand());
 
         WRONG_COMMAND = new WrongCommand();
     }

@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.exception.DaoException;
 import org.vitaly.dao.impl.mysql.connectionPool.MysqlConnectionPool;
-import org.vitaly.dao.impl.mysql.connectionPool.MysqlPooledConnection;
 
 import java.sql.SQLException;
 
