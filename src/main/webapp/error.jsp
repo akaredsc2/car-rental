@@ -1,17 +1,27 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: vitaly
-  Date: 2017-04-11
-  Time: 21:28
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
+<fmt:setLocale value="uk_UA"/>
+<fmt:setBundle basename="info" var="info"/>
+
 <html>
 <head>
-    <title>Error</title>
+    <title><fmt:message key="error.title" bundle="${info}"/></title>
 </head>
 <body>
-Something went terribly wrong<br>
+<c:import url="inc/welcome.jsp"/>
+<fmt:message key="error.general" bundle="${info}"/><br>
+
 ${requestScope.error}
+
+<c:choose>
+    <c:when test="${empty sessionScope.session_user}">
+        <a href="index.jsp"><fmt:message key="sign.in.href" bundle="${info}"/></a>
+    </c:when>
+    <c:when test="${not empty sessionScope.session_user}">
+        <a href="home.jsp"><fmt:message key="home.href" bundle="${info}"/></a>
+    </c:when>
+</c:choose>
 </body>
 </html>

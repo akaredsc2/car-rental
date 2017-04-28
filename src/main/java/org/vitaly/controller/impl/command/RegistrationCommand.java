@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static org.vitaly.util.Properties.ATTR_ERROR;
+
 /**
  * Created by vitaly on 2017-04-27.
  */
@@ -18,6 +20,8 @@ public class RegistrationCommand implements Command {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        // TODO: 2017-04-28 make factory call
         RequestMapper<UserDto> userMapper = new UserRequestMapper();
 
         UserDto userDto = userMapper.map(request);
@@ -31,7 +35,7 @@ public class RegistrationCommand implements Command {
         if (isRegistered) {
             request.getServletContext().getRequestDispatcher("/index.jsp").forward(request, response);
         } else {
-            request.setAttribute("error", "registration failed");
+            request.setAttribute(ATTR_ERROR, "registration failed");
             request.getServletContext().getRequestDispatcher("/error.jsp").forward(request, response);
         }
     }

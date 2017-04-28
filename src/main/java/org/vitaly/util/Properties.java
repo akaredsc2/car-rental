@@ -16,4 +16,8 @@ public class Properties {
     public static final String PARAM_USER_ROLE = "param.user.role";
 
     public static final String PARAM_COMMAND = "param.command";
+
+    public static final String ATTR_ERROR = "attr.error";
+
+    public static final String SESSION_USER = "session.user";
 }
