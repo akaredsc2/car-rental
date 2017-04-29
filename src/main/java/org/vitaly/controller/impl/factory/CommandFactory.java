@@ -21,6 +21,8 @@ public class CommandFactory {
         commandMap.put("registration", new RegistrationCommand());
         commandMap.put("add_car_model", new AddCarModelCommand());
         commandMap.put("add_location", new AddLocationCommand());
+        commandMap.put("prepare_add_car", new PrepareToAddCarCommand());
+        commandMap.put("add_car", new AddCarCommand());
 
         WRONG_COMMAND = new WrongCommand();
     }

@@ -9,22 +9,15 @@ import org.vitaly.dao.impl.mysql.*;
 public class MysqlDaoFactory {
     private static MysqlDaoFactory instance = new MysqlDaoFactory();
 
-    private BillDao billDao;
-    private CarDao carDao;
-    private CarModelDao carModelDao;
-    private LocationDao locationDao;
-    private NotificationDao notificationDao;
-    private ReservationDao reservationDao;
-    private UserDao userDao;
+    private BillDao billDao = new MysqlBillDao();
+    private CarDao carDao = new MysqlCarDao();
+    private CarModelDao carModelDao = new MysqlCarModelDao();
+    private LocationDao locationDao = new MysqlLocationDao();
+    private NotificationDao notificationDao = new MysqlNotificationDao();
+    private ReservationDao reservationDao = new MysqlReservationDao();
+    private UserDao userDao = new MysqlUserDao();
 
     private MysqlDaoFactory() {
-        billDao = new MysqlBillDao();
-        carDao = new MysqlCarDao();
-        carModelDao = new MysqlCarModelDao();
-        locationDao = new MysqlLocationDao();
-        notificationDao = new MysqlNotificationDao();
-        reservationDao = new MysqlReservationDao();
-        userDao = new MysqlUserDao();
     }
 
     public static MysqlDaoFactory getInstance() {

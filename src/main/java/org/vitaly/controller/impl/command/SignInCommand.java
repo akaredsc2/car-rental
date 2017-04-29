@@ -5,15 +5,12 @@ import org.vitaly.controller.impl.requestMapper.RequestMapper;
 import org.vitaly.controller.impl.requestMapper.UserRequestMapper;
 import org.vitaly.service.impl.dto.UserDto;
 import org.vitaly.service.impl.factory.ServiceFactory;
-import org.vitaly.util.PropertyUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Properties;
 
-import static org.vitaly.util.PropertyNames.PARAMETERS;
 import static org.vitaly.util.PropertyNames.SESSION_USER;
 
 /**
@@ -25,14 +22,12 @@ public class SignInCommand implements Command {
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         RequestMapper<UserDto> userMapper = new UserRequestMapper();
         UserDto userDto = userMapper.map(request);
-        Properties properties = PropertyUtils.readProperties(PARAMETERS);
-        String sessionUserAttribute = properties.getProperty(SESSION_USER);
 
         // TODO: 2017-04-28 consider failure
         ServiceFactory.getInstance()
                 .getUserService()
                 .authenticate(userDto.getLogin(), userDto.getPassword())
-                .ifPresent(user -> request.getSession(true).setAttribute(sessionUserAttribute, user));
+                .ifPresent(user -> request.getSession(true).setAttribute(SESSION_USER, user));
 
         request.getServletContext().getRequestDispatcher("/home.jsp").forward(request, response);
     }

@@ -28,7 +28,7 @@ public class AddLocationCommand implements Command {
                 .addNewLocation(locationDto);
 
         if (isAdded) {
-            request.getServletContext().getRequestDispatcher("/home.jsp").forward(request, response);
+            response.sendRedirect(request.getContextPath() + "/home.jsp");
         } else {
             request.setAttribute(ATTR_ERROR, "failed to add location");
             request.getServletContext().getRequestDispatcher("/error.jsp").forward(request, response);

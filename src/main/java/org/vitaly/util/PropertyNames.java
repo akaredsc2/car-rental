@@ -3,7 +3,7 @@ package org.vitaly.util;
 /**
  * Created by vitaly on 2017-04-27.
  */
-public class PropertyNames {
+public final class PropertyNames {
     public static final String PARAMETERS = "parameters.properties";
 
     public static final String PARAM_USER_ID = "param.user.id";
@@ -29,11 +29,18 @@ public class PropertyNames {
     public static final String PARAM_LOCATION_STREET = "param.location.street";
     public static final String PARAM_LOCATION_BUILDING = "param.location.building";
 
+    public static final String PARAM_CAR_ID = "param.car.id";
+    public static final String PARAM_CAR_MODEL = "param.car.model";
+    public static final String PARAM_CAR_STATE = "param.car.state";
+    public static final String PARAM_CAR_PLATE = "param.car.plate";
+    public static final String PARAM_CAR_COLOR = "param.car.color";
+    public static final String PARAM_CAR_PRICE = "param.car.price";
+
     public static final String PARAM_COMMAND = "param.command";
 
-    // TODO: 28.04.17 read as request attribute or rework
-//    public static final String ATTR_ERROR = "attr.error";
     public static final String ATTR_ERROR = "attr_error";
 
-    public static final String SESSION_USER = "session.user";
+    public static final String ATTR_ALL_MODEL_LIST = "attr_all_model_list";
+
+    public static final String SESSION_USER = "session_user";
 }

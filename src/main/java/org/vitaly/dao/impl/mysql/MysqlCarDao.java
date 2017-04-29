@@ -27,11 +27,11 @@ public class MysqlCarDao implements CarDao {
             "SELECT * " +
                     "FROM car";
     private static final String CREATE_QUERY =
-            "INSERT INTO car (car_status, model_id, registration_plate, color, price_per_day) " +
-                    "VALUES (?, ?, ?, ?, ?)";
+            "INSERT INTO car (model_id, registration_plate, color, price_per_day) " +
+                    "VALUES (?, ?, ?, ?)";
     private static final String UPDATE_QUERY =
             "UPDATE car " +
-                    "SET car_status = ?, model_id = ?, registration_plate = ?, color = ?, price_per_day = ? " +
+                    "SET model_id = ?, registration_plate = ?, color = ?, price_per_day = ?, car_status = ? " +
                     "WHERE car_id = ?";
     private static final String ADD_CAR_TO_LOCATION_QUERY =
             "UPDATE car " +
@@ -95,11 +95,10 @@ public class MysqlCarDao implements CarDao {
     }
 
     private void putCarParametersToMap(Car car, Map<Integer, Object> parameterMap) {
-        parameterMap.put(1, car.getState().toString());
-        parameterMap.put(2, car.getCarModel().getId());
-        parameterMap.put(3, car.getRegistrationPlate());
-        parameterMap.put(4, car.getColor());
-        parameterMap.put(5, car.getPricePerDay());
+        parameterMap.put(1, car.getCarModel().getId());
+        parameterMap.put(2, car.getRegistrationPlate());
+        parameterMap.put(3, car.getColor());
+        parameterMap.put(4, car.getPricePerDay());
     }
 
     @Override
@@ -108,6 +107,7 @@ public class MysqlCarDao implements CarDao {
 
         Map<Integer, Object> parameterMap = new HashMap<>();
         putCarParametersToMap(car, parameterMap);
+        parameterMap.put(5, car.getState().toString());
         parameterMap.put(6, id);
 
         return DaoTemplate.executeUpdate(UPDATE_QUERY, parameterMap);

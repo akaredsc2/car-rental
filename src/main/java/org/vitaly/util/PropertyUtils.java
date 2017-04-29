@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -30,20 +31,29 @@ public class PropertyUtils {
         }
     }
 
-    public static long getLongFromRequest(HttpServletRequest request, Properties properties, String parameterName) {
+    public static long getLongFromRequest(HttpServletRequest request,
+                                          Properties properties, String parameterName) {
         String idString = request.getParameter(properties.getProperty(parameterName));
         return (idString == null) ? 0 : Long.valueOf(idString);
     }
 
-    public static int getIntFromRequest(HttpServletRequest request, Properties properties, String parameterName) {
+    public static int getIntFromRequest(HttpServletRequest request,
+                                        Properties properties, String parameterName) {
         String idString = request.getParameter(properties.getProperty(parameterName));
         return (idString == null) ? 0 : Integer.valueOf(idString);
     }
 
-    public static LocalDate getLocalDateFromRequest(HttpServletRequest request, Properties properties, String parameterName) {
+    public static LocalDate getLocalDateFromRequest(HttpServletRequest request,
+                                                    Properties properties, String parameterName) {
         String birthDateString = request.getParameter(properties.getProperty(parameterName));
         return (birthDateString == null) ?
                 null :
                 LocalDateTime.parse(birthDateString, DateTimeFormatter.ISO_DATE_TIME).toLocalDate();
+    }
+
+    public static BigDecimal getBigDecimalFromRequest(HttpServletRequest request,
+                                                      Properties properties, String parameterName) {
+        String bigDecimalString = request.getParameter(properties.getProperty(parameterName));
+        return (bigDecimalString == null) ? null : new BigDecimal(bigDecimalString);
     }
 }

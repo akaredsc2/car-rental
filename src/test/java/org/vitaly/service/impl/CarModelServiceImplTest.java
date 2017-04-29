@@ -61,7 +61,7 @@ public class CarModelServiceImplTest {
     @Test
     public void getAllMatchingCarModels() throws Exception {
         stab();
-        carModelService.getAllMatchingCarModels(x -> true);
+        carModelService.getAllCarModels();
 
         verify(carModelDao).getAll();
     }

@@ -16,22 +16,15 @@ import org.vitaly.service.impl.dtoMapper.*;
 public class DtoMapperFactory {
     private static DtoMapperFactory instance = new DtoMapperFactory();
 
-    private DtoMapper<Bill, BillDto> billDtoMapper;
-    private DtoMapper<CarModel, CarModelDto> carModelDtoMapper;
-    private DtoMapper<Car, CarDto> carDtoMapper;
-    private DtoMapper<Location, LocationDto> locationDtoMapper;
-    private DtoMapper<Notification, NotificationDto> notificationDtoMapper;
-    private DtoMapper<Reservation, ReservationDto> reservationDtoMapper;
-    private DtoMapper<User, UserDto> userDtoMapper;
+    private DtoMapper<Bill, BillDto> billDtoMapper = new BillDtoMapper();
+    private DtoMapper<CarModel, CarModelDto> carModelDtoMapper = new CarModelDtoMapper();
+    private DtoMapper<Car, CarDto> carDtoMapper = new CarDtoMapper();
+    private DtoMapper<Location, LocationDto> locationDtoMapper = new LocationDtoMapper();
+    private DtoMapper<Notification, NotificationDto> notificationDtoMapper = new NotificationDtoMapper();
+    private DtoMapper<Reservation, ReservationDto> reservationDtoMapper = new ReservationDtoMapper();
+    private DtoMapper<User, UserDto> userDtoMapper = new UserDtoMapper();
 
-    public DtoMapperFactory() {
-        this.billDtoMapper = new BillDtoMapper();
-        this.carModelDtoMapper = new CarModelDtoMapper();
-        this.carDtoMapper = new CarDtoMapper();
-        this.locationDtoMapper = new LocationDtoMapper();
-        this.notificationDtoMapper = new NotificationDtoMapper();
-        this.reservationDtoMapper = new ReservationDtoMapper();
-        this.userDtoMapper = new UserDtoMapper();
+    private DtoMapperFactory() {
     }
 
     public static DtoMapperFactory getInstance() {

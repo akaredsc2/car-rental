@@ -1,9 +1,7 @@
 package org.vitaly.controller.impl.factory;
 
-import org.vitaly.controller.impl.requestMapper.CarModelRequestMapper;
-import org.vitaly.controller.impl.requestMapper.LocationRequestMapper;
-import org.vitaly.controller.impl.requestMapper.RequestMapper;
-import org.vitaly.controller.impl.requestMapper.UserRequestMapper;
+import org.vitaly.controller.impl.requestMapper.*;
+import org.vitaly.service.impl.dto.CarDto;
 import org.vitaly.service.impl.dto.CarModelDto;
 import org.vitaly.service.impl.dto.LocationDto;
 import org.vitaly.service.impl.dto.UserDto;
@@ -17,6 +15,10 @@ public class RequestMapperFactory {
     private RequestMapper<UserDto> userRequestMapper = new UserRequestMapper();
     private RequestMapper<CarModelDto> carModelRequestMapper = new CarModelRequestMapper();
     private RequestMapper<LocationDto> locationRequestMapper = new LocationRequestMapper();
+    private RequestMapper<CarDto> carRequestMapper = new CarRequestMapper();
+
+    private RequestMapperFactory() {
+    }
 
     public static RequestMapperFactory getInstance() {
         return instance;
@@ -32,5 +34,9 @@ public class RequestMapperFactory {
 
     public RequestMapper<LocationDto> getLocationRequestMapper() {
         return locationRequestMapper;
+    }
+
+    public RequestMapper<CarDto> getCarRequestMapper() {
+        return carRequestMapper;
     }
 }

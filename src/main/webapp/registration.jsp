@@ -40,6 +40,6 @@
     <input type="hidden" name="<fmt:message key="param.command" bundle="${par}"/>" value="registration">
     <input type="submit" value="<fmt:message key="reg.submit" bundle="${info}"/>">
 </form>
-<a href="index.jsp"><fmt:message key="sign.in.href" bundle="${info}"/></a>
+<a href="index.jsp"><fmt:message key="signIn.href" bundle="${info}"/></a>
 </body>
 </html>

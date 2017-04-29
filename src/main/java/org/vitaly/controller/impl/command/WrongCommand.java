@@ -19,10 +19,7 @@ public class WrongCommand implements Command {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Properties properties = PropertyUtils.readProperties(PARAMETERS);
-        String errorAttribute = properties.getProperty(ATTR_ERROR);
-
-        request.setAttribute(errorAttribute, "wrong command");
+        request.setAttribute(ATTR_ERROR, "wrong command");
         request.getServletContext().getRequestDispatcher("/error.jsp").forward(request, response);
     }
 }

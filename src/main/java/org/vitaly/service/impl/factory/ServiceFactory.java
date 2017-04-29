@@ -9,22 +9,15 @@ import org.vitaly.service.impl.*;
 public class ServiceFactory {
     private static ServiceFactory instance = new ServiceFactory();
 
-    private BillService billService;
-    private CarModelService carModelService;
-    private CarService carService;
-    private LocationService locationService;
-    private NotificationService notificationService;
-    private ReservationService reservationService;
-    private UserService userService;
+    private BillService billService = new BillServiceImpl();
+    private CarModelService carModelService = new CarModelServiceImpl();
+    private CarService carService = new CarServiceImpl();
+    private LocationService locationService = new LocationServiceImpl();
+    private NotificationService notificationService = new NotificationServiceImpl();
+    private ReservationService reservationService = new ReservationServiceImpl();
+    private UserService userService = new UserServiceImpl();
 
     private ServiceFactory() {
-        this.billService = new BillServiceImpl();
-        this.carModelService = new CarModelServiceImpl();
-        this.carService = new CarServiceImpl();
-        this.locationService = new LocationServiceImpl();
-        this.notificationService = new NotificationServiceImpl();
-        this.reservationService = new ReservationServiceImpl();
-        this.userService = new UserServiceImpl();
     }
 
     public static ServiceFactory getInstance() {

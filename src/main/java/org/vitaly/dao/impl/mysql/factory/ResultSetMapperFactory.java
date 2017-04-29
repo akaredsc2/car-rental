@@ -15,22 +15,15 @@ import org.vitaly.model.user.User;
 public class ResultSetMapperFactory {
     private static ResultSetMapperFactory instance = new ResultSetMapperFactory();
 
-    private Mapper<Bill> billMapper;
-    private Mapper<CarModel> carModelMapper;
-    private Mapper<Car> carMapper;
-    private Mapper<Location> locationMapper;
-    private Mapper<Notification> notificationMapper;
-    private Mapper<Reservation> reservationMapper;
-    private Mapper<User> userMapper;
+    private Mapper<Bill> billMapper = new BillMapper();
+    private Mapper<CarModel> carModelMapper = new CarModelMapper();
+    private Mapper<Car> carMapper = new CarMapper();
+    private Mapper<Location> locationMapper = new LocationMapper();
+    private Mapper<Notification> notificationMapper = new NotificationMapper();
+    private Mapper<Reservation> reservationMapper = new ReservationMapper();
+    private Mapper<User> userMapper = new UserMapper();
 
     private ResultSetMapperFactory() {
-        this.billMapper = new BillMapper();
-        this.carModelMapper = new CarModelMapper();
-        this.carMapper = new CarMapper();
-        this.locationMapper = new LocationMapper();
-        this.notificationMapper = new NotificationMapper();
-        this.reservationMapper = new ReservationMapper();
-        this.userMapper = new UserMapper();
     }
 
     public static ResultSetMapperFactory getInstance() {

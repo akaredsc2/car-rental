@@ -10,7 +10,6 @@ import org.vitaly.service.impl.dtoMapper.DtoMapper;
 import org.vitaly.service.impl.factory.DtoMapperFactory;
 
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -34,13 +33,12 @@ public class CarModelServiceImpl implements CarModelService {
     }
 
     @Override
-    public List<CarModelDto> getAllMatchingCarModels(Predicate<CarModel> carModelPredicate) {
+    public List<CarModelDto> getAllCarModels() {
         DtoMapper<CarModel, CarModelDto> mapper = DtoMapperFactory.getInstance().getCarModelDtoMapper();
 
         CarModelDao carModelDao = MysqlDaoFactory.getInstance().getCarModelDao();
         return carModelDao.getAll()
                 .stream()
-                .filter(carModelPredicate)
                 .map(mapper::mapEntityToDto)
                 .collect(Collectors.toList());
     }

@@ -1,5 +1,8 @@
 package org.vitaly.model.car;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 /**
  * Created by vitaly on 2017-03-26.
  */
@@ -18,5 +21,14 @@ public enum CarStateEnum {
 
     public CarState getState() {
         return state;
+    }
+
+    public static Optional<CarState> getStateByName(String stateName) {
+        return Arrays.stream(CarStateEnum.values())
+                .map(CarStateEnum::toString)
+                .filter(string -> string.equalsIgnoreCase(stateName))
+                .map(CarStateEnum::valueOf)
+                .map(CarStateEnum::getState)
+                .findFirst();
     }
 }

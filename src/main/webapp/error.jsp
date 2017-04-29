@@ -17,7 +17,7 @@ ${requestScope.attr_error}<br>
 
 <c:choose>
     <c:when test="${empty sessionScope.session_user}">
-        <a href="index.jsp"><fmt:message key="sign.in.href" bundle="${info}"/></a>
+        <a href="index.jsp"><fmt:message key="signIn.href" bundle="${info}"/></a>
     </c:when>
     <c:when test="${not empty sessionScope.session_user}">
         <a href="home.jsp"><fmt:message key="home.href" bundle="${info}"/></a>

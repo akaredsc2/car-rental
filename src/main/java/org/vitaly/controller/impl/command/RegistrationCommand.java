@@ -30,7 +30,7 @@ public class RegistrationCommand implements Command {
                 .registerNewUser(userDto);
 
         if (isRegistered) {
-            request.getServletContext().getRequestDispatcher("/index.jsp").forward(request, response);
+            response.sendRedirect(request.getContextPath() + "/index.jsp");
         } else {
             request.setAttribute(ATTR_ERROR, "registration failed");
             request.getServletContext().getRequestDispatcher("/error.jsp").forward(request, response);
