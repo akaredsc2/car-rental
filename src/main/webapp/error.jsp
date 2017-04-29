@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<fmt:setLocale value="uk_UA"/>
+<fmt:setLocale value="${sessionScope.session_locale}"/>
 <fmt:setBundle basename="info" var="info"/>
 
 <html>
@@ -10,7 +10,9 @@
     <title><fmt:message key="error.title" bundle="${info}"/></title>
 </head>
 <body>
-<c:import url="inc/welcome.jsp"/>
+<jsp:include page="inc/locale.jsp"/>
+<jsp:include page="inc/welcome.jsp"/>
+
 <fmt:message key="error.general" bundle="${info}"/><br>
 
 ${requestScope.attr_error}<br>

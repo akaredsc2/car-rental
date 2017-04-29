@@ -38,9 +38,12 @@ public final class PropertyNames {
 
     public static final String PARAM_COMMAND = "param.command";
 
+    public static final String PARAM_LOCALE = "param.locale";
+
     public static final String ATTR_ERROR = "attr_error";
 
     public static final String ATTR_ALL_MODEL_LIST = "attr_all_model_list";
 
     public static final String SESSION_USER = "session_user";
+    public static final String SESSION_LOCALE = "session_locale";
 }

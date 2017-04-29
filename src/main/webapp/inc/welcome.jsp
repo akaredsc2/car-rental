@@ -4,7 +4,7 @@
 
 <fmt:setBundle basename="parameters" var="par"/>
 
-<fmt:setLocale value="uk_UA"/>
+<fmt:setLocale value="${sessionScope.session_locale}"/>
 <fmt:setBundle basename="info" var="info"/>
 
 <c:if test="${!empty sessionScope.session_user}">

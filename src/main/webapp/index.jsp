@@ -3,7 +3,7 @@
 
 <fmt:setBundle basename="parameters" var="par"/>
 
-<fmt:setLocale value="uk_UA"/>
+<fmt:setLocale value="${sessionScope.session_locale}"/>
 <fmt:setBundle basename="info" var="info"/>
 
 <html>
@@ -11,6 +11,7 @@
     <title><fmt:message key="signIn.title" bundle="${info}"/></title>
 </head>
 <body>
+<jsp:include page="inc/locale.jsp"/>
 <form method="post" action="CarRental">
     <label>
         <fmt:message key="signIn.login" bundle="${info}"/>

@@ -23,6 +23,7 @@ public class CommandFactory {
         commandMap.put("add_location", new AddLocationCommand());
         commandMap.put("prepare_add_car", new PrepareToAddCarCommand());
         commandMap.put("add_car", new AddCarCommand());
+        commandMap.put("change_locale", new ChangeLocaleCommand());
 
         WRONG_COMMAND = new WrongCommand();
     }
