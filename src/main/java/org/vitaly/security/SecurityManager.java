@@ -34,15 +34,14 @@ public class SecurityManager {
                 Stream.of(UserRole.values())
                         .collect(Collectors.toSet()));
 
-        permissionMap = new HashMap<>();
+        HashMap<UrlHttpMethodPair, Set<UserRole>> permissionMap = new HashMap<>();
 
-        // TODO: 30.04.17 redirect clients and admins to home
         permissionMap.put(UrlHttpMethodPair.ENTRY_POINT, all);
         permissionMap.put(UrlHttpMethodPair.PAGE_INDEX, all);
         permissionMap.put(UrlHttpMethodPair.PAGE_HOME, clientAndAdmin);
 
         permissionMap.put(UrlHttpMethodPair.ERROR_PAGE_404, all);
-        permissionMap.put(UrlHttpMethodPair.ERROR_PAGE_550, all);
+        permissionMap.put(UrlHttpMethodPair.ERROR_PAGE_403, all);
         permissionMap.put(UrlHttpMethodPair.ERROR_PAGE, all);
 
         permissionMap.put(UrlHttpMethodPair.PAGE_REGISTRATION, guest);
@@ -59,6 +58,8 @@ public class SecurityManager {
         permissionMap.put(UrlHttpMethodPair.ADD_CAR_GET, admin);
         permissionMap.put(UrlHttpMethodPair.ADD_CAR_POST, admin);
         permissionMap.put(UrlHttpMethodPair.ADD_LOCATION_POST, admin);
+
+        this.permissionMap = Collections.unmodifiableMap(permissionMap);
     }
 
     public static SecurityManager getInstance() {
@@ -76,7 +77,7 @@ public class SecurityManager {
                 .contains(urlHttpMethodPair);
     }
 
-    public boolean isRequestAllow(HttpServletRequest request) {
+    public boolean isRequestAllowed(HttpServletRequest request) {
         UrlHttpMethodPair urlHttpMethodPair = UrlHttpMethodPair.fromRequest(request);
 
         HttpSession session = request.getSession(false);

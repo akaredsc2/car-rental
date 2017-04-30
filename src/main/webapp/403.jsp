@@ -7,15 +7,13 @@
 
 <html>
 <head>
-    <title><fmt:message key="error.title" bundle="${info}"/></title>
+    <title><fmt:message key="error.403.title" bundle="${info}"/></title>
 </head>
 <body>
 <jsp:include page="inc/locale.jsp"/>
 <jsp:include page="inc/welcome.jsp"/>
 
-<fmt:message key="error.description" bundle="${info}"/><br>
-
-${requestScope.attr_error}<br>
+<fmt:message key="error.403.description" bundle="${info}"/><br>
 
 <c:choose>
     <c:when test="${empty sessionScope.session_user}">
@@ -27,3 +25,4 @@ ${requestScope.attr_error}<br>
 </c:choose>
 </body>
 </html>
+

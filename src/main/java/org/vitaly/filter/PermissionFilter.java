@@ -21,13 +21,13 @@ public class PermissionFilter implements Filter {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 
         boolean isRequestAllow = SecurityManager.getInstance()
-                .isRequestAllow(httpServletRequest);
+                .isRequestAllowed(httpServletRequest);
 
         if (isRequestAllow) {
             chain.doFilter(request, response);
         } else {
             ((HttpServletResponse) response)
-                    .sendRedirect(httpServletRequest.getContextPath() + "/550.jsp");
+                    .sendRedirect(httpServletRequest.getContextPath() + "/403.jsp");
         }
     }
 

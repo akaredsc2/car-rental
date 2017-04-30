@@ -36,8 +36,6 @@ public final class PropertyNames {
     public static final String PARAM_CAR_COLOR = "param.car.color";
     public static final String PARAM_CAR_PRICE = "param.car.price";
 
-    public static final String PARAM_COMMAND = "param.command";
-
     public static final String PARAM_LOCALE = "param.locale";
 
     public static final String ATTR_ERROR = "attr_error";
