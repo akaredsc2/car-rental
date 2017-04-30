@@ -29,6 +29,6 @@ public class SignInCommand implements Command {
                 .authenticate(userDto.getLogin(), userDto.getPassword())
                 .ifPresent(user -> request.getSession(true).setAttribute(SESSION_USER, user));
 
-        request.getServletContext().getRequestDispatcher("/home.jsp").forward(request, response);
+        response.sendRedirect(request.getContextPath() + "/home.jsp");
     }
 }

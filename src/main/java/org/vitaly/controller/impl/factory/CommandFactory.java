@@ -2,6 +2,7 @@ package org.vitaly.controller.impl.factory;
 
 import org.vitaly.controller.abstraction.command.Command;
 import org.vitaly.controller.impl.command.*;
+import org.vitaly.security.UrlHttpMethodPair;
 
 import java.util.HashMap;
 
@@ -11,19 +12,21 @@ import java.util.HashMap;
 public class CommandFactory {
     private static CommandFactory instance = new CommandFactory();
 
-    private final HashMap<String, Command> commandMap;
+    private final HashMap<UrlHttpMethodPair, Command> commandMap;
     private final Command WRONG_COMMAND;
 
     private CommandFactory() {
         commandMap = new HashMap<>();
-        commandMap.put("sign_in", new SignInCommand());
-        commandMap.put("sign_out", new SignOutCommand());
-        commandMap.put("registration", new RegistrationCommand());
-        commandMap.put("add_car_model", new AddCarModelCommand());
-        commandMap.put("add_location", new AddLocationCommand());
-        commandMap.put("prepare_add_car", new PrepareToAddCarCommand());
-        commandMap.put("add_car", new AddCarCommand());
-        commandMap.put("change_locale", new ChangeLocaleCommand());
+        commandMap.put(UrlHttpMethodPair.SIGN_IN, new SignInCommand());
+        commandMap.put(UrlHttpMethodPair.SIGN_OUT, new SignOutCommand());
+        commandMap.put(UrlHttpMethodPair.REGISTRATION, new RegistrationCommand());
+
+        commandMap.put(UrlHttpMethodPair.CHANGE_LOCALE, new ChangeLocaleCommand());
+
+        commandMap.put(UrlHttpMethodPair.ADD_MODEL_POST, new AddCarModelCommand());
+        commandMap.put(UrlHttpMethodPair.ADD_CAR_GET, new PrepareToAddCarCommand());
+        commandMap.put(UrlHttpMethodPair.ADD_CAR_POST, new AddCarCommand());
+        commandMap.put(UrlHttpMethodPair.ADD_LOCATION_POST, new AddLocationCommand());
 
         WRONG_COMMAND = new WrongCommand();
     }
@@ -32,7 +35,7 @@ public class CommandFactory {
         return instance;
     }
 
-    public Command getCommand(String command) {
-        return commandMap.getOrDefault(command, WRONG_COMMAND);
+    public Command getCommand(UrlHttpMethodPair urlHttpMethodPair) {
+        return commandMap.getOrDefault(urlHttpMethodPair, WRONG_COMMAND);
     }
 }

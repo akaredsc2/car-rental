@@ -13,7 +13,7 @@
 <body>
 <jsp:include page="inc/locale.jsp"/>
 <jsp:include page="inc/welcome.jsp"/>
-<form method="post" action="CarRental">
+<form method="post" action="add_model">
     <label>
         <fmt:message key="model.add.name" bundle="${info}"/>
         <input type="text" name="<fmt:message key="param.model.name" bundle="${par}"/>" required>
@@ -34,7 +34,6 @@
                required>
     </label><br>
 
-    <input type="hidden" name="<fmt:message key="param.command" bundle="${par}"/>" value="add_car_model">
     <input type="submit" value="<fmt:message key="model.add.submit" bundle="${info}"/>">
 </form>
 <br>

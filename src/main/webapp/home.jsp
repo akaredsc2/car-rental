@@ -15,8 +15,7 @@
 <jsp:include page="inc/welcome.jsp"/>
 <a href="add_car_model.jsp"><fmt:message key="model.add.href" bundle="${info}"/></a><br>
 <a href="add_location.jsp"><fmt:message key="location.add.href" bundle="${info}"/></a><br>
-<form method="get" action="CarRental">
-    <input type="hidden" name="<fmt:message key="param.command" bundle="${par}"/>" value="prepare_add_car">
+<form method="get" action="add_car">
     <input type="submit" value="<fmt:message key="car.add.href" bundle="${info}"/>">
 </form>
 </body>

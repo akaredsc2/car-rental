@@ -13,7 +13,6 @@ import org.vitaly.service.impl.factory.DtoMapperFactory;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -72,13 +71,12 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public List<CarDto> getAllMatchingCars(Predicate<Car> carPredicate) {
+    public List<CarDto> getAllCars() {
         DtoMapper<Car, CarDto> mapper = DtoMapperFactory.getInstance().getCarDtoMapper();
 
         CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
         return carDao.getAll()
                 .stream()
-                .filter(carPredicate)
                 .map(mapper::mapEntityToDto)
                 .collect(Collectors.toList());
     }

@@ -80,7 +80,7 @@ public class CarServiceImplTest {
     @Test
     public void getAllMatchingCars() throws Exception {
         stab();
-        carService.getAllMatchingCars(x -> true);
+        carService.getAllCars();
 
         verify(carDao).getAll();
     }

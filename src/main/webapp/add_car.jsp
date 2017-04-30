@@ -14,7 +14,7 @@
 <body>
 <jsp:include page="inc/locale.jsp"/>
 <jsp:include page="inc/welcome.jsp"/>
-<form method="post" action="CarRental">
+<form method="post" action="add_car">
     <label>
         <fmt:message key="car.add.model" bundle="${info}"/>
         <select name="<fmt:message key="param.car.model" bundle="${par}"/>" required>
@@ -37,7 +37,6 @@
                required>
     </label><br>
 
-    <input type="hidden" name="<fmt:message key="param.command" bundle="${par}"/>" value="add_car">
     <input type="submit" value="<fmt:message key="car.add.submit" bundle="${info}"/>">
 </form>
 <br>

@@ -12,7 +12,7 @@
 </head>
 <body>
 <jsp:include page="inc/locale.jsp"/>
-<form method="post" action="CarRental">
+<form method="post" action="registration">
     <label>
         <fmt:message key="reg.login" bundle="${info}"/>
         <input type="text" name="<fmt:message key="param.user.login" bundle="${par}"/>" required>
@@ -38,7 +38,6 @@
         <input type="text" name="<fmt:message key="param.user.driver" bundle="${par}"/>" required>
     </label><br>
 
-    <input type="hidden" name="<fmt:message key="param.command" bundle="${par}"/>" value="registration">
     <input type="submit" value="<fmt:message key="reg.submit" bundle="${info}"/>">
 </form>
 <a href="index.jsp"><fmt:message key="signIn.href" bundle="${info}"/></a>

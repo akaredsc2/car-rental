@@ -1,7 +1,7 @@
 package org.vitaly.servlet;
 
-import org.vitaly.controller.abstraction.command.Command;
 import org.vitaly.controller.impl.factory.CommandFactory;
+import org.vitaly.security.UrlHttpMethodPair;
 import org.vitaly.util.PropertyUtils;
 
 import javax.servlet.ServletException;
@@ -30,10 +30,11 @@ public class CarRentalServlet extends HttpServlet {
     }
 
     private void process(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Properties properties = PropertyUtils.readProperties(PARAMETERS);
-        String commandParameter = req.getParameter(properties.getProperty(PARAM_COMMAND));
+        // TODO: 30.04.17 ask. same thing created 2 times in filters and 1 time here. is that ok?
+        UrlHttpMethodPair urlHttpMethodPair = UrlHttpMethodPair.fromRequest(req);
 
-        Command command = CommandFactory.getInstance().getCommand(commandParameter);
-        command.execute(req, resp);
+        CommandFactory.getInstance()
+                .getCommand(urlHttpMethodPair)
+                .execute(req, resp);
     }
 }

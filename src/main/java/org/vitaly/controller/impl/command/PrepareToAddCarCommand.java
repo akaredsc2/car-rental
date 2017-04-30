@@ -23,9 +23,13 @@ public class PrepareToAddCarCommand implements Command {
                 .getCarModelService()
                 .getAllCarModels();
 
+        // TODO: 30.04.17 empty list case
         if (!carModels.isEmpty()) {
             request.setAttribute(ATTR_ALL_MODEL_LIST, carModels);
         }
-        request.getRequestDispatcher("/add_car.jsp").forward(request, response);
+
+        request.getServletContext()
+                .getRequestDispatcher("/add_car.jsp")
+                .forward(request, response);
     }
 }
