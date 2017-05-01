@@ -40,6 +40,6 @@
     <input type="submit" value="<fmt:message key="car.add.submit" bundle="${info}"/>">
 </form>
 <br>
-<a href="../../home.jsp"><fmt:message key="home.href" bundle="${info}"/></a>
+<a href="<c:url value="/home.jsp"/>"><fmt:message key="home.href" bundle="${info}"/></a>
 </body>
 </html>

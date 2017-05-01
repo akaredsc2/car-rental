@@ -32,6 +32,8 @@ public class UrlHttpMethodPair {
     public static final UrlHttpMethodPair ADD_CAR_GET = new UrlHttpMethodPair("/add_car", HttpMethod.GET);
     public static final UrlHttpMethodPair ADD_CAR_POST = new UrlHttpMethodPair("/add_car", HttpMethod.POST);
     public static final UrlHttpMethodPair ADD_LOCATION_POST = new UrlHttpMethodPair("/add_location", HttpMethod.POST);
+    public static final UrlHttpMethodPair MOVE_CAR_GET = new UrlHttpMethodPair("/move_car", HttpMethod.GET);
+    public static final UrlHttpMethodPair MOVE_CAR_POST = new UrlHttpMethodPair("/move_car", HttpMethod.POST);
 
     public static final UrlHttpMethodPair LOCATIONS_GET = new UrlHttpMethodPair("/locations", HttpMethod.GET);
     public static final UrlHttpMethodPair MODELS_GET = new UrlHttpMethodPair("/models", HttpMethod.GET);

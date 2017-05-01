@@ -28,6 +28,7 @@ public class CarRequestMapper implements RequestMapper<CarDto> {
                 .getStateByName(stateString)
                 .orElse(null);
 
+        // TODO: 01.05.17 consider replacing with car model request mapper
         long modelId = PropertyUtils.getLongFromRequest(request, properties, PARAM_CAR_MODEL);
         CarModelDto carModelDto = new CarModelDto();
         carModelDto.setId(modelId);

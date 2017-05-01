@@ -32,6 +32,12 @@
         <input type="hidden" name="<fmt:message key="param.car.id" bundle="${par}"/>" value="${car.id}">
         <input type="submit" value="<fmt:message key="models.href" bundle="${info}"/>">
     </form>
+    <c:if test="${sessionScope.session_user.role=='ADMIN'}">
+        <form method="get" action="move_car">
+            <input type="hidden" name="<fmt:message key="param.car.id" bundle="${par}"/>" value="${car.id}">
+            <input type="submit" value="<fmt:message key="car.move.href" bundle="${info}"/>">
+        </form>
+    </c:if>
 </c:forEach>
 
 <a href="<c:url value="/home.jsp"/>"><fmt:message key="home.href" bundle="${info}"/></a>

@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <fmt:setBundle basename="parameters" var="par"/>
 
@@ -34,7 +35,7 @@
     <input type="submit" value="<fmt:message key="location.add.submit" bundle="${info}"/>">
 </form>
 <br>
-<a href="../../home.jsp"><fmt:message key="home.href" bundle="${info}"/></a>
+<a href="<c:url value="/home.jsp"/>"><fmt:message key="home.href" bundle="${info}"/></a>
 </body>
 </html>
 
