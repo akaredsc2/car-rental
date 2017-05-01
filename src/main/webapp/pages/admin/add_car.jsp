@@ -18,7 +18,7 @@
     <label>
         <fmt:message key="car.add.model" bundle="${info}"/>
         <select name="<fmt:message key="param.car.model" bundle="${par}"/>" required>
-            <c:forEach items="${requestScope.attr_all_model_list}" var="model">
+            <c:forEach items="${requestScope.attr_model_list}" var="model">
                 <option value="${model.id}">${model.name}</option>
             </c:forEach>
         </select>
@@ -40,6 +40,6 @@
     <input type="submit" value="<fmt:message key="car.add.submit" bundle="${info}"/>">
 </form>
 <br>
-<a href="home.jsp"><fmt:message key="home.href" bundle="${info}"/></a>
+<a href="../../home.jsp"><fmt:message key="home.href" bundle="${info}"/></a>
 </body>
 </html>

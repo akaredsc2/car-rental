@@ -13,9 +13,5 @@
 <body>
 <jsp:include page="/inc/header.jsp"/>
 <jsp:include page="/inc/nav.jsp"/>
-<a href="add_car_model.jsp"><fmt:message key="model.add.href" bundle="${info}"/></a><br>
-<form method="get" action="add_car">
-    <input type="submit" value="<fmt:message key="car.add.href" bundle="${info}"/>">
-</form>
 </body>
 </html>

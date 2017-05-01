@@ -59,7 +59,9 @@ public class SecurityManager {
         permissionMap.put(UrlHttpMethodPair.ADD_CAR_POST, admin);
         permissionMap.put(UrlHttpMethodPair.ADD_LOCATION_POST, admin);
 
-        permissionMap.put(UrlHttpMethodPair.LOCATION_GET, clientAndAdmin);
+        permissionMap.put(UrlHttpMethodPair.LOCATIONS_GET, clientAndAdmin);
+        permissionMap.put(UrlHttpMethodPair.MODELS_GET, clientAndAdmin);
+        permissionMap.put(UrlHttpMethodPair.CARS_GET, clientAndAdmin);
 
         this.permissionMap = Collections.unmodifiableMap(permissionMap);
     }

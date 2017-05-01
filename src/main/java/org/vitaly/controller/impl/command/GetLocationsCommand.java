@@ -10,12 +10,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-import static org.vitaly.util.constants.RequestAttributes.ATTR_ALL_LOCATION_LIST;
+import static org.vitaly.util.constants.RequestAttributes.ATTR_LOCATION_LIST;
 
 /**
  * Created by vitaly on 01.05.17.
  */
-public class ShowLocationsCommand implements Command {
+public class GetLocationsCommand implements Command {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -23,7 +23,7 @@ public class ShowLocationsCommand implements Command {
                 .getLocationService()
                 .getAll();
 
-        request.setAttribute(ATTR_ALL_LOCATION_LIST, locationDtoList);
+        request.setAttribute(ATTR_LOCATION_LIST, locationDtoList);
 
         request.getServletContext().getRequestDispatcher("/pages/catalog/locations.jsp").forward(request, response);
     }

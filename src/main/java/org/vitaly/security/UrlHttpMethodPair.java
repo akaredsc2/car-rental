@@ -17,8 +17,10 @@ public class UrlHttpMethodPair {
     static final UrlHttpMethodPair ERROR_PAGE = new UrlHttpMethodPair("/pages/error/error.jsp", HttpMethod.GET);
 
     static final UrlHttpMethodPair PAGE_REGISTRATION = new UrlHttpMethodPair("/registration.jsp", HttpMethod.GET);
-    static final UrlHttpMethodPair PAGE_ADD_MODEL = new UrlHttpMethodPair("/add_car_model.jsp", HttpMethod.GET);
-    static final UrlHttpMethodPair PAGE_ADD_LOCATION = new UrlHttpMethodPair("/pages/admin/add_location.jsp", HttpMethod.GET);
+    static final UrlHttpMethodPair PAGE_ADD_MODEL =
+            new UrlHttpMethodPair("/pages/admin/add_model.jsp", HttpMethod.GET);
+    static final UrlHttpMethodPair PAGE_ADD_LOCATION =
+            new UrlHttpMethodPair("/pages/admin/add_location.jsp", HttpMethod.GET);
 
     public static final UrlHttpMethodPair SIGN_IN = new UrlHttpMethodPair("/sign_in", HttpMethod.POST);
     public static final UrlHttpMethodPair SIGN_OUT = new UrlHttpMethodPair("/sign_out", HttpMethod.POST);
@@ -31,7 +33,9 @@ public class UrlHttpMethodPair {
     public static final UrlHttpMethodPair ADD_CAR_POST = new UrlHttpMethodPair("/add_car", HttpMethod.POST);
     public static final UrlHttpMethodPair ADD_LOCATION_POST = new UrlHttpMethodPair("/add_location", HttpMethod.POST);
 
-    public static final UrlHttpMethodPair LOCATION_GET = new UrlHttpMethodPair("/locations", HttpMethod.GET);
+    public static final UrlHttpMethodPair LOCATIONS_GET = new UrlHttpMethodPair("/locations", HttpMethod.GET);
+    public static final UrlHttpMethodPair MODELS_GET = new UrlHttpMethodPair("/models", HttpMethod.GET);
+    public static final UrlHttpMethodPair CARS_GET = new UrlHttpMethodPair("/cars", HttpMethod.GET);
 
     private String url;
     private HttpMethod httpMethod;

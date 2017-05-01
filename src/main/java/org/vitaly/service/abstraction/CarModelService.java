@@ -10,7 +10,7 @@ import java.util.List;
 public interface CarModelService {
     boolean addCarModel(CarModelDto carModelDto);
 
-    List<CarModelDto> getAllCarModels();
+    List<CarModelDto> getAll();
 
     void updateCarModel(CarModelDto carModelDto);
 

@@ -37,6 +37,6 @@
     <input type="submit" value="<fmt:message key="model.add.submit" bundle="${info}"/>">
 </form>
 <br>
-<a href="home.jsp"><fmt:message key="home.href" bundle="${info}"/></a>
+<a href="../../home.jsp"><fmt:message key="home.href" bundle="${info}"/></a>
 </body>
 </html>

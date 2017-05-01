@@ -13,20 +13,22 @@ import java.util.List;
 import static org.vitaly.util.constants.RequestAttributes.ATTR_MODEL_LIST;
 
 /**
- * Created by vitaly on 29.04.17.
+ * Created by vitaly on 01.05.17.
  */
-public class PrepareToAddCarCommand implements Command {
+public class GetModelsCommand implements Command {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<CarModelDto> carModels = ServiceFactory.getInstance()
+
+        // TODO: 01.05.17 extract here and at prepare to add car command
+        List<CarModelDto> carModelDtoList = ServiceFactory.getInstance()
                 .getCarModelService()
                 .getAll();
 
-        request.setAttribute(ATTR_MODEL_LIST, carModels);
+        request.setAttribute(ATTR_MODEL_LIST, carModelDtoList);
 
         request.getServletContext()
-                .getRequestDispatcher("/pages/admin/add_car.jsp")
+                .getRequestDispatcher("/pages/catalog/models.jsp")
                 .forward(request, response);
     }
 }

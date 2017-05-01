@@ -9,7 +9,7 @@
 
 <html>
 <head>
-    <title><fmt:message key="locations.title" bundle="${info}"/></title>
+    <title><fmt:message key="models.title" bundle="${info}"/></title>
 </head>
 <body>
 <jsp:include page="/inc/header.jsp"/>
@@ -17,13 +17,13 @@
 <jsp:include page="/inc/catalog.jsp"/>
 
 <c:if test="${sessionScope.session_user.role=='ADMIN'}">
-    <a href="<c:url value="/pages/admin/add_location.jsp"/>"><fmt:message key="location.add.href" bundle="${info}"/></a><br>
+    <a href="<c:url value="/pages/admin/add_model.jsp"/>"><fmt:message key="model.add.href" bundle="${info}"/></a><br>
 </c:if>
 
-<c:forEach items="${requestScope.attr_location_list}" var="location">
-    ${location.photoUrl} ${location.state} ${location.city} ${location.street} ${location.building} <br>
+<c:forEach items="${requestScope.attr_model_list}" var="model">
+    ${model.name} ${model.photoUrl} ${model.doorCount} ${model.seatCount} ${model.horsePowerCount} <br>
     <form method="get" action="cars">
-        <input type="hidden" name="<fmt:message key="param.location.id" bundle="${par}"/>" value="${location.id}">
+        <input type="hidden" name="<fmt:message key="param.model.id" bundle="${par}"/>" value="${model.id}">
         <input type="submit" value="<fmt:message key="cars.href" bundle="${info}"/>">
     </form>
 </c:forEach>

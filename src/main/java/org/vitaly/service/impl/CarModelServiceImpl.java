@@ -33,7 +33,7 @@ public class CarModelServiceImpl implements CarModelService {
     }
 
     @Override
-    public List<CarModelDto> getAllCarModels() {
+    public List<CarModelDto> getAll() {
         DtoMapper<CarModel, CarModelDto> mapper = DtoMapperFactory.getInstance().getCarModelDtoMapper();
 
         CarModelDao carModelDao = MysqlDaoFactory.getInstance().getCarModelDao();
