@@ -11,8 +11,8 @@
     <title><fmt:message key="location.add.title" bundle="${info}"/></title>
 </head>
 <body>
-<jsp:include page="inc/locale.jsp"/>
-<jsp:include page="inc/welcome.jsp"/>
+<jsp:include page="/inc/header.jsp"/>
+<jsp:include page="/inc/nav.jsp"/>
 <form method="post" action="add_location">
     <label>
         <fmt:message key="location.add.state" bundle="${info}"/>
@@ -34,7 +34,7 @@
     <input type="submit" value="<fmt:message key="location.add.submit" bundle="${info}"/>">
 </form>
 <br>
-<a href="home.jsp"><fmt:message key="home.href" bundle="${info}"/></a>
+<a href="../../home.jsp"><fmt:message key="home.href" bundle="${info}"/></a>
 </body>
 </html>
 

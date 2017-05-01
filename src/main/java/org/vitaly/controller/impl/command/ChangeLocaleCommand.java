@@ -10,7 +10,9 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Properties;
 
-import static org.vitaly.util.PropertyNames.*;
+import static org.vitaly.util.constants.RequestParameters.PARAMETERS;
+import static org.vitaly.util.constants.RequestParameters.PARAM_LOCALE;
+import static org.vitaly.util.constants.SessionAttributes.SESSION_LOCALE;
 
 /**
  * Created by vitaly on 29.04.17.

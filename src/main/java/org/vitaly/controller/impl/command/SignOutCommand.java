@@ -21,6 +21,6 @@ public class SignOutCommand implements Command {
             session.invalidate();
         }
 
-        response.sendRedirect(request.getContextPath() + "/index.jsp");
+        response.sendRedirect(request.getServletContext().getContextPath() + "/index.jsp");
     }
 }

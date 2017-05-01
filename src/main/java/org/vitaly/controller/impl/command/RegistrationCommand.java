@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static org.vitaly.util.PropertyNames.ATTR_ERROR;
+import static org.vitaly.util.constants.RequestAttributes.ATTR_ERROR;
 
 /**
  * Created by vitaly on 2017-04-27.
@@ -33,7 +33,7 @@ public class RegistrationCommand implements Command {
             response.sendRedirect(request.getContextPath() + "/index.jsp");
         } else {
             request.setAttribute(ATTR_ERROR, "registration failed");
-            request.getServletContext().getRequestDispatcher("/error.jsp").forward(request, response);
+            request.getServletContext().getRequestDispatcher("/pages/error/error.jsp").forward(request, response);
         }
     }
 }

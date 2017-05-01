@@ -12,7 +12,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.vitaly.matcher.EntityIdMatcher.hasId;
-import static org.vitaly.util.TableAttributes.*;
+import static org.vitaly.util.constants.TableAttributes.*;
 
 /**
  * Created by vitaly on 2017-04-22.

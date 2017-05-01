@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static org.vitaly.util.PropertyNames.ATTR_ERROR;
+import static org.vitaly.util.constants.RequestAttributes.ATTR_ERROR;
 
 /**
  * Created by vitaly on 29.04.17.
@@ -33,7 +33,7 @@ public class AddCarCommand implements Command {
             response.sendRedirect(request.getContextPath() + "/home.jsp");
         } else {
             request.setAttribute(ATTR_ERROR, "failed to add car");
-            request.getRequestDispatcher("/error.jsp").forward(request, response);
+            request.getRequestDispatcher("/pages/error/error.jsp").forward(request, response);
         }
     }
 }

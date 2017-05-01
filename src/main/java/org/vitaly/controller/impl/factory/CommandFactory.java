@@ -28,6 +28,8 @@ public class CommandFactory {
         commandMap.put(UrlHttpMethodPair.ADD_CAR_POST, new AddCarCommand());
         commandMap.put(UrlHttpMethodPair.ADD_LOCATION_POST, new AddLocationCommand());
 
+        commandMap.put(UrlHttpMethodPair.LOCATION_GET, new ShowLocationsCommand());
+
         WRONG_COMMAND = new WrongCommand();
     }
 

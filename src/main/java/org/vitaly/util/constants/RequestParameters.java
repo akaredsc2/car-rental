@@ -1,9 +1,9 @@
-package org.vitaly.util;
+package org.vitaly.util.constants;
 
 /**
  * Created by vitaly on 2017-04-27.
  */
-public final class PropertyNames {
+public final class RequestParameters {
     public static final String PARAMETERS = "parameters.properties";
 
     public static final String PARAM_USER_ID = "param.user.id";
@@ -37,11 +37,4 @@ public final class PropertyNames {
     public static final String PARAM_CAR_PRICE = "param.car.price";
 
     public static final String PARAM_LOCALE = "param.locale";
-
-    public static final String ATTR_ERROR = "attr_error";
-
-    public static final String ATTR_ALL_MODEL_LIST = "attr_all_model_list";
-
-    public static final String SESSION_USER = "session_user";
-    public static final String SESSION_LOCALE = "session_locale";
 }

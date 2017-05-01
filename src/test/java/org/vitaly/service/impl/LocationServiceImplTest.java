@@ -75,7 +75,7 @@ public class LocationServiceImplTest {
     @Test
     public void getAllLocationsMatchingPredicate() throws Exception {
         stab();
-        locationService.getAllMatchingLocations(x -> true);
+        locationService.getAll();
 
         verify(locationDao).getAll();
     }

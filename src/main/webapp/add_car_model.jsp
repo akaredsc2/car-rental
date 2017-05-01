@@ -11,8 +11,8 @@
     <title><fmt:message key="model.add.title" bundle="${info}"/></title>
 </head>
 <body>
-<jsp:include page="inc/locale.jsp"/>
-<jsp:include page="inc/welcome.jsp"/>
+<jsp:include page="/inc/header.jsp"/>
+<jsp:include page="/inc/nav.jsp"/>
 <form method="post" action="add_model">
     <label>
         <fmt:message key="model.add.name" bundle="${info}"/>

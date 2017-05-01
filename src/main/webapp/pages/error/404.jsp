@@ -10,17 +10,17 @@
     <title><fmt:message key="error.404.title" bundle="${info}"/></title>
 </head>
 <body>
-<jsp:include page="inc/locale.jsp"/>
-<jsp:include page="inc/welcome.jsp"/>
+<jsp:include page="/inc/header.jsp"/>
+<jsp:include page="/inc/nav.jsp"/>
 
 <fmt:message key="error.404.description" bundle="${info}"/><br>
 
 <c:choose>
     <c:when test="${empty sessionScope.session_user}">
-        <a href="index.jsp"><fmt:message key="signIn.href" bundle="${info}"/></a>
+        <a href="<c:url value="/index.jsp"/>"><fmt:message key="signIn.href" bundle="${info}"/></a>
     </c:when>
     <c:when test="${not empty sessionScope.session_user}">
-        <a href="home.jsp"><fmt:message key="home.href" bundle="${info}"/></a>
+        <a href="<c:url value="/home.jsp"/>"><fmt:message key="home.href" bundle="${info}"/></a>
     </c:when>
 </c:choose>
 </body>

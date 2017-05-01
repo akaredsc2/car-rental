@@ -27,7 +27,7 @@ public class UrlFilter implements Filter {
             chain.doFilter(request, response);
         } else {
             ((HttpServletResponse) response)
-                    .sendRedirect(httpServletRequest.getContextPath() + "/404.jsp");
+                    .sendRedirect(httpServletRequest.getContextPath() + "/pages/error/404.jsp");
         }
     }
 

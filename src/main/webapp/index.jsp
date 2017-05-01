@@ -15,7 +15,7 @@
     <title><fmt:message key="signIn.title" bundle="${info}"/></title>
 </head>
 <body>
-<jsp:include page="inc/locale.jsp"/>
+<jsp:include page="/inc/header.jsp"/>
 <form method="post" action="sign_in">
     <label>
         <fmt:message key="signIn.login" bundle="${info}"/>
@@ -28,6 +28,6 @@
 
     <input type="submit" value="<fmt:message key="signIn.submit" bundle="${info}"/>">
 </form>
-<a href="registration.jsp"><fmt:message key="reg.href" bundle="${info}"/></a>
+<a href="<c:url value="/registration.jsp"/>"><fmt:message key="reg.href" bundle="${info}"/></a>
 </body>
 </html>

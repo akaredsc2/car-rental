@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.vitaly.util.PropertyNames.SESSION_USER;
+import static org.vitaly.util.constants.SessionAttributes.SESSION_USER;
 
 /**
  * Created by vitaly on 30.04.17.
@@ -58,6 +58,8 @@ public class SecurityManager {
         permissionMap.put(UrlHttpMethodPair.ADD_CAR_GET, admin);
         permissionMap.put(UrlHttpMethodPair.ADD_CAR_POST, admin);
         permissionMap.put(UrlHttpMethodPair.ADD_LOCATION_POST, admin);
+
+        permissionMap.put(UrlHttpMethodPair.LOCATION_GET, clientAndAdmin);
 
         this.permissionMap = Collections.unmodifiableMap(permissionMap);
     }

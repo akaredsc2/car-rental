@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.Properties;
 
-import static org.vitaly.util.PropertyNames.*;
+import static org.vitaly.util.constants.RequestParameters.*;
 
 /**
  * Created by vitaly on 29.04.17.

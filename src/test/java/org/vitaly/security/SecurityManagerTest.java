@@ -13,7 +13,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.vitaly.util.PropertyNames.SESSION_USER;
+import static org.vitaly.util.constants.SessionAttributes.SESSION_USER;
 
 /**
  * Created by vitaly on 2017-04-30.

@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
-import static org.vitaly.util.TableAttributes.*;
+import static org.vitaly.util.constants.TableAttributes.*;
 
 /**
  * Created by vitaly on 2017-04-07.

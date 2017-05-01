@@ -11,10 +11,9 @@
     <title><fmt:message key="home.title" bundle="${info}"/></title>
 </head>
 <body>
-<jsp:include page="inc/locale.jsp"/>
-<jsp:include page="inc/welcome.jsp"/>
+<jsp:include page="/inc/header.jsp"/>
+<jsp:include page="/inc/nav.jsp"/>
 <a href="add_car_model.jsp"><fmt:message key="model.add.href" bundle="${info}"/></a><br>
-<a href="add_location.jsp"><fmt:message key="location.add.href" bundle="${info}"/></a><br>
 <form method="get" action="add_car">
     <input type="submit" value="<fmt:message key="car.add.href" bundle="${info}"/>">
 </form>

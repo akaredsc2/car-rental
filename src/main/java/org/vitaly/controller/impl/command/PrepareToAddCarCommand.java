@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-import static org.vitaly.util.PropertyNames.ATTR_ALL_MODEL_LIST;
+import static org.vitaly.util.constants.RequestAttributes.ATTR_ALL_MODEL_LIST;
 
 /**
  * Created by vitaly on 29.04.17.
@@ -23,10 +23,7 @@ public class PrepareToAddCarCommand implements Command {
                 .getCarModelService()
                 .getAllCarModels();
 
-        // TODO: 30.04.17 empty list case
-        if (!carModels.isEmpty()) {
-            request.setAttribute(ATTR_ALL_MODEL_LIST, carModels);
-        }
+        request.setAttribute(ATTR_ALL_MODEL_LIST, carModels);
 
         request.getServletContext()
                 .getRequestDispatcher("/add_car.jsp")

@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <fmt:setBundle basename="parameters" var="par"/>
 
@@ -11,7 +12,7 @@
     <title><fmt:message key="reg.title" bundle="${info}"/></title>
 </head>
 <body>
-<jsp:include page="inc/locale.jsp"/>
+<jsp:include page="/inc/header.jsp"/>
 <form method="post" action="registration">
     <label>
         <fmt:message key="reg.login" bundle="${info}"/>
@@ -40,6 +41,6 @@
 
     <input type="submit" value="<fmt:message key="reg.submit" bundle="${info}"/>">
 </form>
-<a href="index.jsp"><fmt:message key="signIn.href" bundle="${info}"/></a>
+<a href="<c:url value="/index.jsp"/>"><fmt:message key="signIn.href" bundle="${info}"/></a>
 </body>
 </html>

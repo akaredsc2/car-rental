@@ -12,13 +12,13 @@ public class UrlHttpMethodPair {
     static final UrlHttpMethodPair PAGE_INDEX = new UrlHttpMethodPair("/index.jsp", HttpMethod.GET);
     static final UrlHttpMethodPair PAGE_HOME = new UrlHttpMethodPair("/home.jsp", HttpMethod.GET);
 
-    static final UrlHttpMethodPair ERROR_PAGE_403 = new UrlHttpMethodPair("/403.jsp", HttpMethod.GET);
-    static final UrlHttpMethodPair ERROR_PAGE_404 = new UrlHttpMethodPair("/404.jsp", HttpMethod.GET);
-    static final UrlHttpMethodPair ERROR_PAGE = new UrlHttpMethodPair("/error.jsp", HttpMethod.GET);
+    static final UrlHttpMethodPair ERROR_PAGE_403 = new UrlHttpMethodPair("/pages/error/403.jsp", HttpMethod.GET);
+    static final UrlHttpMethodPair ERROR_PAGE_404 = new UrlHttpMethodPair("/pages/error/404.jsp", HttpMethod.GET);
+    static final UrlHttpMethodPair ERROR_PAGE = new UrlHttpMethodPair("/pages/error/error.jsp", HttpMethod.GET);
 
     static final UrlHttpMethodPair PAGE_REGISTRATION = new UrlHttpMethodPair("/registration.jsp", HttpMethod.GET);
     static final UrlHttpMethodPair PAGE_ADD_MODEL = new UrlHttpMethodPair("/add_car_model.jsp", HttpMethod.GET);
-    static final UrlHttpMethodPair PAGE_ADD_LOCATION = new UrlHttpMethodPair("/add_location.jsp", HttpMethod.GET);
+    static final UrlHttpMethodPair PAGE_ADD_LOCATION = new UrlHttpMethodPair("/pages/admin/add_location.jsp", HttpMethod.GET);
 
     public static final UrlHttpMethodPair SIGN_IN = new UrlHttpMethodPair("/sign_in", HttpMethod.POST);
     public static final UrlHttpMethodPair SIGN_OUT = new UrlHttpMethodPair("/sign_out", HttpMethod.POST);
@@ -30,6 +30,8 @@ public class UrlHttpMethodPair {
     public static final UrlHttpMethodPair ADD_CAR_GET = new UrlHttpMethodPair("/add_car", HttpMethod.GET);
     public static final UrlHttpMethodPair ADD_CAR_POST = new UrlHttpMethodPair("/add_car", HttpMethod.POST);
     public static final UrlHttpMethodPair ADD_LOCATION_POST = new UrlHttpMethodPair("/add_location", HttpMethod.POST);
+
+    public static final UrlHttpMethodPair LOCATION_GET = new UrlHttpMethodPair("/locations", HttpMethod.GET);
 
     private String url;
     private HttpMethod httpMethod;
@@ -79,9 +81,18 @@ public class UrlHttpMethodPair {
     public static UrlHttpMethodPair fromRequest(HttpServletRequest request) {
         InputChecker.requireNotNull(request, "Request must not be null!");
 
-        String url = request.getRequestURI().substring(request.getContextPath().length());
-        HttpMethod httpMethod = HttpMethod.valueOf(request.getMethod());
+        String requestUri = request.getRequestURI();
+        String url;
 
+        // TODO: 01.05.17 test
+        if (requestUri.endsWith(".jsp")) {
+            url = request.getRequestURI().substring(request.getContextPath().length());
+        } else {
+            String[] split = request.getRequestURI().split("(?=/)");
+            url = split[split.length - 1];
+        }
+
+        HttpMethod httpMethod = HttpMethod.valueOf(request.getMethod());
         return new UrlHttpMethodPair(url, httpMethod);
     }
 }

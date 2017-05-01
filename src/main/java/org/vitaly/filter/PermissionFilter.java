@@ -27,7 +27,7 @@ public class PermissionFilter implements Filter {
             chain.doFilter(request, response);
         } else {
             ((HttpServletResponse) response)
-                    .sendRedirect(httpServletRequest.getContextPath() + "/403.jsp");
+                    .sendRedirect(httpServletRequest.getContextPath() + "/pages/error/403.jsp");
         }
     }
 

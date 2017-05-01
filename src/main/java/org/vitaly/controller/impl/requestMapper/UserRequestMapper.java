@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Properties;
 
-import static org.vitaly.util.PropertyNames.*;
+import static org.vitaly.util.constants.RequestParameters.*;
 
 /**
  * Created by vitaly on 2017-04-27.

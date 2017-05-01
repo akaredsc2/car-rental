@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.Properties;
 
-import static org.vitaly.util.PropertyNames.*;
+import static org.vitaly.util.constants.RequestParameters.*;
 
 /**
  * Created by vitaly on 28.04.17.

@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static org.vitaly.util.PropertyNames.SESSION_USER;
+import static org.vitaly.util.constants.SessionAttributes.SESSION_USER;
 
 /**
  * Created by vitaly on 2017-04-27.

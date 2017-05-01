@@ -12,7 +12,6 @@ import org.vitaly.service.impl.factory.DtoMapperFactory;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -47,13 +46,12 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public List<LocationDto> getAllMatchingLocations(Predicate<Location> locationPredicate) {
+    public List<LocationDto> getAll() {
         DtoMapper<Location, LocationDto> mapper = DtoMapperFactory.getInstance().getLocationDtoMapper();
 
         LocationDao locationDao = MysqlDaoFactory.getInstance().getLocationDao();
         return locationDao.getAll()
                 .stream()
-                .filter(locationPredicate)
                 .map(mapper::mapEntityToDto)
                 .collect(Collectors.toList());
     }
