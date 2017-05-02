@@ -1,5 +1,6 @@
 package org.vitaly.service.abstraction;
 
+import org.vitaly.service.impl.dto.CarDto;
 import org.vitaly.service.impl.dto.CarModelDto;
 
 import java.util.List;
@@ -15,4 +16,6 @@ public interface CarModelService {
     void updateCarModel(CarModelDto carModelDto);
 
     List<CarModelDto> findCarsWithPhotos();
+
+    CarModelDto findModelOfCar(CarDto carDto);
 }

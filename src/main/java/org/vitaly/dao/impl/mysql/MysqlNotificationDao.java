@@ -46,11 +46,9 @@ public class MysqlNotificationDao implements NotificationDao {
 
     @Override
     public Optional<Notification> findById(long id) {
-        Map<Integer, Object> parameterMap = new HashMap<>();
-        parameterMap.put(1, id);
-
         Mapper<Notification> mapper = ResultSetMapperFactory.getInstance().getNotificationMapper();
-        Notification notification = DaoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
+        Notification notification = DaoTemplate
+                .executeSelectOne(FIND_BY_ID_QUERY, mapper, Collections.singletonMap(1, id));
         return Optional.ofNullable(notification);
     }
 
@@ -90,11 +88,8 @@ public class MysqlNotificationDao implements NotificationDao {
 
     @Override
     public List<Notification> findNotificationsByUserId(long userId) {
-        Map<Integer, Object> parameterMap = new HashMap<>();
-        parameterMap.put(1, userId);
-
         Mapper<Notification> mapper = ResultSetMapperFactory.getInstance().getNotificationMapper();
-        return DaoTemplate.executeSelect(FIND_NOTIFICATIONS_BY_USER_ID, mapper, parameterMap);
+        return DaoTemplate.executeSelect(FIND_NOTIFICATIONS_BY_USER_ID, mapper, Collections.singletonMap(1, userId));
     }
 
     @Override

@@ -21,10 +21,14 @@
 </c:if>
 
 <c:forEach items="${requestScope.attr_location_list}" var="location">
-    ${location.photoUrl} ${location.state} ${location.city} ${location.street} ${location.building} <br>
+    <c:out value="${location.photoUrl}"/>
+    <c:out value="${location.state}"/>
+    <c:out value="${location.city}"/>
+    <c:out value="${location.street}"/>
+    <c:out value="${location.building}"/><br>
     <form method="get" action="cars">
         <input type="hidden" name="<fmt:message key="param.location.id" bundle="${par}"/>" value="${location.id}">
-        <input type="submit" value="<fmt:message key="cars.href" bundle="${info}"/>">
+        <input type="submit" value="<fmt:message key="locations.cars.href" bundle="${info}"/>">
     </form>
 </c:forEach>
 

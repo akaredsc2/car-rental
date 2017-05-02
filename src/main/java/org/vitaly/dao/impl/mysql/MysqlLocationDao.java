@@ -98,11 +98,9 @@ public class MysqlLocationDao implements LocationDao {
     }
 
     private Optional<Location> findLocationUsingQuery(long carId, String findLocationByCarIdQuery) {
-        Map<Integer, Object> parameterMap = new HashMap<>();
-        parameterMap.put(1, carId);
-
         Mapper<Location> mapper = ResultSetMapperFactory.getInstance().getLocationMapper();
-        Location foundLocation = DaoTemplate.executeSelectOne(findLocationByCarIdQuery, mapper, parameterMap);
+        Location foundLocation = DaoTemplate
+                .executeSelectOne(findLocationByCarIdQuery, mapper, Collections.singletonMap(1, carId));
         return Optional.ofNullable(foundLocation);
     }
 

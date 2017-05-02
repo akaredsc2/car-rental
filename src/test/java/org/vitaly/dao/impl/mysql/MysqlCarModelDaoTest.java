@@ -7,9 +7,14 @@ import org.junit.Test;
 import org.vitaly.dao.abstraction.CarModelDao;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.impl.mysql.connectionPool.MysqlConnectionPool;
+import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
 import org.vitaly.data.TestData;
 import org.vitaly.data.TestUtil;
+import org.vitaly.model.car.Car;
 import org.vitaly.model.carModel.CarModel;
+import org.vitaly.service.impl.dto.CarDto;
+import org.vitaly.service.impl.dto.CarModelDto;
+import org.vitaly.service.impl.factory.DtoMapperFactory;
 
 import java.util.List;
 
@@ -177,7 +182,7 @@ public class MysqlCarModelDaoTest {
 
         carModelDao.update(carModelWithId2.getId(), carModel2);
 
-        List<CarModel> carModelList = carModelDao.findCarsWithPhotos();
+        List<CarModel> carModelList = carModelDao.findCarModelsWithPhotos();
 
         assertThat(carModelList, allOf(
                 hasItem(carModel2),
@@ -186,7 +191,7 @@ public class MysqlCarModelDaoTest {
 
     @Test
     public void findCarModelsWithPhotosReturnsEmptyListOnEmptyTable() throws Exception {
-        List<CarModel> carList = carModelDao.findCarsWithPhotos();
+        List<CarModel> carList = carModelDao.findCarModelsWithPhotos();
 
         assertThat(carList, empty());
     }
@@ -196,8 +201,35 @@ public class MysqlCarModelDaoTest {
         carModelDao.create(carModel1);
         carModelDao.create(carModel2);
 
-        List<CarModel> carList = carModelDao.findCarsWithPhotos();
+        List<CarModel> carList = carModelDao.findCarModelsWithPhotos();
 
         assertThat(carList, empty());
+    }
+
+    @Test
+    public void findModelOfExistingCarReturnsModel() throws Exception {
+        long modelId = carModelDao.create(carModel1).orElseThrow(AssertionFailedError::new);
+        CarModelDto carModelDto = new CarModelDto();
+        carModelDto.setId(modelId);
+        Car car = TestUtil.setEntityAttribute(
+                TestData.getInstance().getCar("car1"),
+                CarDto::setCarModelDto,
+                carModelDto,
+                DtoMapperFactory.getInstance().getCarDtoMapper());
+        long carId = MysqlDaoFactory.getInstance()
+                .getCarDao()
+                .create(car)
+                .orElseThrow(AssertionFailedError::new);
+
+        CarModel carModel = carModelDao.findModelOfCar(carId).orElseThrow(AssertionFailedError::new);
+
+        assertThat(carModel, hasId(modelId));
+    }
+
+    @Test
+    public void findModelOfNonExistingCarReturnsEmptyOptional() throws Exception {
+        boolean isModelFound = carModelDao.findModelOfCar(-1).isPresent();
+
+        assertFalse(isModelFound);
     }
 }

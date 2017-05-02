@@ -65,11 +65,8 @@ public class MysqlReservationDao implements ReservationDao {
 
     @Override
     public Optional<Reservation> findById(long id) {
-        HashMap<Integer, Object> parameterMap = new HashMap<>();
-        parameterMap.put(1, id);
-
         Mapper<Reservation> mapper = ResultSetMapperFactory.getInstance().getReservationMapper();
-        Reservation reservation = DaoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
+        Reservation reservation = DaoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, Collections.singletonMap(1, id));
         return Optional.ofNullable(reservation);
     }
 
@@ -110,20 +107,16 @@ public class MysqlReservationDao implements ReservationDao {
 
     @Override
     public List<Reservation> findReservationsByClientId(long clientId) {
-        HashMap<Integer, Object> parameterMap = new HashMap<>();
-        parameterMap.put(1, clientId);
-
         Mapper<Reservation> mapper = ResultSetMapperFactory.getInstance().getReservationMapper();
-        return DaoTemplate.executeSelect(FIND_RESERVATIONS_BY_CLIENT_ID_QUERY, mapper, parameterMap);
+        return DaoTemplate
+                .executeSelect(FIND_RESERVATIONS_BY_CLIENT_ID_QUERY, mapper, Collections.singletonMap(1, clientId));
     }
 
     @Override
     public List<Reservation> findReservationsByAdminId(long adminId) {
-        HashMap<Integer, Object> parameterMap = new HashMap<>();
-        parameterMap.put(1, adminId);
-
         Mapper<Reservation> mapper = ResultSetMapperFactory.getInstance().getReservationMapper();
-        return DaoTemplate.executeSelect(FIND_RESERVATIONS_BY_ADMIN_ID_QUERY, mapper, parameterMap);
+        return DaoTemplate
+                .executeSelect(FIND_RESERVATIONS_BY_ADMIN_ID_QUERY, mapper, Collections.singletonMap(1, adminId));
     }
 
     @Override

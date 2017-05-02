@@ -23,14 +23,17 @@
 </c:if>
 
 <c:forEach items="${requestScope.attr_car_list}" var="car">
-    ${car.state} ${car.registrationPlate} ${car.color} ${car.pricePerDay} <br>
+    <c:out value="${car.state}"/>
+    <c:out value="${car.registrationPlate}"/>
+    <c:out value="${car.color}"/>
+    <c:out value="${car.pricePerDay}"/><br>
     <form method="get" action="locations">
         <input type="hidden" name="<fmt:message key="param.car.id" bundle="${par}"/>" value="${car.id}">
-        <input type="submit" value="<fmt:message key="locations.href" bundle="${info}"/>">
+        <input type="submit" value="<fmt:message key="cars.location.href" bundle="${info}"/>">
     </form>
     <form method="get" action="models">
         <input type="hidden" name="<fmt:message key="param.car.id" bundle="${par}"/>" value="${car.id}">
-        <input type="submit" value="<fmt:message key="models.href" bundle="${info}"/>">
+        <input type="submit" value="<fmt:message key="cars.model.href" bundle="${info}"/>">
     </form>
     <c:if test="${sessionScope.session_user.role=='ADMIN'}">
         <form method="get" action="move_car">

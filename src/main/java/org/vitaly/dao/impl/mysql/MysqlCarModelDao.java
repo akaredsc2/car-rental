@@ -39,15 +39,17 @@ public class MysqlCarModelDao implements CarModelDao {
             "SELECT * " +
                     "FROM model " +
                     "WHERE photo_url IS NOT NULL";
+    private static final String FIND_MODEL_OF_CAR_QUERY =
+            "SELECT model.model_id, model.model_name, model.photo_url, model.doors, model.seats, model.horse_powers " +
+                    "FROM model INNER JOIN car ON model.model_id = car.model_id " +
+                    "WHERE car.car_id = ?";
+
     private static final String CAR_MODEL_MUST_NOT_BE_NULL = "Car model must not be null!";
 
     @Override
     public Optional<CarModel> findById(long id) {
-        HashMap<Integer, Object> parameterMap = new HashMap<>();
-        parameterMap.put(1, id);
-
         Mapper<CarModel> mapper = ResultSetMapperFactory.getInstance().getCarModelMapper();
-        CarModel foundCarModel = DaoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
+        CarModel foundCarModel = DaoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, Collections.singletonMap(1, id));
         return Optional.ofNullable(foundCarModel);
     }
 
@@ -55,11 +57,8 @@ public class MysqlCarModelDao implements CarModelDao {
     public Optional<Long> findIdOfEntity(CarModel carModel) {
         requireNotNull(carModel, CAR_MODEL_MUST_NOT_BE_NULL);
 
-        HashMap<Integer, Object> parameterMap = new HashMap<>();
-        parameterMap.put(1, carModel.getName());
-
-        Long foundModelId =
-                DaoTemplate.executeSelectOne(FIND_ID_OF_ENTITY_QUERY, resultSet -> resultSet.getLong(1), parameterMap);
+        Long foundModelId = DaoTemplate.executeSelectOne(FIND_ID_OF_ENTITY_QUERY,
+                resultSet -> resultSet.getLong(1), Collections.singletonMap(1, carModel.getName()));
         return Optional.ofNullable(foundModelId);
     }
 
@@ -99,8 +98,16 @@ public class MysqlCarModelDao implements CarModelDao {
     }
 
     @Override
-    public List<CarModel> findCarsWithPhotos() {
+    public List<CarModel> findCarModelsWithPhotos() {
         Mapper<CarModel> mapper = ResultSetMapperFactory.getInstance().getCarModelMapper();
         return DaoTemplate.executeSelect(FIND_CAR_MODELS_WITH_PHOTOS_QUERY, mapper, Collections.emptyMap());
+    }
+
+    @Override
+    public Optional<CarModel> findModelOfCar(long carId) {
+        Mapper<CarModel> mapper = ResultSetMapperFactory.getInstance().getCarModelMapper();
+        CarModel foundModel = DaoTemplate
+                .executeSelectOne(FIND_MODEL_OF_CAR_QUERY, mapper, Collections.singletonMap(1, carId));
+        return Optional.ofNullable(foundModel);
     }
 }

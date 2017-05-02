@@ -87,6 +87,6 @@ public class CarModelServiceImplTest {
         stab();
         carModelService.findCarsWithPhotos();
 
-        verify(carModelDao).findCarsWithPhotos();
+        verify(carModelDao).findCarModelsWithPhotos();
     }
 }

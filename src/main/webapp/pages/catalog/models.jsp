@@ -21,10 +21,14 @@
 </c:if>
 
 <c:forEach items="${requestScope.attr_model_list}" var="model">
-    ${model.name} ${model.photoUrl} ${model.doorCount} ${model.seatCount} ${model.horsePowerCount} <br>
+    <c:out value="${model.name}"/>
+    <c:out value="${model.photoUrl}"/>
+    <c:out value="${model.doorCount}"/>
+    <c:out value="${model.seatCount}"/>
+    <c:out value="${model.horsePowerCount}"/><br>
     <form method="get" action="cars">
         <input type="hidden" name="<fmt:message key="param.model.id" bundle="${par}"/>" value="${model.id}">
-        <input type="submit" value="<fmt:message key="cars.href" bundle="${info}"/>">
+        <input type="submit" value="<fmt:message key="models.cars.href" bundle="${info}"/>">
     </form>
 </c:forEach>
 

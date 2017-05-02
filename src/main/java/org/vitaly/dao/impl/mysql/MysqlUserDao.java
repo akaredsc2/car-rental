@@ -55,11 +55,8 @@ public class MysqlUserDao implements UserDao {
 
     @Override
     public Optional<User> findById(long id) {
-        Map<Integer, Object> parameterMap = new HashMap<>();
-        parameterMap.put(1, id);
-
         Mapper<User> mapper = ResultSetMapperFactory.getInstance().getUserMapper();
-        User user = DaoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
+        User user = DaoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, Collections.singletonMap(1, id));
         return Optional.ofNullable(user);
     }
 
@@ -67,11 +64,8 @@ public class MysqlUserDao implements UserDao {
     public Optional<Long> findIdOfEntity(User user) {
         requireNotNull(user, USER_MUST_NOT_BE_NULL);
 
-        Map<Integer, Object> parameterMap = new HashMap<>();
-        parameterMap.put(1, user.getLogin());
-
-        Long foundId =
-                DaoTemplate.executeSelectOne(FIND_ID_OF_USER_QUERY, resultSet -> resultSet.getLong(1), parameterMap);
+        Long foundId = DaoTemplate.executeSelectOne(
+                FIND_ID_OF_USER_QUERY, resultSet -> resultSet.getLong(1), Collections.singletonMap(1, user.getLogin()));
 
         return Optional.ofNullable(foundId);
     }

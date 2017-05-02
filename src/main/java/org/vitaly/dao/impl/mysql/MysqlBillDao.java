@@ -48,11 +48,8 @@ public class MysqlBillDao implements BillDao {
 
     @Override
     public Optional<Bill> findById(long id) {
-        HashMap<Integer, Object> parameterMap = new HashMap<>();
-        parameterMap.put(1, id);
-
         Mapper<Bill> mapper = ResultSetMapperFactory.getInstance().getBillMapper();
-        Bill foundBill = DaoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
+        Bill foundBill = DaoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, Collections.singletonMap(1, id));
         return Optional.ofNullable(foundBill);
     }
 
@@ -95,7 +92,8 @@ public class MysqlBillDao implements BillDao {
         parameterMap.put(1, reservationId);
 
         Mapper<Bill> mapper = ResultSetMapperFactory.getInstance().getBillMapper();
-        return DaoTemplate.executeSelect(FIND_BILLS_FOR_RESERVATION_QUERY, mapper, parameterMap);
+        return DaoTemplate
+                .executeSelect(FIND_BILLS_FOR_RESERVATION_QUERY, mapper, Collections.singletonMap(1, reservationId));
     }
 
     @Override

@@ -5,6 +5,7 @@ import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
 import org.vitaly.dao.impl.mysql.transaction.Transaction;
 import org.vitaly.model.carModel.CarModel;
 import org.vitaly.service.abstraction.CarModelService;
+import org.vitaly.service.impl.dto.CarDto;
 import org.vitaly.service.impl.dto.CarModelDto;
 import org.vitaly.service.impl.dtoMapper.DtoMapper;
 import org.vitaly.service.impl.factory.DtoMapperFactory;
@@ -61,10 +62,21 @@ public class CarModelServiceImpl implements CarModelService {
         DtoMapper<CarModel, CarModelDto> mapper = DtoMapperFactory.getInstance().getCarModelDtoMapper();
 
         CarModelDao carModelDao = MysqlDaoFactory.getInstance().getCarModelDao();
-        return carModelDao.findCarsWithPhotos()
+        return carModelDao.findCarModelsWithPhotos()
                 .stream()
                 .map(mapper::mapEntityToDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public CarModelDto findModelOfCar(CarDto carDto) {
+        long carId = carDto.getId();
+        DtoMapper<CarModel, CarModelDto> mapper = DtoMapperFactory.getInstance().getCarModelDtoMapper();
+
+        CarModelDao carModelDao = MysqlDaoFactory.getInstance().getCarModelDao();
+        return carModelDao.findModelOfCar(carId)
+                .map(mapper::mapEntityToDto)
+                .orElse(null);
     }
 }
 

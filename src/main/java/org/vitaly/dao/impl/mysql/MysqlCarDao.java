@@ -56,11 +56,8 @@ public class MysqlCarDao implements CarDao {
 
     @Override
     public Optional<Car> findById(long id) {
-        Map<Integer, Object> parameterMap = new HashMap<>();
-        parameterMap.put(1, id);
-
         Mapper<Car> mapper = ResultSetMapperFactory.getInstance().getCarMapper();
-        Car car = DaoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, parameterMap);
+        Car car = DaoTemplate.executeSelectOne(FIND_BY_ID_QUERY, mapper, Collections.singletonMap(1, id));
         return Optional.ofNullable(car);
     }
 
@@ -68,11 +65,8 @@ public class MysqlCarDao implements CarDao {
     public Optional<Long> findIdOfEntity(Car car) {
         requireNotNull(car, CAR_MUST_NOT_BE_NULL);
 
-        Map<Integer, Object> parameterMap = new HashMap<>();
-        parameterMap.put(1, car.getRegistrationPlate());
-
-        Long foundId =
-                DaoTemplate.executeSelectOne(FIND_ID_OF_CAR_QUERY, resultSet -> resultSet.getLong(1), parameterMap);
+        Long foundId = DaoTemplate.executeSelectOne(FIND_ID_OF_CAR_QUERY,
+                resultSet -> resultSet.getLong(1), Collections.singletonMap(1, car.getRegistrationPlate()));
 
         return Optional.ofNullable(foundId);
     }
@@ -124,20 +118,14 @@ public class MysqlCarDao implements CarDao {
 
     @Override
     public List<Car> findCarsAtLocation(long locationId) {
-        Map<Integer, Object> parameterMap = new HashMap<>();
-        parameterMap.put(1, locationId);
-
         Mapper<Car> mapper = ResultSetMapperFactory.getInstance().getCarMapper();
-        return DaoTemplate.executeSelect(GET_CARS_AT_LOCATION_QUERY, mapper, parameterMap);
+        return DaoTemplate.executeSelect(GET_CARS_AT_LOCATION_QUERY, mapper, Collections.singletonMap(1, locationId));
     }
 
     @Override
     public List<Car> findCarsByModel(long carModelId) {
-        Map<Integer, Object> parameterMap = new HashMap<>();
-        parameterMap.put(1, carModelId);
-
         Mapper<Car> mapper = ResultSetMapperFactory.getInstance().getCarMapper();
-        return DaoTemplate.executeSelect(FIND_CAR_BY_MODEL_QUERY, mapper, parameterMap);
+        return DaoTemplate.executeSelect(FIND_CAR_BY_MODEL_QUERY, mapper, Collections.singletonMap(1, carModelId));
     }
 
     @Override

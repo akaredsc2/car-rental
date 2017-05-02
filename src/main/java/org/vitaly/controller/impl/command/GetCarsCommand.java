@@ -18,9 +18,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import static org.vitaly.util.constants.RequestAttributes.ATTR_CAR_LIST;
-import static org.vitaly.util.constants.RequestParameters.PARAMETERS;
-import static org.vitaly.util.constants.RequestParameters.PARAM_LOCATION_ID;
-import static org.vitaly.util.constants.RequestParameters.PARAM_MODEL_ID;
+import static org.vitaly.util.constants.RequestParameters.*;
 
 /**
  * Created by vitaly on 01.05.17.

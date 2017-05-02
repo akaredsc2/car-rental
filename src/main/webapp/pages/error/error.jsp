@@ -15,7 +15,7 @@
 
 <fmt:message key="error.description" bundle="${info}"/><br>
 
-${requestScope.attr_error}<br>
+<c:out value="${requestScope.attr_error}"/><br>
 
 <c:choose>
     <c:when test="${empty sessionScope.session_user}">
