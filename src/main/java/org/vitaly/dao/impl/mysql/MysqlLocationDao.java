@@ -1,7 +1,5 @@
 package org.vitaly.dao.impl.mysql;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.vitaly.dao.abstraction.LocationDao;
 import org.vitaly.dao.impl.mysql.factory.ResultSetMapperFactory;
 import org.vitaly.dao.impl.mysql.mapper.Mapper;
@@ -34,14 +32,12 @@ public class MysqlLocationDao implements LocationDao {
             "SELECT * " +
                     "FROM location " +
                     "WHERE location_id IN (SELECT location_id FROM car WHERE car_id = ?)";
-    private static final String CHANGE_IMAGE_URL_QUERY =
+    private static final String UPDATE_QUERY =
             "UPDATE location " +
                     "SET photo_url = ? " +
                     "WHERE location_id = ?";
 
     private static final String LOCATION_MUST_NOT_BE_NULL = "Location must not be null!";
-
-    private static Logger logger = LogManager.getLogger(MysqlLocationDao.class.getName());
 
     @Override
     public Optional<Location> findById(long id) {
@@ -86,10 +82,14 @@ public class MysqlLocationDao implements LocationDao {
     }
 
     @Override
-    public int update(long id, Location entity) {
-        RuntimeException e = new UnsupportedOperationException();
-        logger.error(e);
-        throw e;
+    public int update(long id, Location updatedLocation) {
+        requireNotNull(updatedLocation, LOCATION_MUST_NOT_BE_NULL);
+
+        HashMap<Integer, Object> parameterMap = new HashMap<>();
+        parameterMap.put(1, updatedLocation.getPhotoUrl());
+        parameterMap.put(2, id);
+
+        return DaoTemplate.executeUpdate(UPDATE_QUERY, parameterMap);
     }
 
     @Override
@@ -102,14 +102,5 @@ public class MysqlLocationDao implements LocationDao {
         Location foundLocation = DaoTemplate
                 .executeSelectOne(findLocationByCarIdQuery, mapper, Collections.singletonMap(1, carId));
         return Optional.ofNullable(foundLocation);
-    }
-
-    @Override
-    public boolean changeImageUrl(long locationId, String imageUrl) {
-        HashMap<Integer, Object> parameterMap = new HashMap<>();
-        parameterMap.put(1, imageUrl);
-        parameterMap.put(2, locationId);
-
-        return DaoTemplate.executeUpdate(CHANGE_IMAGE_URL_QUERY, parameterMap) > 0;
     }
 }

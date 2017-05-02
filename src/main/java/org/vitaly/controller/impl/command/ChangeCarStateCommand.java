@@ -3,41 +3,42 @@ package org.vitaly.controller.impl.command;
 import org.vitaly.controller.abstraction.command.Command;
 import org.vitaly.controller.impl.factory.RequestMapperFactory;
 import org.vitaly.service.impl.dto.CarDto;
-import org.vitaly.service.impl.dto.LocationDto;
 import org.vitaly.service.impl.factory.ServiceFactory;
+import org.vitaly.util.PropertyUtils;
+import org.vitaly.util.constants.RequestParameters;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Properties;
 
 import static org.vitaly.util.constants.RequestAttributes.ATTR_ERROR;
+import static org.vitaly.util.constants.RequestParameters.PARAMETERS;
 
 /**
- * Created by vitaly on 01.05.17.
+ * Created by vitaly on 02.05.17.
  */
-public class MoveCarCommand implements Command {
+public class ChangeCarStateCommand implements Command {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        RequestMapperFactory requestMapperFactory = RequestMapperFactory.getInstance();
+        Properties properties = PropertyUtils.readProperties(PARAMETERS);
+        String newCarStateParam = properties.getProperty(RequestParameters.PARAM_CAR_STATE_NEW);
+        String newCarStateString = request.getParameter(newCarStateParam);
 
-        CarDto carDto = requestMapperFactory
+        CarDto carDto = RequestMapperFactory.getInstance()
                 .getCarRequestMapper()
                 .map(request);
 
-        LocationDto locationDto = requestMapperFactory
-                .getLocationRequestMapper()
-                .map(request);
-
-        boolean isCarMoved = ServiceFactory.getInstance()
+        boolean isStateChanged = ServiceFactory.getInstance()
                 .getCarService()
-                .moveCarToLocation(carDto, locationDto);
+                .changeCarState(carDto, newCarStateString);
 
-        if (isCarMoved) {
+        if (isStateChanged) {
             response.sendRedirect(request.getContextPath() + "/home.jsp");
         } else {
-            request.setAttribute(ATTR_ERROR, "Failed to move car");
+            request.setAttribute(ATTR_ERROR, "Failed to change car state");
             request.getServletContext()
                     .getRequestDispatcher("/pages/error/error.jsp")
                     .forward(request, response);

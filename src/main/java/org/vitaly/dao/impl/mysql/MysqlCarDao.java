@@ -5,6 +5,7 @@ import org.vitaly.dao.impl.mysql.factory.ResultSetMapperFactory;
 import org.vitaly.dao.impl.mysql.mapper.Mapper;
 import org.vitaly.dao.impl.mysql.template.DaoTemplate;
 import org.vitaly.model.car.Car;
+import org.vitaly.model.car.CarState;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -31,7 +32,7 @@ public class MysqlCarDao implements CarDao {
                     "VALUES (?, ?, ?, ?)";
     private static final String UPDATE_QUERY =
             "UPDATE car " +
-                    "SET model_id = ?, registration_plate = ?, color = ?, price_per_day = ?, car_status = ? " +
+                    "SET color = ?, price_per_day = ? " +
                     "WHERE car_id = ?";
     private static final String ADD_CAR_TO_LOCATION_QUERY =
             "UPDATE car " +
@@ -49,10 +50,15 @@ public class MysqlCarDao implements CarDao {
             "SELECT * " +
                     "FROM car " +
                     "WHERE price_per_day BETWEEN ? AND ?";
+    private static final String CHANGE_CAR_STATE_QUERY =
+            "UPDATE car " +
+                    "SET car.car_status = ? " +
+                    "WHERE car.car_id = ?";
 
     private static final String CAR_MUST_NOT_BE_NULL = "Car must not be null!";
     private static final String FROM_NUMBER_MUST_NOT_BE_NULL = "From number must not be null!";
     private static final String TO_NUMBER_MUST_NOT_BE_NULL = "To number must not be null!";
+    private static final String CAR_STATE_MUST_NOT_BE_NULL = "Car state must not be null!";
 
     @Override
     public Optional<Car> findById(long id) {
@@ -82,17 +88,13 @@ public class MysqlCarDao implements CarDao {
         requireNotNull(car, CAR_MUST_NOT_BE_NULL);
 
         Map<Integer, Object> parameterMap = new HashMap<>();
-        putCarParametersToMap(car, parameterMap);
-
-        Long createdId = DaoTemplate.executeInsert(CREATE_QUERY, parameterMap);
-        return Optional.ofNullable(createdId);
-    }
-
-    private void putCarParametersToMap(Car car, Map<Integer, Object> parameterMap) {
         parameterMap.put(1, car.getCarModel().getId());
         parameterMap.put(2, car.getRegistrationPlate());
         parameterMap.put(3, car.getColor());
         parameterMap.put(4, car.getPricePerDay());
+
+        Long createdId = DaoTemplate.executeInsert(CREATE_QUERY, parameterMap);
+        return Optional.ofNullable(createdId);
     }
 
     @Override
@@ -100,9 +102,9 @@ public class MysqlCarDao implements CarDao {
         requireNotNull(car, CAR_MUST_NOT_BE_NULL);
 
         Map<Integer, Object> parameterMap = new HashMap<>();
-        putCarParametersToMap(car, parameterMap);
-        parameterMap.put(5, car.getState().toString());
-        parameterMap.put(6, id);
+        parameterMap.put(1, car.getColor());
+        parameterMap.put(2, car.getPricePerDay());
+        parameterMap.put(3, id);
 
         return DaoTemplate.executeUpdate(UPDATE_QUERY, parameterMap);
     }
@@ -139,5 +141,16 @@ public class MysqlCarDao implements CarDao {
 
         Mapper<Car> mapper = ResultSetMapperFactory.getInstance().getCarMapper();
         return DaoTemplate.executeSelect(FIND_CARS_WITH_PRICE_BETWEEN_QUERY, mapper, parameterMap);
+    }
+
+    @Override
+    public boolean changeCarState(long carId, CarState state) {
+        requireNotNull(state, CAR_STATE_MUST_NOT_BE_NULL);
+
+        Map<Integer, Object> parameterMap = new HashMap<>();
+        parameterMap.put(1, state.toString());
+        parameterMap.put(2, carId);
+
+        return DaoTemplate.executeUpdate(CHANGE_CAR_STATE_QUERY, parameterMap) > 0;
     }
 }

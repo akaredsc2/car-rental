@@ -1,5 +1,6 @@
 package org.vitaly.dao.impl.mysql;
 
+import junit.framework.AssertionFailedError;
 import org.junit.*;
 import org.vitaly.dao.abstraction.CarDao;
 import org.vitaly.dao.abstraction.CarModelDao;
@@ -10,6 +11,8 @@ import org.vitaly.dao.impl.mysql.connectionPool.MysqlConnectionPool;
 import org.vitaly.data.TestData;
 import org.vitaly.data.TestUtil;
 import org.vitaly.model.car.Car;
+import org.vitaly.model.car.CarState;
+import org.vitaly.model.car.CarStateEnum;
 import org.vitaly.model.car.UnavailableState;
 import org.vitaly.model.carModel.CarModel;
 import org.vitaly.model.location.Location;
@@ -189,7 +192,9 @@ public class MysqlCarDaoTest {
         carDao.update(createId, car2);
 
         Car updatedCar = carDao.findById(createId).orElseThrow(AssertionError::new);
-        assertThat(updatedCar, equalTo(car2));
+
+        assertEquals(car2.getColor(), updatedCar.getColor());
+        assertEquals(car2.getPricePerDay().stripTrailingZeros(), updatedCar.getPricePerDay().stripTrailingZeros());
     }
 
     @Test
@@ -313,5 +318,29 @@ public class MysqlCarDaoTest {
     @Test(expected = IllegalArgumentException.class)
     public void findCarsWithPriceBetweenNumberAndNullShouldThrowException() throws Exception {
         carDao.findCarsWithPriceBetween(BigDecimal.ONE, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void changeStateToNullShouldThrowException() throws Exception {
+        carDao.changeCarState(1, null);
+    }
+
+    @Test
+    public void changeStateOfExistingCarReturnsTrue() throws Exception {
+        long carId = carDao.create(car1).orElseThrow(AssertionFailedError::new);
+        CarState carState = CarStateEnum.AVAILABLE.getState();
+
+        boolean isStateChanged = carDao.changeCarState(carId, carState);
+
+        assertTrue(isStateChanged);
+    }
+
+    @Test
+    public void changeStateOfNonExistingCarReturnsFalse() throws Exception {
+        CarState carState = CarStateEnum.AVAILABLE.getState();
+
+        boolean isStateChanged = carDao.changeCarState(-1, carState);
+
+        assertFalse(isStateChanged);
     }
 }

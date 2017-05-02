@@ -35,6 +35,7 @@ public final class RequestParameters {
     public static final String PARAM_CAR_PLATE = "param.car.plate";
     public static final String PARAM_CAR_COLOR = "param.car.color";
     public static final String PARAM_CAR_PRICE = "param.car.price";
+    public static final String PARAM_CAR_STATE_NEW = "param.car.state.new";
 
     public static final String PARAM_LOCALE = "param.locale";
 }

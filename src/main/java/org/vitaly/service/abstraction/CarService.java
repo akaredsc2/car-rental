@@ -21,7 +21,9 @@ public interface CarService {
 
     List<CarDto> getAllCars();
 
-    void updateCar(CarDto carDto);
+    boolean updateCar(CarDto carDto);
 
-    void moveCarToLocation(CarDto carDto, LocationDto locationDto);
+    boolean moveCarToLocation(CarDto carDto, LocationDto locationDto);
+
+    boolean changeCarState(CarDto carDto, String carState);
 }

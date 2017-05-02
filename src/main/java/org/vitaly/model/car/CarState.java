@@ -23,24 +23,4 @@ public abstract class CarState {
     boolean doReturn(Car car) {
         return false;
     }
-
-    boolean canMakeAvailable() {
-        return false;
-    }
-
-    boolean canMakeUnavailable() {
-        return false;
-    }
-
-    boolean canReserve() {
-        return false;
-    }
-
-    boolean canServe() {
-        return false;
-    }
-
-    boolean canReturn() {
-        return false;
-    }
 }

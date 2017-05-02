@@ -60,8 +60,12 @@ public class LocationServiceImpl implements LocationService {
     public boolean changeLocationPhotoUrl(LocationDto locationDto, String photoUrl) {
         try (Transaction transaction = Transaction.startTransaction()) {
             long locationId = locationDto.getId();
+            Location locationWithPhoto = new Location.Builder()
+                    .setPhotoUrl(photoUrl)
+                    .build();
+
             LocationDao locationDao = MysqlDaoFactory.getInstance().getLocationDao();
-            boolean isChanged = locationDao.changeImageUrl(locationId, photoUrl);
+            boolean isChanged = locationDao.update(locationId, locationWithPhoto) > 0;
 
             transaction.commit();
 

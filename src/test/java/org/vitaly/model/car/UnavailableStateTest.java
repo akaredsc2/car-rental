@@ -16,18 +16,6 @@ public class UnavailableStateTest {
             .build();
 
     @Test
-    public void unavailableCarCanOnlyBecomeAvailableAndMaintained() throws Exception {
-        boolean canChangeState =
-                state.canMakeAvailable()
-                        && !state.canReserve()
-                        && !state.canServe()
-                        && !state.canReturn()
-                        && !state.canMakeUnavailable();
-
-        assertTrue(canChangeState);
-    }
-
-    @Test
     public void makeAvailableDoesChangeCarStateToAvailable() throws Exception {
         state.makeAvailable(car);
 

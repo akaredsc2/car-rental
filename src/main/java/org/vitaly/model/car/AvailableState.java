@@ -20,16 +20,6 @@ public class AvailableState extends CarState {
     }
 
     @Override
-    boolean canMakeUnavailable() {
-        return true;
-    }
-
-    @Override
-    boolean canReserve() {
-        return true;
-    }
-
-    @Override
     public String toString() {
         return "available";
     }

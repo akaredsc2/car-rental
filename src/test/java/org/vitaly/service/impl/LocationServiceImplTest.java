@@ -11,6 +11,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.vitaly.dao.abstraction.LocationDao;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
 import org.vitaly.dao.impl.mysql.transaction.Transaction;
+import org.vitaly.model.location.Location;
 import org.vitaly.service.abstraction.LocationService;
 import org.vitaly.service.impl.dto.CarDto;
 import org.vitaly.service.impl.dto.LocationDto;
@@ -85,12 +86,15 @@ public class LocationServiceImplTest {
         LocationDto locationDto = new LocationDto();
         locationDto.setId(10);
         String photoUrl = "photoUrl";
+        Location location = new Location.Builder()
+                .setPhotoUrl(photoUrl)
+                .build();
 
         stab();
         locationService.changeLocationPhotoUrl(locationDto, photoUrl);
 
         InOrder inOrder = Mockito.inOrder(locationDao, transaction);
-        inOrder.verify(locationDao).changeImageUrl(locationDto.getId(), photoUrl);
+        inOrder.verify(locationDao).update(locationDto.getId(), location);
         inOrder.verify(transaction).commit();
         inOrder.verify(transaction).close();
     }

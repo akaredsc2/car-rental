@@ -14,11 +14,6 @@ public class ServedState extends CarState {
     }
 
     @Override
-    boolean canReturn() {
-        return true;
-    }
-
-    @Override
     public String toString() {
         return "served";
     }

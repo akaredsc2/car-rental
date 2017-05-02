@@ -9,6 +9,4 @@ import java.util.Optional;
  */
 public interface LocationDao extends AbstractDao<Location> {
     Optional<Location> findLocationByCarId(long carId);
-
-    boolean changeImageUrl(long locationId, String imageUrl);
 }

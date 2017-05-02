@@ -60,6 +60,8 @@ public class SecurityManager {
         permissionMap.put(UrlHttpMethodPair.ADD_LOCATION_POST, admin);
         permissionMap.put(UrlHttpMethodPair.MOVE_CAR_GET, admin);
         permissionMap.put(UrlHttpMethodPair.MOVE_CAR_POST, admin);
+        permissionMap.put(UrlHttpMethodPair.CHANGE_CAR_STATE_POST, admin);
+        permissionMap.put(UrlHttpMethodPair.UPDATE_CAR_POST, admin);
 
         permissionMap.put(UrlHttpMethodPair.LOCATIONS_GET, clientAndAdmin);
         permissionMap.put(UrlHttpMethodPair.MODELS_GET, clientAndAdmin);

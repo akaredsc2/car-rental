@@ -33,7 +33,7 @@ public class MysqlCarModelDao implements CarModelDao {
                     "VALUES(?, ?, ?, ?)";
     private static final String UPDATE_QUERY =
             "UPDATE model " +
-                    "SET model_name = ?, photo_url = ?, doors = ?, seats = ?, horse_powers = ? " +
+                    "SET photo_url = ? " +
                     "WHERE model_id = ?";
     private static final String FIND_CAR_MODELS_WITH_PHOTOS_QUERY =
             "SELECT * " +
@@ -87,12 +87,8 @@ public class MysqlCarModelDao implements CarModelDao {
         requireNotNull(carModel, CAR_MODEL_MUST_NOT_BE_NULL);
 
         HashMap<Integer, Object> parameterMap = new HashMap<>();
-        parameterMap.put(1, carModel.getName());
-        parameterMap.put(2, carModel.getPhotoUrl());
-        parameterMap.put(3, carModel.getDoorCount());
-        parameterMap.put(4, carModel.getSeatCount());
-        parameterMap.put(5, carModel.getHorsePowerCount());
-        parameterMap.put(6, id);
+        parameterMap.put(1, carModel.getPhotoUrl());
+        parameterMap.put(2, id);
 
         return DaoTemplate.executeUpdate(UPDATE_QUERY, parameterMap);
     }

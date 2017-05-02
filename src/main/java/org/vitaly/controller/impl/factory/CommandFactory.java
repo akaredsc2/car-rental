@@ -29,6 +29,8 @@ public class CommandFactory {
         commandMap.put(UrlHttpMethodPair.ADD_LOCATION_POST, new AddLocationCommand());
         commandMap.put(UrlHttpMethodPair.MOVE_CAR_GET, new PrepareToMoveCarCommand());
         commandMap.put(UrlHttpMethodPair.MOVE_CAR_POST, new MoveCarCommand());
+        commandMap.put(UrlHttpMethodPair.CHANGE_CAR_STATE_POST, new ChangeCarStateCommand());
+        commandMap.put(UrlHttpMethodPair.UPDATE_CAR_POST, new UpdateCarCommand());
 
         commandMap.put(UrlHttpMethodPair.LOCATIONS_GET, new GetLocationsCommand());
         commandMap.put(UrlHttpMethodPair.MODELS_GET, new GetModelsCommand());

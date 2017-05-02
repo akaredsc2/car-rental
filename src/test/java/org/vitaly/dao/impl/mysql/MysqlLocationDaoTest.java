@@ -133,11 +133,6 @@ public class MysqlLocationDaoTest {
         locationDao.create(null);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void updateIsUnsupportedForLocationDao() throws Exception {
-        locationDao.update(1L, location1);
-    }
-
     @Test
     public void findLocationOfExistingCarReturnsLocation() throws Exception {
         CarModel carModel = TestData.getInstance().getCarModel("carModel1");
@@ -172,61 +167,77 @@ public class MysqlLocationDaoTest {
         assertFalse(isFound);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void updatingWithNullLocationShouldThrowException() throws Exception {
+        locationDao.update(1, null);
+    }
+
     @Test
-    public void changingPhotoUrlOfExistingLocationToNotNull() throws Exception {
+    public void updatingPhotoUrlOfExistingLocationToNotNull() throws Exception {
         String newPhotoUrl = "photoUrl";
+        Location locationWithPhoto = new Location.Builder()
+                .setPhotoUrl(newPhotoUrl)
+                .build();
 
-        Location locationWithIdBeforeChange = TestUtil.createEntityWithId(location1, locationDao);
-        String photoUrlBeforeChange = locationWithIdBeforeChange.getPhotoUrl();
-        locationDao.changeImageUrl(locationWithIdBeforeChange.getId(), newPhotoUrl);
+        Location locationWithIdBeforeUpdate = TestUtil.createEntityWithId(location1, locationDao);
+        String photoUrlBeforeUpdate = locationWithIdBeforeUpdate.getPhotoUrl();
+        locationDao.update(locationWithIdBeforeUpdate.getId(), locationWithPhoto);
 
-        Location locationAfterChange = locationDao.findById(locationWithIdBeforeChange.getId())
+        Location locationAfterUpdate = locationDao.findById(locationWithIdBeforeUpdate.getId())
                 .orElseThrow(AssertionError::new);
 
-        String photoUrlAfterChange = locationAfterChange.getPhotoUrl();
+        String photoUrlAfterUpdate = locationAfterUpdate.getPhotoUrl();
 
-        assertThat(photoUrlAfterChange, allOf(
-                not(equalTo(photoUrlBeforeChange)),
+        assertThat(photoUrlAfterUpdate, allOf(
+                not(equalTo(photoUrlBeforeUpdate)),
                 equalTo(newPhotoUrl)));
     }
 
     @Test
-    public void changingPhotoUrlOfExistingLocationToNotNullReturnsTrue() throws Exception {
+    public void updatingPhotoUrlOfExistingLocationToNotNullReturnsTrue() throws Exception {
         String newPhotoUrl = "photoUrl";
+        Location locationWithPhoto = new Location.Builder()
+                .setPhotoUrl(newPhotoUrl)
+                .build();
 
         Location locationWithIdBeforeChange = TestUtil.createEntityWithId(location1, locationDao);
-        boolean changeResult = locationDao.changeImageUrl(locationWithIdBeforeChange.getId(), newPhotoUrl);
+        int updateResult = locationDao.update(locationWithIdBeforeChange.getId(), locationWithPhoto);
 
-        assertTrue(changeResult);
+        assertEquals(1, updateResult);
     }
 
     @Test
-    public void changingPhotoUrlOfExistingLocationToNull() throws Exception {
+    public void updatingPhotoUrlOfExistingLocationToNull() throws Exception {
         Location locationWithIdBeforeChange = TestUtil.createEntityWithId(location1, locationDao);
-        locationDao.changeImageUrl(locationWithIdBeforeChange.getId(), null);
+        Location locationWithoutPhoto = new Location.Builder().build();
+        locationDao.update(locationWithIdBeforeChange.getId(), locationWithoutPhoto);
 
-        Location locationAfterChange = locationDao.findById(locationWithIdBeforeChange.getId())
+        Location locationAfterUpdate = locationDao.findById(locationWithIdBeforeChange.getId())
                 .orElseThrow(AssertionError::new);
 
-        String photoUrlAfterChange = locationAfterChange.getPhotoUrl();
+        String photoUrlAfterUpdate = locationAfterUpdate.getPhotoUrl();
 
-        assertThat(photoUrlAfterChange, nullValue());
+        assertThat(photoUrlAfterUpdate, nullValue());
     }
 
     @Test
-    public void changingPhotoUrlOfExistingLocationToNullReturnsTrue() throws Exception {
+    public void updatingPhotoUrlOfExistingLocationToNullReturnsOne() throws Exception {
         Location locationWithIdBeforeChange = TestUtil.createEntityWithId(location1, locationDao);
-        boolean changeResult = locationDao.changeImageUrl(locationWithIdBeforeChange.getId(), null);
+        Location locationWithoutPhoto = new Location.Builder().build();
+        int updateResult = locationDao.update(locationWithIdBeforeChange.getId(), locationWithoutPhoto);
 
-        assertTrue(changeResult);
+        assertEquals(1, updateResult);
     }
 
     @Test
-    public void changingPhotoUrlOfNonExistingLocationReturnsFalse() throws Exception {
+    public void updatingPhotoUrlOfNonExistingLocationReturnsZero() throws Exception {
         String newPhotoUrl = "photoUrl";
+        Location locationWithPhoto = new Location.Builder()
+                .setPhotoUrl(newPhotoUrl)
+                .build();
 
-        boolean changeResult = locationDao.changeImageUrl(-1, newPhotoUrl);
+        int updateResult = locationDao.update(-1, locationWithPhoto);
 
-        assertFalse(changeResult);
+        assertEquals(0, updateResult);
     }
 }
