@@ -47,10 +47,12 @@ public class SecurityManager {
         permissionMap.put(UrlHttpMethodPair.PAGE_REGISTRATION, guest);
         permissionMap.put(UrlHttpMethodPair.PAGE_ADD_MODEL, admin);
         permissionMap.put(UrlHttpMethodPair.PAGE_ADD_LOCATION, admin);
+        permissionMap.put(UrlHttpMethodPair.PAGE_PERSONAL, clientAndAdmin);
 
-        permissionMap.put(UrlHttpMethodPair.SIGN_IN, guest);
-        permissionMap.put(UrlHttpMethodPair.SIGN_OUT, clientAndAdmin);
-        permissionMap.put(UrlHttpMethodPair.REGISTRATION, guest);
+        permissionMap.put(UrlHttpMethodPair.SIGN_IN_POST, guest);
+        permissionMap.put(UrlHttpMethodPair.SIGN_OUT_POST, clientAndAdmin);
+        permissionMap.put(UrlHttpMethodPair.REGISTRATION_POST, guest);
+        permissionMap.put(UrlHttpMethodPair.CHANGE_PASSWORD_POST, clientAndAdmin);
 
         permissionMap.put(UrlHttpMethodPair.CHANGE_LOCALE, all);
 
@@ -62,6 +64,8 @@ public class SecurityManager {
         permissionMap.put(UrlHttpMethodPair.MOVE_CAR_POST, admin);
         permissionMap.put(UrlHttpMethodPair.CHANGE_CAR_STATE_POST, admin);
         permissionMap.put(UrlHttpMethodPair.UPDATE_CAR_POST, admin);
+        permissionMap.put(UrlHttpMethodPair.PROMOTE_GET, admin);
+        permissionMap.put(UrlHttpMethodPair.PROMOTE_POST, admin);
 
         permissionMap.put(UrlHttpMethodPair.LOCATIONS_GET, clientAndAdmin);
         permissionMap.put(UrlHttpMethodPair.MODELS_GET, clientAndAdmin);

@@ -3,6 +3,7 @@ package org.vitaly.service.abstraction;
 import org.vitaly.model.user.UserRole;
 import org.vitaly.service.impl.dto.UserDto;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -16,4 +17,6 @@ public interface UserService {
     void changeRole(UserDto userDto, UserRole role);
 
     void changePassword(UserDto userDto, String newPassword);
+
+    List<UserDto> findAllClients();
 }

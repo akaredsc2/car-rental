@@ -10,7 +10,9 @@ import org.vitaly.service.impl.dto.UserDto;
 import org.vitaly.service.impl.dtoMapper.DtoMapper;
 import org.vitaly.service.impl.factory.DtoMapperFactory;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created by vitaly on 2017-04-10.
@@ -63,5 +65,17 @@ public class UserServiceImpl implements UserService {
 
             transaction.commit();
         }
+    }
+
+    @Override
+    public List<UserDto> findAllClients() {
+        DtoMapper<User, UserDto> userDtoMapper = DtoMapperFactory.getInstance().getUserDtoMapper();
+        return MysqlDaoFactory.getInstance()
+                .getUserDao()
+                .getAll()
+                .stream()
+                .filter(user -> user.getRole() == UserRole.CLIENT)
+                .map(userDtoMapper::mapEntityToDto)
+                .collect(Collectors.toList());
     }
 }

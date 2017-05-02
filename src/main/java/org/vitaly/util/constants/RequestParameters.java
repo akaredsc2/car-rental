@@ -37,5 +37,9 @@ public final class RequestParameters {
     public static final String PARAM_CAR_PRICE = "param.car.price";
     public static final String PARAM_CAR_STATE_NEW = "param.car.state.new";
 
+    public static final String PARAM_PASS_OLD = "param.pass.old";
+    public static final String PARAM_PASS_NEW = "param.pass.new";
+    public static final String PARAM_PASS_REPEAT = "param.pass.repeat";
+
     public static final String PARAM_LOCALE = "param.locale";
 }

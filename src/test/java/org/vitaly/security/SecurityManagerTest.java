@@ -55,7 +55,7 @@ public class SecurityManagerTest {
 
     @Test
     public void guestAllowedRequestIsAllowedWithEmptySession() throws Exception {
-        UrlHttpMethodPair guestOnlyUrl = UrlHttpMethodPair.SIGN_IN;
+        UrlHttpMethodPair guestOnlyUrl = UrlHttpMethodPair.SIGN_IN_POST;
 
         HttpServletRequest request = stabRequest(guestOnlyUrl);
         when(request.getSession(anyBoolean())).thenReturn(null);
@@ -66,7 +66,7 @@ public class SecurityManagerTest {
 
     @Test
     public void guestAllowedRequestIsAllowedWithEmptyUserAttributeInSession() throws Exception {
-        UrlHttpMethodPair guestOnlyUrl = UrlHttpMethodPair.SIGN_IN;
+        UrlHttpMethodPair guestOnlyUrl = UrlHttpMethodPair.SIGN_IN_POST;
 
         HttpServletRequest request = stabRequest(guestOnlyUrl);
         HttpSession session = mock(HttpSession.class);
@@ -118,7 +118,7 @@ public class SecurityManagerTest {
 
     @Test
     public void requestNotAllowedForRoleReturnsFalse() throws Exception {
-        UrlHttpMethodPair guestOnlyUrl = UrlHttpMethodPair.REGISTRATION;
+        UrlHttpMethodPair guestOnlyUrl = UrlHttpMethodPair.REGISTRATION_POST;
         UserDto adminDto = new UserDto();
         adminDto.setRole(UserRole.ADMIN);
 

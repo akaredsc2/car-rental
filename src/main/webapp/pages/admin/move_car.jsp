@@ -20,8 +20,12 @@
         <fmt:message key="car.move.location" bundle="${info}"/>
         <select name="<fmt:message key="param.location.id" bundle="${par}"/>" required>
             <c:forEach items="${requestScope.attr_location_list}" var="location">
-                COUT
-                <option value="${location.id}">${location.state} ${location.city} ${location.street} ${location.building}</option>
+                <option value="${location.id}">
+                    <c:out value="${location.state}"/>
+                    <c:out value="${location.city}"/>
+                    <c:out value="${location.street}"/>
+                    <c:out value="${location.building}"/>
+                </option>
             </c:forEach>
         </select>
     </label><br>
