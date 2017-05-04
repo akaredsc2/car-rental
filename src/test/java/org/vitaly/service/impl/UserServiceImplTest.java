@@ -9,7 +9,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.vitaly.dao.abstraction.UserDao;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
-import org.vitaly.dao.impl.mysql.transaction.Transaction;
+import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
 import org.vitaly.model.user.UserRole;
 import org.vitaly.service.abstraction.UserService;
 import org.vitaly.service.impl.dto.UserDto;
@@ -24,10 +24,10 @@ import static org.mockito.Mockito.*;
  * Created by vitaly on 2017-04-20.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({MysqlDaoFactory.class, Transaction.class})
+@PrepareForTest({MysqlDaoFactory.class, TransactionManager.class})
 @PowerMockIgnore("javax.management.*")
 public class UserServiceImplTest {
-    private Transaction transaction = mock(Transaction.class);
+    private TransactionManager transactionManager = mock(TransactionManager.class);
     private MysqlDaoFactory daoFactory = mock(MysqlDaoFactory.class);
     private UserDao userDao = mock(UserDao.class);
     private UserService userService = new UserServiceImpl();
@@ -48,15 +48,15 @@ public class UserServiceImplTest {
         when(userDao.create(any())).thenReturn(Optional.empty());
         userService.registerNewUser(userDto);
 
-        InOrder inOrder = inOrder(userDao, transaction);
+        InOrder inOrder = inOrder(userDao, transactionManager);
         inOrder.verify(userDao).create(any());
-        inOrder.verify(transaction).commit();
-        inOrder.verify(transaction).close();
+        inOrder.verify(transactionManager).commit();
+//        inOrder.verify(transactionManager).close();
     }
 
     private void stab() {
-        PowerMockito.mockStatic(Transaction.class);
-        PowerMockito.when(Transaction.startTransaction()).thenReturn(transaction);
+        PowerMockito.mockStatic(TransactionManager.class);
+//        PowerMockito.when(TransactionManager.startTransaction()).thenReturn(transactionManager);
         PowerMockito.mockStatic(MysqlDaoFactory.class);
         PowerMockito.when(MysqlDaoFactory.getInstance()).thenReturn(daoFactory);
         when(daoFactory.getUserDao()).thenReturn(userDao);
@@ -84,10 +84,10 @@ public class UserServiceImplTest {
         stab();
         userService.changeRole(userDto, role);
 
-        InOrder inOrder = inOrder(userDao, transaction);
+        InOrder inOrder = inOrder(userDao, transactionManager);
         inOrder.verify(userDao).changeRole(userId, role);
-        inOrder.verify(transaction).commit();
-        inOrder.verify(transaction).close();
+        inOrder.verify(transactionManager).commit();
+//        inOrder.verify(transactionManager).close();
     }
 
     @Test
@@ -100,9 +100,9 @@ public class UserServiceImplTest {
         stab();
         userService.changePassword(userDto, newPassword);
 
-        InOrder inOrder = inOrder(userDao, transaction);
+        InOrder inOrder = inOrder(userDao, transactionManager);
         inOrder.verify(userDao).changePassword(userId, newPassword);
-        inOrder.verify(transaction).commit();
-        inOrder.verify(transaction).close();
+        inOrder.verify(transactionManager).commit();
+//        inOrder.verify(transactionManager).close();
     }
 }

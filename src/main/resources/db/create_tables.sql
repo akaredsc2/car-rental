@@ -8,7 +8,7 @@ DROP SCHEMA car_rental_test;
 CREATE SCHEMA car_rental;
 CREATE SCHEMA car_rental_test;
 
-#use car_rental;
+USE car_rental;
 USE car_rental_test;
 
 CREATE TABLE users (
@@ -76,17 +76,17 @@ ALTER TABLE model
   ADD CONSTRAINT c_model_horse_powers CHECK (horse_powers >= 0 AND horse_powers <= 3000);
 
 CREATE TABLE car (
-  car_id             BIGINT              NOT NULL AUTO_INCREMENT,
+  car_id             BIGINT               NOT NULL AUTO_INCREMENT,
   car_status         ENUM ('available',
                            'reserved',
                            'served',
                            'returned',
                            'unavailable') NOT NULL DEFAULT 'unavailable',
-  model_id           BIGINT              NOT NULL,
-  registration_plate VARCHAR(20)         NOT NULL,
-  color              VARCHAR(20)         NOT NULL,
-  price_per_day      DECIMAL(10, 2)      NOT NULL,
-  location_id        BIGINT                       DEFAULT NULL,
+  model_id           BIGINT               NOT NULL,
+  registration_plate VARCHAR(20)          NOT NULL,
+  color              VARCHAR(20)          NOT NULL,
+  price_per_day      DECIMAL(10, 2)       NOT NULL,
+  location_id        BIGINT                        DEFAULT NULL,
 
   PRIMARY KEY (car_id)
 );
@@ -98,20 +98,20 @@ ALTER TABLE car
   ADD CONSTRAINT fk_car_model FOREIGN KEY (model_id) REFERENCES model (model_id);
 
 CREATE TABLE reservation (
-  reservation_id     BIGINT           NOT NULL AUTO_INCREMENT,
-  client_id          BIGINT           NOT NULL,
-  admin_id           BIGINT                    DEFAULT NULL,
-  car_id             BIGINT           NOT NULL,
-  pick_up_datetime   DATETIME         NOT NULL,
-  drop_off_datetime  DATETIME         NOT NULL,
-  zone_offset        VARCHAR(10)      NOT NULL,
+  reservation_id     BIGINT          NOT NULL AUTO_INCREMENT,
+  client_id          BIGINT          NOT NULL,
+  admin_id           BIGINT                   DEFAULT NULL,
+  car_id             BIGINT          NOT NULL,
+  pick_up_datetime   DATETIME        NOT NULL,
+  drop_off_datetime  DATETIME        NOT NULL,
+  zone_offset        VARCHAR(10)     NOT NULL,
   reservation_status ENUM ('new',
                            'approved',
                            'rejected',
                            'canceled',
                            'active',
                            'closed') NOT NULL DEFAULT 'new',
-  rejection_reason   VARCHAR(128)              DEFAULT NULL,
+  rejection_reason   VARCHAR(128)             DEFAULT NULL,
 
   PRIMARY KEY (reservation_id)
 );

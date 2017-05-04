@@ -2,12 +2,11 @@ package org.vitaly.dao.impl.mysql;
 
 import junit.framework.AssertionFailedError;
 import org.junit.After;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.vitaly.dao.abstraction.CarModelDao;
-import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
-import org.vitaly.dao.impl.mysql.connectionPool.MysqlConnectionPool;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
+import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
 import org.vitaly.data.TestData;
 import org.vitaly.data.TestUtil;
 import org.vitaly.model.car.Car;
@@ -30,24 +29,19 @@ import static org.vitaly.matcher.EntityIdMatcher.hasId;
  * Created by vitaly on 2017-04-22.
  */
 public class MysqlCarModelDaoTest {
-    static {
-        MysqlConnectionPool.configureConnectionPool(MysqlConnectionPool.TEST_CONNECTION_PROPERTIES);
-    }
-
-    private static PooledConnection connection = MysqlConnectionPool.getInstance().getConnection();
-
     private CarModelDao carModelDao = new MysqlCarModelDao();
     private CarModel carModel1 = TestData.getInstance().getCarModel("carModel1");
     private CarModel carModel2 = TestData.getInstance().getCarModel("carModel2");
 
-    @BeforeClass
-    public static void init() throws Exception {
-        connection.setInTransaction(true);
+    @Before
+    public void setUp() throws Exception {
+        TransactionManager.startTransaction();
     }
 
     @After
     public void tearDown() throws Exception {
-        connection.rollback();
+        TransactionManager.rollback();
+        TransactionManager.getConnection().close();
     }
 
     @Test

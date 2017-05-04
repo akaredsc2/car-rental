@@ -2,7 +2,7 @@ package org.vitaly.service.impl;
 
 import org.vitaly.dao.abstraction.CarModelDao;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
-import org.vitaly.dao.impl.mysql.transaction.Transaction;
+import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
 import org.vitaly.model.carModel.CarModel;
 import org.vitaly.service.abstraction.CarModelService;
 import org.vitaly.service.impl.dto.CarDto;
@@ -20,17 +20,16 @@ public class CarModelServiceImpl implements CarModelService {
 
     @Override
     public boolean addCarModel(CarModelDto carModelDto) {
-        try (Transaction transaction = Transaction.startTransaction()) {
-            CarModel carModel = DtoMapperFactory.getInstance()
-                    .getCarModelDtoMapper()
-                    .mapDtoToEntity(carModelDto);
-            CarModelDao carModelDao = MysqlDaoFactory.getInstance().getCarModelDao();
-            boolean isCreated = carModelDao.create(carModel).isPresent();
+        TransactionManager.startTransaction();
+        CarModel carModel = DtoMapperFactory.getInstance()
+                .getCarModelDtoMapper()
+                .mapDtoToEntity(carModelDto);
+        CarModelDao carModelDao = MysqlDaoFactory.getInstance().getCarModelDao();
+        boolean isCreated = carModelDao.create(carModel).isPresent();
 
-            transaction.commit();
+        TransactionManager.commit();
 
-            return isCreated;
-        }
+        return isCreated;
     }
 
     @Override
@@ -46,15 +45,14 @@ public class CarModelServiceImpl implements CarModelService {
 
     @Override
     public void updateCarModel(CarModelDto carModelDto) {
-        try (Transaction transaction = Transaction.startTransaction()) {
-            CarModel carModel = DtoMapperFactory.getInstance()
-                    .getCarModelDtoMapper()
-                    .mapDtoToEntity(carModelDto);
-            CarModelDao carModelDao = MysqlDaoFactory.getInstance().getCarModelDao();
-            carModelDao.update(carModelDto.getId(), carModel);
+        TransactionManager.startTransaction();
+        CarModel carModel = DtoMapperFactory.getInstance()
+                .getCarModelDtoMapper()
+                .mapDtoToEntity(carModelDto);
+        CarModelDao carModelDao = MysqlDaoFactory.getInstance().getCarModelDao();
+        carModelDao.update(carModelDto.getId(), carModel);
 
-            transaction.commit();
-        }
+        TransactionManager.commit();
     }
 
     @Override

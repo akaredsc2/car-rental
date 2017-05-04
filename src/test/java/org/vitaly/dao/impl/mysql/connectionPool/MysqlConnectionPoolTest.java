@@ -13,26 +13,10 @@ import static org.junit.Assert.assertThat;
 public class MysqlConnectionPoolTest {
     @Test
     public void pooledConnectionRegularPoolIsNotNull() throws Exception {
-        MysqlConnectionPool.configureConnectionPool(MysqlConnectionPool.CONNECTION_PROPERTIES);
         ConnectionPool connectionPool = MysqlConnectionPool.getInstance();
 
         try (PooledConnection pooledConnection = connectionPool.getConnection()) {
             assertThat(pooledConnection, instanceOf(MysqlPooledConnection.class));
         }
-    }
-
-    @Test
-    public void pooledConnectionFromTestPoolIsNotNull() throws Exception {
-        MysqlConnectionPool.configureConnectionPool(MysqlConnectionPool.TEST_CONNECTION_PROPERTIES);
-        ConnectionPool connectionPool = MysqlConnectionPool.getInstance();
-
-        try (PooledConnection pooledConnection = connectionPool.getConnection()) {
-            assertThat(pooledConnection, instanceOf(MysqlPooledConnection.class));
-        }
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void configuringWithNullFileNameShouldThrowException() throws Exception {
-        MysqlConnectionPool.configureConnectionPool(null);
     }
 }

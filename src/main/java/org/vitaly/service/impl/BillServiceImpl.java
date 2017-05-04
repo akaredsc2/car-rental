@@ -2,7 +2,7 @@ package org.vitaly.service.impl;
 
 import org.vitaly.dao.abstraction.BillDao;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
-import org.vitaly.dao.impl.mysql.transaction.Transaction;
+import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
 import org.vitaly.model.bill.Bill;
 import org.vitaly.service.abstraction.BillService;
 import org.vitaly.service.impl.dto.BillDto;
@@ -21,16 +21,16 @@ public class BillServiceImpl implements BillService {
 
     @Override
     public void createNewBill(BillDto billDto) {
-        try (Transaction transaction = Transaction.startTransaction()) {
-            Bill bill = DtoMapperFactory.getInstance()
-                    .getBillDtoMapper()
-                    .mapDtoToEntity(billDto);
+        TransactionManager.startTransaction();
 
-            BillDao billDao = MysqlDaoFactory.getInstance().getBillDao();
-            billDao.create(bill);
+        Bill bill = DtoMapperFactory.getInstance()
+                .getBillDtoMapper()
+                .mapDtoToEntity(billDto);
 
-            transaction.commit();
-        }
+        BillDao billDao = MysqlDaoFactory.getInstance().getBillDao();
+        billDao.create(bill);
+
+        TransactionManager.commit();
     }
 
     @Override
@@ -59,12 +59,12 @@ public class BillServiceImpl implements BillService {
 
     @Override
     public void markAsPaid(BillDto billDto) {
-        try (Transaction transaction = Transaction.startTransaction()) {
-            long billId = billDto.getId();
-            BillDao billDao = MysqlDaoFactory.getInstance().getBillDao();
-            billDao.markAsPaid(billId);
+        TransactionManager.startTransaction();
 
-            transaction.commit();
-        }
+        long billId = billDto.getId();
+        BillDao billDao = MysqlDaoFactory.getInstance().getBillDao();
+        billDao.markAsPaid(billId);
+
+        TransactionManager.commit();
     }
 }

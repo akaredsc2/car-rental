@@ -10,7 +10,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.vitaly.dao.abstraction.ReservationDao;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
-import org.vitaly.dao.impl.mysql.transaction.Transaction;
+import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
 import org.vitaly.model.car.Car;
 import org.vitaly.model.reservation.ReservationState;
 import org.vitaly.model.reservation.ReservationStateEnum;
@@ -31,10 +31,10 @@ import static org.mockito.Mockito.*;
  * Created by vitaly on 2017-04-20.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({MysqlDaoFactory.class, Transaction.class})
+@PrepareForTest({MysqlDaoFactory.class, TransactionManager.class})
 @PowerMockIgnore("javax.management.*")
 public class ReservationServiceImplTest {
-    private Transaction transaction = mock(Transaction.class);
+    private TransactionManager transactionManager = mock(TransactionManager.class);
     private MysqlDaoFactory daoFactory = mock(MysqlDaoFactory.class);
     private ReservationDao reservationDao = mock(ReservationDao.class);
     private ReservationService reservationService = new ReservationServiceImpl();
@@ -62,15 +62,15 @@ public class ReservationServiceImplTest {
         when(reservationDao.create(any())).thenReturn(Optional.empty());
         reservationService.createNewReservation(reservationDto);
 
-        InOrder inOrder = Mockito.inOrder(reservationDao, transaction);
+        InOrder inOrder = Mockito.inOrder(reservationDao, transactionManager);
         inOrder.verify(reservationDao).create(any());
-        inOrder.verify(transaction).commit();
-        inOrder.verify(transaction).close();
+        inOrder.verify(transactionManager).commit();
+//        inOrder.verify(transactionManager).close();
     }
 
     private void stab() {
-        PowerMockito.mockStatic(Transaction.class);
-        PowerMockito.when(Transaction.startTransaction()).thenReturn(transaction);
+        PowerMockito.mockStatic(TransactionManager.class);
+//        PowerMockito.when(TransactionManager.startTransaction()).thenReturn(transactionManager);
         PowerMockito.mockStatic(MysqlDaoFactory.class);
         PowerMockito.when(MysqlDaoFactory.getInstance()).thenReturn(daoFactory);
         when(daoFactory.getReservationDao()).thenReturn(reservationDao);
@@ -123,10 +123,10 @@ public class ReservationServiceImplTest {
         stab();
         reservationService.changeReservationState(reservationDto, reservationState);
 
-        InOrder inOrder = Mockito.inOrder(reservationDao, transaction);
+        InOrder inOrder = Mockito.inOrder(reservationDao, transactionManager);
         inOrder.verify(reservationDao).changeReservationState(reservationDto.getId(), reservationState);
-        inOrder.verify(transaction).commit();
-        inOrder.verify(transaction).close();
+        inOrder.verify(transactionManager).commit();
+//        inOrder.verify(transactionManager).close();
     }
 
     @Test
@@ -139,10 +139,10 @@ public class ReservationServiceImplTest {
         stab();
         reservationService.assignReservationToAdmin(reservationDto, adminDto);
 
-        InOrder inOrder = Mockito.inOrder(reservationDao, transaction);
+        InOrder inOrder = Mockito.inOrder(reservationDao, transactionManager);
         inOrder.verify(reservationDao).addAdminToReservation(reservationDto.getId(), adminDto.getId());
-        inOrder.verify(transaction).commit();
-        inOrder.verify(transaction).close();
+        inOrder.verify(transactionManager).commit();
+//        inOrder.verify(transactionManager).close();
     }
 
     @Test
@@ -154,9 +154,9 @@ public class ReservationServiceImplTest {
         stab();
         reservationService.addRejectionReasonToReservation(reservationDto, reason);
 
-        InOrder inOrder = Mockito.inOrder(reservationDao, transaction);
+        InOrder inOrder = Mockito.inOrder(reservationDao, transactionManager);
         inOrder.verify(reservationDao).addRejectionReason(reservationDto.getId(), reason);
-        inOrder.verify(transaction).commit();
-        inOrder.verify(transaction).close();
+        inOrder.verify(transactionManager).commit();
+//        inOrder.verify(transactionManager).close();
     }
 }

@@ -2,7 +2,7 @@ package org.vitaly.service.impl;
 
 import org.vitaly.dao.abstraction.LocationDao;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
-import org.vitaly.dao.impl.mysql.transaction.Transaction;
+import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
 import org.vitaly.model.location.Location;
 import org.vitaly.service.abstraction.LocationService;
 import org.vitaly.service.impl.dto.CarDto;
@@ -21,18 +21,16 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public boolean addNewLocation(LocationDto locationDto) {
-        try (Transaction transaction = Transaction.startTransaction()) {
-            Location location = DtoMapperFactory.getInstance()
-                    .getLocationDtoMapper()
-                    .mapDtoToEntity(locationDto);
+        Location location = DtoMapperFactory.getInstance()
+                .getLocationDtoMapper()
+                .mapDtoToEntity(locationDto);
 
-            LocationDao locationDao = MysqlDaoFactory.getInstance().getLocationDao();
-            boolean isLocationCreated = locationDao.create(location).isPresent();
+        LocationDao locationDao = MysqlDaoFactory.getInstance().getLocationDao();
+        boolean isLocationCreated = locationDao.create(location).isPresent();
 
-            transaction.commit();
+        TransactionManager.commit();
 
-            return isLocationCreated;
-        }
+        return isLocationCreated;
     }
 
     @Override
@@ -58,18 +56,18 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public boolean changeLocationPhotoUrl(LocationDto locationDto, String photoUrl) {
-        try (Transaction transaction = Transaction.startTransaction()) {
-            long locationId = locationDto.getId();
-            Location locationWithPhoto = new Location.Builder()
-                    .setPhotoUrl(photoUrl)
-                    .build();
+        TransactionManager.startTransaction();
 
-            LocationDao locationDao = MysqlDaoFactory.getInstance().getLocationDao();
-            boolean isChanged = locationDao.update(locationId, locationWithPhoto) > 0;
+        long locationId = locationDto.getId();
+        Location locationWithPhoto = new Location.Builder()
+                .setPhotoUrl(photoUrl)
+                .build();
 
-            transaction.commit();
+        LocationDao locationDao = MysqlDaoFactory.getInstance().getLocationDao();
+        boolean isChanged = locationDao.update(locationId, locationWithPhoto) > 0;
 
-            return isChanged;
-        }
+        TransactionManager.commit();
+
+        return isChanged;
     }
 }

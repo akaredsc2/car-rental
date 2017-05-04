@@ -1,14 +1,11 @@
 package org.vitaly.dao.impl.mysql;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.vitaly.dao.abstraction.NotificationDao;
 import org.vitaly.dao.abstraction.UserDao;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.exception.DaoException;
-import org.vitaly.dao.impl.mysql.connectionPool.MysqlConnectionPool;
+import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
 import org.vitaly.data.TestData;
 import org.vitaly.model.notification.Notification;
 import org.vitaly.model.notification.NotificationStatus;
@@ -26,11 +23,6 @@ import static org.hamcrest.Matchers.*;
 public class MysqlNotificationDaoTest {
     private static final String USERS_CLEAN_UP_QUERY = "delete from users";
 
-    static {
-        MysqlConnectionPool.configureConnectionPool(MysqlConnectionPool.TEST_CONNECTION_PROPERTIES);
-    }
-
-    private static PooledConnection connection = MysqlConnectionPool.getInstance().getConnection();
     private static long userId;
 
     private NotificationDao notificationDao = new MysqlNotificationDao();
@@ -39,25 +31,36 @@ public class MysqlNotificationDaoTest {
 
     @BeforeClass
     public static void init() throws Exception {
-        connection.setInTransaction(true);
+        TransactionManager.startTransaction();
 
         User client1 = TestData.getInstance().getUser("client1");
         UserDao userDao = new MysqlUserDao();
         userId = userDao.create(client1).orElseThrow(AssertionError::new);
 
-        connection.commit();
+        TransactionManager.commit();
+        TransactionManager.getConnection().close();
+    }
+
+    @Before
+    public void setUp() throws Exception {
+        TransactionManager.startTransaction();
     }
 
     @After
     public void tearDown() throws Exception {
-        connection.rollback();
+        TransactionManager.rollback();
+        TransactionManager.getConnection().close();
     }
 
     @AfterClass
     public static void cleanUp() throws Exception {
-        connection.prepareStatement(USERS_CLEAN_UP_QUERY)
-                .executeUpdate();
-        connection.commit();
+        TransactionManager.startTransaction();
+
+        PooledConnection connection = TransactionManager.getConnection();
+
+        connection.prepareStatement(USERS_CLEAN_UP_QUERY).executeUpdate();
+
+        TransactionManager.commit();
         connection.close();
     }
 

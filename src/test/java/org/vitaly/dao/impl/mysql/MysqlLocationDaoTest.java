@@ -1,14 +1,10 @@
 package org.vitaly.dao.impl.mysql;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.vitaly.dao.abstraction.CarDao;
 import org.vitaly.dao.abstraction.CarModelDao;
 import org.vitaly.dao.abstraction.LocationDao;
-import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
-import org.vitaly.dao.impl.mysql.connectionPool.MysqlConnectionPool;
+import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
 import org.vitaly.data.TestData;
 import org.vitaly.data.TestUtil;
 import org.vitaly.model.car.Car;
@@ -31,29 +27,19 @@ import static org.vitaly.matcher.EntityIdMatcher.hasId;
  * Created by vitaly on 2017-03-26.
  */
 public class MysqlLocationDaoTest {
-    static {
-        MysqlConnectionPool.configureConnectionPool(MysqlConnectionPool.TEST_CONNECTION_PROPERTIES);
-    }
-
-    private static PooledConnection connection = MysqlConnectionPool.getInstance().getConnection();
-
     private LocationDao locationDao = new MysqlLocationDao();
     private Location location1 = TestData.getInstance().getLocation("location1");
     private Location location2 = TestData.getInstance().getLocation("location2");
 
-    @BeforeClass
-    public static void init() throws Exception {
-        connection.setInTransaction(true);
+    @Before
+    public void setUp() throws Exception {
+        TransactionManager.startTransaction();
     }
 
     @After
     public void tearDown() throws Exception {
-        connection.rollback();
-    }
-
-    @AfterClass
-    public static void cleanUp() throws Exception {
-        connection.close();
+        TransactionManager.rollback();
+        TransactionManager.getConnection().close();
     }
 
     @Test

@@ -1,12 +1,10 @@
 package org.vitaly.dao.impl.mysql;
 
 import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.vitaly.dao.abstraction.UserDao;
-import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
-import org.vitaly.dao.impl.mysql.connectionPool.MysqlConnectionPool;
+import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
 import org.vitaly.data.TestData;
 import org.vitaly.data.TestUtil;
 import org.vitaly.model.user.User;
@@ -25,30 +23,20 @@ import static org.vitaly.matcher.EntityIdMatcher.hasId;
  * Created by vitaly on 2017-03-28.
  */
 public class MysqlUserDaoTest {
-    static {
-        MysqlConnectionPool.configureConnectionPool(MysqlConnectionPool.TEST_CONNECTION_PROPERTIES);
-    }
-
-    private static PooledConnection connection = MysqlConnectionPool.getInstance().getConnection();
-
     private UserDao userDao = new MysqlUserDao();
     private User client1 = TestData.getInstance().getUser("client1");
     private User client2 = TestData.getInstance().getUser("client2");
     private User admin = TestData.getInstance().getUser("admin");
 
-    @BeforeClass
-    public static void init() throws Exception {
-        connection.setInTransaction(true);
+    @Before
+    public void setUp() throws Exception {
+        TransactionManager.startTransaction();
     }
 
     @After
     public void tearDown() throws Exception {
-        connection.rollback();
-    }
-
-    @AfterClass
-    public static void cleanUp() throws Exception {
-        connection.close();
+        TransactionManager.rollback();
+        TransactionManager.getConnection().close();
     }
 
     @Test

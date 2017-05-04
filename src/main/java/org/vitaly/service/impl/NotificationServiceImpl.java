@@ -2,7 +2,7 @@ package org.vitaly.service.impl;
 
 import org.vitaly.dao.abstraction.NotificationDao;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
-import org.vitaly.dao.impl.mysql.transaction.Transaction;
+import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
 import org.vitaly.model.notification.Notification;
 import org.vitaly.service.abstraction.NotificationService;
 import org.vitaly.service.exception.ServiceException;
@@ -21,19 +21,19 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void sendNotificationToUser(UserDto userDto, NotificationDto notificationDto) {
-        try (Transaction transaction = Transaction.startTransaction()) {
-            Notification notification = DtoMapperFactory.getInstance()
-                    .getNotificationDtoMapper()
-                    .mapDtoToEntity(notificationDto);
+        TransactionManager.startTransaction();
 
-            NotificationDao notificationDao = MysqlDaoFactory.getInstance().getNotificationDao();
+        Notification notification = DtoMapperFactory.getInstance()
+                .getNotificationDtoMapper()
+                .mapDtoToEntity(notificationDto);
 
-            long createdNotificationId = notificationDao.create(notification).orElseThrow(ServiceException::new);
-            long userId = userDto.getId();
-            notificationDao.addNotificationToUser(createdNotificationId, userId);
+        NotificationDao notificationDao = MysqlDaoFactory.getInstance().getNotificationDao();
 
-            transaction.commit();
-        }
+        long createdNotificationId = notificationDao.create(notification).orElseThrow(ServiceException::new);
+        long userId = userDto.getId();
+        notificationDao.addNotificationToUser(createdNotificationId, userId);
+
+        TransactionManager.commit();
     }
 
     @Override
@@ -50,12 +50,12 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void markNotificationAsViewed(NotificationDto notificationDto) {
-        try (Transaction transaction = Transaction.startTransaction()) {
-            long notificationId = notificationDto.getId();
-            NotificationDao notificationDao = MysqlDaoFactory.getInstance().getNotificationDao();
-            notificationDao.markNotificationAsViewed(notificationId);
+        TransactionManager.startTransaction();
 
-            transaction.commit();
-        }
+        long notificationId = notificationDto.getId();
+        NotificationDao notificationDao = MysqlDaoFactory.getInstance().getNotificationDao();
+        notificationDao.markNotificationAsViewed(notificationId);
+
+        TransactionManager.commit();
     }
 }

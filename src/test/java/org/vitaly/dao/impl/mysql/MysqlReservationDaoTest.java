@@ -1,16 +1,13 @@
 package org.vitaly.dao.impl.mysql;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.vitaly.dao.abstraction.CarDao;
 import org.vitaly.dao.abstraction.CarModelDao;
 import org.vitaly.dao.abstraction.ReservationDao;
 import org.vitaly.dao.abstraction.UserDao;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.exception.DaoException;
-import org.vitaly.dao.impl.mysql.connectionPool.MysqlConnectionPool;
+import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
 import org.vitaly.data.TestData;
 import org.vitaly.data.TestUtil;
 import org.vitaly.model.car.Car;
@@ -43,11 +40,6 @@ public class MysqlReservationDaoTest {
     private static final String CAR_CLEAN_UP_QUERY = "delete from car";
     private static final String MODEL_CLEAN_UP_QUERY = "delete from model";
 
-    static {
-        MysqlConnectionPool.configureConnectionPool(MysqlConnectionPool.TEST_CONNECTION_PROPERTIES);
-    }
-
-    private static PooledConnection connection = MysqlConnectionPool.getInstance().getConnection();
     private static User client1;
     private static User client2;
     private static User admin;
@@ -71,7 +63,7 @@ public class MysqlReservationDaoTest {
 
     @BeforeClass
     public static void init() throws SQLException {
-        connection.setInTransaction(true);
+        TransactionManager.startTransaction();
 
         UserDao userDao = new MysqlUserDao();
         client1 = TestUtil.createEntityWithId(TestData.getInstance().getUser("client1"), userDao);
@@ -106,23 +98,32 @@ public class MysqlReservationDaoTest {
         MysqlReservationDaoTest.car1 = TestUtil.createEntityWithId(carFromTestData1, carDao);
         MysqlReservationDaoTest.car2 = TestUtil.createEntityWithId(carFromTestData2, carDao);
 
-        connection.commit();
+        TransactionManager.commit();
+        TransactionManager.getConnection().close();
+    }
+
+    @Before
+    public void setUp() throws Exception {
+        TransactionManager.startTransaction();
     }
 
     @After
     public void tearDown() throws Exception {
-        connection.rollback();
+        TransactionManager.rollback();
+        TransactionManager.getConnection().close();
     }
 
     @AfterClass
     public static void cleanUp() throws Exception {
-        connection.prepareStatement(CAR_CLEAN_UP_QUERY)
-                .executeUpdate();
-        connection.prepareStatement(MODEL_CLEAN_UP_QUERY)
-                .executeUpdate();
-        connection.prepareStatement(USERS_CLEAN_UP_QUERY)
-                .executeUpdate();
-        connection.commit();
+        TransactionManager.startTransaction();
+
+        PooledConnection connection = TransactionManager.getConnection();
+
+        connection.prepareStatement(CAR_CLEAN_UP_QUERY).executeUpdate();
+        connection.prepareStatement(MODEL_CLEAN_UP_QUERY).executeUpdate();
+        connection.prepareStatement(USERS_CLEAN_UP_QUERY).executeUpdate();
+
+        TransactionManager.commit();
         connection.close();
     }
 

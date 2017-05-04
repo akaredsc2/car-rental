@@ -10,7 +10,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.vitaly.dao.abstraction.LocationDao;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
-import org.vitaly.dao.impl.mysql.transaction.Transaction;
+import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
 import org.vitaly.model.location.Location;
 import org.vitaly.service.abstraction.LocationService;
 import org.vitaly.service.impl.dto.CarDto;
@@ -26,10 +26,10 @@ import static org.mockito.Mockito.*;
  * Created by vitaly on 2017-04-20.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({MysqlDaoFactory.class, Transaction.class})
+@PrepareForTest({MysqlDaoFactory.class, TransactionManager.class})
 @PowerMockIgnore("javax.management.*")
 public class LocationServiceImplTest {
-    private Transaction transaction = mock(Transaction.class);
+    private TransactionManager transactionManager = mock(TransactionManager.class);
     private MysqlDaoFactory daoFactory = mock(MysqlDaoFactory.class);
     private LocationDao locationDao = mock(LocationDao.class);
     private LocationService locationService = new LocationServiceImpl();
@@ -47,15 +47,15 @@ public class LocationServiceImplTest {
         when(locationDao.create(any())).thenReturn(Optional.empty());
         locationService.addNewLocation(locationDto);
 
-        InOrder inOrder = Mockito.inOrder(locationDao, transaction);
+        InOrder inOrder = Mockito.inOrder(locationDao, transactionManager);
         inOrder.verify(locationDao).create(any());
-        inOrder.verify(transaction).commit();
-        inOrder.verify(transaction).close();
+        inOrder.verify(transactionManager).commit();
+//        inOrder.verify(transactionManager).close();
     }
 
     private void stab() {
-        PowerMockito.mockStatic(Transaction.class);
-        PowerMockito.when(Transaction.startTransaction()).thenReturn(transaction);
+        PowerMockito.mockStatic(TransactionManager.class);
+//        PowerMockito.when(TransactionManager.startTransaction()).thenReturn(transactionManager);
         PowerMockito.mockStatic(MysqlDaoFactory.class);
         PowerMockito.when(MysqlDaoFactory.getInstance()).thenReturn(daoFactory);
         when(daoFactory.getLocationDao()).thenReturn(locationDao);
@@ -93,9 +93,9 @@ public class LocationServiceImplTest {
         stab();
         locationService.changeLocationPhotoUrl(locationDto, photoUrl);
 
-        InOrder inOrder = Mockito.inOrder(locationDao, transaction);
+        InOrder inOrder = Mockito.inOrder(locationDao, transactionManager);
         inOrder.verify(locationDao).update(locationDto.getId(), location);
-        inOrder.verify(transaction).commit();
-        inOrder.verify(transaction).close();
+        inOrder.verify(transactionManager).commit();
+//        inOrder.verify(transactionManager).close();
     }
 }

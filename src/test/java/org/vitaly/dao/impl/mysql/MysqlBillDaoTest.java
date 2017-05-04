@@ -1,14 +1,12 @@
 package org.vitaly.dao.impl.mysql;
 
 import junit.framework.AssertionFailedError;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.vitaly.dao.abstraction.*;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.exception.DaoException;
 import org.vitaly.dao.impl.mysql.connectionPool.MysqlConnectionPool;
+import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
 import org.vitaly.data.TestData;
 import org.vitaly.data.TestUtil;
 import org.vitaly.model.bill.Bill;
@@ -41,11 +39,6 @@ public class MysqlBillDaoTest {
     private static final String RESERVATION_CLEAN_UP_QUERY = "delete from reservation";
     private static final String MODEL_CLEAN_UP_QUERY = "delete from model";
 
-    static {
-        MysqlConnectionPool.configureConnectionPool(MysqlConnectionPool.TEST_CONNECTION_PROPERTIES);
-    }
-
-    private static PooledConnection connection = MysqlConnectionPool.getInstance().getConnection();
     private static Reservation reservation;
 
     private BillDao billDao = new MysqlBillDao();
@@ -54,7 +47,7 @@ public class MysqlBillDaoTest {
 
     @BeforeClass
     public static void init() throws SQLException {
-        connection.setInTransaction(true);
+        TransactionManager.startTransaction();
 
         UserDao userDao = new MysqlUserDao();
         User user = TestUtil.createEntityWithId(TestData.getInstance().getUser("client1"), userDao);
@@ -82,25 +75,33 @@ public class MysqlBillDaoTest {
         ReservationDao reservationDao = new MysqlReservationDao();
         reservation = TestUtil.createEntityWithId(temp, reservationDao);
 
-        connection.commit();
+        TransactionManager.commit();
+        TransactionManager.getConnection().close();
+    }
+
+    @Before
+    public void setUp() throws Exception {
+        TransactionManager.startTransaction();
     }
 
     @After
     public void tearDown() throws Exception {
-        connection.rollback();
+        TransactionManager.rollback();
+        TransactionManager.getConnection().close();
     }
 
     @AfterClass
     public static void cleanUp() throws Exception {
-        connection.prepareStatement(RESERVATION_CLEAN_UP_QUERY)
-                .executeUpdate();
-        connection.prepareStatement(USERS_CLEAN_UP_QUERY)
-                .executeUpdate();
-        connection.prepareStatement(CAR_CLEAN_UP_QUERY)
-                .executeUpdate();
-        connection.prepareStatement(MODEL_CLEAN_UP_QUERY)
-                .executeUpdate();
-        connection.commit();
+        TransactionManager.startTransaction();
+
+        PooledConnection connection = TransactionManager.getConnection();
+
+        connection.prepareStatement(RESERVATION_CLEAN_UP_QUERY).executeUpdate();
+        connection.prepareStatement(USERS_CLEAN_UP_QUERY).executeUpdate();
+        connection.prepareStatement(CAR_CLEAN_UP_QUERY).executeUpdate();
+        connection.prepareStatement(MODEL_CLEAN_UP_QUERY).executeUpdate();
+
+        TransactionManager.commit();
         connection.close();
     }
 

@@ -2,7 +2,7 @@ package org.vitaly.service.impl;
 
 import org.vitaly.dao.abstraction.ReservationDao;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
-import org.vitaly.dao.impl.mysql.transaction.Transaction;
+import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
 import org.vitaly.model.reservation.Reservation;
 import org.vitaly.model.reservation.ReservationState;
 import org.vitaly.service.abstraction.ReservationService;
@@ -22,16 +22,16 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public void createNewReservation(ReservationDto reservationDto) {
-        try (Transaction transaction = Transaction.startTransaction()) {
-            Reservation reservation = DtoMapperFactory.getInstance()
-                    .getReservationDtoMapper()
-                    .mapDtoToEntity(reservationDto);
+        TransactionManager.startTransaction();
 
-            ReservationDao reservationDao = MysqlDaoFactory.getInstance().getReservationDao();
-            reservationDao.create(reservation);
+        Reservation reservation = DtoMapperFactory.getInstance()
+                .getReservationDtoMapper()
+                .mapDtoToEntity(reservationDto);
 
-            transaction.commit();
-        }
+        ReservationDao reservationDao = MysqlDaoFactory.getInstance().getReservationDao();
+        reservationDao.create(reservation);
+
+        TransactionManager.commit();
     }
 
     @Override
@@ -83,35 +83,35 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public void changeReservationState(ReservationDto reservationDto, ReservationState reservationState) {
-        try (Transaction transaction = Transaction.startTransaction()) {
-            long reservationId = reservationDto.getId();
-            ReservationDao reservationDao = MysqlDaoFactory.getInstance().getReservationDao();
-            reservationDao.changeReservationState(reservationId, reservationState);
+        TransactionManager.startTransaction();
 
-            transaction.commit();
-        }
+        long reservationId = reservationDto.getId();
+        ReservationDao reservationDao = MysqlDaoFactory.getInstance().getReservationDao();
+        reservationDao.changeReservationState(reservationId, reservationState);
+
+        TransactionManager.commit();
     }
 
     @Override
     public void assignReservationToAdmin(ReservationDto reservationDto, UserDto adminDto) {
-        try (Transaction transaction = Transaction.startTransaction()) {
-            long reservationId = reservationDto.getId();
-            long adminId = adminDto.getId();
-            ReservationDao reservationDao = MysqlDaoFactory.getInstance().getReservationDao();
-            reservationDao.addAdminToReservation(reservationId, adminId);
+        TransactionManager.startTransaction();
 
-            transaction.commit();
-        }
+        long reservationId = reservationDto.getId();
+        long adminId = adminDto.getId();
+        ReservationDao reservationDao = MysqlDaoFactory.getInstance().getReservationDao();
+        reservationDao.addAdminToReservation(reservationId, adminId);
+
+        TransactionManager.commit();
     }
 
     @Override
     public void addRejectionReasonToReservation(ReservationDto reservationDto, String reason) {
-        try (Transaction transaction = Transaction.startTransaction()) {
-            long reservationId = reservationDto.getId();
-            ReservationDao reservationDao = MysqlDaoFactory.getInstance().getReservationDao();
-            reservationDao.addRejectionReason(reservationId, reason);
+        TransactionManager.startTransaction();
 
-            transaction.commit();
-        }
+        long reservationId = reservationDto.getId();
+        ReservationDao reservationDao = MysqlDaoFactory.getInstance().getReservationDao();
+        reservationDao.addRejectionReason(reservationId, reason);
+
+        TransactionManager.startTransaction();
     }
 }

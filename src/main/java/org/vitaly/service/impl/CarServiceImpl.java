@@ -2,7 +2,7 @@ package org.vitaly.service.impl;
 
 import org.vitaly.dao.abstraction.CarDao;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
-import org.vitaly.dao.impl.mysql.transaction.Transaction;
+import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
 import org.vitaly.model.car.Car;
 import org.vitaly.service.abstraction.CarService;
 import org.vitaly.service.impl.dto.CarDto;
@@ -24,17 +24,17 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public boolean addNewCar(CarDto carDto) {
-        try (Transaction transaction = Transaction.startTransaction()) {
-            Car car = DtoMapperFactory.getInstance()
-                    .getCarDtoMapper()
-                    .mapDtoToEntity(carDto);
-            CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
-            boolean isCarCreated = carDao.create(car).isPresent();
+        TransactionManager.startTransaction();
 
-            transaction.commit();
+        Car car = DtoMapperFactory.getInstance()
+                .getCarDtoMapper()
+                .mapDtoToEntity(carDto);
+        CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
+        boolean isCarCreated = carDao.create(car).isPresent();
 
-            return isCarCreated;
-        }
+        TransactionManager.commit();
+
+        return isCarCreated;
     }
 
     @Override
@@ -85,71 +85,71 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public boolean updateCar(CarDto carDto) {
-        try (Transaction transaction = Transaction.startTransaction()) {
-            CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
-            boolean isAbleToBeUpdated = carDao.findById(carDto.getId())
-                    .map(Car::getState)
-                    .filter(state -> state == AVAILABLE.getState() || state == UNAVAILABLE.getState())
-                    .isPresent();
+        TransactionManager.startTransaction();
 
-            if (isAbleToBeUpdated) {
-                Car car = DtoMapperFactory.getInstance()
-                        .getCarDtoMapper()
-                        .mapDtoToEntity(carDto);
+        CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
+        boolean isAbleToBeUpdated = carDao.findById(carDto.getId())
+                .map(Car::getState)
+                .filter(state -> state == AVAILABLE.getState() || state == UNAVAILABLE.getState())
+                .isPresent();
 
-                boolean isUpdated = carDao.update(carDto.getId(), car) > 0;
+        if (isAbleToBeUpdated) {
+            Car car = DtoMapperFactory.getInstance()
+                    .getCarDtoMapper()
+                    .mapDtoToEntity(carDto);
 
-                transaction.commit();
+            boolean isUpdated = carDao.update(carDto.getId(), car) > 0;
 
-                return isUpdated;
-            } else {
-                return false;
-            }
+            TransactionManager.commit();
+            return isUpdated;
+        } else {
+            TransactionManager.rollback();
+            return false;
         }
     }
 
     @Override
     public boolean moveCarToLocation(CarDto carDto, LocationDto locationDto) {
-        try (Transaction transaction = Transaction.startTransaction()) {
-            long carId = carDto.getId();
-            CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
+        TransactionManager.startTransaction();
 
-            boolean isCarAbleToBeMoved = carDao.findById(carId)
-                    .filter(car -> car.getState() == UNAVAILABLE.getState())
-                    .isPresent();
+        long carId = carDto.getId();
+        CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
 
-            if (isCarAbleToBeMoved) {
-                long locationId = locationDto.getId();
+        boolean isCarAbleToBeMoved = carDao.findById(carId)
+                .filter(car -> car.getState() == UNAVAILABLE.getState())
+                .isPresent();
 
-                carDao.moveCarToLocation(carId, locationId);
+        if (isCarAbleToBeMoved) {
+            long locationId = locationDto.getId();
 
-                transaction.commit();
+            carDao.moveCarToLocation(carId, locationId);
 
-                return true;
-            }
+            TransactionManager.commit();
+            return true;
+        } else {
+            TransactionManager.rollback();
             return false;
         }
     }
 
     @Override
     public boolean changeCarState(CarDto carDto, String carState) {
-        try (Transaction transaction = Transaction.startTransaction()) {
-            Car car = DtoMapperFactory.getInstance()
-                    .getCarDtoMapper()
-                    .mapDtoToEntity(carDto);
+        TransactionManager.startTransaction();
+        Car car = DtoMapperFactory.getInstance()
+                .getCarDtoMapper()
+                .mapDtoToEntity(carDto);
 
-            boolean isStateChanged = changeState(car, carState);
-            if (isStateChanged) {
-                MysqlDaoFactory.getInstance()
-                        .getCarDao()
-                        .changeCarState(car.getId(), car.getState());
+        boolean isStateChanged = changeState(car, carState);
+        if (isStateChanged) {
+            MysqlDaoFactory.getInstance()
+                    .getCarDao()
+                    .changeCarState(car.getId(), car.getState());
 
-                transaction.commit();
-
-                return true;
-            } else {
-                return false;
-            }
+            TransactionManager.commit();
+            return true;
+        } else {
+            TransactionManager.rollback();
+            return false;
         }
     }
 

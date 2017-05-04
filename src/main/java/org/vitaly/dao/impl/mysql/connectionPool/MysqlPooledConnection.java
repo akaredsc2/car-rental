@@ -1,6 +1,5 @@
 package org.vitaly.dao.impl.mysql.connectionPool;
 
-import org.vitaly.dao.abstraction.connectionPool.ConnectionPool;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 
 import java.sql.Connection;
@@ -12,12 +11,10 @@ import java.sql.SQLException;
  */
 public class MysqlPooledConnection implements PooledConnection {
     private Connection connection;
-    private ConnectionPool connectionPool;
     private boolean isInTransaction;
 
-    MysqlPooledConnection(Connection connection, ConnectionPool connectionPool) {
+    MysqlPooledConnection(Connection connection) {
         this.connection = connection;
-        this.connectionPool = connectionPool;
         this.isInTransaction = false;
     }
 
@@ -65,7 +62,6 @@ public class MysqlPooledConnection implements PooledConnection {
     public void close() throws SQLException {
         if (!isInTransaction) {
             connection.close();
-            connectionPool.freeConnection();
         }
     }
 }

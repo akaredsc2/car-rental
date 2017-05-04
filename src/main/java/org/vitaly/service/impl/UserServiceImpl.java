@@ -2,7 +2,7 @@ package org.vitaly.service.impl;
 
 import org.vitaly.dao.abstraction.UserDao;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
-import org.vitaly.dao.impl.mysql.transaction.Transaction;
+import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
 import org.vitaly.model.user.User;
 import org.vitaly.model.user.UserRole;
 import org.vitaly.service.abstraction.UserService;
@@ -21,19 +21,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean registerNewUser(UserDto userDto) {
-        try (Transaction transaction = Transaction.startTransaction()) {
-            userDto.setRole(UserRole.CLIENT);
-            User user = DtoMapperFactory.getInstance()
-                    .getUserDtoMapper()
-                    .mapDtoToEntity(userDto);
+        TransactionManager.startTransaction();
 
-            UserDao userDao = MysqlDaoFactory.getInstance().getUserDao();
-            boolean isUserCreated = userDao.create(user).isPresent();
+        userDto.setRole(UserRole.CLIENT);
+        User user = DtoMapperFactory.getInstance()
+                .getUserDtoMapper()
+                .mapDtoToEntity(userDto);
 
-            transaction.commit();
+        UserDao userDao = MysqlDaoFactory.getInstance().getUserDao();
+        boolean isUserCreated = userDao.create(user).isPresent();
 
-            return isUserCreated;
-        }
+        TransactionManager.commit();
+
+        return isUserCreated;
     }
 
     @Override
@@ -47,24 +47,24 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changeRole(UserDto userDto, UserRole newRole) {
-        try (Transaction transaction = Transaction.startTransaction()) {
-            long userId = userDto.getId();
-            UserDao userDao = MysqlDaoFactory.getInstance().getUserDao();
-            userDao.changeRole(userId, newRole);
+        TransactionManager.startTransaction();
 
-            transaction.commit();
-        }
+        long userId = userDto.getId();
+        UserDao userDao = MysqlDaoFactory.getInstance().getUserDao();
+        userDao.changeRole(userId, newRole);
+
+        TransactionManager.commit();
     }
 
     @Override
     public void changePassword(UserDto userDto, String newPassword) {
-        try (Transaction transaction = Transaction.startTransaction()) {
-            long userId = userDto.getId();
-            UserDao userDao = MysqlDaoFactory.getInstance().getUserDao();
-            userDao.changePassword(userId, newPassword);
+        TransactionManager.startTransaction();
 
-            transaction.commit();
-        }
+        long userId = userDto.getId();
+        UserDao userDao = MysqlDaoFactory.getInstance().getUserDao();
+        userDao.changePassword(userId, newPassword);
+
+        TransactionManager.commit();
     }
 
     @Override

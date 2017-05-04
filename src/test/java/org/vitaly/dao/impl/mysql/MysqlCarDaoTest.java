@@ -7,7 +7,8 @@ import org.vitaly.dao.abstraction.CarModelDao;
 import org.vitaly.dao.abstraction.LocationDao;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.exception.DaoException;
-import org.vitaly.dao.impl.mysql.connectionPool.MysqlConnectionPool;
+import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
+import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
 import org.vitaly.data.TestData;
 import org.vitaly.data.TestUtil;
 import org.vitaly.model.car.Car;
@@ -38,11 +39,6 @@ public class MysqlCarDaoTest {
     private static final String LOCATION_CLEAN_UP_QUERY = "delete from location";
     private static final String MODEL_CLEAN_UP_QUERY = "delete from model";
 
-    static {
-        MysqlConnectionPool.configureConnectionPool(MysqlConnectionPool.TEST_CONNECTION_PROPERTIES);
-    }
-
-    private static PooledConnection connection = MysqlConnectionPool.getInstance().getConnection();
     private static long locationId;
     private static CarModel carModel1;
     private static CarModel carModel2;
@@ -53,19 +49,20 @@ public class MysqlCarDaoTest {
 
     @BeforeClass
     public static void init() throws Exception {
-        connection.setInTransaction(true);
+        TransactionManager.startTransaction();
 
         Location locationFromTestData = TestData.getInstance().getLocation("location1");
-        LocationDao locationDao = new MysqlLocationDao();
+        LocationDao locationDao = MysqlDaoFactory.getInstance().getLocationDao();
         locationId = TestUtil.createEntityWithId(locationFromTestData, locationDao).getId();
 
         CarModel carModelFromTestData1 = TestData.getInstance().getCarModel("carModel1");
         CarModel carModelFromTestData2 = TestData.getInstance().getCarModel("carModel2");
-        CarModelDao carModelDao = new MysqlCarModelDao();
+        CarModelDao carModelDao = MysqlDaoFactory.getInstance().getCarModelDao();
         carModel1 = TestUtil.createEntityWithId(carModelFromTestData1, carModelDao);
         carModel2 = TestUtil.createEntityWithId(carModelFromTestData2, carModelDao);
 
-        connection.commit();
+        TransactionManager.commit();
+        TransactionManager.getConnection().close();
     }
 
     @Before
@@ -77,20 +74,26 @@ public class MysqlCarDaoTest {
         CarDtoMapper carDtoMapper = new CarDtoMapper();
         car1 = TestUtil.setEntityAttribute(car1, CarDto::setCarModelDto, carModelDto1, carDtoMapper);
         car2 = TestUtil.setEntityAttribute(car2, CarDto::setCarModelDto, carModelDto2, carDtoMapper);
+
+        TransactionManager.startTransaction();
     }
 
     @After
     public void tearDown() throws Exception {
-        connection.rollback();
+        TransactionManager.rollback();
+        TransactionManager.getConnection().close();
     }
 
     @AfterClass
     public static void cleanUp() throws Exception {
-        connection.prepareStatement(LOCATION_CLEAN_UP_QUERY)
-                .executeUpdate();
-        connection.prepareStatement(MODEL_CLEAN_UP_QUERY)
-                .executeUpdate();
-        connection.commit();
+        TransactionManager.startTransaction();
+
+        PooledConnection connection = TransactionManager.getConnection();
+
+        connection.prepareStatement(LOCATION_CLEAN_UP_QUERY).executeUpdate();
+        connection.prepareStatement(MODEL_CLEAN_UP_QUERY).executeUpdate();
+
+        TransactionManager.commit();
         connection.close();
     }
 

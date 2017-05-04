@@ -1,7 +1,5 @@
 package org.vitaly.listener;
 
-import org.vitaly.dao.impl.mysql.connectionPool.MysqlConnectionPool;
-
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
@@ -11,7 +9,6 @@ import javax.servlet.ServletContextListener;
 public class ServletContextListenerImpl implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        MysqlConnectionPool.configureConnectionPool(MysqlConnectionPool.CONNECTION_PROPERTIES);
     }
 
     @Override

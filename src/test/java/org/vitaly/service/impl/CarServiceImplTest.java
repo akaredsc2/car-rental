@@ -10,7 +10,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.vitaly.dao.abstraction.CarDao;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
-import org.vitaly.dao.impl.mysql.transaction.Transaction;
+import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
 import org.vitaly.model.car.CarStateEnum;
 import org.vitaly.service.abstraction.CarService;
 import org.vitaly.service.impl.dto.CarDto;
@@ -28,10 +28,10 @@ import static org.mockito.Mockito.*;
  * Created by vitaly on 2017-04-20.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({MysqlDaoFactory.class, Transaction.class})
+@PrepareForTest({MysqlDaoFactory.class, TransactionManager.class})
 @PowerMockIgnore("javax.management.*")
 public class CarServiceImplTest {
-    private Transaction transaction = mock(Transaction.class);
+    private TransactionManager transactionManager = mock(TransactionManager.class);
     private MysqlDaoFactory daoFactory = mock(MysqlDaoFactory.class);
     private CarDao carDao = mock(CarDao.class);
     private CarService carService = new CarServiceImpl();
@@ -48,8 +48,8 @@ public class CarServiceImplTest {
     }
 
     private void stab() {
-        PowerMockito.mockStatic(Transaction.class);
-        PowerMockito.when(Transaction.startTransaction()).thenReturn(transaction);
+        PowerMockito.mockStatic(TransactionManager.class);
+//        PowerMockito.when(TransactionManager.startTransaction()).thenReturn(transactionManager);
         PowerMockito.mockStatic(MysqlDaoFactory.class);
         PowerMockito.when(MysqlDaoFactory.getInstance()).thenReturn(daoFactory);
         when(daoFactory.getCarDao()).thenReturn(carDao);
@@ -101,10 +101,10 @@ public class CarServiceImplTest {
         when(carDao.create(any())).thenReturn(Optional.empty());
         carService.addNewCar(carDto);
 
-        InOrder inOrder = Mockito.inOrder(carDao, transaction);
+        InOrder inOrder = Mockito.inOrder(carDao, transactionManager);
         inOrder.verify(carDao).create(any());
-        inOrder.verify(transaction).commit();
-        inOrder.verify(transaction).close();
+        inOrder.verify(transactionManager).commit();
+//        inOrder.verify(transactionManager).close();
     }
 
     @Test
@@ -123,10 +123,10 @@ public class CarServiceImplTest {
         stab();
         carService.updateCar(carDto);
 
-        InOrder inOrder = Mockito.inOrder(carDao, transaction);
+        InOrder inOrder = Mockito.inOrder(carDao, transactionManager);
         inOrder.verify(carDao).update(eq(carDto.getId()), any());
-        inOrder.verify(transaction).commit();
-        inOrder.verify(transaction).close();
+        inOrder.verify(transactionManager).commit();
+//        inOrder.verify(transactionManager).close();
     }
 
     @Test
@@ -139,9 +139,9 @@ public class CarServiceImplTest {
         stab();
         carService.moveCarToLocation(carDto, locationDto);
 
-        InOrder inOrder = Mockito.inOrder(carDao, transaction);
+        InOrder inOrder = Mockito.inOrder(carDao, transactionManager);
         inOrder.verify(carDao).moveCarToLocation(carDto.getId(), locationDto.getId());
-        inOrder.verify(transaction).commit();
-        inOrder.verify(transaction).close();
+        inOrder.verify(transactionManager).commit();
+//        inOrder.verify(transactionManager).close();
     }
 }

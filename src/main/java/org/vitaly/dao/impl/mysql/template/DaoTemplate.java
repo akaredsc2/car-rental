@@ -4,8 +4,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.exception.DaoException;
-import org.vitaly.dao.impl.mysql.connectionPool.MysqlConnectionPool;
 import org.vitaly.dao.impl.mysql.mapper.Mapper;
+import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -29,7 +29,7 @@ public class DaoTemplate {
     public static <T> List<T> executeSelect(String query, Mapper<T> mapper, Map<Integer, Object> parameterMap) {
         List<T> result = new ArrayList<>();
 
-        try (PooledConnection connection = MysqlConnectionPool.getInstance().getConnection();
+        try (PooledConnection connection = TransactionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             setQueryParameters(statement, parameterMap);
 
@@ -71,7 +71,7 @@ public class DaoTemplate {
     public static Long executeInsert(String query, Map<Integer, Object> parameterMap) {
         Long insertedId = null;
 
-        try (PooledConnection connection = MysqlConnectionPool.getInstance().getConnection();
+        try (PooledConnection connection = TransactionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setQueryParameters(statement, parameterMap);
 
@@ -93,7 +93,7 @@ public class DaoTemplate {
     }
 
     public static int executeUpdate(String query, Map<Integer, Object> parameterMap) {
-        try (PooledConnection connection = MysqlConnectionPool.getInstance().getConnection();
+        try (PooledConnection connection = TransactionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             setQueryParameters(statement, parameterMap);
 

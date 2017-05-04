@@ -10,7 +10,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.vitaly.dao.abstraction.BillDao;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
-import org.vitaly.dao.impl.mysql.transaction.Transaction;
+import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
 import org.vitaly.service.abstraction.BillService;
 import org.vitaly.service.impl.dto.BillDto;
 import org.vitaly.service.impl.dto.ReservationDto;
@@ -25,10 +25,10 @@ import static org.mockito.Mockito.*;
  * Created by vitaly on 2017-04-20.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({MysqlDaoFactory.class, Transaction.class})
+@PrepareForTest({MysqlDaoFactory.class, TransactionManager.class})
 @PowerMockIgnore("javax.management.*")
 public class BillServiceImplTest {
-    private Transaction transaction = mock(Transaction.class);
+    private TransactionManager transactionManager = mock(TransactionManager.class);
     private MysqlDaoFactory daoFactory = mock(MysqlDaoFactory.class);
     private BillDao billDao = mock(BillDao.class);
     private BillService billService = new BillServiceImpl();
@@ -43,15 +43,15 @@ public class BillServiceImplTest {
         stab();
         billService.createNewBill(billDto);
 
-        InOrder inOrder = Mockito.inOrder(billDao, transaction);
+        InOrder inOrder = Mockito.inOrder(billDao, transactionManager);
         inOrder.verify(billDao).create(any());
-        inOrder.verify(transaction).commit();
-        inOrder.verify(transaction).close();
+        inOrder.verify(transactionManager).commit();
+//        inOrder.verify(transactionManager).close();
     }
 
     private void stab() {
-        PowerMockito.mockStatic(Transaction.class);
-        PowerMockito.when(Transaction.startTransaction()).thenReturn(transaction);
+        PowerMockito.mockStatic(TransactionManager.class);
+//        PowerMockito.when(TransactionManager.startTransaction()).thenReturn(transactionManager);
         PowerMockito.mockStatic(MysqlDaoFactory.class);
         PowerMockito.when(MysqlDaoFactory.getInstance()).thenReturn(daoFactory);
         when(daoFactory.getBillDao()).thenReturn(billDao);
@@ -84,9 +84,9 @@ public class BillServiceImplTest {
         stab();
         billService.markAsPaid(billDto);
 
-        InOrder inOrder = Mockito.inOrder(billDao, transaction);
+        InOrder inOrder = Mockito.inOrder(billDao, transactionManager);
         inOrder.verify(billDao).markAsPaid(billDto.getId());
-        inOrder.verify(transaction).commit();
-        inOrder.verify(transaction).close();
+        inOrder.verify(transactionManager).commit();
+//        inOrder.verify(transactionManager).close();
     }
 }
