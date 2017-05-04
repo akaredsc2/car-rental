@@ -23,7 +23,6 @@ public class SignInCommand implements Command {
         RequestMapper<UserDto> userMapper = new UserRequestMapper();
         UserDto userDto = userMapper.map(request);
 
-        // TODO: 2017-04-28 consider failure
         ServiceFactory.getInstance()
                 .getUserService()
                 .authenticate(userDto.getLogin(), userDto.getPassword())

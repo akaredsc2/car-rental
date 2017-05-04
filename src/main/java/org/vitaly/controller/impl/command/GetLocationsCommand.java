@@ -39,12 +39,9 @@ public class GetLocationsCommand implements Command {
                     .getCarRequestMapper()
                     .map(request);
 
-            // TODO: 01.05.17 rethink optional
-            LocationDto locationDto = locationService
-                    .findLocationOfCar(carDto)
-                    .orElse(null);
-
-            locationDtoList = locationDto == null ? Collections.emptyList() : Collections.singletonList(locationDto);
+            locationDtoList = locationService.findLocationOfCar(carDto)
+                    .map(Collections::singletonList)
+                    .orElse(Collections.emptyList());
         } else {
             locationDtoList = locationService.getAll();
         }

@@ -54,6 +54,8 @@ public class TransactionManager {
             pooledConnection.commit();
             pooledConnection.setAutoCommit(true);
             pooledConnection.setInTransaction(false);
+            pooledConnection.close();
+            pooledConnectionThreadLocal.remove();
         } catch (SQLException e) {
             String message = "Failed to commit transaction";
             logger.error(message, e);
@@ -72,6 +74,8 @@ public class TransactionManager {
             pooledConnection.rollback();
             pooledConnection.setAutoCommit(true);
             pooledConnection.setInTransaction(false);
+            pooledConnection.close();
+            pooledConnectionThreadLocal.remove();
         } catch (SQLException e) {
             String message = "Failed to rollback transaction";
             logger.error(message, e);

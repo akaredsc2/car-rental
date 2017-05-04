@@ -9,10 +9,13 @@ import org.vitaly.util.PropertyUtils;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Properties;
 
+import static org.vitaly.util.constants.RequestAttributes.ATTR_ERROR;
 import static org.vitaly.util.constants.RequestParameters.*;
+import static org.vitaly.util.constants.SessionAttributes.SESSION_USER;
 
 /**
  * Created by vitaly on 02.05.17.
@@ -27,16 +30,25 @@ public class ChangePasswordCommand implements Command {
         String repeatPassParam = properties.getProperty(PARAM_PASS_REPEAT);
 
         // TODO: 02.05.17 validate
-        UserDto userDto = RequestMapperFactory.getInstance()
-                .getUserRequestMapper()
-                .map(request);
+        HttpSession session = request.getSession();
+        UserDto userDto = (UserDto) session.getAttribute(SESSION_USER);
 
         String newPassword = request.getParameter(newPassParam);
 
-        ServiceFactory.getInstance()
+        boolean isPasswordChanged = ServiceFactory.getInstance()
                 .getUserService()
                 .changePassword(userDto, newPassword);
 
-        response.sendRedirect(request.getContextPath() + "/home.jsp");
+        if (isPasswordChanged) {
+            userDto.setPassword(newPassword);
+            session.setAttribute(SESSION_USER, userDto);
+
+            response.sendRedirect(request.getContextPath() + "/home.jsp");
+        } else {
+            request.setAttribute(ATTR_ERROR, "Failed to change password!");
+            request.getServletContext()
+                    .getRequestDispatcher("/pages/error/error.jsp")
+                    .forward(request, response);
+        }
     }
 }

@@ -21,12 +21,16 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public boolean addNewLocation(LocationDto locationDto) {
+        TransactionManager.startTransaction();
+
         Location location = DtoMapperFactory.getInstance()
                 .getLocationDtoMapper()
                 .mapDtoToEntity(locationDto);
 
-        LocationDao locationDao = MysqlDaoFactory.getInstance().getLocationDao();
-        boolean isLocationCreated = locationDao.create(location).isPresent();
+        boolean isLocationCreated = MysqlDaoFactory.getInstance()
+                .getLocationDao()
+                .create(location)
+                .isPresent();
 
         TransactionManager.commit();
 
@@ -38,8 +42,9 @@ public class LocationServiceImpl implements LocationService {
         DtoMapper<Location, LocationDto> mapper = DtoMapperFactory.getInstance().getLocationDtoMapper();
 
         long carId = carDto.getId();
-        LocationDao locationDao = MysqlDaoFactory.getInstance().getLocationDao();
-        return locationDao.findLocationByCarId(carId)
+        return MysqlDaoFactory.getInstance()
+                .getLocationDao()
+                .findLocationByCarId(carId)
                 .map(mapper::mapEntityToDto);
     }
 
@@ -47,15 +52,16 @@ public class LocationServiceImpl implements LocationService {
     public List<LocationDto> getAll() {
         DtoMapper<Location, LocationDto> mapper = DtoMapperFactory.getInstance().getLocationDtoMapper();
 
-        LocationDao locationDao = MysqlDaoFactory.getInstance().getLocationDao();
-        return locationDao.getAll()
+        return MysqlDaoFactory.getInstance()
+                .getLocationDao()
+                .getAll()
                 .stream()
                 .map(mapper::mapEntityToDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public boolean changeLocationPhotoUrl(LocationDto locationDto, String photoUrl) {
+    public boolean updateLocation(LocationDto locationDto, String photoUrl) {
         TransactionManager.startTransaction();
 
         long locationId = locationDto.getId();

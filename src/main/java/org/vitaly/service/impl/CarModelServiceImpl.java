@@ -11,6 +11,7 @@ import org.vitaly.service.impl.dtoMapper.DtoMapper;
 import org.vitaly.service.impl.factory.DtoMapperFactory;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -21,11 +22,15 @@ public class CarModelServiceImpl implements CarModelService {
     @Override
     public boolean addCarModel(CarModelDto carModelDto) {
         TransactionManager.startTransaction();
+
         CarModel carModel = DtoMapperFactory.getInstance()
                 .getCarModelDtoMapper()
                 .mapDtoToEntity(carModelDto);
-        CarModelDao carModelDao = MysqlDaoFactory.getInstance().getCarModelDao();
-        boolean isCreated = carModelDao.create(carModel).isPresent();
+
+        boolean isCreated = MysqlDaoFactory.getInstance()
+                .getCarModelDao()
+                .create(carModel)
+                .isPresent();
 
         TransactionManager.commit();
 
@@ -36,45 +41,50 @@ public class CarModelServiceImpl implements CarModelService {
     public List<CarModelDto> getAll() {
         DtoMapper<CarModel, CarModelDto> mapper = DtoMapperFactory.getInstance().getCarModelDtoMapper();
 
-        CarModelDao carModelDao = MysqlDaoFactory.getInstance().getCarModelDao();
-        return carModelDao.getAll()
+        return MysqlDaoFactory.getInstance()
+                .getCarModelDao()
+                .getAll()
                 .stream()
                 .map(mapper::mapEntityToDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public void updateCarModel(CarModelDto carModelDto) {
+    public boolean updateCarModel(CarModelDto carModelDto) {
         TransactionManager.startTransaction();
+
         CarModel carModel = DtoMapperFactory.getInstance()
                 .getCarModelDtoMapper()
                 .mapDtoToEntity(carModelDto);
         CarModelDao carModelDao = MysqlDaoFactory.getInstance().getCarModelDao();
-        carModelDao.update(carModelDto.getId(), carModel);
+        boolean isUpdated = carModelDao.update(carModelDto.getId(), carModel) > 0;
 
         TransactionManager.commit();
+
+        return isUpdated;
     }
 
     @Override
     public List<CarModelDto> findCarsWithPhotos() {
         DtoMapper<CarModel, CarModelDto> mapper = DtoMapperFactory.getInstance().getCarModelDtoMapper();
 
-        CarModelDao carModelDao = MysqlDaoFactory.getInstance().getCarModelDao();
-        return carModelDao.findCarModelsWithPhotos()
+        return MysqlDaoFactory.getInstance()
+                .getCarModelDao()
+                .findCarModelsWithPhotos()
                 .stream()
                 .map(mapper::mapEntityToDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public CarModelDto findModelOfCar(CarDto carDto) {
+    public Optional<CarModelDto> findModelOfCar(CarDto carDto) {
         long carId = carDto.getId();
         DtoMapper<CarModel, CarModelDto> mapper = DtoMapperFactory.getInstance().getCarModelDtoMapper();
 
-        CarModelDao carModelDao = MysqlDaoFactory.getInstance().getCarModelDao();
-        return carModelDao.findModelOfCar(carId)
-                .map(mapper::mapEntityToDto)
-                .orElse(null);
+        return MysqlDaoFactory.getInstance()
+                .getCarModelDao()
+                .findModelOfCar(carId)
+                .map(mapper::mapEntityToDto);
     }
 }
 

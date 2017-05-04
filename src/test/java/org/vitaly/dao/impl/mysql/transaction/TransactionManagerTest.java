@@ -59,16 +59,6 @@ public class TransactionManagerTest {
     }
 
     @Test
-    public void committingTransactionSetsAutocommitToTrue() throws Exception {
-        TransactionManager.startTransaction();
-        try (PooledConnection connection = TransactionManager.getConnection()) {
-            TransactionManager.commit();
-
-            assertTrue(connection.getAutoCommit());
-        }
-    }
-
-    @Test
     public void committingTransactionSetsIsInTransactionFlagSetToFalse() throws Exception {
         TransactionManager.startTransaction();
         try (PooledConnection connection = TransactionManager.getConnection()) {
@@ -85,16 +75,6 @@ public class TransactionManagerTest {
         TransactionManager.commit();
 
         verify(connection).commit();
-    }
-
-    @Test
-    public void rollingBackTransactionSetsAutocommitToTrue() throws Exception {
-        TransactionManager.startTransaction();
-        try (PooledConnection connection = TransactionManager.getConnection()) {
-            TransactionManager.rollback();
-
-            assertTrue(connection.getAutoCommit());
-        }
     }
 
     @Test

@@ -4,6 +4,7 @@ import org.vitaly.service.impl.dto.CarDto;
 import org.vitaly.service.impl.dto.CarModelDto;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by vitaly on 2017-04-22.
@@ -13,9 +14,9 @@ public interface CarModelService {
 
     List<CarModelDto> getAll();
 
-    void updateCarModel(CarModelDto carModelDto);
+    boolean updateCarModel(CarModelDto carModelDto);
 
     List<CarModelDto> findCarsWithPhotos();
 
-    CarModelDto findModelOfCar(CarDto carDto);
+    Optional<CarModelDto> findModelOfCar(CarDto carDto);
 }

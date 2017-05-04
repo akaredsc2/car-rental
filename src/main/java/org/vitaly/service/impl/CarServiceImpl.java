@@ -29,8 +29,11 @@ public class CarServiceImpl implements CarService {
         Car car = DtoMapperFactory.getInstance()
                 .getCarDtoMapper()
                 .mapDtoToEntity(carDto);
-        CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
-        boolean isCarCreated = carDao.create(car).isPresent();
+
+        boolean isCarCreated = MysqlDaoFactory.getInstance()
+                .getCarDao()
+                .create(car)
+                .isPresent();
 
         TransactionManager.commit();
 
@@ -42,8 +45,9 @@ public class CarServiceImpl implements CarService {
         DtoMapper<Car, CarDto> mapper = DtoMapperFactory.getInstance().getCarDtoMapper();
 
         long locationId = locationDto.getId();
-        CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
-        return carDao.findCarsAtLocation(locationId)
+        return MysqlDaoFactory.getInstance()
+                .getCarDao()
+                .findCarsAtLocation(locationId)
                 .stream()
                 .map(mapper::mapEntityToDto)
                 .collect(Collectors.toList());
@@ -54,8 +58,9 @@ public class CarServiceImpl implements CarService {
         DtoMapper<Car, CarDto> mapper = DtoMapperFactory.getInstance().getCarDtoMapper();
 
         long carModelId = carModelDto.getId();
-        CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
-        return carDao.findCarsByModel(carModelId)
+        return MysqlDaoFactory.getInstance()
+                .getCarDao()
+                .findCarsByModel(carModelId)
                 .stream()
                 .map(mapper::mapEntityToDto)
                 .collect(Collectors.toList());
@@ -65,8 +70,9 @@ public class CarServiceImpl implements CarService {
     public List<CarDto> findCarsWithPriceBetween(BigDecimal from, BigDecimal to) {
         DtoMapper<Car, CarDto> mapper = DtoMapperFactory.getInstance().getCarDtoMapper();
 
-        CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
-        return carDao.findCarsWithPriceBetween(from, to)
+        return MysqlDaoFactory.getInstance()
+                .getCarDao()
+                .findCarsWithPriceBetween(from, to)
                 .stream()
                 .map(mapper::mapEntityToDto)
                 .collect(Collectors.toList());
@@ -76,8 +82,9 @@ public class CarServiceImpl implements CarService {
     public List<CarDto> getAllCars() {
         DtoMapper<Car, CarDto> mapper = DtoMapperFactory.getInstance().getCarDtoMapper();
 
-        CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
-        return carDao.getAll()
+        return MysqlDaoFactory.getInstance()
+                .getCarDao()
+                .getAll()
                 .stream()
                 .map(mapper::mapEntityToDto)
                 .collect(Collectors.toList());
@@ -122,10 +129,10 @@ public class CarServiceImpl implements CarService {
         if (isCarAbleToBeMoved) {
             long locationId = locationDto.getId();
 
-            carDao.moveCarToLocation(carId, locationId);
+            boolean isCarMoved = carDao.moveCarToLocation(carId, locationId);
 
             TransactionManager.commit();
-            return true;
+            return isCarMoved;
         } else {
             TransactionManager.rollback();
             return false;
@@ -139,8 +146,8 @@ public class CarServiceImpl implements CarService {
                 .getCarDtoMapper()
                 .mapDtoToEntity(carDto);
 
-        boolean isStateChanged = changeState(car, carState);
-        if (isStateChanged) {
+        boolean isAbleToChangeState = checkIfAbleToChangeState(car, carState);
+        if (isAbleToChangeState) {
             MysqlDaoFactory.getInstance()
                     .getCarDao()
                     .changeCarState(car.getId(), car.getState());
@@ -153,7 +160,7 @@ public class CarServiceImpl implements CarService {
         }
     }
 
-    private boolean changeState(Car car, String carState) {
+    private boolean checkIfAbleToChangeState(Car car, String carState) {
         if (carState.equalsIgnoreCase(UNAVAILABLE.getState().toString())) {
             return car.makeUnavailable();
         }

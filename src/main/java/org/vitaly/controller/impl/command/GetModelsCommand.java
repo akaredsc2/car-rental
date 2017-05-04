@@ -37,18 +37,14 @@ public class GetModelsCommand implements Command {
         CarModelService carModelService = ServiceFactory.getInstance()
                 .getCarModelService();
 
-        // TODO: 02.05.17 refactor
         if (parameterMap.containsKey(carIdParam)) {
             CarDto carDto = RequestMapperFactory.getInstance()
                     .getCarRequestMapper()
                     .map(request);
 
-            CarModelDto modelOfCar = carModelService.findModelOfCar(carDto);
-            if (modelOfCar != null) {
-                carModelDtoList = Collections.singletonList(modelOfCar);
-            } else {
-                carModelDtoList = Collections.emptyList();
-            }
+            carModelDtoList = carModelService.findModelOfCar(carDto)
+                    .map(Collections::singletonList)
+                    .orElse(Collections.emptyList());
         } else {
             carModelDtoList = carModelService
                     .getAll();

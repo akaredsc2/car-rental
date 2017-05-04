@@ -99,7 +99,6 @@ public class UrlHttpMethodPair {
         String requestUri = request.getRequestURI();
         String url;
 
-        // TODO: 01.05.17 test
         if (requestUri.endsWith(".jsp")) {
             url = request.getRequestURI().substring(request.getContextPath().length());
         } else {

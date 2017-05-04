@@ -16,7 +16,7 @@ public interface UserService {
 
     void changeRole(UserDto userDto, UserRole role);
 
-    void changePassword(UserDto userDto, String newPassword);
+    boolean changePassword(UserDto userDto, String newPassword);
 
     List<UserDto> findAllClients();
 }

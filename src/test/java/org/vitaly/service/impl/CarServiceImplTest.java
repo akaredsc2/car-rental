@@ -2,146 +2,149 @@ package org.vitaly.service.impl;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InOrder;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.vitaly.dao.abstraction.CarDao;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
-import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
+import org.vitaly.model.car.Car;
 import org.vitaly.model.car.CarStateEnum;
 import org.vitaly.service.abstraction.CarService;
 import org.vitaly.service.impl.dto.CarDto;
 import org.vitaly.service.impl.dto.CarModelDto;
 import org.vitaly.service.impl.dto.LocationDto;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by vitaly on 2017-04-20.
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({MysqlDaoFactory.class, TransactionManager.class})
-@PowerMockIgnore("javax.management.*")
+@RunWith(MockitoJUnitRunner.class)
 public class CarServiceImplTest {
-    private TransactionManager transactionManager = mock(TransactionManager.class);
-    private MysqlDaoFactory daoFactory = mock(MysqlDaoFactory.class);
-    private CarDao carDao = mock(CarDao.class);
-    private CarService carService = new CarServiceImpl();
+    @Mock
+    private CarDao carDao;
+
+    @InjectMocks
+    private MysqlDaoFactory daoFactory = MysqlDaoFactory.getInstance();
+
+    private CarService service = new CarServiceImpl();
 
     @Test
-    public void findCarsAtLocation() throws Exception {
-        LocationDto locationDto = new LocationDto();
-        locationDto.setId(798);
-
-        stab();
-        carService.findCarsAtLocation(locationDto);
-
-        verify(carDao).findCarsAtLocation(locationDto.getId());
-    }
-
-    private void stab() {
-        PowerMockito.mockStatic(TransactionManager.class);
-//        PowerMockito.when(TransactionManager.startTransaction()).thenReturn(transactionManager);
-        PowerMockito.mockStatic(MysqlDaoFactory.class);
-        PowerMockito.when(MysqlDaoFactory.getInstance()).thenReturn(daoFactory);
-        when(daoFactory.getCarDao()).thenReturn(carDao);
-    }
-
-    @Test
-    public void findCarsByModel() throws Exception {
+    public void successfulAddingOfCarModelReturnsTrue() throws Exception {
         CarModelDto carModelDto = new CarModelDto();
-        carModelDto.setId(79);
-
-        stab();
-        carService.findCarsByModel(carModelDto);
-
-        verify(carDao).findCarsByModel(carModelDto.getId());
-    }
-
-    @Test
-    public void findCarsWithPriceBetween() throws Exception {
-        BigDecimal from = BigDecimal.ONE;
-        BigDecimal to = BigDecimal.TEN;
-
-        stab();
-        carService.findCarsWithPriceBetween(from, to);
-
-        verify(carDao).findCarsWithPriceBetween(from, to);
-    }
-
-    @Test
-    public void getAllMatchingCars() throws Exception {
-        stab();
-        carService.getAllCars();
-
-        verify(carDao).getAll();
-    }
-
-    @Test
-    public void addNewCar() throws Exception {
-        CarModelDto carModelDto = new CarModelDto();
-        carModelDto.setId(809);
-
         CarDto carDto = new CarDto();
         carDto.setCarModelDto(carModelDto);
-        carDto.setColor("red");
-        carDto.setPricePerDay(BigDecimal.ZERO);
-        carDto.setRegistrationPlate("registration plate");
-        carDto.setState(CarStateEnum.AVAILABLE.getState());
 
-        stab();
+        when(carDao.create(any())).thenReturn(Optional.of(10L));
+        boolean isCarAdded = service.addNewCar(carDto);
+
+        assertTrue(isCarAdded);
+    }
+
+    @Test
+    public void failedAddingOfCarModelReturnsFalse() throws Exception {
+        CarModelDto carModelDto = new CarModelDto();
+        CarDto carDto = new CarDto();
+        carDto.setCarModelDto(carModelDto);
+
         when(carDao.create(any())).thenReturn(Optional.empty());
-        carService.addNewCar(carDto);
+        boolean isCarAdded = service.addNewCar(carDto);
 
-        InOrder inOrder = Mockito.inOrder(carDao, transactionManager);
-        inOrder.verify(carDao).create(any());
-        inOrder.verify(transactionManager).commit();
-//        inOrder.verify(transactionManager).close();
+        assertFalse(isCarAdded);
     }
 
     @Test
-    public void updateCar() throws Exception {
+    public void updatingCarThatIsNotInAvailableOrUnavailableStateReturnsFalse() throws Exception {
+        CarDto carDto = new CarDto();
+        Car car = new Car.Builder()
+                .setState(CarStateEnum.RESERVED.getState())
+                .build();
+
+        when(carDao.findById(anyLong())).thenReturn(Optional.of(car));
+        boolean isCarUpdated = service.updateCar(carDto);
+
+        assertFalse(isCarUpdated);
+    }
+
+    @Test
+    public void updatingNonExistingCarReturnsFalse() throws Exception {
         CarModelDto carModelDto = new CarModelDto();
-        carModelDto.setId(809);
-
         CarDto carDto = new CarDto();
-        carDto.setId(798);
         carDto.setCarModelDto(carModelDto);
-        carDto.setColor("black");
-        carDto.setPricePerDay(BigDecimal.ZERO);
-        carDto.setRegistrationPlate("not a registration plate");
-        carDto.setState(CarStateEnum.AVAILABLE.getState());
+        Car car = new Car.Builder()
+                .setState(CarStateEnum.AVAILABLE.getState())
+                .build();
 
-        stab();
-        carService.updateCar(carDto);
+        when(carDao.findById(anyLong())).thenReturn(Optional.of(car));
+        when(carDao.update(anyLong(), any())).thenReturn(0);
+        boolean isCarUpdated = service.updateCar(carDto);
 
-        InOrder inOrder = Mockito.inOrder(carDao, transactionManager);
-        inOrder.verify(carDao).update(eq(carDto.getId()), any());
-        inOrder.verify(transactionManager).commit();
-//        inOrder.verify(transactionManager).close();
+        assertFalse(isCarUpdated);
     }
 
     @Test
-    public void moveCarToLocation() throws Exception {
-        LocationDto locationDto = new LocationDto();
-        locationDto.setId(1);
+    public void updatingExistingCarThatIsInAvailableOrUnavailableStateReturnsTrue() throws Exception {
+        CarModelDto carModelDto = new CarModelDto();
         CarDto carDto = new CarDto();
-        carDto.setId(2);
+        carDto.setCarModelDto(carModelDto);
+        Car car = new Car.Builder()
+                .setState(CarStateEnum.AVAILABLE.getState())
+                .build();
 
-        stab();
-        carService.moveCarToLocation(carDto, locationDto);
+        when(carDao.findById(anyLong())).thenReturn(Optional.of(car));
+        when(carDao.update(anyLong(), any())).thenReturn(1);
+        boolean isCarUpdated = service.updateCar(carDto);
 
-        InOrder inOrder = Mockito.inOrder(carDao, transactionManager);
-        inOrder.verify(carDao).moveCarToLocation(carDto.getId(), locationDto.getId());
-        inOrder.verify(transactionManager).commit();
-//        inOrder.verify(transactionManager).close();
+        assertTrue(isCarUpdated);
+    }
+
+    @Test
+    public void movingCarThatIsNotInUnavailableStateReturnsFalse() throws Exception {
+        CarDto carDto = new CarDto();
+        LocationDto locationDto = new LocationDto();
+        Car car = new Car.Builder()
+                .setState(CarStateEnum.RESERVED.getState())
+                .build();
+
+        when(carDao.findById(anyLong())).thenReturn(Optional.of(car));
+        boolean isCarMoved = service.moveCarToLocation(carDto, locationDto);
+
+        assertFalse(isCarMoved);
+    }
+
+    @Test
+    public void movingNonExistingCarReturnsFalse() throws Exception {
+        CarDto carDto = new CarDto();
+        LocationDto locationDto = new LocationDto();
+        Car car = new Car.Builder()
+                .setState(CarStateEnum.UNAVAILABLE.getState())
+                .build();
+
+        when(carDao.findById(anyLong())).thenReturn(Optional.of(car));
+        when(carDao.moveCarToLocation(anyLong(), anyLong())).thenReturn(false);
+        boolean isCarMoved = service.moveCarToLocation(carDto, locationDto);
+
+        assertFalse(isCarMoved);
+    }
+
+    @Test
+    public void movingExistingCarThatIsInUnavailableStateReturnsTrue() throws Exception {
+        CarDto carDto = new CarDto();
+        LocationDto locationDto = new LocationDto();
+        Car car = new Car.Builder()
+                .setState(CarStateEnum.UNAVAILABLE.getState())
+                .build();
+
+        when(carDao.findById(anyLong())).thenReturn(Optional.of(car));
+        when(carDao.moveCarToLocation(anyLong(), anyLong())).thenReturn(true);
+        boolean isCarMoved = service.moveCarToLocation(carDto, locationDto);
+
+        assertTrue(isCarMoved);
     }
 }

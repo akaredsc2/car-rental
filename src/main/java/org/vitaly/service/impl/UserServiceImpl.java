@@ -28,8 +28,10 @@ public class UserServiceImpl implements UserService {
                 .getUserDtoMapper()
                 .mapDtoToEntity(userDto);
 
-        UserDao userDao = MysqlDaoFactory.getInstance().getUserDao();
-        boolean isUserCreated = userDao.create(user).isPresent();
+        boolean isUserCreated = MysqlDaoFactory.getInstance()
+                .getUserDao()
+                .create(user)
+                .isPresent();
 
         TransactionManager.commit();
 
@@ -40,8 +42,9 @@ public class UserServiceImpl implements UserService {
     public Optional<UserDto> authenticate(String login, String password) {
         DtoMapper<User, UserDto> mapper = DtoMapperFactory.getInstance().getUserDtoMapper();
 
-        UserDao userDao = MysqlDaoFactory.getInstance().getUserDao();
-        return userDao.authenticate(login, password)
+        return MysqlDaoFactory.getInstance()
+                .getUserDao()
+                .authenticate(login, password)
                 .map(mapper::mapEntityToDto);
     }
 
@@ -50,26 +53,38 @@ public class UserServiceImpl implements UserService {
         TransactionManager.startTransaction();
 
         long userId = userDto.getId();
-        UserDao userDao = MysqlDaoFactory.getInstance().getUserDao();
-        userDao.changeRole(userId, newRole);
+        MysqlDaoFactory.getInstance()
+                .getUserDao()
+                .changeRole(userId, newRole);
 
         TransactionManager.commit();
     }
 
     @Override
-    public void changePassword(UserDto userDto, String newPassword) {
+    public boolean changePassword(UserDto userDto, String newPassword) {
         TransactionManager.startTransaction();
 
-        long userId = userDto.getId();
         UserDao userDao = MysqlDaoFactory.getInstance().getUserDao();
-        userDao.changePassword(userId, newPassword);
 
-        TransactionManager.commit();
+        boolean isOldPasswordCorrect = userDao.authenticate(userDto.getLogin(), userDto.getPassword())
+                .isPresent();
+
+        if (isOldPasswordCorrect) {
+            long userId = userDto.getId();
+            userDao.changePassword(userId, newPassword);
+
+            TransactionManager.commit();
+            return true;
+        } else {
+            TransactionManager.rollback();
+            return false;
+        }
     }
 
     @Override
     public List<UserDto> findAllClients() {
         DtoMapper<User, UserDto> userDtoMapper = DtoMapperFactory.getInstance().getUserDtoMapper();
+
         return MysqlDaoFactory.getInstance()
                 .getUserDao()
                 .getAll()

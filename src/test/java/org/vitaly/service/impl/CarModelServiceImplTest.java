@@ -2,91 +2,75 @@ package org.vitaly.service.impl;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InOrder;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.vitaly.dao.abstraction.CarModelDao;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
-import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
+import org.vitaly.model.carModel.CarModel;
 import org.vitaly.service.abstraction.CarModelService;
+import org.vitaly.service.impl.dto.CarDto;
 import org.vitaly.service.impl.dto.CarModelDto;
 
 import java.util.Optional;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
- * Created by vitaly on 2017-04-22.
+ * Created by vitaly on 02.05.17.
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({MysqlDaoFactory.class, TransactionManager.class})
-@PowerMockIgnore("javax.management.*")
+@RunWith(MockitoJUnitRunner.class)
 public class CarModelServiceImplTest {
-    private TransactionManager transactionManager = mock(TransactionManager.class);
-    private MysqlDaoFactory daoFactory = mock(MysqlDaoFactory.class);
-    private CarModelDao carModelDao = mock(CarModelDao.class);
-    private CarModelService carModelService = new CarModelServiceImpl();
+    @Mock
+    private CarModelDao carModelDao;
+
+    @InjectMocks
+    private MysqlDaoFactory daoFactory = MysqlDaoFactory.getInstance();
+
+    private CarModelService service = new CarModelServiceImpl();
 
     @Test
-    public void addCarModel() throws Exception {
+    public void successfulAddingOfCarModelReturnsTrue() throws Exception {
         CarModelDto carModelDto = new CarModelDto();
-        carModelDto.setName("name");
-        carModelDto.setSeatCount(4);
-        carModelDto.setDoorCount(4);
-        carModelDto.setHorsePowerCount(200);
 
-        stab();
+        when(carModelDao.create(any())).thenReturn(Optional.of(10L));
+        boolean isCarModelAdded = service.addCarModel(carModelDto);
+
+        assertTrue(isCarModelAdded);
+    }
+
+    @Test
+    public void failedAddingOfCarModelReturnsFalse() throws Exception {
+        CarModelDto carModelDto = new CarModelDto();
+
         when(carModelDao.create(any())).thenReturn(Optional.empty());
-        carModelService.addCarModel(carModelDto);
+        boolean isCarModelAdded = service.addCarModel(carModelDto);
 
-        InOrder inOrder = Mockito.inOrder(transactionManager, carModelDao);
-        inOrder.verify(carModelDao).create(any());
-        inOrder.verify(transactionManager).commit();
-//        inOrder.verify(transactionManager).close();
-    }
-
-    private void stab() {
-        PowerMockito.mockStatic(TransactionManager.class);
-//        PowerMockito.when(TransactionManager.startTransaction()).thenReturn(transactionManager);
-        PowerMockito.mockStatic(MysqlDaoFactory.class);
-        PowerMockito.when(MysqlDaoFactory.getInstance()).thenReturn(daoFactory);
-        when(daoFactory.getCarModelDao()).thenReturn(carModelDao);
+        assertFalse(isCarModelAdded);
     }
 
     @Test
-    public void getAllMatchingCarModels() throws Exception {
-        stab();
-        carModelService.getAll();
-
-        verify(carModelDao).getAll();
-    }
-
-    @Test
-    public void updateCarModel() throws Exception {
+    public void successfulUpdateOfCarModelReturnsTrue() throws Exception {
         CarModelDto carModelDto = new CarModelDto();
-        carModelDto.setId(10);
-        carModelDto.setName("");
-        carModelDto.setPhotoUrl("url");
 
-        stab();
-        carModelService.updateCarModel(carModelDto);
+        when(carModelDao.update(anyLong(), any())).thenReturn(1);
+        boolean isCarModelUpdated = service.updateCarModel(carModelDto);
 
-        InOrder inOrder = Mockito.inOrder(transactionManager, carModelDao);
-        inOrder.verify(carModelDao).update(eq(carModelDto.getId()), any());
-        inOrder.verify(transactionManager).commit();
-//        inOrder.verify(transactionManager).close();
+        assertTrue(isCarModelUpdated);
     }
 
     @Test
-    public void findCarsWithPhotos() throws Exception {
-        stab();
-        carModelService.findCarsWithPhotos();
+    public void failedUpdateOfCarModelReturnsFalse() throws Exception {
+        CarModelDto carModelDto = new CarModelDto();
 
-        verify(carModelDao).findCarModelsWithPhotos();
+        when(carModelDao.update(anyLong(), any())).thenReturn(0);
+        boolean isCarModelUpdated = service.updateCarModel(carModelDto);
+
+        assertFalse(isCarModelUpdated);
     }
 }

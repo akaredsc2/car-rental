@@ -2,107 +2,106 @@ package org.vitaly.service.impl;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InOrder;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.vitaly.dao.abstraction.UserDao;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
-import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
-import org.vitaly.model.user.UserRole;
+import org.vitaly.model.user.User;
 import org.vitaly.service.abstraction.UserService;
 import org.vitaly.service.impl.dto.UserDto;
 
-import java.time.LocalDate;
-import java.util.Collections;
 import java.util.Optional;
 
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by vitaly on 2017-04-20.
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({MysqlDaoFactory.class, TransactionManager.class})
-@PowerMockIgnore("javax.management.*")
+@RunWith(MockitoJUnitRunner.class)
 public class UserServiceImplTest {
-    private TransactionManager transactionManager = mock(TransactionManager.class);
-    private MysqlDaoFactory daoFactory = mock(MysqlDaoFactory.class);
-    private UserDao userDao = mock(UserDao.class);
-    private UserService userService = new UserServiceImpl();
+    @Mock
+    private UserDao userDao;
+
+    @InjectMocks
+    private MysqlDaoFactory daoFactory = MysqlDaoFactory.getInstance();
+
+    private UserService service = new UserServiceImpl();
 
     @Test
-    public void registerNewUser() throws Exception {
-        UserDto userDto = new UserDto();
-        userDto.setLogin("login");
-        userDto.setPassword("password");
-        userDto.setFullName("fool name");
-        userDto.setBirthDate(LocalDate.now());
-        userDto.setPassportNumber("passport");
-        userDto.setDriverLicenceNumber("driver licence number");
-        userDto.setReservationDtoList(Collections.emptyList());
-        userDto.setNotificationDtoList(Collections.emptyList());
+    public void successfulAuthenticationReturnsOptionalWithUserDto() throws Exception {
+        String login = "login";
+        String password = "password";
+        User user = User.createDummyClientWithId(10);
 
-        stab();
-        when(userDao.create(any())).thenReturn(Optional.empty());
-        userService.registerNewUser(userDto);
+        when(userDao.authenticate(login, password)).thenReturn(Optional.of(user));
+        boolean isAuthenticated = service.authenticate(login, password).isPresent();
 
-        InOrder inOrder = inOrder(userDao, transactionManager);
-        inOrder.verify(userDao).create(any());
-        inOrder.verify(transactionManager).commit();
-//        inOrder.verify(transactionManager).close();
-    }
-
-    private void stab() {
-        PowerMockito.mockStatic(TransactionManager.class);
-//        PowerMockito.when(TransactionManager.startTransaction()).thenReturn(transactionManager);
-        PowerMockito.mockStatic(MysqlDaoFactory.class);
-        PowerMockito.when(MysqlDaoFactory.getInstance()).thenReturn(daoFactory);
-        when(daoFactory.getUserDao()).thenReturn(userDao);
+        assertTrue(isAuthenticated);
     }
 
     @Test
-    public void authenticate() throws Exception {
+    public void failedAuthenticationReturnsEmptyOptional() throws Exception {
         String login = "login";
         String password = "password";
 
-        stab();
         when(userDao.authenticate(login, password)).thenReturn(Optional.empty());
-        userService.authenticate(login, password);
+        boolean isAuthenticated = service.authenticate(login, password).isPresent();
 
-        verify(userDao).authenticate(login, password);
+        assertFalse(isAuthenticated);
     }
 
     @Test
-    public void changeRole() throws Exception {
-        int userId = 1;
+    public void successfulRegistrationReturnsTrue() throws Exception {
         UserDto userDto = new UserDto();
-        userDto.setId(userId);
-        UserRole role = UserRole.ADMIN;
 
-        stab();
-        userService.changeRole(userDto, role);
+        when(userDao.create(any())).thenReturn(Optional.of(5L));
+        boolean isRegistered = service.registerNewUser(userDto);
 
-        InOrder inOrder = inOrder(userDao, transactionManager);
-        inOrder.verify(userDao).changeRole(userId, role);
-        inOrder.verify(transactionManager).commit();
-//        inOrder.verify(transactionManager).close();
+        assertTrue(isRegistered);
     }
 
     @Test
-    public void changePassword() throws Exception {
-        int userId = 1;
+    public void failedRegistrationReturnsFalse() throws Exception {
         UserDto userDto = new UserDto();
-        userDto.setId(userId);
+
+        when(userDao.create(any())).thenReturn(Optional.empty());
+        boolean isRegistered = service.registerNewUser(userDto);
+
+        assertFalse(isRegistered);
+    }
+
+    @Test
+    public void supplyingOldCorrectPasswordWhenChangingPasswordReturnsTrue() throws Exception {
+        String login = "login";
+        String correctOldPassword = "old password";
         String newPassword = "new password";
+        UserDto userDto = new UserDto();
+        userDto.setLogin(login);
+        userDto.setPassword(correctOldPassword);
+        User user = User.createDummyClientWithId(10);
 
-        stab();
-        userService.changePassword(userDto, newPassword);
+        when(userDao.authenticate(login, correctOldPassword)).thenReturn(Optional.of(user));
+        boolean isPasswordChanged = service.changePassword(userDto, newPassword);
 
-        InOrder inOrder = inOrder(userDao, transactionManager);
-        inOrder.verify(userDao).changePassword(userId, newPassword);
-        inOrder.verify(transactionManager).commit();
-//        inOrder.verify(transactionManager).close();
+        assertTrue(isPasswordChanged);
+    }
+
+    @Test
+    public void supplyingIncorrectOldPasswordWhenChangingPasswordReturnsFalse() throws Exception {
+        String login = "login";
+        String wrongOldPassword = "new password";
+        UserDto userDto = new UserDto();
+        userDto.setLogin(login);
+        userDto.setPassword(wrongOldPassword);
+
+        when(userDao.authenticate(login, wrongOldPassword)).thenReturn(Optional.empty());
+        boolean isPasswordChanged = service.changePassword(userDto, wrongOldPassword);
+
+        assertFalse(isPasswordChanged);
     }
 }
