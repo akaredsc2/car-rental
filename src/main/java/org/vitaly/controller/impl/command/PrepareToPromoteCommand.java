@@ -10,12 +10,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
+import static org.vitaly.util.constants.Pages.PROMOTE_JSP;
 import static org.vitaly.util.constants.RequestAttributes.ATTR_USER_LIST;
 
 /**
  * Created by vitaly on 02.05.17.
  */
-public class PrepateToPromoteCommand implements Command {
+public class PrepareToPromoteCommand implements Command {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -26,7 +27,7 @@ public class PrepateToPromoteCommand implements Command {
         request.setAttribute(ATTR_USER_LIST, userDtoList);
 
         request.getServletContext()
-                .getRequestDispatcher("/pages/admin/promote.jsp")
+                .getRequestDispatcher(PROMOTE_JSP)
                 .forward(request, response);
     }
 }

@@ -7,10 +7,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static org.vitaly.util.constants.Pages.ERROR_404_JSP;
+
 /**
  * Created by vitaly on 30.04.17.
  */
 public class UrlFilter implements Filter {
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
     }
@@ -27,7 +30,7 @@ public class UrlFilter implements Filter {
             chain.doFilter(request, response);
         } else {
             ((HttpServletResponse) response)
-                    .sendRedirect(httpServletRequest.getContextPath() + "/pages/error/404.jsp");
+                    .sendRedirect(httpServletRequest.getContextPath() + ERROR_404_JSP);
         }
     }
 

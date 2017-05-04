@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static org.vitaly.util.constants.Pages.HOME_JSP;
+
 /**
  * Created by vitaly on 02.05.17.
  */
@@ -18,8 +20,8 @@ public class PromoteCommand implements Command {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // TODO: 02.05.17 validate client has no reservations etc
 
+        // TODO: 02.05.17 validate client has no reservations etc
         UserDto userDto = RequestMapperFactory.getInstance()
                 .getUserRequestMapper()
                 .map(request);
@@ -28,6 +30,6 @@ public class PromoteCommand implements Command {
                 .getUserService()
                 .changeRole(userDto, UserRole.ADMIN);
 
-        response.sendRedirect(request.getContextPath() + "/home.jsp");
+        response.sendRedirect(request.getContextPath() + HOME_JSP);
     }
 }

@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Properties;
 
@@ -26,25 +25,20 @@ public class UserRequestMapper implements RequestMapper<UserDto> {
         long id = PropertyUtils.getLongFromRequest(request, properties, PARAM_USER_ID);
 
         String login = request.getParameter(properties.getProperty(PARAM_USER_LOGIN));
-        String password = request.getParameter(properties.getProperty(PARAM_USER_PASSWORD) );
-        String fullName = request.getParameter(properties.getProperty(PARAM_USER_NAME) );
+        String password = request.getParameter(properties.getProperty(PARAM_USER_PASSWORD));
+        String fullName = request.getParameter(properties.getProperty(PARAM_USER_NAME));
 
-        String birthDateString = request.getParameter(properties.getProperty(PARAM_USER_BIRTHDAY) );
+        String birthDateString = request.getParameter(properties.getProperty(PARAM_USER_BIRTHDAY));
         LocalDate birthday =
                 (birthDateString == null) ?
                         null :
                         LocalDateTime.parse(birthDateString, DateTimeFormatter.ISO_DATE_TIME).toLocalDate();
 
-        String passportNumber = request.getParameter(properties.getProperty(PARAM_USER_PASSPORT) );
+        String passportNumber = request.getParameter(properties.getProperty(PARAM_USER_PASSPORT));
         String licenceNumber = request.getParameter(properties.getProperty(PARAM_USER_DRIVER));
         String roleString = request.getParameter(properties.getProperty(PARAM_USER_ROLE));
 
-        UserRole userRole = Arrays.stream(UserRole.values())
-                .map(UserRole::toString)
-                .filter(v -> v.equalsIgnoreCase(roleString))
-                .map(UserRole::valueOf)
-                .findFirst()
-                .orElse(null);
+        UserRole userRole = UserRole.of(roleString).orElse(null);
 
         UserDto userDto = new UserDto();
         userDto.setId(id);

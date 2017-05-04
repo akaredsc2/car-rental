@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import static org.vitaly.util.constants.Pages.CARS_JSP;
 import static org.vitaly.util.constants.RequestAttributes.ATTR_CAR_LIST;
 import static org.vitaly.util.constants.RequestParameters.*;
 
@@ -53,7 +54,7 @@ public class GetCarsCommand implements Command {
         request.setAttribute(ATTR_CAR_LIST, carDtoList);
 
         request.getServletContext()
-                .getRequestDispatcher("/pages/catalog/cars.jsp")
+                .getRequestDispatcher(CARS_JSP)
                 .forward(request, response);
     }
 }

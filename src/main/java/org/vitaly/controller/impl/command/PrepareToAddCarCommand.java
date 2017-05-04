@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
+import static org.vitaly.util.constants.Pages.ADD_CAR_JSP;
 import static org.vitaly.util.constants.RequestAttributes.ATTR_MODEL_LIST;
 
 /**
@@ -26,7 +27,7 @@ public class PrepareToAddCarCommand implements Command {
         request.setAttribute(ATTR_MODEL_LIST, carModels);
 
         request.getServletContext()
-                .getRequestDispatcher("/pages/admin/add_car.jsp")
+                .getRequestDispatcher(ADD_CAR_JSP)
                 .forward(request, response);
     }
 }

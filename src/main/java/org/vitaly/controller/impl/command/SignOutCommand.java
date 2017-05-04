@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+import static org.vitaly.util.constants.Pages.INDEX_JSP;
+
 /**
  * Created by vitaly on 2017-04-28.
  */
@@ -21,6 +23,6 @@ public class SignOutCommand implements Command {
             session.invalidate();
         }
 
-        response.sendRedirect(request.getServletContext().getContextPath() + "/index.jsp");
+        response.sendRedirect(request.getContextPath() + INDEX_JSP);
     }
 }

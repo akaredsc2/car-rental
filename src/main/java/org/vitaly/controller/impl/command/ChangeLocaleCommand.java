@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Properties;
 
+import static org.vitaly.util.constants.Pages.INDEX_JSP;
 import static org.vitaly.util.constants.RequestParameters.PARAMETERS;
 import static org.vitaly.util.constants.RequestParameters.PARAM_LOCALE;
 import static org.vitaly.util.constants.SessionAttributes.SESSION_LOCALE;
@@ -32,6 +33,6 @@ public class ChangeLocaleCommand implements Command {
 
         // TODO: 29.04.17 consider authenticated user
         // TODO: 29.04.17 consider redirecting to page where from the request came
-        response.sendRedirect(request.getContextPath() + "/index.jsp");
+        response.sendRedirect(request.getContextPath() + INDEX_JSP);
     }
 }

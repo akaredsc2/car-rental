@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import static org.vitaly.util.constants.Pages.LOCATIONS_JSP;
 import static org.vitaly.util.constants.RequestAttributes.ATTR_LOCATION_LIST;
 import static org.vitaly.util.constants.RequestParameters.PARAMETERS;
 import static org.vitaly.util.constants.RequestParameters.PARAM_CAR_ID;
@@ -48,6 +49,8 @@ public class GetLocationsCommand implements Command {
 
         request.setAttribute(ATTR_LOCATION_LIST, locationDtoList);
 
-        request.getServletContext().getRequestDispatcher("/pages/catalog/locations.jsp").forward(request, response);
+        request.getServletContext()
+                .getRequestDispatcher(LOCATIONS_JSP)
+                .forward(request, response);
     }
 }

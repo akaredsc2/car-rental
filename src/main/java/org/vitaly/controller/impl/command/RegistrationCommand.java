@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static org.vitaly.util.constants.Pages.ERROR_JSP;
+import static org.vitaly.util.constants.Pages.INDEX_JSP;
 import static org.vitaly.util.constants.RequestAttributes.ATTR_ERROR;
 
 /**
@@ -30,10 +32,12 @@ public class RegistrationCommand implements Command {
                 .registerNewUser(userDto);
 
         if (isRegistered) {
-            response.sendRedirect(request.getContextPath() + "/index.jsp");
+            response.sendRedirect(request.getContextPath() + INDEX_JSP);
         } else {
             request.setAttribute(ATTR_ERROR, "registration failed");
-            request.getServletContext().getRequestDispatcher("/pages/error/error.jsp").forward(request, response);
+            request.getServletContext()
+                    .getRequestDispatcher(ERROR_JSP)
+                    .forward(request, response);
         }
     }
 }

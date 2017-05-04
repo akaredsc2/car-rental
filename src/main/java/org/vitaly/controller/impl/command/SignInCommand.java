@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static org.vitaly.util.constants.Pages.HOME_JSP;
 import static org.vitaly.util.constants.SessionAttributes.SESSION_USER;
 
 /**
@@ -28,6 +29,6 @@ public class SignInCommand implements Command {
                 .authenticate(userDto.getLogin(), userDto.getPassword())
                 .ifPresent(user -> request.getSession(true).setAttribute(SESSION_USER, user));
 
-        response.sendRedirect(request.getContextPath() + "/home.jsp");
+        response.sendRedirect(request.getContextPath() + HOME_JSP);
     }
 }

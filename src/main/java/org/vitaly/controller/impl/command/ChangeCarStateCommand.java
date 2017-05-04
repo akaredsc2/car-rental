@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Properties;
 
+import static org.vitaly.util.constants.Pages.ERROR_JSP;
+import static org.vitaly.util.constants.Pages.HOME_JSP;
 import static org.vitaly.util.constants.RequestAttributes.ATTR_ERROR;
 import static org.vitaly.util.constants.RequestParameters.PARAMETERS;
 
@@ -36,11 +38,11 @@ public class ChangeCarStateCommand implements Command {
                 .changeCarState(carDto, newCarStateString);
 
         if (isStateChanged) {
-            response.sendRedirect(request.getContextPath() + "/home.jsp");
+            response.sendRedirect(request.getContextPath() + HOME_JSP);
         } else {
             request.setAttribute(ATTR_ERROR, "Failed to change car state");
             request.getServletContext()
-                    .getRequestDispatcher("/pages/error/error.jsp")
+                    .getRequestDispatcher(ERROR_JSP)
                     .forward(request, response);
         }
     }

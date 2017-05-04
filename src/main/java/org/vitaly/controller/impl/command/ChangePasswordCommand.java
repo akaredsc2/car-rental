@@ -13,6 +13,8 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Properties;
 
+import static org.vitaly.util.constants.Pages.ERROR_JSP;
+import static org.vitaly.util.constants.Pages.HOME_JSP;
 import static org.vitaly.util.constants.RequestAttributes.ATTR_ERROR;
 import static org.vitaly.util.constants.RequestParameters.*;
 import static org.vitaly.util.constants.SessionAttributes.SESSION_USER;
@@ -43,11 +45,11 @@ public class ChangePasswordCommand implements Command {
             userDto.setPassword(newPassword);
             session.setAttribute(SESSION_USER, userDto);
 
-            response.sendRedirect(request.getContextPath() + "/home.jsp");
+            response.sendRedirect(request.getContextPath() + HOME_JSP);
         } else {
             request.setAttribute(ATTR_ERROR, "Failed to change password!");
             request.getServletContext()
-                    .getRequestDispatcher("/pages/error/error.jsp")
+                    .getRequestDispatcher(ERROR_JSP)
                     .forward(request, response);
         }
     }

@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 
+import static org.vitaly.util.constants.Pages.MOVE_CAR_JSP;
 import static org.vitaly.util.constants.RequestAttributes.ATTR_CAR_ID;
 import static org.vitaly.util.constants.RequestAttributes.ATTR_LOCATION_LIST;
 import static org.vitaly.util.constants.RequestParameters.PARAMETERS;
@@ -35,6 +36,8 @@ public class PrepareToMoveCarCommand implements Command {
         request.setAttribute(ATTR_CAR_ID, carId);
         request.setAttribute(ATTR_LOCATION_LIST, locationDtoList);
 
-        request.getServletContext().getRequestDispatcher("/pages/admin/move_car.jsp").forward(request, response);
+        request.getServletContext()
+                .getRequestDispatcher(MOVE_CAR_JSP)
+                .forward(request, response);
     }
 }

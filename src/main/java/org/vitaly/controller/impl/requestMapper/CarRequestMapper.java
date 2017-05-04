@@ -25,7 +25,7 @@ public class CarRequestMapper implements RequestMapper<CarDto> {
 
         String stateString = request.getParameter(properties.getProperty(PARAM_CAR_STATE));
         CarState state = CarStateEnum
-                .getStateByName(stateString)
+                .stateOf(stateString)
                 .orElse(null);
 
         // TODO: 01.05.17 consider replacing with car model request mapper

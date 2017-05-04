@@ -32,7 +32,7 @@ public class CommandFactory {
         commandMap.put(UrlHttpMethodPair.MOVE_CAR_POST, new MoveCarCommand());
         commandMap.put(UrlHttpMethodPair.CHANGE_CAR_STATE_POST, new ChangeCarStateCommand());
         commandMap.put(UrlHttpMethodPair.UPDATE_CAR_POST, new UpdateCarCommand());
-        commandMap.put(UrlHttpMethodPair.PROMOTE_GET, new PrepateToPromoteCommand());
+        commandMap.put(UrlHttpMethodPair.PROMOTE_GET, new PrepareToPromoteCommand());
         commandMap.put(UrlHttpMethodPair.PROMOTE_POST, new PromoteCommand());
 
         commandMap.put(UrlHttpMethodPair.LOCATIONS_GET, new GetLocationsCommand());

@@ -23,7 +23,7 @@ public enum CarStateEnum {
         return state;
     }
 
-    public static Optional<CarState> getStateByName(String stateName) {
+    public static Optional<CarState> stateOf(String stateName) {
         return Arrays.stream(CarStateEnum.values())
                 .map(CarStateEnum::toString)
                 .filter(string -> string.equalsIgnoreCase(stateName))
