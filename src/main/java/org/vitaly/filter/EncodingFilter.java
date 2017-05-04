@@ -8,13 +8,14 @@ import java.io.IOException;
  * Created by vitaly on 2017-04-27.
  */
 public class EncodingFilter implements Filter {
-    private static final String DEFAULT_ENCODING = "UTF-8";
+    static final String DEFAULT_ENCODING = "UTF-8";
+    static final String ENCODING_INIT_PARAM = "encoding";
 
     private String encoding;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        encoding = filterConfig.getInitParameter("encoding");
+        encoding = filterConfig.getInitParameter(ENCODING_INIT_PARAM);
 
         if (encoding == null) {
             encoding = DEFAULT_ENCODING;

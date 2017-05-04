@@ -60,7 +60,7 @@ public class UrlHttpMethodPair {
         return url;
     }
 
-    public HttpMethod getHttpMethod() {
+    HttpMethod getHttpMethod() {
         return httpMethod;
     }
 

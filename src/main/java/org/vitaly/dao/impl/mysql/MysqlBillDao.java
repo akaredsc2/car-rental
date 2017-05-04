@@ -88,9 +88,6 @@ public class MysqlBillDao implements BillDao {
 
     @Override
     public List<Bill> findBillsForReservation(long reservationId) {
-        HashMap<Integer, Object> parameterMap = new HashMap<>();
-        parameterMap.put(1, reservationId);
-
         Mapper<Bill> mapper = ResultSetMapperFactory.getInstance().getBillMapper();
         return DaoTemplate
                 .executeSelect(FIND_BILLS_FOR_RESERVATION_QUERY, mapper, Collections.singletonMap(1, reservationId));

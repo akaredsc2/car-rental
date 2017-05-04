@@ -19,8 +19,8 @@ import java.util.Properties;
  * Created by vitaly on 2017-03-25.
  */
 public class MysqlConnectionPool implements ConnectionPool {
-    public static final String CONNECTION_PROPERTIES = "db" + File.separator + "connection.properties";
-    public static final String TEST_CONNECTION_PROPERTIES = "db" + File.separator + "test_connection.properties";
+    private static final String CONNECTION_PROPERTIES = "db" + File.separator + "connection.properties";
+    private static final String TEST_CONNECTION_PROPERTIES = "db" + File.separator + "test_connection.properties";
 
     private static final String DB_URL = "db.url";
     private static final String DB_USER = "db.user";

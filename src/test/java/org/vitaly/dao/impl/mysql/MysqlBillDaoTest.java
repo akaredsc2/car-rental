@@ -5,7 +5,6 @@ import org.junit.*;
 import org.vitaly.dao.abstraction.*;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.exception.DaoException;
-import org.vitaly.dao.impl.mysql.connectionPool.MysqlConnectionPool;
 import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
 import org.vitaly.data.TestData;
 import org.vitaly.data.TestUtil;
