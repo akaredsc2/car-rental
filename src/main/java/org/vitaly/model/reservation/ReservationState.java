@@ -23,24 +23,4 @@ public abstract class ReservationState {
     boolean close(Reservation reservation) {
         return false;
     }
-
-    boolean canApprove() {
-        return false;
-    }
-
-    boolean canReject() {
-        return false;
-    }
-
-    boolean canCancel() {
-        return false;
-    }
-
-    boolean canActivate() {
-        return false;
-    }
-
-    boolean canClose() {
-        return false;
-    }
 }

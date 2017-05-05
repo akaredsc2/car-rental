@@ -65,6 +65,8 @@ public class MysqlConnectionPool implements ConnectionPool {
             basicDataSource.setUsername(user);
             basicDataSource.setPassword(pass);
             basicDataSource.setMaxTotal(maxTotal);
+
+            // TODO: 2017-05-05 pool ignores this for some reason
             basicDataSource.setDefaultAutoCommit(defaultAutoCommit);
             basicDataSource.setDefaultTransactionIsolation(defaultTransactionIsolation);
 
@@ -98,6 +100,7 @@ public class MysqlConnectionPool implements ConnectionPool {
     public PooledConnection getConnection() {
         try {
             Connection connection = basicDataSource.getConnection();
+            connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
             return new MysqlPooledConnection(connection);
         } catch (SQLException e) {
             String message = "Error while getting connection from pool.";

@@ -1,10 +1,14 @@
 package org.vitaly.service.impl;
 
+import org.vitaly.dao.abstraction.CarDao;
 import org.vitaly.dao.abstraction.ReservationDao;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
 import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
+import org.vitaly.model.car.Car;
+import org.vitaly.model.car.CarStateEnum;
 import org.vitaly.model.reservation.Reservation;
 import org.vitaly.model.reservation.ReservationState;
+import org.vitaly.model.reservation.ReservationStateEnum;
 import org.vitaly.service.abstraction.ReservationService;
 import org.vitaly.service.impl.dto.ReservationDto;
 import org.vitaly.service.impl.dto.UserDto;
@@ -12,8 +16,9 @@ import org.vitaly.service.impl.dtoMapper.DtoMapper;
 import org.vitaly.service.impl.factory.DtoMapperFactory;
 
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static org.vitaly.model.reservation.ReservationStateEnum.*;
 
 /**
  * Created by vitaly on 2017-04-10.
@@ -21,29 +26,37 @@ import java.util.stream.Collectors;
 public class ReservationServiceImpl implements ReservationService {
 
     @Override
-    public void createNewReservation(ReservationDto reservationDto) {
+    public boolean createNewReservation(ReservationDto reservationDto) {
         TransactionManager.startTransaction();
 
-        Reservation reservation = DtoMapperFactory.getInstance()
-                .getReservationDtoMapper()
-                .mapDtoToEntity(reservationDto);
+        long carId = reservationDto
+                .getCar()
+                .getId();
 
-        ReservationDao reservationDao = MysqlDaoFactory.getInstance().getReservationDao();
-        reservationDao.create(reservation);
+        CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
+        boolean carCanBeReserved = carDao
+                .findById(carId)
+                .filter(Car::reserve)
+                .isPresent();
 
-        TransactionManager.commit();
-    }
+        if (carCanBeReserved) {
+            carDao.changeCarState(carId, CarStateEnum.RESERVED.getState());
 
-    @Override
-    public List<ReservationDto> getAllMatchingReservations(Predicate<Reservation> predicate) {
-        DtoMapper<Reservation, ReservationDto> mapper = DtoMapperFactory.getInstance().getReservationDtoMapper();
+            Reservation reservation = DtoMapperFactory.getInstance()
+                    .getReservationDtoMapper()
+                    .mapDtoToEntity(reservationDto);
 
-        ReservationDao reservationDao = MysqlDaoFactory.getInstance().getReservationDao();
-        return reservationDao.getAll()
-                .stream()
-                .filter(predicate)
-                .map(mapper::mapEntityToDto)
-                .collect(Collectors.toList());
+            boolean isReservationCreated = MysqlDaoFactory.getInstance()
+                    .getReservationDao()
+                    .create(reservation)
+                    .isPresent();
+
+            TransactionManager.commit();
+            return isReservationCreated;
+        } else {
+            TransactionManager.rollback();
+            return false;
+        }
     }
 
     @Override
@@ -51,8 +64,9 @@ public class ReservationServiceImpl implements ReservationService {
         DtoMapper<Reservation, ReservationDto> mapper = DtoMapperFactory.getInstance().getReservationDtoMapper();
 
         long clientId = clientDto.getId();
-        ReservationDao reservationDao = MysqlDaoFactory.getInstance().getReservationDao();
-        return reservationDao.findReservationsByClientId(clientId)
+        return MysqlDaoFactory.getInstance()
+                .getReservationDao()
+                .findReservationsByClientId(clientId)
                 .stream()
                 .map(mapper::mapEntityToDto)
                 .collect(Collectors.toList());
@@ -63,8 +77,9 @@ public class ReservationServiceImpl implements ReservationService {
         DtoMapper<Reservation, ReservationDto> mapper = DtoMapperFactory.getInstance().getReservationDtoMapper();
 
         long clientId = adminDto.getId();
-        ReservationDao reservationDao = MysqlDaoFactory.getInstance().getReservationDao();
-        return reservationDao.findReservationsByAdminId(clientId)
+        return MysqlDaoFactory.getInstance()
+                .getReservationDao()
+                .findReservationsByAdminId(clientId)
                 .stream()
                 .map(mapper::mapEntityToDto)
                 .collect(Collectors.toList());
@@ -74,44 +89,81 @@ public class ReservationServiceImpl implements ReservationService {
     public List<ReservationDto> findReservationsWithoutAdmin() {
         DtoMapper<Reservation, ReservationDto> mapper = DtoMapperFactory.getInstance().getReservationDtoMapper();
 
-        ReservationDao reservationDao = MysqlDaoFactory.getInstance().getReservationDao();
-        return reservationDao.findReservationsWithoutAdmin()
+        return MysqlDaoFactory.getInstance()
+                .getReservationDao()
+                .findReservationsWithoutAdmin()
                 .stream()
                 .map(mapper::mapEntityToDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public void changeReservationState(ReservationDto reservationDto, ReservationState reservationState) {
+    public boolean changeReservationState(ReservationDto reservationDto, String reservationState) {
         TransactionManager.startTransaction();
 
+        // TODO: 2017-05-05 check if admin is assigned to this reservation
         long reservationId = reservationDto.getId();
-        ReservationDao reservationDao = MysqlDaoFactory.getInstance().getReservationDao();
-        reservationDao.changeReservationState(reservationId, reservationState);
 
-        TransactionManager.commit();
+        ReservationDao reservationDao = MysqlDaoFactory.getInstance()
+                .getReservationDao();
+        boolean canChangeState = reservationDao.findById(reservationId)
+                .filter(reservation -> checkIfAbleToChangeState(reservation, reservationState))
+                .isPresent();
+
+        if (canChangeState) {
+            ReservationState state = ReservationStateEnum.stateOf(reservationState)
+                    .orElse(ReservationStateEnum.NEW.getState());
+            boolean isStateChanged = reservationDao
+                    .changeReservationState(reservationId, state);
+
+            // TODO: 2017-05-05 rejected case
+            if (state == ReservationStateEnum.REJECTED.getState()) {
+                String rejectionReason = reservationDto.getRejectionReason();
+                reservationDao.addRejectionReason(reservationId, rejectionReason);
+            }
+
+            TransactionManager.commit();
+            return isStateChanged;
+        } else {
+
+            TransactionManager.rollback();
+            return false;
+        }
     }
 
     @Override
-    public void assignReservationToAdmin(ReservationDto reservationDto, UserDto adminDto) {
+    public boolean assignReservationToAdmin(ReservationDto reservationDto, UserDto adminDto) {
         TransactionManager.startTransaction();
 
+        // TODO: 2017-05-05 check reservation state and if claimed by other admin
         long reservationId = reservationDto.getId();
         long adminId = adminDto.getId();
-        ReservationDao reservationDao = MysqlDaoFactory.getInstance().getReservationDao();
-        reservationDao.addAdminToReservation(reservationId, adminId);
+
+        boolean isAdminAssigned = MysqlDaoFactory.getInstance()
+                .getReservationDao()
+                .addAdminToReservation(reservationId, adminId);
 
         TransactionManager.commit();
+
+        return isAdminAssigned;
     }
 
-    @Override
-    public void addRejectionReasonToReservation(ReservationDto reservationDto, String reason) {
-        TransactionManager.startTransaction();
-
-        long reservationId = reservationDto.getId();
-        ReservationDao reservationDao = MysqlDaoFactory.getInstance().getReservationDao();
-        reservationDao.addRejectionReason(reservationId, reason);
-
-        TransactionManager.startTransaction();
+    private boolean checkIfAbleToChangeState(Reservation reservation, String reservationState) {
+        if (reservationState.equalsIgnoreCase(APPROVED.getState().toString())) {
+            return reservation.approve();
+        }
+        if (reservationState.equalsIgnoreCase(REJECTED.getState().toString())) {
+            return reservation.reject();
+        }
+        if (reservationState.equalsIgnoreCase(CANCELED.getState().toString())) {
+            return reservation.cancel();
+        }
+        if (reservationState.equalsIgnoreCase(ACTIVE.getState().toString())) {
+            return reservation.activate();
+        }
+        if (reservationState.equalsIgnoreCase(CLOSED.getState().toString())) {
+            return reservation.close();
+        }
+        return false;
     }
 }

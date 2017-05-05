@@ -11,7 +11,9 @@
         <form method="get" action="locations">
             <input type="submit" value="<fmt:message key="catalog.href" bundle="${info}"/>">
         </form>
-        <a href="<c:url value="/reservations.jsp"/>"><fmt:message key="reservations.href" bundle="${info}"/></a>
+        <form method="get" action="reservations">
+            <input type="submit" value="<fmt:message key="reservations.href" bundle="${info}"/>">
+        </form>
         <a href="<c:url value="/notifications.jsp"/>"><fmt:message key="notifications.href" bundle="${info}"/></a>
         <a href="<c:url value="/personal.jsp"/>"><fmt:message key="personal.href" bundle="${info}"/></a>
     </nav>

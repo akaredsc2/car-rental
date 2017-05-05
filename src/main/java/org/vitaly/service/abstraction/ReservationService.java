@@ -1,20 +1,15 @@
 package org.vitaly.service.abstraction;
 
-import org.vitaly.model.reservation.Reservation;
-import org.vitaly.model.reservation.ReservationState;
 import org.vitaly.service.impl.dto.ReservationDto;
 import org.vitaly.service.impl.dto.UserDto;
 
 import java.util.List;
-import java.util.function.Predicate;
 
 /**
  * Created by vitaly on 2017-04-10.
  */
 public interface ReservationService {
-    void createNewReservation(ReservationDto reservationDto);
-
-    List<ReservationDto> getAllMatchingReservations(Predicate<Reservation> predicate);
+    boolean createNewReservation(ReservationDto reservationDto);
 
     List<ReservationDto> findReservationsOfClient(UserDto clientDto);
 
@@ -22,9 +17,7 @@ public interface ReservationService {
 
     List<ReservationDto> findReservationsWithoutAdmin();
 
-    void changeReservationState(ReservationDto reservationDto, ReservationState reservationState);
+    boolean changeReservationState(ReservationDto reservationDto, String reservationState);
 
-    void assignReservationToAdmin(ReservationDto reservationDto, UserDto adminDto);
-
-    void addRejectionReasonToReservation(ReservationDto reservationDto, String reason);
+    boolean assignReservationToAdmin(ReservationDto reservationDto, UserDto adminDto);
 }

@@ -17,21 +17,6 @@ public class NewStateTest {
             .setState(state)
             .build();
 
-    @Before
-    public void setUp() throws Exception {
-    }
-
-    @Test
-    public void newStateCanOnlyBecomeApprovedOrRejected() throws Exception {
-        boolean canChangeState = state.canApprove()
-                && !state.canCancel()
-                && state.canReject()
-                && !state.canActivate()
-                && !state.canClose();
-
-        assertTrue(canChangeState);
-    }
-
     @Test
     public void approveChangesReservationState() throws Exception {
         state.approve(reservation);

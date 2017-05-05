@@ -104,7 +104,6 @@ CREATE TABLE reservation (
   car_id             BIGINT          NOT NULL,
   pick_up_datetime   DATETIME        NOT NULL,
   drop_off_datetime  DATETIME        NOT NULL,
-  zone_offset        VARCHAR(10)     NOT NULL,
   reservation_status ENUM ('new',
                            'approved',
                            'rejected',

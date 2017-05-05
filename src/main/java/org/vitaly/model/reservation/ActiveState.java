@@ -14,11 +14,6 @@ public class ActiveState extends ReservationState {
     }
 
     @Override
-    boolean canClose() {
-        return true;
-    }
-
-    @Override
     public String toString() {
         return "active";
     }

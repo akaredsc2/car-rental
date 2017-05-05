@@ -20,16 +20,6 @@ public class ApprovedState extends ReservationState {
     }
 
     @Override
-    boolean canCancel() {
-        return true;
-    }
-
-    @Override
-    boolean canActivate() {
-        return true;
-    }
-
-    @Override
     public String toString() {
         return "approved";
     }

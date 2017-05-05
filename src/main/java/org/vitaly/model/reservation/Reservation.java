@@ -68,6 +68,26 @@ public class Reservation implements Entity {
         return rejectionReason;
     }
 
+    public boolean approve() {
+        return state.approve(this);
+    }
+
+    public boolean reject() {
+        return state.reject(this);
+    }
+
+    public boolean cancel() {
+        return state.cancel(this);
+    }
+
+    public boolean activate() {
+        return state.activate(this);
+    }
+
+    public boolean close() {
+        return state.close(this);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

@@ -28,8 +28,8 @@ public class MysqlReservationDao implements ReservationDao {
                     "WHERE reservation_id = ?";
     private static final String CREATE_QUERY =
             "INSERT INTO reservation(" +
-                    "client_id, car_id, pick_up_datetime, drop_off_datetime, zone_offset) " +
-                    "VALUES (?, ?, ?, ?, ?)";
+                    "client_id, car_id, pick_up_datetime, drop_off_datetime) " +
+                    "VALUES (?, ?, ?, ?)";
     private static final String GET_ALL_QUERY =
             "SELECT * " +
                     "FROM reservation";
@@ -92,7 +92,6 @@ public class MysqlReservationDao implements ReservationDao {
         parameterMap.put(2, reservation.getCar().getId());
         parameterMap.put(3, Timestamp.valueOf(reservation.getPickUpDatetime()));
         parameterMap.put(4, Timestamp.valueOf(reservation.getDropOffDatetime()));
-        parameterMap.put(5, ZoneOffset.UTC.toString());
 
         Long createdId = DaoTemplate.executeInsert(CREATE_QUERY, parameterMap);
         return Optional.ofNullable(createdId);

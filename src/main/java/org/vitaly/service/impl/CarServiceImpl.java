@@ -146,6 +146,7 @@ public class CarServiceImpl implements CarService {
                 .getCarDtoMapper()
                 .mapDtoToEntity(carDto);
 
+        // TODO: 2017-05-05 fetch from db, check and than change
         boolean isAbleToChangeState = checkIfAbleToChangeState(car, carState);
         if (isAbleToChangeState) {
             MysqlDaoFactory.getInstance()

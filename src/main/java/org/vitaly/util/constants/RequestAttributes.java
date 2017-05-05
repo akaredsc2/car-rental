@@ -12,4 +12,5 @@ public final class RequestAttributes {
     public static final String ATTR_MODEL_LIST = "attr_model_list";
     public static final String ATTR_CAR_LIST = "attr_car_list";
     public static final String ATTR_USER_LIST = "attr_user_list";
+    public static final String ATTR_RESERVATION_LIST = "attr_reservation_list";
 }

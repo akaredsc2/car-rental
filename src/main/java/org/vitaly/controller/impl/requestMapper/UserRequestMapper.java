@@ -6,8 +6,6 @@ import org.vitaly.util.PropertyUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Properties;
 
@@ -28,11 +26,7 @@ public class UserRequestMapper implements RequestMapper<UserDto> {
         String password = request.getParameter(properties.getProperty(PARAM_USER_PASSWORD));
         String fullName = request.getParameter(properties.getProperty(PARAM_USER_NAME));
 
-        String birthDateString = request.getParameter(properties.getProperty(PARAM_USER_BIRTHDAY));
-        LocalDate birthday =
-                (birthDateString == null) ?
-                        null :
-                        LocalDateTime.parse(birthDateString, DateTimeFormatter.ISO_DATE_TIME).toLocalDate();
+        LocalDate birthday = PropertyUtils.getLocalDateFromRequest(request, properties, PARAM_USER_BIRTHDAY);
 
         String passportNumber = request.getParameter(properties.getProperty(PARAM_USER_PASSPORT));
         String licenceNumber = request.getParameter(properties.getProperty(PARAM_USER_DRIVER));

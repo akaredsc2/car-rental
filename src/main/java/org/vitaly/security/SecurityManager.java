@@ -24,6 +24,7 @@ public class SecurityManager {
 
     private SecurityManager() {
         Set<UserRole> guest = Collections.singleton(UserRole.GUEST);
+        Set<UserRole> client = Collections.singleton(UserRole.CLIENT);
         Set<UserRole> admin = Collections.singleton(UserRole.ADMIN);
 
         Set<UserRole> clientAndAdmin = Collections.unmodifiableSet(
@@ -66,10 +67,14 @@ public class SecurityManager {
         permissionMap.put(UrlHttpMethodPair.UPDATE_CAR_POST, admin);
         permissionMap.put(UrlHttpMethodPair.PROMOTE_GET, admin);
         permissionMap.put(UrlHttpMethodPair.PROMOTE_POST, admin);
+        permissionMap.put(UrlHttpMethodPair.CREATE_RESERVATION_POST, client);
+        permissionMap.put(UrlHttpMethodPair.ASSIGN_POST, admin);
+        permissionMap.put(UrlHttpMethodPair.CHANGE_RESERVATION_STATE_POST, admin);
 
         permissionMap.put(UrlHttpMethodPair.LOCATIONS_GET, clientAndAdmin);
         permissionMap.put(UrlHttpMethodPair.MODELS_GET, clientAndAdmin);
         permissionMap.put(UrlHttpMethodPair.CARS_GET, clientAndAdmin);
+        permissionMap.put(UrlHttpMethodPair.RESERVATIONS_GET, clientAndAdmin);
 
         this.permissionMap = Collections.unmodifiableMap(permissionMap);
     }

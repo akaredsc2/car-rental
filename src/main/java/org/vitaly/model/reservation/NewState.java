@@ -20,16 +20,6 @@ public class NewState extends ReservationState {
     }
 
     @Override
-    boolean canApprove() {
-        return true;
-    }
-
-    @Override
-    boolean canReject() {
-        return true;
-    }
-
-    @Override
     public String toString() {
         return "new";
     }

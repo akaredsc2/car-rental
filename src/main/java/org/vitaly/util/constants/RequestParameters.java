@@ -37,9 +37,18 @@ public final class RequestParameters {
     public static final String PARAM_CAR_PRICE = "param.car.price";
     public static final String PARAM_CAR_STATE_NEW = "param.car.state.new";
 
+    public static final String PARAM_RESERVATION_ID = "param.reservation.id";
+    public static final String PARAM_RESERVATION_CAR = "param.reservation.car";
+    public static final String PARAM_RESERVATION_PICK = "param.reservation.pick";
+    public static final String PARAM_RESERVATION_DROP = "param.reservation.drop";
+    public static final String PARAM_RESERVATION_STATE = "param.reservation.state";
+    public static final String PARAM_RESERVATION_REASON = "param.reservation.reason";
+
     public static final String PARAM_PASS_OLD = "param.pass.old";
     public static final String PARAM_PASS_NEW = "param.pass.new";
     public static final String PARAM_PASS_REPEAT = "param.pass.repeat";
+
+    public static final String PARAM_UNASSIGNED = "param.unassigned";
 
     public static final String PARAM_LOCALE = "param.locale";
 }

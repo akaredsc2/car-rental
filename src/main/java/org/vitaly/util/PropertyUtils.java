@@ -43,12 +43,22 @@ public class PropertyUtils {
         return (idString == null) ? 0 : Integer.valueOf(idString);
     }
 
+    // TODO: 2017-05-05 refactor
     public static LocalDate getLocalDateFromRequest(HttpServletRequest request,
                                                     Properties properties, String parameterName) {
-        String birthDateString = request.getParameter(properties.getProperty(parameterName));
-        return (birthDateString == null) ?
+        String localDateString = request.getParameter(properties.getProperty(parameterName));
+        return (localDateString == null) ?
                 null :
-                LocalDateTime.parse(birthDateString, DateTimeFormatter.ISO_DATE_TIME).toLocalDate();
+                LocalDateTime.parse(localDateString, DateTimeFormatter.ISO_DATE_TIME).toLocalDate();
+    }
+
+    // TODO: 2017-05-05 refactor
+    public static LocalDateTime getLocalDateTimeFromRequest(HttpServletRequest request,
+                                                    Properties properties, String parameterName) {
+        String localDateTimeString = request.getParameter(properties.getProperty(parameterName));
+        return (localDateTimeString == null) ?
+                null :
+                LocalDateTime.parse(localDateTimeString, DateTimeFormatter.ISO_DATE_TIME);
     }
 
     public static BigDecimal getBigDecimalFromRequest(HttpServletRequest request,

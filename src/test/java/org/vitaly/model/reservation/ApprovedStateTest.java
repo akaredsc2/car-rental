@@ -17,17 +17,6 @@ public class ApprovedStateTest {
             .build();
 
     @Test
-    public void approvedStateCanOnlyBecomeCanceledOrActive() throws Exception {
-        boolean canChangeState = !state.canApprove()
-                && state.canCancel()
-                && !state.canReject()
-                && state.canActivate()
-                && !state.canClose();
-
-        assertTrue(canChangeState);
-    }
-
-    @Test
     public void approveDoesNotChangeReservationState() throws Exception {
         state.approve(reservation);
         ReservationState afterChange = reservation.getState();

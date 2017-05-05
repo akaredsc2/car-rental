@@ -2,6 +2,8 @@ package org.vitaly.controller.impl.factory;
 
 import org.vitaly.controller.abstraction.command.Command;
 import org.vitaly.controller.impl.command.*;
+import org.vitaly.controller.impl.command.reservation.CreateReservationCommand;
+import org.vitaly.controller.impl.command.reservation.GetReservationsCommand;
 import org.vitaly.security.UrlHttpMethodPair;
 
 import java.util.HashMap;
@@ -34,10 +36,14 @@ public class CommandFactory {
         commandMap.put(UrlHttpMethodPair.UPDATE_CAR_POST, new UpdateCarCommand());
         commandMap.put(UrlHttpMethodPair.PROMOTE_GET, new PrepareToPromoteCommand());
         commandMap.put(UrlHttpMethodPair.PROMOTE_POST, new PromoteCommand());
+        commandMap.put(UrlHttpMethodPair.CREATE_RESERVATION_POST, new CreateReservationCommand());
+        commandMap.put(UrlHttpMethodPair.ASSIGN_POST, new AssignAdminToReservationCommand());
+        commandMap.put(UrlHttpMethodPair.CHANGE_RESERVATION_STATE_POST, new ChangeReservationStateCommand());
 
         commandMap.put(UrlHttpMethodPair.LOCATIONS_GET, new GetLocationsCommand());
         commandMap.put(UrlHttpMethodPair.MODELS_GET, new GetModelsCommand());
         commandMap.put(UrlHttpMethodPair.CARS_GET, new GetCarsCommand());
+        commandMap.put(UrlHttpMethodPair.RESERVATIONS_GET, new GetReservationsCommand());
 
         WRONG_COMMAND = new WrongCommand();
     }
