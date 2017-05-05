@@ -35,6 +35,7 @@ public class GetLocationsCommand implements Command {
 
         List<LocationDto> locationDtoList;
         LocationService locationService = ServiceFactory.getInstance().getLocationService();
+
         if (parameterMap.containsKey(carIdParam)) {
             CarDto carDto = RequestMapperFactory.getInstance()
                     .getCarRequestMapper()

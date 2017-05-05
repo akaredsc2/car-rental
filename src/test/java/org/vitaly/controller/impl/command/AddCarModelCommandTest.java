@@ -7,8 +7,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.vitaly.controller.impl.factory.RequestMapperFactory;
 import org.vitaly.controller.impl.requestMapper.RequestMapper;
-import org.vitaly.service.abstraction.CarService;
-import org.vitaly.service.impl.dto.CarDto;
+import org.vitaly.service.abstraction.CarModelService;
+import org.vitaly.service.impl.dto.CarModelDto;
 import org.vitaly.service.impl.factory.ServiceFactory;
 
 import javax.servlet.RequestDispatcher;
@@ -24,19 +24,19 @@ import static org.vitaly.util.constants.Pages.HOME_JSP;
 import static org.vitaly.util.constants.RequestAttributes.ATTR_ERROR;
 
 /**
- * Created by vitaly on 2017-05-04.
+ * Created by vitaly on 2017-05-05.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class AddCarCommandTest {
+public class AddCarModelCommandTest {
 
     @Mock
-    private RequestMapper<CarDto> carRequestMapper;
+    private RequestMapper<CarModelDto> carModelRequestMapper;
 
     @InjectMocks
     private RequestMapperFactory requestMapperFactory = RequestMapperFactory.getInstance();
 
     @Mock
-    private CarService carService;
+    private CarModelService carModelService;
 
     @InjectMocks
     private ServiceFactory serviceFactory = ServiceFactory.getInstance();
@@ -53,28 +53,28 @@ public class AddCarCommandTest {
     @Mock
     private RequestDispatcher requestDispatcher;
 
-    private AddCarCommand addCarCommand = new AddCarCommand();
+    private AddCarModelCommand addCarModelCommand = new AddCarModelCommand();
 
     @Test
-    public void successfulAddingCarSendRedirect() throws Exception {
-        CarDto carDto = new CarDto();
+    public void successfulAddingCarModelSendRedirect() throws Exception {
+        CarModelDto carModelDto = new CarModelDto();
 
-        when(carRequestMapper.map(request)).thenReturn(carDto);
-        when(carService.addNewCar(any())).thenReturn(true);
-        addCarCommand.execute(request, response);
+        when(carModelRequestMapper.map(request)).thenReturn(carModelDto);
+        when(carModelService.addCarModel(any())).thenReturn(true);
+        addCarModelCommand.execute(request, response);
 
         verify(response).sendRedirect(contains(HOME_JSP));
     }
 
     @Test
-    public void failedAddingCarForwardsToErrorPage() throws Exception {
-        CarDto carDto = new CarDto();
+    public void failedAddingCarModelForwardsToErrorPage() throws Exception {
+        CarModelDto carModelDto = new CarModelDto();
 
-        when(carRequestMapper.map(request)).thenReturn(carDto);
-        when(carService.addNewCar(any())).thenReturn(false);
+        when(carModelRequestMapper.map(request)).thenReturn(carModelDto);
+        when(carModelService.addCarModel(any())).thenReturn(false);
         when(request.getServletContext()).thenReturn(servletContext);
         when(servletContext.getRequestDispatcher(contains(ERROR_JSP))).thenReturn(requestDispatcher);
-        addCarCommand.execute(request, response);
+        addCarModelCommand.execute(request, response);
 
         verify(request).setAttribute(eq(ATTR_ERROR), anyString());
         verify(requestDispatcher).forward(request, response);

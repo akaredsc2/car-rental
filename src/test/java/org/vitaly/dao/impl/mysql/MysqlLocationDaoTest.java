@@ -1,6 +1,8 @@
 package org.vitaly.dao.impl.mysql;
 
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.vitaly.dao.abstraction.CarDao;
 import org.vitaly.dao.abstraction.CarModelDao;
 import org.vitaly.dao.abstraction.LocationDao;

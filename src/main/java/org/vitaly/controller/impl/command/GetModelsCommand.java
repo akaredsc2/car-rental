@@ -34,9 +34,7 @@ public class GetModelsCommand implements Command {
         String carIdParam = properties.getProperty(PARAM_CAR_ID);
 
         List<CarModelDto> carModelDtoList;
-
-        CarModelService carModelService = ServiceFactory.getInstance()
-                .getCarModelService();
+        CarModelService carModelService = ServiceFactory.getInstance().getCarModelService();
 
         if (parameterMap.containsKey(carIdParam)) {
             CarDto carDto = RequestMapperFactory.getInstance()
@@ -47,8 +45,7 @@ public class GetModelsCommand implements Command {
                     .map(Collections::singletonList)
                     .orElse(Collections.emptyList());
         } else {
-            carModelDtoList = carModelService
-                    .getAll();
+            carModelDtoList = carModelService.getAll();
         }
 
         request.setAttribute(ATTR_MODEL_LIST, carModelDtoList);

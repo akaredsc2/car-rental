@@ -8,7 +8,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.vitaly.dao.abstraction.LocationDao;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
 import org.vitaly.service.abstraction.LocationService;
-import org.vitaly.service.impl.dto.CarModelDto;
 import org.vitaly.service.impl.dto.LocationDto;
 
 import java.util.Optional;

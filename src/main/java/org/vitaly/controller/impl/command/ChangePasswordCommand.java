@@ -1,7 +1,6 @@
 package org.vitaly.controller.impl.command;
 
 import org.vitaly.controller.abstraction.command.Command;
-import org.vitaly.controller.impl.factory.RequestMapperFactory;
 import org.vitaly.service.impl.dto.UserDto;
 import org.vitaly.service.impl.factory.ServiceFactory;
 import org.vitaly.util.PropertyUtils;

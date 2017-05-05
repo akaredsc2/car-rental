@@ -7,9 +7,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.vitaly.dao.abstraction.CarModelDao;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
-import org.vitaly.model.carModel.CarModel;
 import org.vitaly.service.abstraction.CarModelService;
-import org.vitaly.service.impl.dto.CarDto;
 import org.vitaly.service.impl.dto.CarModelDto;
 
 import java.util.Optional;
@@ -18,7 +16,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**

@@ -7,8 +7,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.vitaly.controller.impl.factory.RequestMapperFactory;
 import org.vitaly.controller.impl.requestMapper.RequestMapper;
-import org.vitaly.service.abstraction.CarService;
-import org.vitaly.service.impl.dto.CarDto;
+import org.vitaly.service.abstraction.LocationService;
+import org.vitaly.service.impl.dto.LocationDto;
 import org.vitaly.service.impl.factory.ServiceFactory;
 
 import javax.servlet.RequestDispatcher;
@@ -24,19 +24,19 @@ import static org.vitaly.util.constants.Pages.HOME_JSP;
 import static org.vitaly.util.constants.RequestAttributes.ATTR_ERROR;
 
 /**
- * Created by vitaly on 2017-05-04.
+ * Created by vitaly on 2017-05-05.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class AddCarCommandTest {
+public class AddLocationCommandTest {
 
     @Mock
-    private RequestMapper<CarDto> carRequestMapper;
+    private RequestMapper<LocationDto> locationRequestMapper;
 
     @InjectMocks
     private RequestMapperFactory requestMapperFactory = RequestMapperFactory.getInstance();
 
     @Mock
-    private CarService carService;
+    private LocationService locationService;
 
     @InjectMocks
     private ServiceFactory serviceFactory = ServiceFactory.getInstance();
@@ -53,28 +53,28 @@ public class AddCarCommandTest {
     @Mock
     private RequestDispatcher requestDispatcher;
 
-    private AddCarCommand addCarCommand = new AddCarCommand();
+    private AddLocationCommand addLocationCommand = new AddLocationCommand();
 
     @Test
-    public void successfulAddingCarSendRedirect() throws Exception {
-        CarDto carDto = new CarDto();
+    public void successfulAddingLocationSendRedirect() throws Exception {
+        LocationDto locationDto = new LocationDto();
 
-        when(carRequestMapper.map(request)).thenReturn(carDto);
-        when(carService.addNewCar(any())).thenReturn(true);
-        addCarCommand.execute(request, response);
+        when(locationRequestMapper.map(request)).thenReturn(locationDto);
+        when(locationService.addNewLocation(any())).thenReturn(true);
+        addLocationCommand.execute(request, response);
 
         verify(response).sendRedirect(contains(HOME_JSP));
     }
 
     @Test
-    public void failedAddingCarForwardsToErrorPage() throws Exception {
-        CarDto carDto = new CarDto();
+    public void failedAddingLocationForwardsToErrorPage() throws Exception {
+        LocationDto locationDto = new LocationDto();
 
-        when(carRequestMapper.map(request)).thenReturn(carDto);
-        when(carService.addNewCar(any())).thenReturn(false);
+        when(locationRequestMapper.map(request)).thenReturn(locationDto);
+        when(locationService.addNewLocation(any())).thenReturn(false);
         when(request.getServletContext()).thenReturn(servletContext);
         when(servletContext.getRequestDispatcher(contains(ERROR_JSP))).thenReturn(requestDispatcher);
-        addCarCommand.execute(request, response);
+        addLocationCommand.execute(request, response);
 
         verify(request).setAttribute(eq(ATTR_ERROR), anyString());
         verify(requestDispatcher).forward(request, response);

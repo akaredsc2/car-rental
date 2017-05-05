@@ -27,11 +27,9 @@ public class ChangeLocaleCommand implements Command {
         String locale = request.getParameter(localeParameter);
 
         // TODO: 29.04.17 validate
-
         HttpSession session = request.getSession(true);
         session.setAttribute(SESSION_LOCALE, locale);
 
-        // TODO: 29.04.17 consider authenticated user
         // TODO: 29.04.17 consider redirecting to page where from the request came
         response.sendRedirect(request.getContextPath() + INDEX_JSP);
     }

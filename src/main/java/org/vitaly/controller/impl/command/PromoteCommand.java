@@ -20,12 +20,11 @@ public class PromoteCommand implements Command {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        // TODO: 02.05.17 validate client has no reservations etc
         UserDto userDto = RequestMapperFactory.getInstance()
                 .getUserRequestMapper()
                 .map(request);
 
+        // TODO: 02.05.17 validate client has no reservations etc
         ServiceFactory.getInstance()
                 .getUserService()
                 .changeRole(userDto, UserRole.ADMIN);

@@ -28,13 +28,14 @@ public class GetCarsCommand implements Command {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        CarService carService = ServiceFactory.getInstance().getCarService();
         Map<String, String[]> parameterMap = request.getParameterMap();
         Properties properties = PropertyUtils.readProperties(PARAMETERS);
         String locationIdParam = properties.getProperty(PARAM_LOCATION_ID);
         String modelIdParam = properties.getProperty(PARAM_MODEL_ID);
 
         List<CarDto> carDtoList;
+        CarService carService = ServiceFactory.getInstance().getCarService();
+
         if (parameterMap.containsKey(locationIdParam)) {
             LocationDto locationDto = RequestMapperFactory.getInstance()
                     .getLocationRequestMapper()

@@ -24,10 +24,10 @@ import static org.vitaly.util.constants.Pages.HOME_JSP;
 import static org.vitaly.util.constants.RequestAttributes.ATTR_ERROR;
 
 /**
- * Created by vitaly on 2017-05-04.
+ * Created by vitaly on 2017-05-05.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class AddCarCommandTest {
+public class ChangeCarStateCommandTest {
 
     @Mock
     private RequestMapper<CarDto> carRequestMapper;
@@ -53,28 +53,32 @@ public class AddCarCommandTest {
     @Mock
     private RequestDispatcher requestDispatcher;
 
-    private AddCarCommand addCarCommand = new AddCarCommand();
+    private ChangeCarStateCommand changeCarStateCommand = new ChangeCarStateCommand();
 
     @Test
-    public void successfulAddingCarSendRedirect() throws Exception {
+    public void successfulChangingCarStateSendRedirect() throws Exception {
         CarDto carDto = new CarDto();
+        String correctCarState = "available";
 
+        when(request.getParameter(contains("state"))).thenReturn(correctCarState);
         when(carRequestMapper.map(request)).thenReturn(carDto);
-        when(carService.addNewCar(any())).thenReturn(true);
-        addCarCommand.execute(request, response);
+        when(carService.changeCarState(any(), eq(correctCarState))).thenReturn(true);
+        changeCarStateCommand.execute(request, response);
 
         verify(response).sendRedirect(contains(HOME_JSP));
     }
 
     @Test
-    public void failedAddingCarForwardsToErrorPage() throws Exception {
+    public void failedChangingCarStateForwardsToErrorPage() throws Exception {
         CarDto carDto = new CarDto();
+        String wrongCarState = "random";
 
+        when(request.getParameter(contains("state"))).thenReturn(wrongCarState);
         when(carRequestMapper.map(request)).thenReturn(carDto);
-        when(carService.addNewCar(any())).thenReturn(false);
+        when(carService.changeCarState(any(), eq(wrongCarState))).thenReturn(false);
         when(request.getServletContext()).thenReturn(servletContext);
         when(servletContext.getRequestDispatcher(contains(ERROR_JSP))).thenReturn(requestDispatcher);
-        addCarCommand.execute(request, response);
+        changeCarStateCommand.execute(request, response);
 
         verify(request).setAttribute(eq(ATTR_ERROR), anyString());
         verify(requestDispatcher).forward(request, response);

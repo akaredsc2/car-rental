@@ -24,10 +24,10 @@ import static org.vitaly.util.constants.Pages.HOME_JSP;
 import static org.vitaly.util.constants.RequestAttributes.ATTR_ERROR;
 
 /**
- * Created by vitaly on 2017-05-04.
+ * Created by vitaly on 2017-05-05.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class AddCarCommandTest {
+public class UpdateCarCommandTest {
 
     @Mock
     private RequestMapper<CarDto> carRequestMapper;
@@ -53,28 +53,28 @@ public class AddCarCommandTest {
     @Mock
     private RequestDispatcher requestDispatcher;
 
-    private AddCarCommand addCarCommand = new AddCarCommand();
+    private UpdateCarCommand updateCarCommand = new UpdateCarCommand();
 
     @Test
-    public void successfulAddingCarSendRedirect() throws Exception {
+    public void successfulUpdatingCarSendRedirect() throws Exception {
         CarDto carDto = new CarDto();
 
         when(carRequestMapper.map(request)).thenReturn(carDto);
-        when(carService.addNewCar(any())).thenReturn(true);
-        addCarCommand.execute(request, response);
+        when(carService.updateCar(any())).thenReturn(true);
+        updateCarCommand.execute(request, response);
 
         verify(response).sendRedirect(contains(HOME_JSP));
     }
 
     @Test
-    public void failedAddingCarForwardsToErrorPage() throws Exception {
+    public void failedUpdatingCarForwardsToErrorPage() throws Exception {
         CarDto carDto = new CarDto();
 
         when(carRequestMapper.map(request)).thenReturn(carDto);
-        when(carService.addNewCar(any())).thenReturn(false);
+        when(carService.updateCar(any())).thenReturn(false);
         when(request.getServletContext()).thenReturn(servletContext);
         when(servletContext.getRequestDispatcher(contains(ERROR_JSP))).thenReturn(requestDispatcher);
-        addCarCommand.execute(request, response);
+        updateCarCommand.execute(request, response);
 
         verify(request).setAttribute(eq(ATTR_ERROR), anyString());
         verify(requestDispatcher).forward(request, response);

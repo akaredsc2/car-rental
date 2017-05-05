@@ -32,6 +32,8 @@ public class MoveCarCommand implements Command {
                 .getLocationRequestMapper()
                 .map(request);
 
+        // TODO: 2017-05-05 validate
+
         boolean isCarMoved = ServiceFactory.getInstance()
                 .getCarService()
                 .moveCarToLocation(carDto, locationDto);

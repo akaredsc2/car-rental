@@ -27,12 +27,13 @@ public class PrepareToMoveCarCommand implements Command {
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Properties properties = PropertyUtils.readProperties(PARAMETERS);
 
-        // TODO: 01.05.17 replace with find car by id
+        // TODO: 01.05.17 replace with find car by id and exclude current location
         long carId = PropertyUtils.getLongFromRequest(request, properties, PARAM_CAR_ID);
         List<LocationDto> locationDtoList = ServiceFactory.getInstance()
                 .getLocationService()
                 .getAll();
 
+        // TODO: 2017-05-05 set car instead of car id
         request.setAttribute(ATTR_CAR_ID, carId);
         request.setAttribute(ATTR_LOCATION_LIST, locationDtoList);
 

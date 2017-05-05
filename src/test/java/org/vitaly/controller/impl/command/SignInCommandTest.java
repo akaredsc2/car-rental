@@ -7,14 +7,16 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.vitaly.controller.impl.factory.RequestMapperFactory;
 import org.vitaly.controller.impl.requestMapper.RequestMapper;
-import org.vitaly.service.abstraction.CarService;
-import org.vitaly.service.impl.dto.CarDto;
+import org.vitaly.service.abstraction.UserService;
+import org.vitaly.service.impl.dto.UserDto;
 import org.vitaly.service.impl.factory.ServiceFactory;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.util.Optional;
 
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
@@ -22,27 +24,31 @@ import static org.mockito.Mockito.when;
 import static org.vitaly.util.constants.Pages.ERROR_JSP;
 import static org.vitaly.util.constants.Pages.HOME_JSP;
 import static org.vitaly.util.constants.RequestAttributes.ATTR_ERROR;
+import static org.vitaly.util.constants.SessionAttributes.SESSION_USER;
 
 /**
- * Created by vitaly on 2017-05-04.
+ * Created by vitaly on 2017-05-05.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class AddCarCommandTest {
+public class SignInCommandTest {
 
     @Mock
-    private RequestMapper<CarDto> carRequestMapper;
+    private RequestMapper<UserDto> userRequestMapper;
 
     @InjectMocks
     private RequestMapperFactory requestMapperFactory = RequestMapperFactory.getInstance();
 
     @Mock
-    private CarService carService;
+    private UserService userService;
 
     @InjectMocks
     private ServiceFactory serviceFactory = ServiceFactory.getInstance();
 
     @Mock
     private HttpServletRequest request;
+
+    @Mock
+    private HttpSession session;
 
     @Mock
     private HttpServletResponse response;
@@ -53,28 +59,31 @@ public class AddCarCommandTest {
     @Mock
     private RequestDispatcher requestDispatcher;
 
-    private AddCarCommand addCarCommand = new AddCarCommand();
+    private SignInCommand signInCommand = new SignInCommand();
 
     @Test
-    public void successfulAddingCarSendRedirect() throws Exception {
-        CarDto carDto = new CarDto();
+    public void successfulSignInPutsUserInSessionEndRedirectsHome() throws Exception {
+        UserDto userDto = new UserDto();
+        UserDto authenticatedUser = new UserDto();
 
-        when(carRequestMapper.map(request)).thenReturn(carDto);
-        when(carService.addNewCar(any())).thenReturn(true);
-        addCarCommand.execute(request, response);
+        when(userRequestMapper.map(request)).thenReturn(userDto);
+        when(userService.authenticate(anyString(), anyString())).thenReturn(Optional.of(authenticatedUser));
+        when(request.getSession(true)).thenReturn(session);
+        signInCommand.execute(request, response);
 
+        verify(session).setAttribute(eq(SESSION_USER), any());
         verify(response).sendRedirect(contains(HOME_JSP));
     }
 
     @Test
-    public void failedAddingCarForwardsToErrorPage() throws Exception {
-        CarDto carDto = new CarDto();
+    public void failedSignInForwardsToErrorPage() throws Exception {
+        UserDto userDto = new UserDto();
 
-        when(carRequestMapper.map(request)).thenReturn(carDto);
-        when(carService.addNewCar(any())).thenReturn(false);
+        when(userRequestMapper.map(request)).thenReturn(userDto);
+        when(userService.authenticate(anyString(), anyString())).thenReturn(Optional.empty());
         when(request.getServletContext()).thenReturn(servletContext);
-        when(servletContext.getRequestDispatcher(contains(ERROR_JSP))).thenReturn(requestDispatcher);
-        addCarCommand.execute(request, response);
+        when(servletContext.getRequestDispatcher(eq(ERROR_JSP))).thenReturn(requestDispatcher);
+        signInCommand.execute(request, response);
 
         verify(request).setAttribute(eq(ATTR_ERROR), anyString());
         verify(requestDispatcher).forward(request, response);
