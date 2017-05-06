@@ -1,9 +1,11 @@
-package org.vitaly.controller.impl.command;
+package org.vitaly.controller.impl.command.reservation;
 
 import org.vitaly.controller.abstraction.command.Command;
 import org.vitaly.controller.impl.factory.RequestMapperFactory;
 import org.vitaly.model.reservation.ReservationState;
+import org.vitaly.model.user.User;
 import org.vitaly.service.impl.dto.ReservationDto;
+import org.vitaly.service.impl.dto.UserDto;
 import org.vitaly.service.impl.factory.ServiceFactory;
 
 import javax.servlet.ServletException;
@@ -14,6 +16,7 @@ import java.io.IOException;
 import static org.vitaly.util.constants.Pages.ERROR_JSP;
 import static org.vitaly.util.constants.Pages.HOME_JSP;
 import static org.vitaly.util.constants.RequestAttributes.ATTR_ERROR;
+import static org.vitaly.util.constants.SessionAttributes.SESSION_USER;
 
 /**
  * Created by vitaly on 2017-05-05.
@@ -25,6 +28,12 @@ public class ChangeReservationStateCommand implements Command {
         ReservationDto reservationDto = RequestMapperFactory.getInstance()
                 .getReservationRequestMapper()
                 .map(request);
+
+        // TODO: 06.05.17 todo refactor
+        long adminId = ((UserDto) request.getSession().getAttribute(SESSION_USER)).getId();
+        UserDto adminDto = new UserDto();
+        adminDto.setId(adminId);
+        reservationDto.setAdmin(adminDto);
 
         // TODO: 2017-05-05 validate
 

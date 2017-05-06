@@ -2,6 +2,8 @@ package org.vitaly.controller.impl.factory;
 
 import org.vitaly.controller.abstraction.command.Command;
 import org.vitaly.controller.impl.command.*;
+import org.vitaly.controller.impl.command.reservation.AssignAdminToReservationCommand;
+import org.vitaly.controller.impl.command.reservation.ChangeReservationStateCommand;
 import org.vitaly.controller.impl.command.reservation.CreateReservationCommand;
 import org.vitaly.controller.impl.command.reservation.GetReservationsCommand;
 import org.vitaly.security.UrlHttpMethodPair;

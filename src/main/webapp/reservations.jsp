@@ -54,6 +54,7 @@
                 <input type="text" name="<fmt:message key="param.reservation.reason" bundle="${par}"/>" required>
             </label>
             <input type="hidden" name="<fmt:message key="param.reservation.id" bundle="${par}"/>" value="${res.id}">
+            <input type="hidden" name="<fmt:message key="param.reservation.car" bundle="${par}"/>" value="${res.car.id}">
             <input type="submit" value="<fmt:message key="reservations.change.submit" bundle="${info}"/>">
         </form>
     </c:if>

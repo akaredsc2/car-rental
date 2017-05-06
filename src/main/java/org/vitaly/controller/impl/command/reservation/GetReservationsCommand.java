@@ -35,19 +35,9 @@ public class GetReservationsCommand implements Command {
 
         List<ReservationDto> reservationDtoList;
         if (userDto.getRole() == UserRole.CLIENT) {
-            reservationDtoList = reservationService
-                    .findReservationsOfClient(userDto);
+            reservationDtoList = reservationService.findReservationsOfClient(userDto);
         } else if (userDto.getRole() == UserRole.ADMIN) {
-            Map<String, String[]> parameterMap = request.getParameterMap();
-            Properties properties = PropertyUtils.readProperties(PARAMETERS);
-            String unassignedParam = properties.getProperty(PARAM_UNASSIGNED);
-
-            if (parameterMap.containsKey(unassignedParam)
-                    && Boolean.parseBoolean(request.getParameter(unassignedParam))) {
-                reservationDtoList = reservationService.findReservationsWithoutAdmin();
-            } else {
-                reservationDtoList = reservationService.findReservationsAssignedToAdmin(userDto);
-            }
+            reservationDtoList = findAdminReservations(request, userDto, reservationService);
         } else {
             reservationDtoList = Collections.emptyList();
         }
@@ -57,5 +47,18 @@ public class GetReservationsCommand implements Command {
         request.getServletContext()
                 .getRequestDispatcher(RESERVATIONS_JSP)
                 .forward(request, response);
+    }
+
+    private List<ReservationDto> findAdminReservations(HttpServletRequest request, UserDto userDto, ReservationService reservationService) {
+        Map<String, String[]> parameterMap = request.getParameterMap();
+        Properties properties = PropertyUtils.readProperties(PARAMETERS);
+        String unassignedParam = properties.getProperty(PARAM_UNASSIGNED);
+
+        if (parameterMap.containsKey(unassignedParam)
+                && Boolean.parseBoolean(request.getParameter(unassignedParam))) {
+            return reservationService.findReservationsWithoutAdmin();
+        } else {
+            return reservationService.findReservationsAssignedToAdmin(userDto);
+        }
     }
 }

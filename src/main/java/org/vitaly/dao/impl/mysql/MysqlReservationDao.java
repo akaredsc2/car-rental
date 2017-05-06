@@ -10,11 +10,7 @@ import org.vitaly.model.reservation.Reservation;
 import org.vitaly.model.reservation.ReservationState;
 
 import java.sql.Timestamp;
-import java.time.ZoneOffset;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.vitaly.util.InputChecker.requireNotNull;
 
@@ -57,6 +53,14 @@ public class MysqlReservationDao implements ReservationDao {
             "SELECT * " +
                     "FROM reservation " +
                     "WHERE admin_id IS NULL";
+    private static final String IS_CAR_PART_OF_ACTIVE_RESERVATION_QUERY =
+            "SELECT COUNT(*) " +
+                    "FROM reservation " +
+                    "WHERE car_id = ? and reservation_status IN('new', 'approved', 'active')";
+    private static final String IS_ADMIN_ASSIGNED_TO_RESERVATION_QUERY =
+            "SELECT COUNT(*) " +
+                    "FROM reservation " +
+                    "WHERE reservation_id = ? AND admin_id = ?";
 
     private static final String RESERVATION_MUST_NOT_BE_NULL = "Reservation must not be null!";
     private static final String REJECTION_REASON_MUST_NOT_BE_NULL = "Rejection reason must not be null!";
@@ -153,5 +157,27 @@ public class MysqlReservationDao implements ReservationDao {
     public List<Reservation> findReservationsWithoutAdmin() {
         Mapper<Reservation> mapper = ResultSetMapperFactory.getInstance().getReservationMapper();
         return DaoTemplate.executeSelect(FIND_RESERVATIONS_WITHOUT_ADMIN_QUERY, mapper, Collections.emptyMap());
+    }
+
+    // TODO: 06.05.17 test
+    @Override
+    public boolean isCarPartOfActiveReservations(long carId) {
+        Integer reservationsInvolvingCarCount = DaoTemplate.executeSelectOne(
+                IS_CAR_PART_OF_ACTIVE_RESERVATION_QUERY,
+                resultSet -> resultSet.getInt(1), Collections.singletonMap(1, carId));
+        return !Objects.equals(reservationsInvolvingCarCount, 0);
+    }
+
+    // TODO: 06.05.17 test
+    @Override
+    public boolean isAdminAssignedToReservation(long adminId, long reservationId) {
+        HashMap<Integer, Object> parameterMap = new HashMap<>();
+        parameterMap.put(1, reservationId);
+        parameterMap.put(2, adminId);
+
+        Integer adminReservationPairCount = DaoTemplate.executeSelectOne(
+                IS_ADMIN_ASSIGNED_TO_RESERVATION_QUERY,
+                resultSet -> resultSet.getInt(1), parameterMap);
+        return Objects.equals(adminReservationPairCount, 1);
     }
 }

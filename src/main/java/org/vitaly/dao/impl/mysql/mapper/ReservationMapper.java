@@ -29,7 +29,6 @@ public class ReservationMapper implements Mapper<Reservation> {
 
         Car car = Car.createDummyCarWithId(resultSet.getLong(RESERVATION_CAR_ID));
 
-        // TODO: 2017-04-08 apply zone offset
         LocalDateTime pickUpDatetime = resultSet.getTimestamp(RESERVATION_PICK_UP_DATETIME).toLocalDateTime();
         LocalDateTime dropOffDatetime = resultSet.getTimestamp(RESERVATION_DROP_OFF_DATETIME).toLocalDateTime();
 

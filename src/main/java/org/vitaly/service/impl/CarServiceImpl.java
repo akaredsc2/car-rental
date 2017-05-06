@@ -4,6 +4,7 @@ import org.vitaly.dao.abstraction.CarDao;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
 import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
 import org.vitaly.model.car.Car;
+import org.vitaly.model.car.CarStateEnum;
 import org.vitaly.service.abstraction.CarService;
 import org.vitaly.service.impl.dto.CarDto;
 import org.vitaly.service.impl.dto.CarModelDto;
@@ -15,7 +16,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.vitaly.model.car.CarStateEnum.*;
+import static org.vitaly.model.car.CarStateEnum.AVAILABLE;
+import static org.vitaly.model.car.CarStateEnum.UNAVAILABLE;
 
 /**
  * Created by vitaly on 2017-04-10.
@@ -142,16 +144,23 @@ public class CarServiceImpl implements CarService {
     @Override
     public boolean changeCarState(CarDto carDto, String carState) {
         TransactionManager.startTransaction();
-        Car car = DtoMapperFactory.getInstance()
-                .getCarDtoMapper()
-                .mapDtoToEntity(carDto);
 
-        // TODO: 2017-05-05 fetch from db, check and than change
-        boolean isAbleToChangeState = checkIfAbleToChangeState(car, carState);
-        if (isAbleToChangeState) {
-            MysqlDaoFactory.getInstance()
-                    .getCarDao()
-                    .changeCarState(car.getId(), car.getState());
+        // TODO: 06.05.17 test
+        // TODO: 06.05.17 refactor
+        long carId = carDto.getId();
+        CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
+
+        boolean isCarPartOfActiveReservation = MysqlDaoFactory.getInstance()
+                .getReservationDao()
+                .isCarPartOfActiveReservations(carId);
+
+        boolean isAbleToChangeState = carDao
+                .findById(carId)
+                .filter(c -> checkIfAbleToChangeState(c, carState))
+                .isPresent();
+
+        if (!isCarPartOfActiveReservation && isAbleToChangeState) {
+            carDao.changeCarState(carId, CarStateEnum.stateOf(carState).orElseThrow(IllegalStateException::new));
 
             TransactionManager.commit();
             return true;
@@ -167,15 +176,6 @@ public class CarServiceImpl implements CarService {
         }
         if (carState.equalsIgnoreCase(AVAILABLE.getState().toString())) {
             return car.makeAvailable();
-        }
-        if (carState.equalsIgnoreCase(RESERVED.getState().toString())) {
-            return car.reserve();
-        }
-        if (carState.equalsIgnoreCase(SERVED.getState().toString())) {
-            return car.serve();
-        }
-        if (carState.equalsIgnoreCase(RETURNED.getState().toString())) {
-            return car.doReturn();
         }
         return false;
     }

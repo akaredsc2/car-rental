@@ -20,4 +20,8 @@ public interface ReservationDao extends AbstractDao<Reservation> {
     boolean addRejectionReason(long reservationId, String rejectionReason);
 
     List<Reservation> findReservationsWithoutAdmin();
+
+    boolean isCarPartOfActiveReservations(long carId);
+
+    boolean isAdminAssignedToReservation(long adminId, long carId);
 }

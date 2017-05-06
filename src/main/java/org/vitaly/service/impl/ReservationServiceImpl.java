@@ -16,6 +16,7 @@ import org.vitaly.service.impl.dtoMapper.DtoMapper;
 import org.vitaly.service.impl.factory.DtoMapperFactory;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.vitaly.model.reservation.ReservationStateEnum.*;
@@ -33,21 +34,27 @@ public class ReservationServiceImpl implements ReservationService {
                 .getCar()
                 .getId();
 
+        // TODO: 06.05.17 test
+        // TODO: 06.05.17 refactor
+        ReservationDao reservationDao = MysqlDaoFactory.getInstance().getReservationDao();
         CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
+
+        boolean isCarPartOfActiveReservations = reservationDao
+                .isCarPartOfActiveReservations(carId);
+
         boolean carCanBeReserved = carDao
                 .findById(carId)
                 .filter(Car::reserve)
                 .isPresent();
 
-        if (carCanBeReserved) {
+        if (!isCarPartOfActiveReservations && carCanBeReserved) {
             carDao.changeCarState(carId, CarStateEnum.RESERVED.getState());
 
             Reservation reservation = DtoMapperFactory.getInstance()
                     .getReservationDtoMapper()
                     .mapDtoToEntity(reservationDto);
 
-            boolean isReservationCreated = MysqlDaoFactory.getInstance()
-                    .getReservationDao()
+            boolean isReservationCreated = reservationDao
                     .create(reservation)
                     .isPresent();
 
@@ -101,26 +108,41 @@ public class ReservationServiceImpl implements ReservationService {
     public boolean changeReservationState(ReservationDto reservationDto, String reservationState) {
         TransactionManager.startTransaction();
 
-        // TODO: 2017-05-05 check if admin is assigned to this reservation
         long reservationId = reservationDto.getId();
+        long adminId = reservationDto.getAdmin().getId();
 
         ReservationDao reservationDao = MysqlDaoFactory.getInstance()
                 .getReservationDao();
+
+        // TODO: 06.05.17 test
+        boolean isAdminAssignedToReservation = reservationDao.isAdminAssignedToReservation(adminId, reservationId);
         boolean canChangeState = reservationDao.findById(reservationId)
                 .filter(reservation -> checkIfAbleToChangeState(reservation, reservationState))
                 .isPresent();
 
-        if (canChangeState) {
+        System.out.println(isAdminAssignedToReservation);
+        System.out.println(canChangeState);
+
+        // TODO: 06.05.17 test
+        // TODO: 06.05.17 refactor
+        if (isAdminAssignedToReservation && canChangeState) {
             ReservationState state = ReservationStateEnum.stateOf(reservationState)
                     .orElse(ReservationStateEnum.NEW.getState());
             boolean isStateChanged = reservationDao
                     .changeReservationState(reservationId, state);
 
-            // TODO: 2017-05-05 rejected case
             if (state == ReservationStateEnum.REJECTED.getState()) {
                 String rejectionReason = reservationDto.getRejectionReason();
                 reservationDao.addRejectionReason(reservationId, rejectionReason);
+
+                long carId = reservationDto.getCar().getId();
+                MysqlDaoFactory.getInstance()
+                        .getCarDao()
+                        .changeCarState(carId, CarStateEnum.AVAILABLE.getState());
             }
+//            else if (state == ReservationStateEnum.APPROVED.getState()){
+                // TODO: 06.05.17 generate bill
+//            }
 
             TransactionManager.commit();
             return isStateChanged;
@@ -135,17 +157,25 @@ public class ReservationServiceImpl implements ReservationService {
     public boolean assignReservationToAdmin(ReservationDto reservationDto, UserDto adminDto) {
         TransactionManager.startTransaction();
 
-        // TODO: 2017-05-05 check reservation state and if claimed by other admin
+        ReservationDao reservationDao = MysqlDaoFactory.getInstance().getReservationDao();
+
+        // TODO: 06.05.17 test
         long reservationId = reservationDto.getId();
-        long adminId = adminDto.getId();
+        boolean isNotClaimedByOtherAdmin = reservationDao
+                .findById(reservationId)
+                .filter(res -> res.getState() == ReservationStateEnum.NEW.getState() && Objects.isNull(res.getAdmin()))
+                .isPresent();
 
-        boolean isAdminAssigned = MysqlDaoFactory.getInstance()
-                .getReservationDao()
-                .addAdminToReservation(reservationId, adminId);
+        if (isNotClaimedByOtherAdmin) {
+            long adminId = adminDto.getId();
+            boolean isAdminAssigned = reservationDao.addAdminToReservation(reservationId, adminId);
 
-        TransactionManager.commit();
-
-        return isAdminAssigned;
+            TransactionManager.commit();
+            return isAdminAssigned;
+        } else {
+            TransactionManager.rollback();
+            return false;
+        }
     }
 
     private boolean checkIfAbleToChangeState(Reservation reservation, String reservationState) {

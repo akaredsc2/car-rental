@@ -27,6 +27,7 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class CarServiceImplTest {
+
     @Mock
     private CarDao carDao;
 
