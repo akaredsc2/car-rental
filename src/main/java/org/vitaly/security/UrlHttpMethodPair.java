@@ -48,6 +48,8 @@ public class UrlHttpMethodPair {
     public static final UrlHttpMethodPair ASSIGN_POST = new UrlHttpMethodPair("/assign", HttpMethod.POST);
     public static final UrlHttpMethodPair CHANGE_RESERVATION_STATE_POST =
             new UrlHttpMethodPair("/change_reservation_state", HttpMethod.POST);
+    public static final UrlHttpMethodPair CANCEL_RESERVATION_POST =
+            new UrlHttpMethodPair("/cancel_reservation", HttpMethod.POST);
 
     public static final UrlHttpMethodPair LOCATIONS_GET = new UrlHttpMethodPair("/locations", HttpMethod.GET);
     public static final UrlHttpMethodPair MODELS_GET = new UrlHttpMethodPair("/models", HttpMethod.GET);

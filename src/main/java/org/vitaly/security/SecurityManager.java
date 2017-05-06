@@ -70,6 +70,7 @@ public class SecurityManager {
         permissionMap.put(UrlHttpMethodPair.CREATE_RESERVATION_POST, client);
         permissionMap.put(UrlHttpMethodPair.ASSIGN_POST, admin);
         permissionMap.put(UrlHttpMethodPair.CHANGE_RESERVATION_STATE_POST, admin);
+        permissionMap.put(UrlHttpMethodPair.CANCEL_RESERVATION_POST, client);
 
         permissionMap.put(UrlHttpMethodPair.LOCATIONS_GET, clientAndAdmin);
         permissionMap.put(UrlHttpMethodPair.MODELS_GET, clientAndAdmin);

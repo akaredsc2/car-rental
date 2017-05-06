@@ -19,5 +19,7 @@ public interface ReservationService {
 
     boolean changeReservationState(ReservationDto reservationDto, String reservationState);
 
+    boolean cancelReservation(ReservationDto reservationDto);
+
     boolean assignReservationToAdmin(ReservationDto reservationDto, UserDto adminDto);
 }

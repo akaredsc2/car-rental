@@ -81,11 +81,15 @@
                 <label>
                     <fmt:message key="car.change.title" bundle="${info}"/>
                     <select name="<fmt:message key="param.car.state.new" bundle="${par}"/>">
-                        <option value="unavailable"><fmt:message key="car.change.unavailable" bundle="${info}"/></option>
-                        <option value="available"><fmt:message key="car.change.available" bundle="${info}"/></option>
-                        <%--<option value="reserved"><fmt:message key="car.change.reserved" bundle="${info}"/></option>
-                        <option value="served"><fmt:message key="car.change.served" bundle="${info}"/></option>
-                        <option value="returned"><fmt:message key="car.change.returned" bundle="${info}"/></option>--%>
+                        <c:if test="${car.state=='available'}">
+                            <option value="unavailable"><fmt:message key="car.change.unavailable" bundle="${info}"/></option>
+                        </c:if>
+                        <c:if test="${car.state=='unavailable'}">
+                            <option value="available"><fmt:message key="car.change.available" bundle="${info}"/></option>
+                        </c:if>
+                        <c:if test="${car.state=='served'}">
+                            <option value="returned"><fmt:message key="car.change.returned" bundle="${info}"/></option>
+                        </c:if>
                     </select>
                 </label>
                 <input type="submit" value="<fmt:message key="car.change.submit" bundle="${info}"/>">

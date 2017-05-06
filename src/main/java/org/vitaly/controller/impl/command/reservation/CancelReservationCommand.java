@@ -2,8 +2,6 @@ package org.vitaly.controller.impl.command.reservation;
 
 import org.vitaly.controller.abstraction.command.Command;
 import org.vitaly.controller.impl.factory.RequestMapperFactory;
-import org.vitaly.model.reservation.ReservationState;
-import org.vitaly.model.user.User;
 import org.vitaly.service.impl.dto.ReservationDto;
 import org.vitaly.service.impl.dto.UserDto;
 import org.vitaly.service.impl.factory.ServiceFactory;
@@ -19,9 +17,9 @@ import static org.vitaly.util.constants.RequestAttributes.ATTR_ERROR;
 import static org.vitaly.util.constants.SessionAttributes.SESSION_USER;
 
 /**
- * Created by vitaly on 2017-05-05.
+ * Created by vitaly on 06.05.17.
  */
-public class ChangeReservationStateCommand implements Command {
+public class CancelReservationCommand implements Command {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -29,20 +27,17 @@ public class ChangeReservationStateCommand implements Command {
                 .getReservationRequestMapper()
                 .map(request);
 
-        UserDto adminDto = (UserDto) request.getSession().getAttribute(SESSION_USER);
-        reservationDto.setAdmin(adminDto);
+        UserDto clientDto = (UserDto) request.getSession().getAttribute(SESSION_USER);
+        reservationDto.setClient(clientDto);
 
-        // TODO: 2017-05-05 validate
-
-        ReservationState newState = reservationDto.getState();
         boolean isStateChanged = ServiceFactory.getInstance()
                 .getReservationService()
-                .changeReservationState(reservationDto, newState.toString());
+                .cancelReservation(reservationDto);
 
         if (isStateChanged) {
             response.sendRedirect(request.getContextPath() + HOME_JSP);
         } else {
-            request.setAttribute(ATTR_ERROR, "Failed to change reservation state");
+            request.setAttribute(ATTR_ERROR, "Failed to cancel reservation");
             request.getServletContext()
                     .getRequestDispatcher(ERROR_JSP)
                     .forward(request, response);
