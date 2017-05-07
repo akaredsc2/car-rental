@@ -48,13 +48,16 @@ public class ReservationServiceImplTest {
 
     @Test
     public void creatingReservationWithCarThatIsPartOfOtherActiveReservationReturnsFalse() throws Exception {
+        UserDto clientDto = new UserDto();
         CarDto carDto = new CarDto();
         ReservationDto reservationDto = new ReservationDto();
+        reservationDto.setClient(clientDto);
         reservationDto.setCar(carDto);
         Car car = new Car.Builder()
                 .setState(CarStateEnum.AVAILABLE.getState())
                 .build();
 
+        when(reservationDao.create(any())).thenReturn(Optional.of(10L));
         when(reservationDao.isCarPartOfActiveReservations(anyLong())).thenReturn(true);
         when(carDao.findById(anyLong())).thenReturn(Optional.of(car));
         boolean isReservationCreated = service.createNewReservation(reservationDto);
@@ -64,13 +67,16 @@ public class ReservationServiceImplTest {
 
     @Test
     public void creatingReservationWithCarThatCannotBeReservedReturnsFalse() throws Exception {
+        UserDto clientDto = new UserDto();
         CarDto carDto = new CarDto();
         ReservationDto reservationDto = new ReservationDto();
+        reservationDto.setClient(clientDto);
         reservationDto.setCar(carDto);
         Car car = new Car.Builder()
                 .setState(CarStateEnum.UNAVAILABLE.getState())
                 .build();
 
+        when(reservationDao.create(any())).thenReturn(Optional.of(10L));
         when(reservationDao.isCarPartOfActiveReservations(anyLong())).thenReturn(false);
         when(carDao.findById(anyLong())).thenReturn(Optional.of(car));
         boolean isReservationCreated = service.createNewReservation(reservationDto);
@@ -93,6 +99,7 @@ public class ReservationServiceImplTest {
         when(reservationDao.isCarPartOfActiveReservations(anyLong())).thenReturn(false);
         when(carDao.findById(anyLong())).thenReturn(Optional.of(car));
         when(reservationDao.create(any())).thenReturn(Optional.of(1L));
+        when(carDao.changeCarState(anyLong(), eq(CarStateEnum.RESERVED.getState()))).thenReturn(true);
         boolean isReservationCreated = service.createNewReservation(reservationDto);
 
         verify(carDao).changeCarState(anyLong(), eq(CarStateEnum.RESERVED.getState()));
@@ -101,20 +108,25 @@ public class ReservationServiceImplTest {
 
     @Test
     public void cancelingReservationOfOtherClientReturnsFalse() throws Exception {
-        long clientId = 10;
         UserDto clientDto = new UserDto();
-        clientDto.setId(clientId);
+        clientDto.setId(10);
+        CarDto carDto = new CarDto();
         ReservationDto reservationDto = new ReservationDto();
         reservationDto.setClient(clientDto);
+        reservationDto.setCar(carDto);
         Reservation reservation = new Reservation.Builder()
-                .setClient(User.createDummyClientWithId(clientId * 2))
+                .setClient(User.createDummyClientWithId(15))
                 .setState(ReservationStateEnum.APPROVED.getState())
                 .build();
+        Car car = new Car.Builder()
+                .setState(CarStateEnum.RESERVED.getState())
+                .build();
 
+        when(carDao.findById(anyLong())).thenReturn(Optional.of(car));
+        when(carDao.changeCarState(anyLong(), eq(CarStateEnum.AVAILABLE.getState()))).thenReturn(true);
         when(reservationDao.findById(anyLong())).thenReturn(Optional.of(reservation));
         boolean isReservationCanceled = service.cancelReservation(reservationDto);
 
-        verify(carDao, never()).changeCarState(anyLong(), any());
         assertFalse(isReservationCanceled);
     }
 
@@ -122,18 +134,23 @@ public class ReservationServiceImplTest {
     public void cancelingReservationThatIsNotApprovedReturnsFalse() throws Exception {
         long clientId = 10;
         UserDto clientDto = new UserDto();
-        clientDto.setId(clientId);
+        CarDto carDto = new CarDto();
         ReservationDto reservationDto = new ReservationDto();
         reservationDto.setClient(clientDto);
+        reservationDto.setCar(carDto);
         Reservation reservation = new Reservation.Builder()
                 .setClient(User.createDummyClientWithId(clientId))
                 .setState(ReservationStateEnum.NEW.getState())
                 .build();
+        Car car = new Car.Builder()
+                .setState(CarStateEnum.RESERVED.getState())
+                .build();
 
+        when(carDao.findById(anyLong())).thenReturn(Optional.of(car));
+        when(carDao.changeCarState(anyLong(), eq(CarStateEnum.AVAILABLE.getState()))).thenReturn(true);
         when(reservationDao.findById(anyLong())).thenReturn(Optional.of(reservation));
         boolean isReservationCanceled = service.cancelReservation(reservationDto);
 
-        verify(carDao, never()).changeCarState(anyLong(), any());
         assertFalse(isReservationCanceled);
     }
 
@@ -150,7 +167,12 @@ public class ReservationServiceImplTest {
                 .setClient(User.createDummyClientWithId(clientId))
                 .setState(ReservationStateEnum.APPROVED.getState())
                 .build();
+        Car car = new Car.Builder()
+                .setState(CarStateEnum.RESERVED.getState())
+                .build();
 
+        when(carDao.findById(anyLong())).thenReturn(Optional.of(car));
+        when(carDao.changeCarState(anyLong(), eq(CarStateEnum.AVAILABLE.getState()))).thenReturn(true);
         when(reservationDao.findById(anyLong())).thenReturn(Optional.of(reservation));
         when(reservationDao.changeReservationState(anyLong(), eq(ReservationStateEnum.CANCELED.getState())))
                 .thenReturn(true);
@@ -158,28 +180,6 @@ public class ReservationServiceImplTest {
 
         verify(carDao).changeCarState(anyLong(), eq(CarStateEnum.AVAILABLE.getState()));
         assertTrue(isReservationCanceled);
-    }
-
-    @Test
-    public void ifReservationIsAbleToBeCanceledButNotCanceledThanCarStateDoesNotChange() throws Exception {
-        long clientId = 10;
-        UserDto clientDto = new UserDto();
-        clientDto.setId(clientId);
-        CarDto carDto = new CarDto();
-        ReservationDto reservationDto = new ReservationDto();
-        reservationDto.setClient(clientDto);
-        reservationDto.setCar(carDto);
-        Reservation reservation = new Reservation.Builder()
-                .setClient(User.createDummyClientWithId(clientId))
-                .setState(ReservationStateEnum.APPROVED.getState())
-                .build();
-
-        when(reservationDao.findById(anyLong())).thenReturn(Optional.of(reservation));
-        when(reservationDao.changeReservationState(anyLong(), eq(ReservationStateEnum.CANCELED.getState())))
-                .thenReturn(false);
-        service.cancelReservation(reservationDto);
-
-        verify(carDao, Mockito.never()).changeCarState(anyLong(), any());
     }
 
     @Test
@@ -193,7 +193,6 @@ public class ReservationServiceImplTest {
         when(reservationDao.findById(anyLong())).thenReturn(Optional.of(reservation));
         boolean isReservationAssigned = service.assignReservationToAdmin(reservationDto, adminDto);
 
-        verify(reservationDao, never()).addAdminToReservation(anyLong(), anyLong());
         assertFalse(isReservationAssigned);
     }
 
@@ -210,7 +209,6 @@ public class ReservationServiceImplTest {
         when(reservationDao.findById(anyLong())).thenReturn(Optional.of(reservation));
         boolean isReservationAssigned = service.assignReservationToAdmin(reservationDto, adminDto);
 
-        verify(reservationDao, never()).addAdminToReservation(anyLong(), anyLong());
         assertFalse(isReservationAssigned);
     }
 
