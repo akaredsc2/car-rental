@@ -4,6 +4,7 @@ import org.vitaly.dao.abstraction.CarDao;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
 import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
 import org.vitaly.model.car.Car;
+import org.vitaly.model.car.CarState;
 import org.vitaly.model.car.CarStateEnum;
 import org.vitaly.service.abstraction.CarService;
 import org.vitaly.service.impl.dto.CarDto;
@@ -144,8 +145,6 @@ public class CarServiceImpl implements CarService {
     public boolean changeCarState(CarDto carDto, String carState) {
         TransactionManager.startTransaction();
 
-        // TODO: 06.05.17 test
-        // TODO: 06.05.17 refactor
         long carId = carDto.getId();
         CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
 
@@ -155,18 +154,7 @@ public class CarServiceImpl implements CarService {
                 .isPresent();
 
         if (isAbleToChangeState) {
-            boolean isStateChanged;
-            if (!carState.equalsIgnoreCase(CarStateEnum.RETURNED.toString())) {
-                boolean isCarPartOfActiveReservation = MysqlDaoFactory.getInstance()
-                        .getReservationDao()
-                        .isCarPartOfActiveReservations(carId);
-
-                isStateChanged = !isCarPartOfActiveReservation
-                        && carDao.changeCarState(carId, CarStateEnum.valueOf(carState.toUpperCase()).getState());
-            } else {
-                isStateChanged =
-                        carDao.changeCarState(carId, CarStateEnum.valueOf(carState.toUpperCase()).getState());
-            }
+            boolean isStateChanged = doChangeState(carState, carId, carDao);
 
             TransactionManager.commit();
             return isStateChanged;
@@ -176,31 +164,22 @@ public class CarServiceImpl implements CarService {
         }
     }
 
-    /*
-        public boolean returnCar(CarDto carDto) {
-            TransactionManager.startTransaction();
+    private boolean doChangeState(String carState, long carId, CarDao carDao) {
+        boolean isStateChanged;
+        CarState state = CarStateEnum.valueOf(carState.toUpperCase()).getState();
 
-            // TODO: 06.05.17 test
-            // TODO: 06.05.17 refactor
-            long carId = carDto.getId();
-            CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
+        if (carState.equalsIgnoreCase(CarStateEnum.RETURNED.toString())) {
+            isStateChanged = carDao.changeCarState(carId, state);
+        } else {
+            boolean isCarPartOfActiveReservation = MysqlDaoFactory.getInstance()
+                    .getReservationDao()
+                    .isCarPartOfActiveReservations(carId);
 
-            boolean isAbleToReturn = carDao
-                    .findById(carId)
-                    .filter(Car::doReturn)
-                    .isPresent();
-
-            if (isAbleToReturn) {
-                boolean isStateChanged = carDao.changeCarState(carId, CarStateEnum.RETURNED.getState());
-
-                TransactionManager.commit();
-                return isStateChanged;
-            } else {
-                TransactionManager.rollback();
-                return false;
-            }
+            isStateChanged = !isCarPartOfActiveReservation && carDao.changeCarState(carId, state);
         }
-    */
+        return isStateChanged;
+    }
+
     private boolean checkIfAbleToChangeState(Car car, String carState) {
         if (carState.equalsIgnoreCase(UNAVAILABLE.getState().toString())) {
             return car.makeUnavailable();

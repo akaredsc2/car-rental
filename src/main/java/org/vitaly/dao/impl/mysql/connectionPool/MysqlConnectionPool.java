@@ -57,18 +57,12 @@ public class MysqlConnectionPool implements ConnectionPool {
             String user = properties.getProperty(DB_USER);
             String pass = properties.getProperty(DB_PASS);
             int maxTotal = Integer.parseInt(properties.getProperty(DB_MAX_TOTAL));
-            boolean defaultAutoCommit = Boolean.parseBoolean(properties.getProperty(DB_DEFAULT_AUTO_COMMIT));
-            int defaultTransactionIsolation = Integer.parseInt(properties.getProperty(DB_DEFAULT_TRANSACTION_ISOLATION));
 
             BasicDataSource basicDataSource = new BasicDataSource();
             basicDataSource.setUrl(url);
             basicDataSource.setUsername(user);
             basicDataSource.setPassword(pass);
             basicDataSource.setMaxTotal(maxTotal);
-
-            // TODO: 2017-05-05 pool ignores this for some reason
-            basicDataSource.setDefaultAutoCommit(defaultAutoCommit);
-            basicDataSource.setDefaultTransactionIsolation(defaultTransactionIsolation);
 
             return basicDataSource;
         } catch (UncheckedIOException e) {

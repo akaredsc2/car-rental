@@ -34,8 +34,6 @@ public class ReservationServiceImpl implements ReservationService {
                 .getCar()
                 .getId();
 
-        // TODO: 06.05.17 test
-        // TODO: 06.05.17 refactor
         ReservationDao reservationDao = MysqlDaoFactory.getInstance().getReservationDao();
         CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
 
@@ -48,15 +46,7 @@ public class ReservationServiceImpl implements ReservationService {
                 .isPresent();
 
         if (!isCarPartOfActiveReservations && carCanBeReserved) {
-            carDao.changeCarState(carId, CarStateEnum.RESERVED.getState());
-
-            Reservation reservation = DtoMapperFactory.getInstance()
-                    .getReservationDtoMapper()
-                    .mapDtoToEntity(reservationDto);
-
-            boolean isReservationCreated = reservationDao
-                    .create(reservation)
-                    .isPresent();
+            boolean isReservationCreated = doCreateReservation(reservationDto, carId, reservationDao, carDao);
 
             TransactionManager.commit();
             return isReservationCreated;
@@ -64,6 +54,23 @@ public class ReservationServiceImpl implements ReservationService {
             TransactionManager.rollback();
             return false;
         }
+    }
+
+    private boolean doCreateReservation(ReservationDto reservationDto, long carId,
+                                        ReservationDao reservationDao, CarDao carDao) {
+        Reservation reservation = DtoMapperFactory.getInstance()
+                .getReservationDtoMapper()
+                .mapDtoToEntity(reservationDto);
+
+        boolean isReservationCreated = reservationDao
+                .create(reservation)
+                .isPresent();
+
+        if (isReservationCreated) {
+            carDao.changeCarState(carId, CarStateEnum.RESERVED.getState());
+        }
+
+        return isReservationCreated;
     }
 
     @Override
@@ -114,51 +121,16 @@ public class ReservationServiceImpl implements ReservationService {
         ReservationDao reservationDao = MysqlDaoFactory.getInstance()
                 .getReservationDao();
 
-        // TODO: 06.05.17 test
         boolean isAdminAssignedToReservation = reservationDao.isAdminAssignedToReservation(adminId, reservationId);
         boolean canChangeState = reservationDao.findById(reservationId)
                 .filter(reservation -> checkIfAbleToChangeState(reservation, reservationState))
                 .isPresent();
 
         // TODO: 06.05.17 test
-        // TODO: 06.05.17 refactor
         if (isAdminAssignedToReservation && canChangeState) {
             ReservationState state = ReservationStateEnum.stateOf(reservationState)
                     .orElse(ReservationStateEnum.NEW.getState());
-            boolean isStateChanged = reservationDao
-                    .changeReservationState(reservationId, state);
-
-            if (state == ReservationStateEnum.REJECTED.getState()) {
-                String rejectionReason = reservationDto.getRejectionReason();
-                reservationDao.addRejectionReason(reservationId, rejectionReason);
-
-                long carId = reservationDto.getCar().getId();
-                MysqlDaoFactory.getInstance()
-                        .getCarDao()
-                        .changeCarState(carId, CarStateEnum.AVAILABLE.getState());
-            }
-//            else if (state == ReservationStateEnum.APPROVED.getState()){
-            // TODO: 06.05.17 generate bill
-//            }
-            else if (state == ReservationStateEnum.ACTIVE.getState()) {
-                long carId = reservationDto.getCar().getId();
-                MysqlDaoFactory.getInstance()
-                        .getCarDao()
-                        .changeCarState(carId, CarStateEnum.SERVED.getState());
-            } else if (state == ReservationStateEnum.CLOSED.getState()) {
-
-                // TODO: 06.05.17 check if car is returned and bills paid
-                long carId = reservationDto.getCar().getId();
-                CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
-
-                boolean isCarReturned = carDao.findById(carId)
-                        .filter(Car::makeUnavailable)
-                        .isPresent();
-
-                if (isCarReturned) {
-                    carDao.changeCarState(carId, CarStateEnum.UNAVAILABLE.getState());
-                }
-            }
+            boolean isStateChanged = doChangeState(reservationDto, reservationDao, state);
 
             TransactionManager.commit();
             return isStateChanged;
@@ -167,6 +139,48 @@ public class ReservationServiceImpl implements ReservationService {
             TransactionManager.rollback();
             return false;
         }
+    }
+
+    private boolean doChangeState(ReservationDto reservationDto,
+                                  ReservationDao reservationDao, ReservationState state) {
+        boolean isReservationStateChanged = reservationDao.changeReservationState(reservationDto.getId(), state);
+
+        CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
+
+        // TODO: 07.05.17 refactor
+        if (state == ReservationStateEnum.REJECTED.getState()) {
+            boolean isRejectionReasonAdded = reservationDao
+                    .addRejectionReason(reservationDto.getId(), reservationDto.getRejectionReason());
+            boolean isCarAvailable = carDao
+                    .changeCarState(reservationDto.getCar().getId(), CarStateEnum.AVAILABLE.getState());
+            return isReservationStateChanged
+                    && isRejectionReasonAdded
+                    && isCarAvailable;
+        }
+//            else if (state == ReservationStateEnum.APPROVED.getState()){
+        // TODO: 06.05.17 generate bill
+//            }
+        else if (state == ReservationStateEnum.ACTIVE.getState()) {
+
+            // TODO: 07.05.17 check if bill is paid
+            long carId = reservationDto.getCar().getId();
+            boolean isCarServed = carDao.changeCarState(carId, CarStateEnum.SERVED.getState());
+            return isReservationStateChanged && isCarServed;
+        } else if (state == ReservationStateEnum.CLOSED.getState()) {
+
+            // TODO: 06.05.17 check if bills are paid
+            long carId = reservationDto.getCar().getId();
+
+            boolean isCarReturned = carDao.findById(carId)
+                    .filter(Car::makeUnavailable)
+                    .map(Car::getId)
+                    .filter(id -> carDao.changeCarState(id, CarStateEnum.UNAVAILABLE.getState()))
+                    .isPresent();
+
+            return isReservationStateChanged && isCarReturned;
+        }
+
+        return false;
     }
 
     @Override
@@ -176,30 +190,38 @@ public class ReservationServiceImpl implements ReservationService {
         long reservationId = reservationDto.getId();
         long clientId = reservationDto.getClient().getId();
 
-        // TODO: 06.05.17 test
         ReservationDao reservationDao = MysqlDaoFactory.getInstance()
                 .getReservationDao();
 
         boolean isAbleToCancel = reservationDao.findById(reservationId)
-                .filter(reservation -> reservation.getId() == clientId)
+                .filter(reservation -> reservation.getClient().getId() == clientId)
                 .filter(Reservation::cancel)
                 .isPresent();
 
         if (isAbleToCancel) {
-            boolean isStateChanged = reservationDao
-                    .changeReservationState(reservationId, ReservationStateEnum.CANCELED.getState());
+            boolean isReservationCanceled = doCancelReservation(reservationDto, reservationId, reservationDao);
 
+            TransactionManager.commit();
+            return isReservationCanceled;
+        } else {
+            TransactionManager.rollback();
+            return false;
+        }
+    }
+
+    private boolean doCancelReservation(ReservationDto reservationDto, long reservationId, ReservationDao reservationDao) {
+        boolean isReservationCanceled = reservationDao
+                .changeReservationState(reservationId, ReservationStateEnum.CANCELED.getState());
+
+        if (isReservationCanceled) {
             long carId = reservationDto.getCar().getId();
             MysqlDaoFactory.getInstance()
                     .getCarDao()
                     .changeCarState(carId, CarStateEnum.AVAILABLE.getState());
 
-            TransactionManager.commit();
-            return isStateChanged;
-        } else {
-            TransactionManager.rollback();
-            return false;
         }
+
+        return isReservationCanceled;
     }
 
     @Override
@@ -208,7 +230,6 @@ public class ReservationServiceImpl implements ReservationService {
 
         ReservationDao reservationDao = MysqlDaoFactory.getInstance().getReservationDao();
 
-        // TODO: 06.05.17 test
         long reservationId = reservationDto.getId();
         boolean isNotClaimedByOtherAdmin = reservationDao
                 .findById(reservationId)

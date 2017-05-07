@@ -159,7 +159,6 @@ public class MysqlReservationDao implements ReservationDao {
         return DaoTemplate.executeSelect(FIND_RESERVATIONS_WITHOUT_ADMIN_QUERY, mapper, Collections.emptyMap());
     }
 
-    // TODO: 06.05.17 test
     @Override
     public boolean isCarPartOfActiveReservations(long carId) {
         Integer reservationsInvolvingCarCount = DaoTemplate.executeSelectOne(
@@ -168,7 +167,6 @@ public class MysqlReservationDao implements ReservationDao {
         return !Objects.equals(reservationsInvolvingCarCount, 0);
     }
 
-    // TODO: 06.05.17 test
     @Override
     public boolean isAdminAssignedToReservation(long adminId, long reservationId) {
         HashMap<Integer, Object> parameterMap = new HashMap<>();

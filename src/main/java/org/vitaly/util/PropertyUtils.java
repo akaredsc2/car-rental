@@ -34,13 +34,13 @@ public class PropertyUtils {
     public static long getLongFromRequest(HttpServletRequest request,
                                           Properties properties, String parameterName) {
         String idString = request.getParameter(properties.getProperty(parameterName));
-        return (idString == null) ? 0 : Long.valueOf(idString);
+        return (idString == null) ? -1 : Long.valueOf(idString);
     }
 
     public static int getIntFromRequest(HttpServletRequest request,
                                         Properties properties, String parameterName) {
         String idString = request.getParameter(properties.getProperty(parameterName));
-        return (idString == null) ? 0 : Integer.valueOf(idString);
+        return (idString == null) ? -1 : Integer.valueOf(idString);
     }
 
     // TODO: 2017-05-05 refactor
