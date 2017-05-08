@@ -24,7 +24,7 @@
         value="${sessionScope.session_user.driverLicenceNumber}"/><br>
 <fmt:message key="personal.role" bundle="${info}"/> : <c:out value="${sessionScope.session_user.role}"/><br>
 
-<form method="post" action="change_password">
+<form method="post" action="controller/change_password">
     <label>
         <fmt:message key="personal.change.old" bundle="${info}"/>
         <input type="password" name="<fmt:message key="param.pass.old" bundle="${par}"/>" required>
@@ -45,7 +45,7 @@
 </form>
 
 <c:if test="${sessionScope.session_user.role == 'ADMIN'}">
-    <form action="promote" method="get">
+    <form action="controller/promote" method="get">
         <input type="submit" value="<fmt:message key="personal.promote.submit" bundle="${info}"/>">
     </form>
 </c:if>

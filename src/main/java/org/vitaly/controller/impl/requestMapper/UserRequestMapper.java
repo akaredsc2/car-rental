@@ -44,7 +44,6 @@ public class UserRequestMapper implements RequestMapper<UserDto> {
         userDto.setDriverLicenceNumber(licenceNumber);
         userDto.setRole(userRole);
         userDto.setReservationDtoList(Collections.emptyList());
-        userDto.setNotificationDtoList(Collections.emptyList());
 
         return userDto;
     }

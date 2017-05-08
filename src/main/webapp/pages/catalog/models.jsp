@@ -26,7 +26,7 @@
     <c:out value="${model.doorCount}"/>
     <c:out value="${model.seatCount}"/>
     <c:out value="${model.horsePowerCount}"/><br>
-    <form method="get" action="cars">
+    <form method="get" action="controller/cars">
         <input type="hidden" name="<fmt:message key="param.model.id" bundle="${par}"/>" value="${model.id}">
         <input type="submit" value="<fmt:message key="models.cars.href" bundle="${info}"/>">
     </form>

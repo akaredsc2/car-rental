@@ -5,8 +5,6 @@ import org.vitaly.model.car.Car;
 import org.vitaly.model.car.CarStateEnum;
 import org.vitaly.model.carModel.CarModel;
 import org.vitaly.model.location.Location;
-import org.vitaly.model.notification.Notification;
-import org.vitaly.model.notification.NotificationStatus;
 import org.vitaly.model.user.User;
 import org.vitaly.model.user.UserRole;
 
@@ -27,7 +25,6 @@ public class TestData {
     private Map<String, Car> carMap;
     private Map<String, Location> locationMap;
     private Map<String, User> userMap;
-    private Map<String, Notification> notificationMap;
     private Map<String, Bill> billMap;
 
     private TestData() {
@@ -35,7 +32,6 @@ public class TestData {
         carMap = fillWithCars();
         locationMap = fillWithLocations();
         userMap = fillWithUsers();
-        notificationMap = fillWithNotifications();
         billMap = fillWithBills();
     }
 
@@ -177,32 +173,6 @@ public class TestData {
         return result;
     }
 
-    private Map<String, Notification> fillWithNotifications() {
-        Map<String, Notification> result = new HashMap<>();
-
-        Notification notification1 = new Notification.Builder()
-                .setId(9L)
-                .setCreationDateTime(LocalDateTime.now())
-                .setStatus(NotificationStatus.NEW)
-                .setHeader("header1")
-                .setContent("content1")
-                .build();
-
-        Notification notification2 = new Notification.Builder()
-                .setId(10L)
-                .setCreationDateTime(LocalDateTime.now())
-                .setStatus(NotificationStatus.NEW)
-                .setHeader("header2")
-                .setContent("content2")
-                .build();
-
-        result.put("notification1", notification1);
-        result.put("notification2", notification2);
-
-        return result;
-    }
-
-
     private Map<String, Bill> fillWithBills() {
         Map<String, Bill> result = new HashMap<>();
 
@@ -290,22 +260,6 @@ public class TestData {
                     .setPassportNumber(storedUser.getPassportNumber())
                     .setDriverLicenceNumber(storedUser.getDriverLicenceNumber())
                     .setRole(storedUser.getRole())
-                    .build();
-        }
-
-        return null;
-    }
-
-    public Notification getNotification(String name) {
-        if (notificationMap.containsKey(name)) {
-            Notification storedNotification = notificationMap.get(name);
-
-            return new Notification.Builder()
-                    .setId(storedNotification.getId())
-                    .setCreationDateTime(storedNotification.getCreationDateTime())
-                    .setStatus(storedNotification.getStatus())
-                    .setHeader(storedNotification.getHeader())
-                    .setContent(storedNotification.getContent())
                     .build();
         }
 

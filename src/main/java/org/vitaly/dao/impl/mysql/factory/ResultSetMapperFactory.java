@@ -5,7 +5,6 @@ import org.vitaly.model.bill.Bill;
 import org.vitaly.model.car.Car;
 import org.vitaly.model.carModel.CarModel;
 import org.vitaly.model.location.Location;
-import org.vitaly.model.notification.Notification;
 import org.vitaly.model.reservation.Reservation;
 import org.vitaly.model.user.User;
 
@@ -19,7 +18,6 @@ public class ResultSetMapperFactory {
     private Mapper<CarModel> carModelMapper = new CarModelMapper();
     private Mapper<Car> carMapper = new CarMapper();
     private Mapper<Location> locationMapper = new LocationMapper();
-    private Mapper<Notification> notificationMapper = new NotificationMapper();
     private Mapper<Reservation> reservationMapper = new ReservationMapper();
     private Mapper<User> userMapper = new UserMapper();
 
@@ -44,10 +42,6 @@ public class ResultSetMapperFactory {
 
     public Mapper<Location> getLocationMapper() {
         return locationMapper;
-    }
-
-    public Mapper<Notification> getNotificationMapper() {
-        return notificationMapper;
     }
 
     public Mapper<Reservation> getReservationMapper() {

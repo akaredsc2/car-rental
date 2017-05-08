@@ -4,10 +4,6 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
 
-  <listener>
-    <listener-class>org.vitaly.listener.ServletContextListenerImpl</listener-class>
-  </listener>
-
   <filter>
     <filter-name>EncodingFilter</filter-name>
     <filter-class>org.vitaly.filter.EncodingFilter</filter-class>
@@ -29,7 +25,7 @@
 
   <filter-mapping>
     <filter-name>UrlFilter</filter-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/controller/*</url-pattern>
   </filter-mapping>
 
   <filter>
@@ -39,7 +35,7 @@
 
   <filter-mapping>
     <filter-name>PermissionFilter</filter-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/controller/*</url-pattern>
   </filter-mapping>
 
   <servlet>
@@ -49,6 +45,6 @@
 
   <servlet-mapping>
     <servlet-name>CarRental</servlet-name>
-    <url-pattern>/</url-pattern>
+    <url-pattern>/controller/*</url-pattern>
   </servlet-mapping>
 </web-app>

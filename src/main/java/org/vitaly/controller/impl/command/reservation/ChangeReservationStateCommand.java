@@ -3,7 +3,6 @@ package org.vitaly.controller.impl.command.reservation;
 import org.vitaly.controller.abstraction.command.Command;
 import org.vitaly.controller.impl.factory.RequestMapperFactory;
 import org.vitaly.model.reservation.ReservationState;
-import org.vitaly.model.user.User;
 import org.vitaly.service.impl.dto.ReservationDto;
 import org.vitaly.service.impl.dto.UserDto;
 import org.vitaly.service.impl.factory.ServiceFactory;

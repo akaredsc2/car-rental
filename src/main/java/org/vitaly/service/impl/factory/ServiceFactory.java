@@ -13,7 +13,6 @@ public class ServiceFactory {
     private CarModelService carModelService = new CarModelServiceImpl();
     private CarService carService = new CarServiceImpl();
     private LocationService locationService = new LocationServiceImpl();
-    private NotificationService notificationService = new NotificationServiceImpl();
     private ReservationService reservationService = new ReservationServiceImpl();
     private UserService userService = new UserServiceImpl();
 
@@ -38,10 +37,6 @@ public class ServiceFactory {
 
     public LocationService getLocationService() {
         return locationService;
-    }
-
-    public NotificationService getNotificationService() {
-        return notificationService;
     }
 
     public ReservationService getReservationService() {

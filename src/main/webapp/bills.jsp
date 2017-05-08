@@ -24,20 +24,20 @@
     <fmt:message key="bill.confirmed" bundle="${info}"/> : <c:out value="${bill.confirmed}"/><br>
 
     <c:if test="${sessionScope.session_user.role=='CLIENT' and not bill.paid}">
-        <form method="post" action="pay">
+        <form method="post" action="controller/pay">
             <input type="hidden" name="<fmt:message key="param.bill.id" bundle="${par}"/>" value="${bill.id}">
             <input type="submit" value="<fmt:message key="bill.pay" bundle="${info}"/>">
         </form>
     </c:if>
 
     <c:if test="${sessionScope.session_user.role=='ADMIN' and bill.paid and not bill.confirmed}">
-        <form method="post" action="confirm">
+        <form method="post" action="controller/confirm">
             <input type="hidden" name="<fmt:message key="param.bill.id" bundle="${par}"/>" value="${bill.id}">
             <input type="submit" value="<fmt:message key="bill.confirm" bundle="${info}"/>">
         </form>
     </c:if>
 
-    <form method="get" action="reservations">
+    <form method="get" action="controller/reservations">
         <input type="submit" value="<fmt:message key="reservations.href" bundle="${info}"/>">
     </form>
 </c:forEach>

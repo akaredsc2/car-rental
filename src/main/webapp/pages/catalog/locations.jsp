@@ -26,7 +26,7 @@
     <c:out value="${location.city}"/>
     <c:out value="${location.street}"/>
     <c:out value="${location.building}"/><br>
-    <form method="get" action="cars">
+    <form method="get" action="controller/cars">
         <input type="hidden" name="<fmt:message key="param.location.id" bundle="${par}"/>" value="${location.id}">
         <input type="submit" value="<fmt:message key="locations.cars.href" bundle="${info}"/>">
     </form>

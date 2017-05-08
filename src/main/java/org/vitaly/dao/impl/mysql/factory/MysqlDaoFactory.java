@@ -13,7 +13,6 @@ public class MysqlDaoFactory {
     private CarDao carDao = new MysqlCarDao();
     private CarModelDao carModelDao = new MysqlCarModelDao();
     private LocationDao locationDao = new MysqlLocationDao();
-    private NotificationDao notificationDao = new MysqlNotificationDao();
     private ReservationDao reservationDao = new MysqlReservationDao();
     private UserDao userDao = new MysqlUserDao();
 
@@ -38,10 +37,6 @@ public class MysqlDaoFactory {
 
     public LocationDao getLocationDao() {
         return locationDao;
-    }
-
-    public NotificationDao getNotificationDao() {
-        return notificationDao;
     }
 
     public ReservationDao getReservationDao() {

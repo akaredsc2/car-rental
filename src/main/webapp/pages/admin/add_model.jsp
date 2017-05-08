@@ -14,7 +14,7 @@
 <body>
 <jsp:include page="/inc/header.jsp"/>
 <jsp:include page="/inc/nav.jsp"/>
-<form method="post" action="add_model">
+<form method="post" action="controller/add_model">
     <label>
         <fmt:message key="model.add.name" bundle="${info}"/>
         <input type="text" name="<fmt:message key="param.model.name" bundle="${par}"/>" required>

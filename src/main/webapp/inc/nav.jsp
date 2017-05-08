@@ -8,13 +8,12 @@
 <c:if test="${not empty sessionScope.session_user}">
     <nav>
         <a href="<c:url value="/home.jsp"/>"><fmt:message key="home.href" bundle="${info}"/></a>
-        <form method="get" action="locations">
+        <form method="get" action="controller/locations">
             <input type="submit" value="<fmt:message key="catalog.href" bundle="${info}"/>">
         </form>
-        <form method="get" action="reservations">
+        <form method="get" action="controller/reservations">
             <input type="submit" value="<fmt:message key="reservations.href" bundle="${info}"/>">
         </form>
-        <a href="<c:url value="/notifications.jsp"/>"><fmt:message key="notifications.href" bundle="${info}"/></a>
         <a href="<c:url value="/personal.jsp"/>"><fmt:message key="personal.href" bundle="${info}"/></a>
     </nav>
 </c:if>

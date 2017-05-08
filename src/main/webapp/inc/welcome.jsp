@@ -8,7 +8,7 @@
 <fmt:setBundle basename="info" var="info"/>
 
 <c:if test="${!empty sessionScope.session_user}">
-    <form method="post" action="sign_out">
+    <form method="post" action="controller/sign_out">
         <fmt:message key="welcome.greetings" bundle="${info}"/>
         <c:out value="${sessionScope.session_user.fullName}"/> !
 

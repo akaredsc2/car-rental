@@ -20,7 +20,6 @@ public class UserDto {
     private UserRole role;
 
     private List<ReservationDto> reservationDtoList;
-    private List<NotificationDto> notificationDtoList;
 
     public long getId() {
         return id;
@@ -86,21 +85,8 @@ public class UserDto {
         this.role = role;
     }
 
-    public List<ReservationDto> getReservationDtoList() {
-        return reservationDtoList;
-    }
-
     public UserDto setReservationDtoList(List<ReservationDto> reservationDtoList) {
         this.reservationDtoList = reservationDtoList;
-        return this;
-    }
-
-    public List<NotificationDto> getNotificationDtoList() {
-        return notificationDtoList;
-    }
-
-    public UserDto setNotificationDtoList(List<NotificationDto> notificationDtoList) {
-        this.notificationDtoList = notificationDtoList;
         return this;
     }
 
@@ -123,8 +109,7 @@ public class UserDto {
                 && Objects.equals(passportNumber, userDto.passportNumber)
                 && Objects.equals(driverLicenceNumber, userDto.driverLicenceNumber)
                 && role == userDto.role
-                && Objects.equals(reservationDtoList, userDto.reservationDtoList)
-                && Objects.equals(notificationDtoList, userDto.notificationDtoList);
+                && Objects.equals(reservationDtoList, userDto.reservationDtoList);
     }
 
     @Override
@@ -138,7 +123,6 @@ public class UserDto {
         result = 31 * result + (driverLicenceNumber != null ? driverLicenceNumber.hashCode() : 0);
         result = 31 * result + (role != null ? role.hashCode() : 0);
         result = 31 * result + (reservationDtoList != null ? reservationDtoList.hashCode() : 0);
-        result = 31 * result + (notificationDtoList != null ? notificationDtoList.hashCode() : 0);
         return result;
     }
 }

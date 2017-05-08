@@ -3,8 +3,6 @@ package org.vitaly.controller.impl.factory;
 import org.vitaly.controller.impl.requestMapper.*;
 import org.vitaly.service.impl.dto.*;
 
-import java.util.Optional;
-
 /**
  * Created by vitaly on 28.04.17.
  */

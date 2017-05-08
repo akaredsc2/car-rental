@@ -45,7 +45,6 @@ public class UserDtoMapperTest {
         expectedUserDto.setBirthDate(birthDate);
         expectedUserDto.setRole(role);
         expectedUserDto.setReservationDtoList(Collections.emptyList());
-        expectedUserDto.setNotificationDtoList(Collections.emptyList());
 
         expectedUser = new User.Builder()
                 .setId(id)

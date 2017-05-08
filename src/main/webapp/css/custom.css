@@ -1,0 +1,10 @@
+.custom-top{
+    margin-top: 10px;
+}
+
+.custom-center {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: auto;
+}

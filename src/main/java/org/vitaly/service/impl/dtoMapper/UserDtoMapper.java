@@ -37,7 +37,6 @@ public class UserDtoMapper implements DtoMapper<User, UserDto> {
         userDto.setDriverLicenceNumber(entity.getDriverLicenceNumber());
         userDto.setRole(entity.getRole());
         userDto.setReservationDtoList(Collections.emptyList());
-        userDto.setNotificationDtoList(Collections.emptyList());
 
         return userDto;
     }

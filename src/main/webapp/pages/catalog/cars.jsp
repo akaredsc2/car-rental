@@ -17,7 +17,7 @@
 <jsp:include page="/inc/catalog.jsp"/>
 
 <c:if test="${sessionScope.session_user.role=='ADMIN'}">
-    <form method="get" action="add_car">
+    <form method="get" action="controller/add_car">
         <input type="submit" value="<fmt:message key="car.add.href" bundle="${info}"/>">
     </form>
 </c:if>
@@ -27,17 +27,17 @@
     <c:out value="${car.registrationPlate}"/>
     <c:out value="${car.color}"/>
     <c:out value="${car.pricePerDay}"/><br>
-    <form method="get" action="locations">
+    <form method="get" action="controller/locations">
         <input type="hidden" name="<fmt:message key="param.car.id" bundle="${par}"/>" value="${car.id}">
         <input type="submit" value="<fmt:message key="cars.location.href" bundle="${info}"/>">
     </form>
-    <form method="get" action="models">
+    <form method="get" action="controller/models">
         <input type="hidden" name="<fmt:message key="param.car.id" bundle="${par}"/>" value="${car.id}">
         <input type="submit" value="<fmt:message key="cars.model.href" bundle="${info}"/>">
     </form>
     <c:choose>
         <c:when test="${sessionScope.session_user.role=='CLIENT'}">
-            <form method="post" action="create_reservation">
+            <form method="post" action="controller/create_reservation">
                 <label>
                     <fmt:message key="reservation.create.pick" bundle="${info}"/>
                     <input type="datetime-local" name="<fmt:message key="param.reservation.pick" bundle="${par}"/>">
@@ -54,7 +54,7 @@
         </c:when>
 
         <c:when test="${sessionScope.session_user.role=='ADMIN'}">
-            <form method="post" action="update_car">
+            <form method="post" action="controller/update_car">
                 <label>
                     <fmt:message key="car.update.color" bundle="${info}"/>
                     <input type="text" name="<fmt:message key="param.car.color" bundle="${par}"/>" required>
@@ -69,12 +69,12 @@
                 <input type="submit" value="<fmt:message key="car.update.submit" bundle="${info}"/>">
             </form>
 
-            <form method="get" action="move_car">
+            <form method="get" action="controller/move_car">
                 <input type="hidden" name="<fmt:message key="param.car.id" bundle="${par}"/>" value="${car.id}">
                 <input type="submit" value="<fmt:message key="car.move.href" bundle="${info}"/>">
             </form>
 
-            <form method="post" action="change_car_state">
+            <form method="post" action="controller/change_car_state">
                 <input type="hidden" name="<fmt:message key="param.car.id" bundle="${par}"/>" value="${car.id}">
                 <input type="hidden" name="<fmt:message key="param.car.state" bundle="${par}"/>"
                        value="<c:out value="${car.state}"/>">
