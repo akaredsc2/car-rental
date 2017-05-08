@@ -10,6 +10,8 @@
 <html>
 <head>
     <title><fmt:message key="car.add.title" bundle="${info}"/></title>
+    <link href="<c:url value='/css/bootstrap.min.css'/>" rel="stylesheet" type="text/css">
+    <link href="<c:url value='/css/custom.css'/>" rel="stylesheet" type="text/css">
 </head>
 <body>
 <jsp:include page="/inc/header.jsp"/>

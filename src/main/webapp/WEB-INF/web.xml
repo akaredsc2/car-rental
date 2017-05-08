@@ -25,7 +25,7 @@
 
   <filter-mapping>
     <filter-name>UrlFilter</filter-name>
-    <url-pattern>/controller/*</url-pattern>
+    <url-pattern>/*</url-pattern>
   </filter-mapping>
 
   <filter>
@@ -35,13 +35,23 @@
 
   <filter-mapping>
     <filter-name>PermissionFilter</filter-name>
-    <url-pattern>/controller/*</url-pattern>
+    <url-pattern>/*</url-pattern>
   </filter-mapping>
 
   <servlet>
     <servlet-name>CarRental</servlet-name>
     <servlet-class>org.vitaly.servlet.CarRentalServlet</servlet-class>
   </servlet>
+  
+  <error-page>
+    <exception-type>java.lang.Throwable</exception-type>
+    <location>/pages/error/error.jsp</location>
+  </error-page>
+
+  <error-page>
+    <error-code>404</error-code>
+    <location>/pages/error/404.jsp</location>
+  </error-page>
 
   <servlet-mapping>
     <servlet-name>CarRental</servlet-name>

@@ -10,8 +10,8 @@
 <html>
 <head>
     <title><fmt:message key="reg.title" bundle="${info}"/></title>
-    <link href="<c:url value='css/bootstrap.min.css'/>" rel="stylesheet" type="text/css">
-    <link href="<c:url value='css/custom.css'/>" rel="stylesheet" type="text/css">
+    <link href="<c:url value='/css/bootstrap.min.css'/>" rel="stylesheet" type="text/css">
+    <link href="<c:url value='/css/custom.css'/>" rel="stylesheet" type="text/css">
 </head>
 <body>
 <jsp:include page="/inc/header.jsp"/>
@@ -20,7 +20,6 @@
         <label for="login" class="col-sm-2 col-form-label text-right">
             <fmt:message key="reg.login" bundle="${info}"/>
         </label>
-
 
         <div class="col-sm-10">
             <input id="login" type="text" name="<fmt:message key="param.user.login" bundle="${par}"/>" required>
@@ -42,7 +41,6 @@
         <label for="name" class="col-sm-2 col-form-label text-right">
             <fmt:message key="reg.name" bundle="${info}"/>
         </label>
-
 
         <div class="col-sm-10">
             <input id="name" type="text" name="<fmt:message key="param.user.name" bundle="${par}"/>" required>
@@ -79,7 +77,6 @@
             <input id="driver" type="text" name="<fmt:message key="param.user.driver" bundle="${par}"/>" required>
         </div>
     </div>
-
 
     <div class="form-group row">
         <div class="col-sm-offset-2 col-sm-10">

@@ -8,6 +8,8 @@
 <html>
 <head>
     <title><fmt:message key="error.403.title" bundle="${info}"/></title>
+    <link href="<c:url value='/css/bootstrap.min.css'/>" rel="stylesheet" type="text/css">
+    <link href="<c:url value='/css/custom.css'/>" rel="stylesheet" type="text/css">
 </head>
 <body>
 <jsp:include page="/inc/header.jsp"/>
@@ -17,10 +19,10 @@
 
 <c:choose>
     <c:when test="${empty sessionScope.session_user}">
-        <a href="<c:url value="/index.jsp"/>"><fmt:message key="signIn.href" bundle="${info}"/></a>
+        <a class="col-sm-offset-2 col-sm-10" href="<c:url value="/index.jsp"/>"><fmt:message key="signIn.href" bundle="${info}"/></a>
     </c:when>
     <c:when test="${not empty sessionScope.session_user}">
-        <a href="<c:url value="/home.jsp"/>"><fmt:message key="home.href" bundle="${info}"/></a>
+        <a class="col-sm-offset-2 col-sm-10" href="<c:url value="/home.jsp"/>"><fmt:message key="home.href" bundle="${info}"/></a>
     </c:when>
 </c:choose>
 </body>

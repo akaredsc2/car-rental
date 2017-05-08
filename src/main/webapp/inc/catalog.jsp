@@ -3,14 +3,25 @@
 
 <fmt:setLocale value="${sessionScope.session_locale}"/>
 <fmt:setBundle basename="info" var="info"/>
-<form method="get" action="controller/locations">
-    <input type="submit" value="<fmt:message key="locations.href" bundle="${info}"/>">
-</form>
+<div class="row">
 
-<form method="get" action="controller/cars">
-    <input type="submit" value="<fmt:message key="cars.href" bundle="${info}"/>">
-</form>
+    <div class="col-xs-4">
+        <form method="get" action="controller/locations">
+            <input class="btn btn-default" type="submit" value="<fmt:message key="locations.href" bundle="${info}"/>">
+        </form>
+    </div>
 
-<form method="get" action="controller/models">
-    <input type="submit" value="<fmt:message key="models.href" bundle="${info}"/>">
-</form>
+    <div class="col-xs-4">
+        <form method="get" action="controller/cars">
+            <input class="btn btn-default" type="submit" value="<fmt:message key="cars.href" bundle="${info}"/>">
+        </form>
+    </div>
+
+
+    <div class="col-xs-4">
+        <form method="get" action="controller/models">
+            <input class="btn btn-default" type="submit" value="<fmt:message key="models.href" bundle="${info}"/>">
+        </form>
+    </div>
+
+</div>

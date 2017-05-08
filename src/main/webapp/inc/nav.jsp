@@ -6,15 +6,28 @@
 <fmt:setBundle basename="info" var="info"/>
 
 <c:if test="${not empty sessionScope.session_user}">
-    <nav>
-        <a href="<c:url value="/home.jsp"/>"><fmt:message key="home.href" bundle="${info}"/></a>
-        <form method="get" action="controller/locations">
-            <input type="submit" value="<fmt:message key="catalog.href" bundle="${info}"/>">
-        </form>
-        <form method="get" action="controller/reservations">
-            <input type="submit" value="<fmt:message key="reservations.href" bundle="${info}"/>">
-        </form>
-        <a href="<c:url value="/personal.jsp"/>"><fmt:message key="personal.href" bundle="${info}"/></a>
+    <nav class="btn-group btn-group-justified">
+        <div class="row">
+            <div class="col-xs-3">
+                <a class="btn btn-default" href="<c:url value="/home.jsp"/>"><fmt:message key="home.href" bundle="${info}"/></a>
+            </div>
+
+            <div class="col-xs-3">
+                <form method="get" action="controller/locations">
+                    <input class="btn btn-default" type="submit" value="<fmt:message key="catalog.href" bundle="${info}"/>">
+                </form>
+            </div>
+
+            <div class="col-xs-3">
+                <form method="get" action="controller/reservations">
+                    <input class="btn btn-default" type="submit" value="<fmt:message key="reservations.href" bundle="${info}"/>">
+                </form>
+            </div>
+
+            <div class="col-xs-3">
+                <a class="btn btn-default" href="<c:url value="/personal.jsp"/>"><fmt:message key="personal.href" bundle="${info}"/></a>
+            </div>
+        </div>
     </nav>
 </c:if>
 

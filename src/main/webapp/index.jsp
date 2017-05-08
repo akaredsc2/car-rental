@@ -14,8 +14,8 @@
 <html>
 <head>
     <title><fmt:message key="signIn.title" bundle="${info}"/></title>
-    <link href="<c:url value='css/bootstrap.min.css'/>" rel="stylesheet" type="text/css">
-    <link href="<c:url value='css/custom.css'/>" rel="stylesheet" type="text/css">
+    <link href="<c:url value='/css/bootstrap.min.css'/>" rel="stylesheet" type="text/css">
+    <link href="<c:url value='/css/custom.css'/>" rel="stylesheet" type="text/css">
 </head>
 <body>
 <jsp:include page="/inc/header.jsp"/>
@@ -24,7 +24,6 @@
         <label for="login" class="col-sm-2 col-form-label text-right">
             <fmt:message key="signIn.login" bundle="${info}"/>
         </label>
-
         <div class="col-sm-10">
             <input id="login" type="text" name="<fmt:message key="param.user.login" bundle="${par}"/>" required>
         </div>
@@ -34,7 +33,6 @@
         <label for="pass" class="col-sm-2 col-form-label text-right">
             <fmt:message key="signIn.password" bundle="${info}"/>
         </label>
-
         <div class="col-sm-10">
             <input id="pass" type="password" name="<fmt:message key="param.user.password" bundle="${par}"/>" required>
         </div>

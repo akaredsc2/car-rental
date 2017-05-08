@@ -10,6 +10,8 @@
 <html>
 <head>
     <title><fmt:message key="models.title" bundle="${info}"/></title>
+    <link href="<c:url value='/css/bootstrap.min.css'/>" rel="stylesheet" type="text/css">
+    <link href="<c:url value='/css/custom.css'/>" rel="stylesheet" type="text/css">
 </head>
 <body>
 <jsp:include page="/inc/header.jsp"/>
@@ -21,15 +23,57 @@
 </c:if>
 
 <c:forEach items="${requestScope.attr_model_list}" var="model">
-    <c:out value="${model.name}"/>
-    <c:out value="${model.photoUrl}"/>
-    <c:out value="${model.doorCount}"/>
-    <c:out value="${model.seatCount}"/>
-    <c:out value="${model.horsePowerCount}"/><br>
-    <form method="get" action="controller/cars">
-        <input type="hidden" name="<fmt:message key="param.model.id" bundle="${par}"/>" value="${model.id}">
-        <input type="submit" value="<fmt:message key="models.cars.href" bundle="${info}"/>">
-    </form>
+
+    <div class="row panel panel-default">
+        <c:out value="${model.photoUrl}"/>
+
+        <div class="form-group col-xs-4">
+            <div class="row">
+                    <div class="col-xs-4 text-right">
+                    <fmt:message key="model.add.name" bundle="${info}"/> :
+                </div>
+
+                <div class="col-xs-4">
+                    <c:out value="${model.name}"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4 text-right">
+                    <fmt:message key="model.add.door" bundle="${info}"/> :
+                </div>
+
+                <div class="col-xs-4">
+                    <c:out value="${model.doorCount}"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4 text-right">
+                    <fmt:message key="model.add.seat" bundle="${info}"/> :
+                </div>
+
+                <div class="col-xs-4">
+                    <c:out value="${model.seatCount}"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4 text-right">
+                    <fmt:message key="model.add.horse" bundle="${info}"/> :
+                </div>
+
+                <div class="col-xs-4">
+                    <c:out value="${model.horsePowerCount}"/>
+                </div>
+            </div>
+        </div>
+
+        <form method="get" action="controller/cars">
+            <input type="hidden" name="<fmt:message key="param.model.id" bundle="${par}"/>" value="${model.id}">
+
+            <div class="form-group col-xs-6">
+                <input class="btn btn-default" type="submit" value="<fmt:message key="models.cars.href" bundle="${info}"/>">
+            </div>
+        </form>
+    </div>
 </c:forEach>
 
 <a href="<c:url value="/home.jsp"/>"><fmt:message key="home.href" bundle="${info}"/></a>
