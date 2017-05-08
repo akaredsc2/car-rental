@@ -1,5 +1,6 @@
 package org.vitaly.service.impl;
 
+import org.vitaly.dao.abstraction.BillDao;
 import org.vitaly.dao.abstraction.CarDao;
 import org.vitaly.dao.abstraction.ReservationDao;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
@@ -15,9 +16,11 @@ import org.vitaly.service.impl.dto.ReservationDto;
 import org.vitaly.service.impl.dto.UserDto;
 import org.vitaly.service.impl.dtoMapper.DtoMapper;
 import org.vitaly.service.impl.factory.DtoMapperFactory;
+import org.vitaly.service.impl.factory.ServiceFactory;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -43,7 +46,7 @@ public class ReservationServiceImpl implements ReservationService {
                 && isReservationCreated
                 && isCarReserved;
 
-        return endTransaction(commitCondition);
+        return TransactionManager.endTransaction(commitCondition);
     }
 
     private boolean createReservation(ReservationDto reservationDto, ReservationDao reservationDao) {
@@ -111,7 +114,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         boolean commitCondition = isAdminAssignedToReservation && canChangeState && isStateChanged;
 
-        return endTransaction(commitCondition);
+        return TransactionManager.endTransaction(commitCondition);
     }
 
     private boolean doChangeState(ReservationDto reservationDto,
@@ -127,11 +130,25 @@ public class ReservationServiceImpl implements ReservationService {
             return isReservationStateChanged && isReservationRejected(reservationDto, reservationDao, carDao);
         } else if (state == ReservationStateEnum.APPROVED.getState()) {
 
-            // TODO: 07.05.17 generate bill
-            return isReservationStateChanged;
+            // TODO: 08.05.17 test
+            BillDao billDao = MysqlDaoFactory.getInstance().getBillDao();
+
+            boolean isBillAdded = ServiceFactory.getInstance()
+                    .getBillService()
+                    .generateServiceBillForReservation(reservationDto)
+                    .map(billDao::create)
+                    .map(Optional::get)
+                    .map(billId -> billDao.addBillToReservation(billId, reservationDto.getId()))
+                    .isPresent();
+
+            return isReservationStateChanged && isBillAdded;
         } else if (state == ReservationStateEnum.ACTIVE.getState()) {
+
+            // TODO: 08.05.17 test
             return isReservationStateChanged && isReservationActivated(reservationDto, carDao);
         } else if (state == ReservationStateEnum.CLOSED.getState()) {
+
+            // TODO: 08.05.17 test
             return isReservationStateChanged && isReservationClosed(reservationDto);
         }
 
@@ -139,22 +156,31 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     private boolean isReservationClosed(ReservationDto reservationDto) {
-        // TODO: 06.05.17 check if bills are paid
+        long reservationId = reservationDto.getId();
         long carId = reservationDto.getCar().getId();
 
-        boolean isCarReturned =
-                tryToChangeCarState(carId, CarStateEnum.UNAVAILABLE.getState(), Car::makeUnavailable);
+        boolean isCarReturned = tryToChangeCarState(carId, CarStateEnum.UNAVAILABLE.getState(), Car::makeUnavailable);
+        boolean areBillsPaid = areBillsPaid(reservationId);
 
-        return isCarReturned;
+        return isCarReturned && areBillsPaid;
     }
 
     private boolean isReservationActivated(ReservationDto reservationDto, CarDao carDao) {
-        // TODO: 07.05.17 check if bill is paid
+        long reservationId = reservationDto.getId();
         long carId = reservationDto.getCar().getId();
 
+        boolean isBillPaid = areBillsPaid(reservationId);
         boolean isCarServed = carDao.changeCarState(carId, CarStateEnum.SERVED.getState());
 
-        return isCarServed;
+        return isCarServed && isBillPaid;
+    }
+
+    private boolean areBillsPaid(long reservationId) {
+        return MysqlDaoFactory.getInstance()
+                .getBillDao()
+                .findBillsForReservation(reservationId)
+                .stream()
+                .allMatch(bill -> bill.isPaid() && bill.isConfirmed());
     }
 
     private boolean isReservationRejected(ReservationDto reservationDto, ReservationDao reservationDao, CarDao carDao) {
@@ -185,16 +211,7 @@ public class ReservationServiceImpl implements ReservationService {
                 && isReservationCanceled
                 && isCarMadeAvailable;
 
-        return endTransaction(commitCondition);
-    }
-
-    private boolean endTransaction(boolean commitCondition) {
-        if (commitCondition) {
-            TransactionManager.commit();
-        } else {
-            TransactionManager.rollback();
-        }
-        return commitCondition;
+        return TransactionManager.endTransaction(commitCondition);
     }
 
     private boolean tryToChangeCarState(long carId, CarState state, Predicate<Car> stateChangePredicate) {
@@ -232,7 +249,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         boolean commitCondition = isNotClaimedByOtherAdmin && isAdminAssigned;
 
-        return endTransaction(commitCondition);
+        return TransactionManager.endTransaction(commitCondition);
     }
 
     private boolean checkIfAbleToChangeState(Reservation reservation, String reservationState) {

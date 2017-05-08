@@ -20,6 +20,7 @@ public class BillMapper implements Mapper<Bill> {
         return new Bill.Builder()
                 .setId(resultSet.getLong(BILL_BILL_ID))
                 .setPaid(resultSet.getBoolean(BILL_IS_PAID))
+                .setConfirmed(resultSet.getBoolean(BILL_IS_CONFIRMED))
                 .setDescription(resultSet.getString(BILL_DESCRIPTION))
                 .setCashAmount(resultSet.getBigDecimal(BILL_CASH_AMOUNT))
                 .setCreationDateTime(creationDateTime)

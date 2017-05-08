@@ -12,6 +12,7 @@ import java.time.temporal.ChronoUnit;
 public class Bill implements Entity {
     private long id;
     private boolean isPaid;
+    private boolean isConfirmed;
     private String description;
     private BigDecimal cashAmount;
     private LocalDateTime creationDateTime;
@@ -19,6 +20,7 @@ public class Bill implements Entity {
     private Bill(Builder builder) {
         this.id = builder.id;
         this.isPaid = builder.isPaid;
+        this.isConfirmed = builder.isConfirmed;
         this.description = builder.description;
         this.cashAmount = builder.cashAmount;
         this.creationDateTime = builder.creationDateTime;
@@ -30,6 +32,10 @@ public class Bill implements Entity {
 
     public boolean isPaid() {
         return isPaid;
+    }
+
+    public boolean isConfirmed() {
+        return isConfirmed;
     }
 
     public String getDescription() {
@@ -82,6 +88,7 @@ public class Bill implements Entity {
     public static class Builder {
         private long id;
         private boolean isPaid;
+        private boolean isConfirmed;
         private String description;
         private BigDecimal cashAmount;
         private LocalDateTime creationDateTime;
@@ -93,6 +100,11 @@ public class Bill implements Entity {
 
         public Builder setPaid(boolean paid) {
             this.isPaid = paid;
+            return this;
+        }
+
+        public Builder setConfirmed(boolean confirmed) {
+            this.isConfirmed = confirmed;
             return this;
         }
 
@@ -114,5 +126,25 @@ public class Bill implements Entity {
         public Bill build() {
             return new Bill(this);
         }
+    }
+
+    public static Bill forService(BigDecimal cashAmount) {
+        return new Bill.Builder()
+                .setCashAmount(cashAmount)
+                .setDescription("service")
+                .setCreationDateTime(LocalDateTime.now())
+                .setPaid(false)
+                .setConfirmed(false)
+                .build();
+    }
+
+    public static Bill forDamage(BigDecimal cashAmount) {
+        return new Bill.Builder()
+                .setCashAmount(cashAmount)
+                .setDescription("damage")
+                .setCreationDateTime(LocalDateTime.now())
+                .setPaid(false)
+                .setConfirmed(false)
+                .build();
     }
 }

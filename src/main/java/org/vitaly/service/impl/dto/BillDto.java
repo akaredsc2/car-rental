@@ -10,6 +10,7 @@ import java.util.Objects;
 public class BillDto {
     private long id;
     private boolean isPaid;
+    private boolean isConfirmed;
     private String description;
     private BigDecimal cashAmount;
     private LocalDateTime creationDateTime;
@@ -28,6 +29,14 @@ public class BillDto {
 
     public void setPaid(boolean paid) {
         isPaid = paid;
+    }
+
+    public boolean isConfirmed() {
+        return isConfirmed;
+    }
+
+    public void setConfirmed(boolean confirmed) {
+        isConfirmed = confirmed;
     }
 
     public String getDescription() {
@@ -67,6 +76,7 @@ public class BillDto {
 
         return id == billDto.id
                 && isPaid == billDto.isPaid
+                && isConfirmed == billDto.isConfirmed
                 && (Objects.equals(description, billDto.description))
                 && (Objects.equals(cashAmount, billDto.cashAmount))
                 && (Objects.equals(creationDateTime, billDto.creationDateTime));
@@ -76,6 +86,7 @@ public class BillDto {
     public int hashCode() {
         int result = (int) (id ^ (id >>> 32));
         result = 31 * result + (isPaid ? 1 : 0);
+        result = 31 * result + (isConfirmed ? 1 : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (cashAmount != null ? cashAmount.hashCode() : 0);
         result = 31 * result + (creationDateTime != null ? creationDateTime.hashCode() : 0);

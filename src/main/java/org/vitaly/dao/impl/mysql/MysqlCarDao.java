@@ -54,6 +54,9 @@ public class MysqlCarDao implements CarDao {
             "UPDATE car " +
                     "SET car.car_status = ? " +
                     "WHERE car.car_id = ?";
+    private static final String FIND_CAR_BY_RESERVATION_QUERY = "SELECT * " +
+            "FROM car INNER JOIN reservation ON car.car_id = reservation.car_id " +
+            "WHERE reservation_id = ?";
 
     private static final String CAR_MUST_NOT_BE_NULL = "Car must not be null!";
     private static final String FROM_NUMBER_MUST_NOT_BE_NULL = "From number must not be null!";
@@ -152,5 +155,14 @@ public class MysqlCarDao implements CarDao {
         parameterMap.put(2, carId);
 
         return DaoTemplate.executeUpdate(CHANGE_CAR_STATE_QUERY, parameterMap) > 0;
+    }
+
+    @Override
+    public Optional<Car> findCarByReservation(long reservationId) {
+        Mapper<Car> mapper = ResultSetMapperFactory.getInstance().getCarMapper();
+
+        Car car = DaoTemplate
+                .executeSelectOne(FIND_CAR_BY_RESERVATION_QUERY, mapper, Collections.singletonMap(1, reservationId));
+        return Optional.ofNullable(car);
     }
 }

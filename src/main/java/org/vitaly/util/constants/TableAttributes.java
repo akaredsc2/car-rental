@@ -42,6 +42,7 @@ public final class TableAttributes {
 
     public static final String BILL_BILL_ID = "bill.bill_id";
     public static final String BILL_IS_PAID = "bill.is_paid";
+    public static final String BILL_IS_CONFIRMED = "bill.is_confirmed";
     public static final String BILL_DESCRIPTION = "bill.description";
     public static final String BILL_CASH_AMOUNT = "bill.cash_amount";
     public static final String BILL_CREATION_DATETIME = "bill.creation_datetime";

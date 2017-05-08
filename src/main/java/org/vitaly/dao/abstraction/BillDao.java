@@ -12,5 +12,7 @@ public interface BillDao extends AbstractDao<Bill> {
 
     boolean addBillToReservation(long billId, long reservationId);
 
-    boolean markAsPaid(long billId);
+    boolean markPaid(long billId);
+
+    boolean markConfirmed(long billId);
 }

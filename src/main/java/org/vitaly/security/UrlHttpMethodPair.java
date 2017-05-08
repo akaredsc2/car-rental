@@ -50,11 +50,16 @@ public class UrlHttpMethodPair {
             new UrlHttpMethodPair("/change_reservation_state", HttpMethod.POST);
     public static final UrlHttpMethodPair CANCEL_RESERVATION_POST =
             new UrlHttpMethodPair("/cancel_reservation", HttpMethod.POST);
+    public static final UrlHttpMethodPair PAY_POST = new UrlHttpMethodPair("/pay", HttpMethod.POST);
+    public static final UrlHttpMethodPair CONFIRM_POST = new UrlHttpMethodPair("/confirm", HttpMethod.POST);
+    public static final UrlHttpMethodPair ADD_DAMAGE_BILL_POST =
+            new UrlHttpMethodPair("/add_damage_bill", HttpMethod.POST);
 
     public static final UrlHttpMethodPair LOCATIONS_GET = new UrlHttpMethodPair("/locations", HttpMethod.GET);
     public static final UrlHttpMethodPair MODELS_GET = new UrlHttpMethodPair("/models", HttpMethod.GET);
     public static final UrlHttpMethodPair CARS_GET = new UrlHttpMethodPair("/cars", HttpMethod.GET);
     public static final UrlHttpMethodPair RESERVATIONS_GET = new UrlHttpMethodPair("/reservations", HttpMethod.GET);
+    public static final UrlHttpMethodPair BILLS_GET = new UrlHttpMethodPair("/bills", HttpMethod.GET);
 
     private String url;
     private HttpMethod httpMethod;

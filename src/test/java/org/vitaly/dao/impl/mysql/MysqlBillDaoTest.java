@@ -224,7 +224,7 @@ public class MysqlBillDaoTest {
     public void markAsPaidExistingBillReturnsTrue() throws Exception {
         long billId = billDao.create(bill1).orElseThrow(AssertionError::new);
 
-        boolean isMarked = billDao.markAsPaid(billId);
+        boolean isMarked = billDao.markPaid(billId);
 
         assertTrue(isMarked);
     }
@@ -233,7 +233,7 @@ public class MysqlBillDaoTest {
     public void markAsPaidMarksBillAsPaid() throws Exception {
         long billId = billDao.create(bill1).orElseThrow(AssertionError::new);
 
-        billDao.markAsPaid(billId);
+        billDao.markPaid(billId);
 
         Bill paidBill = billDao.findById(billId).orElseThrow(AssertionError::new);
 
@@ -242,7 +242,7 @@ public class MysqlBillDaoTest {
 
     @Test
     public void markAsPaidNonExistingBillReturnsFalse() throws Exception {
-        boolean isMarked = billDao.markAsPaid(-1);
+        boolean isMarked = billDao.markPaid(-1);
 
         assertFalse(isMarked);
     }

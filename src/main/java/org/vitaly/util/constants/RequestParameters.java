@@ -44,6 +44,9 @@ public final class RequestParameters {
     public static final String PARAM_RESERVATION_STATE = "param.reservation.state";
     public static final String PARAM_RESERVATION_REASON = "param.reservation.reason";
 
+    public static final String PARAM_BILL_ID = "param.bill.id";
+    public static final String PARAM_BILL_AMOUNT = "param.bill.amount";
+
     public static final String PARAM_PASS_OLD = "param.pass.old";
     public static final String PARAM_PASS_NEW = "param.pass.new";
     public static final String PARAM_PASS_REPEAT = "param.pass.repeat";

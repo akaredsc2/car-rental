@@ -2,6 +2,10 @@ package org.vitaly.controller.impl.factory;
 
 import org.vitaly.controller.abstraction.command.Command;
 import org.vitaly.controller.impl.command.*;
+import org.vitaly.controller.impl.command.bills.AddDamageBillCommand;
+import org.vitaly.controller.impl.command.bills.ConfirmPaymentCommand;
+import org.vitaly.controller.impl.command.bills.GetBillsCommand;
+import org.vitaly.controller.impl.command.bills.PayCommand;
 import org.vitaly.controller.impl.command.reservation.*;
 import org.vitaly.security.UrlHttpMethodPair;
 
@@ -39,11 +43,15 @@ public class CommandFactory {
         commandMap.put(UrlHttpMethodPair.ASSIGN_POST, new AssignAdminToReservationCommand());
         commandMap.put(UrlHttpMethodPair.CHANGE_RESERVATION_STATE_POST, new ChangeReservationStateCommand());
         commandMap.put(UrlHttpMethodPair.CANCEL_RESERVATION_POST, new CancelReservationCommand());
+        commandMap.put(UrlHttpMethodPair.PAY_POST, new PayCommand());
+        commandMap.put(UrlHttpMethodPair.CONFIRM_POST, new ConfirmPaymentCommand());
+        commandMap.put(UrlHttpMethodPair.ADD_DAMAGE_BILL_POST, new AddDamageBillCommand());
 
         commandMap.put(UrlHttpMethodPair.LOCATIONS_GET, new GetLocationsCommand());
         commandMap.put(UrlHttpMethodPair.MODELS_GET, new GetModelsCommand());
         commandMap.put(UrlHttpMethodPair.CARS_GET, new GetCarsCommand());
         commandMap.put(UrlHttpMethodPair.RESERVATIONS_GET, new GetReservationsCommand());
+        commandMap.put(UrlHttpMethodPair.BILLS_GET, new GetBillsCommand());
 
         WRONG_COMMAND = new WrongCommand();
     }

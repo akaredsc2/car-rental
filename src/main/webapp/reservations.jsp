@@ -68,6 +68,25 @@
             <input type="submit" value="<fmt:message key="reservations.cancel" bundle="${info}"/>">
         </form>
     </c:if>
+
+    <c:if test="${res.state=='approved' or res.state=='active'}">
+        <form method="get" action="bills">
+            <input type="hidden" name="<fmt:message key="param.reservation.id" bundle="${par}"/>" value="${res.id}">
+            <input type="submit" value="<fmt:message key="bills.href" bundle="${info}"/>">
+        </form>
+    </c:if>
+
+    <c:if test="${sessionScope.session_user.role=='ADMIN' and res.state=='active'}">
+        <form method="post" action="add_damage_bill">
+            <label>
+                <fmt:message key="reservations.bill.amount" bundle="${info}"/>
+                <input type="number" name="<fmt:message key="param.bill.amount" bundle="${par}"/>" required min="0.01"
+                step="0.001" max="1000.0">
+            </label>
+            <input type="hidden" name="<fmt:message key="param.reservation.id" bundle="${par}"/>" value="${res.id}">
+            <input type="submit" value="<fmt:message key="bills.href" bundle="${info}"/>">
+        </form>
+    </c:if>
 </c:forEach>
 </body>
 </html>

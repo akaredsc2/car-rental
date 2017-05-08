@@ -16,6 +16,7 @@ public class RequestMapperFactory {
     private RequestMapper<LocationDto> locationRequestMapper = new LocationRequestMapper();
     private RequestMapper<CarDto> carRequestMapper = new CarRequestMapper();
     private RequestMapper<ReservationDto> reservationRequestMapper = new ReservationRequestMapper();
+    private RequestMapper<BillDto> billRequestMapper = new BillRequestMapper();
 
     private RequestMapperFactory() {
     }
@@ -42,5 +43,9 @@ public class RequestMapperFactory {
 
     public RequestMapper<ReservationDto> getReservationRequestMapper() {
         return reservationRequestMapper;
+    }
+
+    public RequestMapper<BillDto> getBillRequestMapper() {
+        return billRequestMapper;
     }
 }

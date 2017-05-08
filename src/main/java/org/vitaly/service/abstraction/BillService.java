@@ -5,17 +5,19 @@ import org.vitaly.service.impl.dto.BillDto;
 import org.vitaly.service.impl.dto.ReservationDto;
 
 import java.util.List;
-import java.util.function.Predicate;
+import java.util.Optional;
 
 /**
  * Created by vitaly on 2017-04-10.
  */
 public interface BillService {
-    void createNewBill(BillDto billDto);
+    Optional<Bill> generateServiceBillForReservation(ReservationDto reservationDto);
 
-    List<BillDto> getAllMatchingBills(Predicate<Bill> predicate);
+    boolean addDamageBillToReservation(BillDto billDto, ReservationDto reservationDto);
 
     List<BillDto> findBillsForReservation(ReservationDto reservationDto);
 
-    void markAsPaid(BillDto billDto);
+    boolean markPaid(BillDto billDto);
+
+    boolean markConfirmed(BillDto billDto);
 }

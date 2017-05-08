@@ -16,6 +16,7 @@ public class BillDtoMapper implements DtoMapper<Bill, BillDto> {
                 .setCashAmount(dto.getCashAmount())
                 .setCreationDateTime(dto.getCreationDateTime())
                 .setPaid(dto.isPaid())
+                .setConfirmed(dto.isConfirmed())
                 .build();
     }
 
@@ -28,6 +29,7 @@ public class BillDtoMapper implements DtoMapper<Bill, BillDto> {
         billDto.setCashAmount(entity.getCashAmount());
         billDto.setCreationDateTime(entity.getCreationDateTime());
         billDto.setPaid(entity.isPaid());
+        billDto.setConfirmed(entity.isConfirmed());
 
         return billDto;
     }

@@ -124,6 +124,7 @@ ALTER TABLE reservation
 CREATE TABLE bill (
   bill_id           BIGINT         NOT NULL AUTO_INCREMENT,
   is_paid           BOOLEAN        NOT NULL DEFAULT FALSE,
+  is_confirmed      BOOLEAN        NOT NULL DEFAULT FALSE,
   reservation_id    BIGINT                  DEFAULT NULL,
   description       VARCHAR(128)   NOT NULL,
   cash_amount       DECIMAL(10, 2) NOT NULL,

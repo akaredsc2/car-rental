@@ -7,6 +7,7 @@ public class Pages {
     public static final String HOME_JSP = "/home.jsp";
     public static final String INDEX_JSP = "/index.jsp";
     public static final String RESERVATIONS_JSP = "/reservations.jsp";
+    public static final String BILLS_JSP = "/bills.jsp";
 
     public static final String ERROR_JSP = "/pages/error/error.jsp";
     public static final String ERROR_403_JSP = "/pages/error/403.jsp";

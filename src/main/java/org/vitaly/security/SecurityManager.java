@@ -70,12 +70,18 @@ public class SecurityManager {
         permissionMap.put(UrlHttpMethodPair.CREATE_RESERVATION_POST, client);
         permissionMap.put(UrlHttpMethodPair.ASSIGN_POST, admin);
         permissionMap.put(UrlHttpMethodPair.CHANGE_RESERVATION_STATE_POST, admin);
+        permissionMap.put(UrlHttpMethodPair.PAY_POST, client);
+        permissionMap.put(UrlHttpMethodPair.CONFIRM_POST, admin);
+
+        // TODO: 08.05.17 cancel for admin if current date greater than pick up date
         permissionMap.put(UrlHttpMethodPair.CANCEL_RESERVATION_POST, client);
+        permissionMap.put(UrlHttpMethodPair.ADD_DAMAGE_BILL_POST, admin);
 
         permissionMap.put(UrlHttpMethodPair.LOCATIONS_GET, clientAndAdmin);
         permissionMap.put(UrlHttpMethodPair.MODELS_GET, clientAndAdmin);
         permissionMap.put(UrlHttpMethodPair.CARS_GET, clientAndAdmin);
         permissionMap.put(UrlHttpMethodPair.RESERVATIONS_GET, clientAndAdmin);
+        permissionMap.put(UrlHttpMethodPair.BILLS_GET, clientAndAdmin);
 
         this.permissionMap = Collections.unmodifiableMap(permissionMap);
     }

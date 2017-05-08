@@ -5,6 +5,7 @@ import org.vitaly.model.car.CarState;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by vitaly on 2017-03-27.
@@ -19,4 +20,6 @@ public interface CarDao extends AbstractDao<Car> {
     List<Car> findCarsWithPriceBetween(BigDecimal from, BigDecimal to);
 
     boolean changeCarState(long carId, CarState state);
+
+    Optional<Car> findCarByReservation(long reservationId);
 }

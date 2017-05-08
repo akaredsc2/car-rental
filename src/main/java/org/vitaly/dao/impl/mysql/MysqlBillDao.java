@@ -37,9 +37,13 @@ public class MysqlBillDao implements BillDao {
             "UPDATE bill " +
                     "SET reservation_id = ? " +
                     "WHERE bill_id = ?";
-    private static final String MARK_AS_PAID_QUERY =
+    private static final String MARK_PAID_QUERY =
             "UPDATE bill " +
                     "SET is_paid = ? " +
+                    "WHERE bill_id = ?";
+    private static final String MARK_CONFIRMED_QUERY =
+            "UPDATE bill " +
+                    "SET is_confirmed = ? " +
                     "WHERE bill_id = ?";
 
     private static final String BILL_MUST_NOT_BE_NULL = "Bill must not be null!";
@@ -103,11 +107,20 @@ public class MysqlBillDao implements BillDao {
     }
 
     @Override
-    public boolean markAsPaid(long billId) {
+    public boolean markPaid(long billId) {
         HashMap<Integer, Object> parameterMap = new HashMap<>();
         parameterMap.put(1, true);
         parameterMap.put(2, billId);
 
-        return DaoTemplate.executeUpdate(MARK_AS_PAID_QUERY, parameterMap) > 0;
+        return DaoTemplate.executeUpdate(MARK_PAID_QUERY, parameterMap) > 0;
+    }
+
+    @Override
+    public boolean markConfirmed(long billId) {
+        HashMap<Integer, Object> parameterMap = new HashMap<>();
+        parameterMap.put(1, true);
+        parameterMap.put(2, billId);
+
+        return DaoTemplate.executeUpdate(MARK_CONFIRMED_QUERY, parameterMap) > 0;
     }
 }
