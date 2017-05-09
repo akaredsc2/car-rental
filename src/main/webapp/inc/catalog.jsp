@@ -6,20 +6,20 @@
 <div class="row">
 
     <div class="col-xs-4">
-        <form method="get" action="controller/locations">
+        <form method="get" action="locations">
             <input class="btn btn-default" type="submit" value="<fmt:message key="locations.href" bundle="${info}"/>">
         </form>
     </div>
 
     <div class="col-xs-4">
-        <form method="get" action="controller/cars">
+        <form method="get" action="cars">
             <input class="btn btn-default" type="submit" value="<fmt:message key="cars.href" bundle="${info}"/>">
         </form>
     </div>
 
 
     <div class="col-xs-4">
-        <form method="get" action="controller/models">
+        <form method="get" action="models">
             <input class="btn btn-default" type="submit" value="<fmt:message key="models.href" bundle="${info}"/>">
         </form>
     </div>

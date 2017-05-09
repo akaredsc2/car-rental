@@ -15,14 +15,15 @@
 </head>
 <body>
 <jsp:include page="/inc/header.jsp"/>
-<form method="post" action="controller/registration">
+<form method="post" action="registration">
     <div class="form-group row">
         <label for="login" class="col-sm-2 col-form-label text-right">
             <fmt:message key="reg.login" bundle="${info}"/>
         </label>
 
         <div class="col-sm-10">
-            <input id="login" type="text" name="<fmt:message key="param.user.login" bundle="${par}"/>" required>
+            <input id="login" type="text" name="<fmt:message key="param.user.login" bundle="${par}"/>" required
+                   pattern="[а-яА-ЯіІїЇєЄёЁ\w]{4,45}">
         </div>
     </div>
 
@@ -33,7 +34,7 @@
 
         <div class="col-sm-10">
             <input id="password" type="password" name="<fmt:message key="param.user.password" bundle="${par}"/>"
-                   required>
+                   required pattern="\w{4,10}">
         </div>
     </div>
 
@@ -44,7 +45,7 @@
 
         <div class="col-sm-10">
             <input id="repeat" type="password" name="<fmt:message key="param.pass.repeat" bundle="${par}"/>"
-                   required>
+                   required pattern="\w{4,10}">
         </div>
     </div>
 
@@ -54,7 +55,8 @@
         </label>
 
         <div class="col-sm-10">
-            <input id="name" type="text" name="<fmt:message key="param.user.name" bundle="${par}"/>" required>
+            <input id="name" type="text" name="<fmt:message key="param.user.name" bundle="${par}"/>" required
+            pattern="([A-ZА-ЯІЇЄ][a-zа-яіїє]+)(\s([A-ZА-ЯІЇЄ][a-zа-яіїє]+))+">
         </div>
     </div>
 
@@ -64,7 +66,7 @@
         </label>
 
         <div class="col-sm-10">
-            <input id="birth" type="datetime-local" name="<fmt:message key="param.user.birthday" bundle="${par}"/>"
+            <input id="birth" type="date" name="<fmt:message key="param.user.birthday" bundle="${par}"/>"
                    required>
         </div>
     </div>
@@ -75,7 +77,8 @@
         </label>
 
         <div class="col-sm-10">
-            <input id="passport" type="text" name="<fmt:message key="param.user.passport" bundle="${par}"/>" required>
+            <input id="passport" type="text" name="<fmt:message key="param.user.passport" bundle="${par}"/>" required
+            pattern="([А-Я]){2}\d{6}|\d{10}">
         </div>
     </div>
 
@@ -85,7 +88,8 @@
         </label>
 
         <div class="col-sm-10">
-            <input id="driver" type="text" name="<fmt:message key="param.user.driver" bundle="${par}"/>" required>
+            <input id="driver" type="text" name="<fmt:message key="param.user.driver" bundle="${par}"/>" required
+            pattern="([А-Я]){3}\d{6}|\d{2}([А-Я]){2}\d{6}">
         </div>
     </div>
 

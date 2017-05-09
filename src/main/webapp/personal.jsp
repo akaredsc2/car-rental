@@ -77,7 +77,7 @@
     </div>
 </div>
 
-<form method="post" action="controller/change_password">
+<form method="post" action="change_password">
     <div class="form-group row">
         <label for="old" class="col-sm-2 col-form-label text-right">
             <fmt:message key="personal.change.old" bundle="${info}"/>
@@ -120,7 +120,7 @@
 </form>
 
 <c:if test="${sessionScope.session_user.role == 'ADMIN'}">
-    <form action="controller/promote" method="get">
+    <form action="promote" method="get">
         <div class="form-group row">
             <div class="col-sm-offset-2 col-sm-10">
                 <input class="btn btn-default" type="submit"

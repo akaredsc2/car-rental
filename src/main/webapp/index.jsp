@@ -19,13 +19,14 @@
 </head>
 <body>
 <jsp:include page="/inc/header.jsp"/>
-<form method="post" action="controller/sign_in" class="form-horizontal custom-top">
+<form method="post" action="sign_in" class="form-horizontal custom-top">
     <div class="form-group row">
         <label for="login" class="col-sm-2 col-form-label text-right">
             <fmt:message key="signIn.login" bundle="${info}"/>
         </label>
         <div class="col-sm-10">
-            <input id="login" type="text" name="<fmt:message key="param.user.login" bundle="${par}"/>" required>
+            <input id="login" type="text" name="<fmt:message key="param.user.login" bundle="${par}"/>" required
+                   pattern="[а-яА-ЯіІїЇєЄёЁ\w]{4,45}">
         </div>
     </div>
 
@@ -34,7 +35,8 @@
             <fmt:message key="signIn.password" bundle="${info}"/>
         </label>
         <div class="col-sm-10">
-            <input id="pass" type="password" name="<fmt:message key="param.user.password" bundle="${par}"/>" required>
+            <input id="pass" type="password" name="<fmt:message key="param.user.password" bundle="${par}"/>" required
+                   pattern="\w{4,10}">
         </div>
     </div>
 

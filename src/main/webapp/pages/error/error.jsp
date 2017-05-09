@@ -17,14 +17,18 @@
 
 <fmt:message key="error.description" bundle="${info}"/><br>
 
-<c:out value="${requestScope.attr_error}"/><br>
+<c:forEach items="${requestScope.attr_error}" var="error">
+    <c:out value="${error}"/><br>
+</c:forEach>
 
 <c:choose>
     <c:when test="${empty sessionScope.session_user}">
-        <a class="col-sm-offset-2 col-sm-10" href="<c:url value="/index.jsp"/>"><fmt:message key="signIn.href" bundle="${info}"/></a>
+        <a class="col-sm-offset-2 col-sm-10" href="<c:url value="/index.jsp"/>"><fmt:message key="signIn.href"
+                                                                                             bundle="${info}"/></a>
     </c:when>
     <c:when test="${not empty sessionScope.session_user}">
-        <a class="col-sm-offset-2 col-sm-10" href="<c:url value="/home.jsp"/>"><fmt:message key="home.href" bundle="${info}"/></a>
+        <a class="col-sm-offset-2 col-sm-10" href="<c:url value="/home.jsp"/>"><fmt:message key="home.href"
+                                                                                            bundle="${info}"/></a>
     </c:when>
 </c:choose>
 </body>

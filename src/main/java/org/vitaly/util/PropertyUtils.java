@@ -49,7 +49,7 @@ public class PropertyUtils {
         String localDateString = request.getParameter(properties.getProperty(parameterName));
         return (localDateString == null) ?
                 null :
-                LocalDateTime.parse(localDateString, DateTimeFormatter.ISO_DATE_TIME).toLocalDate();
+                LocalDate.parse(localDateString, DateTimeFormatter.ISO_LOCAL_DATE);
     }
 
     // TODO: 2017-05-05 refactor

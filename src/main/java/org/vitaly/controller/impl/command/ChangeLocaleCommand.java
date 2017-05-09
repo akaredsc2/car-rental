@@ -1,6 +1,8 @@
 package org.vitaly.controller.impl.command;
 
 import org.vitaly.controller.abstraction.command.Command;
+import org.vitaly.controller.abstraction.validation.ValidationResult;
+import org.vitaly.controller.impl.factory.ValidatorFactory;
 import org.vitaly.util.PropertyUtils;
 
 import javax.servlet.ServletException;
@@ -10,7 +12,9 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Properties;
 
+import static org.vitaly.util.constants.Pages.ERROR_JSP;
 import static org.vitaly.util.constants.Pages.INDEX_JSP;
+import static org.vitaly.util.constants.RequestAttributes.ATTR_ERROR;
 import static org.vitaly.util.constants.RequestParameters.PARAMETERS;
 import static org.vitaly.util.constants.RequestParameters.PARAM_LOCALE;
 import static org.vitaly.util.constants.SessionAttributes.SESSION_LOCALE;
@@ -26,11 +30,20 @@ public class ChangeLocaleCommand implements Command {
         String localeParameter = parameters.getProperty(PARAM_LOCALE);
         String locale = request.getParameter(localeParameter);
 
-        // TODO: 29.04.17 validate
-        HttpSession session = request.getSession(true);
-        session.setAttribute(SESSION_LOCALE, locale);
+        ValidationResult validationResult = ValidatorFactory.getInstance()
+                .getLocaleValidator()
+                .validate(locale);
 
-        // TODO: 29.04.17 consider redirecting to page where from the request came
-        response.sendRedirect(request.getContextPath() + INDEX_JSP);
+        if (validationResult.isValid()) {
+            HttpSession session = request.getSession(true);
+            session.setAttribute(SESSION_LOCALE, locale);
+
+            response.sendRedirect(request.getContextPath() + INDEX_JSP);
+        } else {
+            request.setAttribute(ATTR_ERROR, validationResult.getErrorMessages());
+            request.getServletContext()
+                    .getRequestDispatcher(ERROR_JSP)
+                    .forward(request, response);
+        }
     }
 }

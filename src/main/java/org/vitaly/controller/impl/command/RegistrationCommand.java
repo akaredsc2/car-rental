@@ -1,7 +1,9 @@
 package org.vitaly.controller.impl.command;
 
 import org.vitaly.controller.abstraction.command.Command;
+import org.vitaly.controller.abstraction.validation.ValidationResult;
 import org.vitaly.controller.impl.factory.RequestMapperFactory;
+import org.vitaly.controller.impl.factory.ValidatorFactory;
 import org.vitaly.service.impl.dto.UserDto;
 import org.vitaly.service.impl.factory.ServiceFactory;
 import org.vitaly.util.PropertyUtils;
@@ -25,23 +27,27 @@ public class RegistrationCommand implements Command {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Properties properties = PropertyUtils.readProperties(PARAMETERS);
+        ValidationResult validationResult = ValidatorFactory.getInstance().getRegistrationValidator().validate(request);
 
-        UserDto userDto = RequestMapperFactory.getInstance()
-                .getUserRequestMapper()
-                .map(request);
-        String repeatPassword = request.getParameter(properties.getProperty(PARAM_PASS_REPEAT));
+        if (validationResult.isValid()) {
+            UserDto userDto = RequestMapperFactory.getInstance()
+                    .getUserRequestMapper()
+                    .map(request);
 
-        // TODO: 2017-04-27 validation
+            boolean isRegistered = ServiceFactory.getInstance()
+                    .getUserService()
+                    .registerNewUser(userDto);
 
-        boolean isRegistered = ServiceFactory.getInstance()
-                .getUserService()
-                .registerNewUser(userDto);
-
-        if (isRegistered) {
-            response.sendRedirect(request.getContextPath() + INDEX_JSP);
+            if (isRegistered) {
+                response.sendRedirect(request.getContextPath() + INDEX_JSP);
+            } else {
+                request.setAttribute(ATTR_ERROR, "registration failed");
+                request.getServletContext()
+                        .getRequestDispatcher(ERROR_JSP)
+                        .forward(request, response);
+            }
         } else {
-            request.setAttribute(ATTR_ERROR, "registration failed");
+            request.setAttribute(ATTR_ERROR, validationResult.getErrorMessages());
             request.getServletContext()
                     .getRequestDispatcher(ERROR_JSP)
                     .forward(request, response);

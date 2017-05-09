@@ -16,7 +16,7 @@
 <body>
 <jsp:include page="/inc/header.jsp"/>
 <jsp:include page="/inc/nav.jsp"/>
-<form method="post" action="controller/add_location">
+<form method="post" action="add_location">
     <label>
         <fmt:message key="location.add.state" bundle="${info}"/>
         <input type="text" name="<fmt:message key="param.location.state" bundle="${par}"/>" required>

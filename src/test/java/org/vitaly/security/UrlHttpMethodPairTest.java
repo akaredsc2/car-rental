@@ -19,7 +19,7 @@ public class UrlHttpMethodPairTest {
         String method = "POST";
         String contextPath = "contextPath";
         String path = "/path";
-        String action = "/controller/action";
+        String action = "/action";
         String uri = contextPath + path + action;
 
         when(request.getMethod()).thenReturn(method);

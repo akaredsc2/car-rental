@@ -16,7 +16,7 @@
 <body>
 <jsp:include page="/inc/header.jsp"/>
 <jsp:include page="/inc/nav.jsp"/>
-<form method="post" action="controller/promote">
+<form method="post" action="promote">
     ${requestScope.attr_car_id}<br>
     <label>
         <fmt:message key="promote.client" bundle="${info}"/>

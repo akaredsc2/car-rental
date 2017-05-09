@@ -18,7 +18,7 @@
 <jsp:include page="/inc/nav.jsp"/>
 
 <c:if test="${sessionScope.session_user.role=='ADMIN'}">
-    <form method="get" action="controller/reservations">
+    <form method="get" action="reservations">
         <input type="hidden" name="<fmt:message key="param.unassigned" bundle="${par}"/>" value="true">
         <input type="submit" value="<fmt:message key="reservations.unassigned.submit" bundle="${info}"/>">
     </form>
@@ -32,20 +32,20 @@
     <fmt:message key="reservations.state" bundle="${info}"/> : <c:out value="${res.state}"/><br>
     <fmt:message key="reservations.reason" bundle="${info}"/> : <c:out value="${res.rejectionReason}"/><br>
 
-    <form method="get" action="controller/cars">
+    <form method="get" action="cars">
         <input type="hidden" name="<fmt:message key="param.reservation.id" bundle="${par}"/>" value="${res.id}">
         <input type="submit" value="<fmt:message key="reservations.car.submit" bundle="${info}"/>">
     </form>
 
     <c:if test="${sessionScope.session_user.role=='ADMIN' and (empty res.admin)}">
-        <form method="post" action="controller/assign">
+        <form method="post" action="assign">
             <input type="hidden" name="<fmt:message key="param.reservation.id" bundle="${par}"/>" value="${res.id}">
             <input type="submit" value="<fmt:message key="reservations.assign.submit" bundle="${info}"/>">
         </form>
     </c:if>
 
     <c:if test="${sessionScope.session_user.role=='ADMIN' and (not empty res.admin)}">
-        <form method="post" action="controller/change_reservation_state">
+        <form method="post" action="change_reservation_state">
             <label>
                 <fmt:message key="reservations.change.state" bundle="${info}"/>
                 <select name="<fmt:message key="param.reservation.state" bundle="${par}"/>">
@@ -68,7 +68,7 @@
     </c:if>
 
     <c:if test="${sessionScope.session_user.role=='CLIENT' and res.state=='approved'}">
-        <form method="post" action="controller/cancel_reservation">
+        <form method="post" action="cancel_reservation">
             <input type="hidden" name="<fmt:message key="param.reservation.id" bundle="${par}"/>" value="${res.id}">
             <input type="hidden" name="<fmt:message key="param.reservation.car" bundle="${par}"/>"
                    value="${res.car.id}">
@@ -77,14 +77,14 @@
     </c:if>
 
     <c:if test="${res.state=='approved' or res.state=='active'}">
-        <form method="get" action="controller/bills">
+        <form method="get" action="bills">
             <input type="hidden" name="<fmt:message key="param.reservation.id" bundle="${par}"/>" value="${res.id}">
             <input type="submit" value="<fmt:message key="bills.href" bundle="${info}"/>">
         </form>
     </c:if>
 
     <c:if test="${sessionScope.session_user.role=='ADMIN' and res.state=='active'}">
-        <form method="post" action="controller/add_damage_bill">
+        <form method="post" action="add_damage_bill">
             <label>
                 <fmt:message key="reservations.bill.amount" bundle="${info}"/>
                 <input type="number" name="<fmt:message key="param.bill.amount" bundle="${par}"/>" required min="0.01"

@@ -66,7 +66,7 @@
             </div>
         </div>
 
-        <form method="get" action="controller/cars">
+        <form method="get" action="cars">
             <input type="hidden" name="<fmt:message key="param.model.id" bundle="${par}"/>" value="${model.id}">
 
             <div class="form-group col-xs-6">
