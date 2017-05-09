@@ -1,4 +1,4 @@
-package org.vitaly.controller.impl.command;
+package org.vitaly.controller.impl.command.user;
 
 import org.vitaly.controller.abstraction.command.Command;
 import org.vitaly.service.impl.dto.UserDto;

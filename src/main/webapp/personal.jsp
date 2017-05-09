@@ -84,7 +84,8 @@
         </label>
 
         <div class="col-sm-10">
-            <input id="old" type="password" name="<fmt:message key="param.pass.old" bundle="${par}"/>" required>
+            <input id="old" type="password" name="<fmt:message key="param.pass.old" bundle="${par}"/>" required
+                   pattern="\w{4,10}">
         </div>
     </div>
 
@@ -94,7 +95,8 @@
         </label>
 
         <div class="col-sm-10">
-            <input id="new" type="password" name="<fmt:message key="param.pass.new" bundle="${par}"/>" required>
+            <input id="new" type="password" name="<fmt:message key="param.pass.new" bundle="${par}"/>" required
+                   pattern="\w{4,10}">
         </div>
     </div>
 
@@ -104,7 +106,8 @@
         </label>
 
         <div class="col-sm-10">
-            <input id="repeat" type="password" name="<fmt:message key="param.pass.repeat" bundle="${par}"/>" required>
+            <input id="repeat" type="password" name="<fmt:message key="param.pass.repeat" bundle="${par}"/>" required
+                   pattern="\w{4,10}">
         </div>
     </div>
 

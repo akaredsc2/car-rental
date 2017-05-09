@@ -1,4 +1,4 @@
-package org.vitaly.controller.impl.command;
+package org.vitaly.controller.impl.command.car;
 
 import org.vitaly.controller.abstraction.command.Command;
 import org.vitaly.controller.impl.factory.RequestMapperFactory;
@@ -15,9 +15,9 @@ import static org.vitaly.util.constants.Pages.HOME_JSP;
 import static org.vitaly.util.constants.RequestAttributes.ATTR_ERROR;
 
 /**
- * Created by vitaly on 02.05.17.
+ * Created by vitaly on 29.04.17.
  */
-public class UpdateCarCommand implements Command {
+public class AddCarCommand implements Command {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -25,14 +25,16 @@ public class UpdateCarCommand implements Command {
                 .getCarRequestMapper()
                 .map(request);
 
-        boolean isUpdated = ServiceFactory.getInstance()
-                .getCarService()
-                .updateCar(carDto);
+        // TODO: 29.04.17 validation
 
-        if (isUpdated) {
+        boolean isAdded = ServiceFactory.getInstance()
+                .getCarService()
+                .addNewCar(carDto);
+
+        if (isAdded) {
             response.sendRedirect(request.getContextPath() + HOME_JSP);
         } else {
-            request.setAttribute(ATTR_ERROR, "Failed to update car!");
+            request.setAttribute(ATTR_ERROR, "failed to add car");
             request.getServletContext()
                     .getRequestDispatcher(ERROR_JSP)
                     .forward(request, response);

@@ -1,7 +1,9 @@
 package org.vitaly.controller.impl.command.reservation;
 
 import org.vitaly.controller.abstraction.command.Command;
+import org.vitaly.controller.abstraction.validation.ValidationResult;
 import org.vitaly.controller.impl.factory.RequestMapperFactory;
+import org.vitaly.controller.impl.factory.ValidatorFactory;
 import org.vitaly.service.impl.dto.ReservationDto;
 import org.vitaly.service.impl.dto.UserDto;
 import org.vitaly.service.impl.factory.ServiceFactory;
@@ -23,6 +25,25 @@ public class CreateReservationCommand implements Command {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ValidationResult validationResult = ValidatorFactory.getInstance()
+                .getReservationValidator()
+                .validate(request);
+
+        if (validationResult.isValid()) {
+            System.out.println(1);
+
+            doCreateReservation(request, response);
+        } else {
+            System.out.println(2);
+
+            request.setAttribute(ATTR_ERROR, validationResult.getErrorMessages());
+            request.getServletContext()
+                    .getRequestDispatcher(ERROR_JSP)
+                    .forward(request, response);
+        }
+    }
+
+    private void doCreateReservation(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         ReservationDto reservationDto = RequestMapperFactory.getInstance()
                 .getReservationRequestMapper()
                 .map(request);

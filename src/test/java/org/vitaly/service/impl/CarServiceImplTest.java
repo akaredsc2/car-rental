@@ -67,7 +67,7 @@ public class CarServiceImplTest {
     }
 
     @Test
-    public void updatingCarThatIsNotInAvailableOrUnavailableStateReturnsFalse() throws Exception {
+    public void updatingCarThatIsNotInUnavailableStateReturnsFalse() throws Exception {
         CarDto carDto = new CarDto();
         Car car = new Car.Builder()
                 .setState(CarStateEnum.RESERVED.getState())
@@ -96,12 +96,12 @@ public class CarServiceImplTest {
     }
 
     @Test
-    public void updatingExistingCarThatIsInAvailableOrUnavailableStateReturnsTrue() throws Exception {
+    public void updatingExistingCarThatIsInUnavailableStateReturnsTrue() throws Exception {
         CarModelDto carModelDto = new CarModelDto();
         CarDto carDto = new CarDto();
         carDto.setCarModelDto(carModelDto);
         Car car = new Car.Builder()
-                .setState(CarStateEnum.AVAILABLE.getState())
+                .setState(CarStateEnum.UNAVAILABLE.getState())
                 .build();
 
         when(carDao.findById(anyLong())).thenReturn(Optional.of(car));

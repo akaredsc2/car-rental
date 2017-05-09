@@ -113,7 +113,7 @@ CREATE TABLE bill (
   is_paid           BOOLEAN        NOT NULL DEFAULT FALSE,
   is_confirmed      BOOLEAN        NOT NULL DEFAULT FALSE,
   reservation_id    BIGINT                  DEFAULT NULL,
-  description       VARCHAR(128)   NOT NULL,
+  description       VARCHAR(10)   NOT NULL,
   cash_amount       DECIMAL(10, 2) NOT NULL,
   creation_datetime DATETIME       NOT NULL,
 

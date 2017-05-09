@@ -1,4 +1,4 @@
-package org.vitaly.controller.impl.command;
+package org.vitaly.controller.impl.command.user;
 
 import org.vitaly.controller.abstraction.command.Command;
 import org.vitaly.controller.abstraction.validation.ValidationResult;
@@ -30,24 +30,28 @@ public class RegistrationCommand implements Command {
         ValidationResult validationResult = ValidatorFactory.getInstance().getRegistrationValidator().validate(request);
 
         if (validationResult.isValid()) {
-            UserDto userDto = RequestMapperFactory.getInstance()
-                    .getUserRequestMapper()
-                    .map(request);
-
-            boolean isRegistered = ServiceFactory.getInstance()
-                    .getUserService()
-                    .registerNewUser(userDto);
-
-            if (isRegistered) {
-                response.sendRedirect(request.getContextPath() + INDEX_JSP);
-            } else {
-                request.setAttribute(ATTR_ERROR, "registration failed");
-                request.getServletContext()
-                        .getRequestDispatcher(ERROR_JSP)
-                        .forward(request, response);
-            }
+            doRegister(request, response);
         } else {
             request.setAttribute(ATTR_ERROR, validationResult.getErrorMessages());
+            request.getServletContext()
+                    .getRequestDispatcher(ERROR_JSP)
+                    .forward(request, response);
+        }
+    }
+
+    private void doRegister(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        UserDto userDto = RequestMapperFactory.getInstance()
+                .getUserRequestMapper()
+                .map(request);
+
+        boolean isRegistered = ServiceFactory.getInstance()
+                .getUserService()
+                .registerNewUser(userDto);
+
+        if (isRegistered) {
+            response.sendRedirect(request.getContextPath() + INDEX_JSP);
+        } else {
+            request.setAttribute(ATTR_ERROR, "registration failed");
             request.getServletContext()
                     .getRequestDispatcher(ERROR_JSP)
                     .forward(request, response);

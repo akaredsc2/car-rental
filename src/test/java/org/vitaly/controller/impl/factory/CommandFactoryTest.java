@@ -2,7 +2,7 @@ package org.vitaly.controller.impl.factory;
 
 import org.junit.Test;
 import org.vitaly.controller.abstraction.command.Command;
-import org.vitaly.controller.impl.command.AddCarCommand;
+import org.vitaly.controller.impl.command.car.AddCarCommand;
 import org.vitaly.controller.impl.command.WrongCommand;
 import org.vitaly.security.UrlHttpMethodPair;
 

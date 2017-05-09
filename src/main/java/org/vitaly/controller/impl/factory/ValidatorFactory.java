@@ -1,9 +1,7 @@
 package org.vitaly.controller.impl.factory;
 
 import org.vitaly.controller.abstraction.validation.Validator;
-import org.vitaly.controller.impl.validation.LocaleValidator;
-import org.vitaly.controller.impl.validation.RegistrationValidator;
-import org.vitaly.controller.impl.validation.SignInValidator;
+import org.vitaly.controller.impl.validation.*;
 import org.vitaly.service.impl.dto.UserDto;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +15,8 @@ public class ValidatorFactory {
     private Validator<UserDto> signInValidator = new SignInValidator();
     private Validator<HttpServletRequest> registrationValidator = new RegistrationValidator();
     private Validator<String> localeValidator = new LocaleValidator();
+    private Validator<HttpServletRequest> changePasswordValidator = new ChangePasswordValidator();
+    private Validator<HttpServletRequest> reservationValidator = new ReservationValidator();
 
     private ValidatorFactory() {
     }
@@ -35,5 +35,13 @@ public class ValidatorFactory {
 
     public Validator<String> getLocaleValidator() {
         return localeValidator;
+    }
+
+    public Validator<HttpServletRequest> getChangePasswordValidator() {
+        return changePasswordValidator;
+    }
+
+    public Validator<HttpServletRequest> getReservationValidator() {
+        return reservationValidator;
     }
 }

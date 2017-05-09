@@ -1,6 +1,8 @@
-package org.vitaly.controller.impl.command;
+package org.vitaly.controller.impl.command.user;
 
 import org.vitaly.controller.abstraction.command.Command;
+import org.vitaly.controller.abstraction.validation.ValidationResult;
+import org.vitaly.controller.impl.factory.ValidatorFactory;
 import org.vitaly.service.impl.dto.UserDto;
 import org.vitaly.service.impl.factory.ServiceFactory;
 import org.vitaly.util.PropertyUtils;
@@ -25,16 +27,27 @@ public class ChangePasswordCommand implements Command {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Properties properties = PropertyUtils.readProperties(PARAMETERS);
-        String oldPassParam = properties.getProperty(PARAM_PASS_OLD);
-        String newPassParam = properties.getProperty(PARAM_PASS_NEW);
-        String repeatPassParam = properties.getProperty(PARAM_PASS_REPEAT);
+        ValidationResult validationResult = ValidatorFactory.getInstance()
+                .getChangePasswordValidator()
+                .validate(request);
 
-        // TODO: 02.05.17 validate
+        if (validationResult.isValid()) {
+            doChangePassword(request, response);
+        } else {
+            request.setAttribute(ATTR_ERROR, validationResult.getErrorMessages());
+            request.getServletContext()
+                    .getRequestDispatcher(ERROR_JSP)
+                    .forward(request, response);
+        }
+    }
+
+    private void doChangePassword(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        Properties properties = PropertyUtils.readProperties(PARAMETERS);
+
+        String newPassword = request.getParameter(properties.getProperty(PARAM_PASS_NEW));
+
         HttpSession session = request.getSession();
         UserDto userDto = (UserDto) session.getAttribute(SESSION_USER);
-
-        String newPassword = request.getParameter(newPassParam);
 
         boolean isPasswordChanged = ServiceFactory.getInstance()
                 .getUserService()

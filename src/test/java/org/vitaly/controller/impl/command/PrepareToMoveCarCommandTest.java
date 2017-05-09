@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.vitaly.controller.impl.command.car.PrepareToMoveCarCommand;
 import org.vitaly.service.abstraction.LocationService;
 import org.vitaly.service.impl.factory.ServiceFactory;
 

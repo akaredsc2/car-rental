@@ -1,4 +1,4 @@
-package org.vitaly.controller.impl.command;
+package org.vitaly.controller.impl.command.location;
 
 import org.vitaly.controller.abstraction.command.Command;
 import org.vitaly.controller.impl.factory.RequestMapperFactory;

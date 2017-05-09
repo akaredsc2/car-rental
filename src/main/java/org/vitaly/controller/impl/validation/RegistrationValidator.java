@@ -40,26 +40,36 @@ public class RegistrationValidator implements Validator<HttpServletRequest> {
         }
         Validator.stringMatches(fullName, NAME_PATTERN, validationResult, NAME_DOES_NOT_MATCH_PATTERN);
 
-        LocalDate localDate;
-        try {
-            localDate = LocalDate.parse(birthDate, DateTimeFormatter.ISO_LOCAL_DATE);
-            LocalDate now = LocalDate.now();
-
-            if (localDate.until(now, ChronoUnit.YEARS) < 21) {
-                validationResult.addErrorMessage(TOO_YOUNG);
-            }
-
-            if (localDate.until(now, ChronoUnit.YEARS) > 70) {
-                validationResult.addErrorMessage(TOO_OLD);
-            }
-        } catch (DateTimeParseException e) {
-            validationResult.addErrorMessage(BIRTH_DATE_DOES_NOT_MATCH_PATTERN);
-        }
+        validateBirthDate(validationResult, birthDate);
 
         Validator.stringMatches(passport, PASSPORT_PATTERN, validationResult, PASSPORT_DOES_NOT_MATCH_PATTERN);
         Validator.stringMatches(driverLicence, DRIVER_LICENCE_PATTERN,
                 validationResult, DRIVER_LICENCE_DOES_NOT_MATCH_PATTERN);
 
         return validationResult;
+    }
+
+    private void validateBirthDate(ValidationResult validationResult, String birthDate) {
+        if (birthDate == null) {
+            validationResult.addErrorMessage(BIRTH_DATE_DOES_NOT_MATCH_PATTERN);
+        } else {
+            validateNonNullLocalDate(validationResult, birthDate);
+        }
+    }
+
+    private void validateNonNullLocalDate(ValidationResult validationResult, String birthDate) {
+        try {
+            LocalDate localDate = LocalDate.parse(birthDate, DateTimeFormatter.ISO_LOCAL_DATE);
+            LocalDate now = LocalDate.now();
+
+            if (localDate.until(now, ChronoUnit.YEARS) < MIN_AGE) {
+                validationResult.addErrorMessage(TOO_YOUNG);
+            }
+            if (localDate.until(now, ChronoUnit.YEARS) > MAX_AGE) {
+                validationResult.addErrorMessage(TOO_OLD);
+            }
+        } catch (DateTimeParseException e) {
+            validationResult.addErrorMessage(BIRTH_DATE_DOES_NOT_MATCH_PATTERN);
+        }
     }
 }

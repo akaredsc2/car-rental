@@ -1,7 +1,8 @@
-package org.vitaly.controller.impl.command;
+package org.vitaly.controller.impl.command.car;
 
 import org.vitaly.controller.abstraction.command.Command;
 import org.vitaly.controller.impl.factory.RequestMapperFactory;
+import org.vitaly.service.impl.dto.CarDto;
 import org.vitaly.service.impl.dto.LocationDto;
 import org.vitaly.service.impl.factory.ServiceFactory;
 
@@ -15,24 +16,32 @@ import static org.vitaly.util.constants.Pages.HOME_JSP;
 import static org.vitaly.util.constants.RequestAttributes.ATTR_ERROR;
 
 /**
- * Created by vitaly on 28.04.17.
+ * Created by vitaly on 01.05.17.
  */
-public class AddLocationCommand implements Command {
+public class MoveCarCommand implements Command {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        LocationDto locationDto = RequestMapperFactory.getInstance()
+        RequestMapperFactory requestMapperFactory = RequestMapperFactory.getInstance();
+
+        CarDto carDto = requestMapperFactory
+                .getCarRequestMapper()
+                .map(request);
+
+        LocationDto locationDto = requestMapperFactory
                 .getLocationRequestMapper()
                 .map(request);
 
-        boolean isAdded = ServiceFactory.getInstance()
-                .getLocationService()
-                .addNewLocation(locationDto);
+        // TODO: 2017-05-05 validate
 
-        if (isAdded) {
+        boolean isCarMoved = ServiceFactory.getInstance()
+                .getCarService()
+                .moveCarToLocation(carDto, locationDto);
+
+        if (isCarMoved) {
             response.sendRedirect(request.getContextPath() + HOME_JSP);
         } else {
-            request.setAttribute(ATTR_ERROR, "failed to add location");
+            request.setAttribute(ATTR_ERROR, "Failed to move car");
             request.getServletContext()
                     .getRequestDispatcher(ERROR_JSP)
                     .forward(request, response);

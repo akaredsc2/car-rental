@@ -101,7 +101,7 @@ public class CarServiceImpl implements CarService {
         CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
         boolean isAbleToBeUpdated = carDao.findById(carDto.getId())
                 .map(Car::getState)
-                .filter(state -> state == AVAILABLE.getState() || state == UNAVAILABLE.getState())
+                .filter(state -> state == UNAVAILABLE.getState())
                 .isPresent();
 
         if (isAbleToBeUpdated) {

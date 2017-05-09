@@ -6,7 +6,13 @@ import org.vitaly.controller.impl.command.bills.AddDamageBillCommand;
 import org.vitaly.controller.impl.command.bills.ConfirmPaymentCommand;
 import org.vitaly.controller.impl.command.bills.GetBillsCommand;
 import org.vitaly.controller.impl.command.bills.PayCommand;
+import org.vitaly.controller.impl.command.car.*;
+import org.vitaly.controller.impl.command.carModel.AddCarModelCommand;
+import org.vitaly.controller.impl.command.carModel.GetModelsCommand;
+import org.vitaly.controller.impl.command.location.AddLocationCommand;
+import org.vitaly.controller.impl.command.location.GetLocationsCommand;
 import org.vitaly.controller.impl.command.reservation.*;
+import org.vitaly.controller.impl.command.user.*;
 import org.vitaly.security.UrlHttpMethodPair;
 
 import java.util.HashMap;
