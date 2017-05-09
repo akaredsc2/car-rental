@@ -17,14 +17,13 @@
 <jsp:include page="/inc/header.jsp"/>
 <jsp:include page="/inc/nav.jsp"/>
 <form method="post" action="promote">
-    ${requestScope.attr_car_id}<br>
     <label>
         <fmt:message key="promote.client" bundle="${info}"/>
         <select name="<fmt:message key="param.user.id" bundle="${par}"/>" required>
             <c:forEach items="${requestScope.attr_user_list}" var="client">
                 <option value="${client.id}">
-                        <c:out value="${client.login}"/>
-                        <c:out value="${client.fullName}"/>
+                    <c:out value="${client.login}"/>
+                    <c:out value="${client.fullName}"/>
                 </option>
             </c:forEach>
         </select>

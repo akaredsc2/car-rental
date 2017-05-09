@@ -23,7 +23,6 @@ public class ReservationRequestMapper implements RequestMapper<ReservationDto> {
 
         long id = PropertyUtils.getLongFromRequest(request, properties, PARAM_RESERVATION_ID);
 
-        // TODO: 2017-05-05 consider replacing with car request mapper
         long carId = PropertyUtils.getLongFromRequest(request, properties, PARAM_RESERVATION_CAR);
         CarDto carDto = new CarDto();
         carDto.setId(carId);
@@ -36,9 +35,7 @@ public class ReservationRequestMapper implements RequestMapper<ReservationDto> {
         String reservationStateString = request.getParameter(properties.getProperty(PARAM_RESERVATION_STATE));
         ReservationState reservationState = ReservationStateEnum
                 .stateOf(reservationStateString)
-
-                // TODO: 2017-05-05 consider new state instead of null. same for car states
-                .orElse(null);
+                .orElse(ReservationStateEnum.NEW.getState());
 
         String rejectionReason = request.getParameter(properties.getProperty(PARAM_RESERVATION_REASON));
 
@@ -49,7 +46,6 @@ public class ReservationRequestMapper implements RequestMapper<ReservationDto> {
         reservationDto.setDropOffDatetime(dropOffDatetime);
         reservationDto.setState(reservationState);
         reservationDto.setRejectionReason(rejectionReason);
-        // TODO: 2017-05-05 drop off location
 
         return reservationDto;
     }

@@ -6,6 +6,7 @@ import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.exception.DaoException;
 import org.vitaly.dao.impl.mysql.connectionPool.MysqlConnectionPool;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
@@ -30,10 +31,15 @@ public class TransactionManager {
     }
 
     public static void startTransaction() {
+        startTransactionWithIsolation(Connection.TRANSACTION_READ_COMMITTED);
+    }
+
+    public static void startTransactionWithIsolation(int isolationLevel) {
         try {
             PooledConnection pooledConnection = MysqlConnectionPool.getInstance().getConnection();
             pooledConnectionThreadLocal.set(pooledConnection);
 
+            pooledConnection.setTransactionIsolation(isolationLevel);
             pooledConnection.setAutoCommit(false);
             pooledConnection.setInTransaction(true);
         } catch (SQLException e) {

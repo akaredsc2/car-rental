@@ -18,6 +18,7 @@ import org.vitaly.service.impl.dtoMapper.DtoMapper;
 import org.vitaly.service.impl.factory.DtoMapperFactory;
 import org.vitaly.service.impl.factory.ServiceFactory;
 
+import java.sql.Connection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -33,7 +34,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public boolean createNewReservation(ReservationDto reservationDto) {
-        TransactionManager.startTransaction();
+        TransactionManager.startTransactionWithIsolation(Connection.TRANSACTION_SERIALIZABLE);
 
         long carId = reservationDto.getCar().getId();
         ReservationDao reservationDao = MysqlDaoFactory.getInstance().getReservationDao();
@@ -99,7 +100,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public boolean changeReservationState(ReservationDto reservationDto, String reservationState) {
-        TransactionManager.startTransaction();
+        TransactionManager.startTransactionWithIsolation(Connection.TRANSACTION_SERIALIZABLE);
 
         long reservationId = reservationDto.getId();
         long adminId = reservationDto.getAdmin().getId();
@@ -129,30 +130,26 @@ public class ReservationServiceImpl implements ReservationService {
         if (state == ReservationStateEnum.REJECTED.getState()) {
             return isReservationStateChanged && isReservationRejected(reservationDto, reservationDao, carDao);
         } else if (state == ReservationStateEnum.APPROVED.getState()) {
-
-            // TODO: 08.05.17 test
-            BillDao billDao = MysqlDaoFactory.getInstance().getBillDao();
-
-            boolean isBillAdded = ServiceFactory.getInstance()
-                    .getBillService()
-                    .generateServiceBillForReservation(reservationDto)
-                    .map(billDao::create)
-                    .map(Optional::get)
-                    .map(billId -> billDao.addBillToReservation(billId, reservationDto.getId()))
-                    .isPresent();
-
-            return isReservationStateChanged && isBillAdded;
+            return isReservationStateChanged && isBillAdded(reservationDto);
         } else if (state == ReservationStateEnum.ACTIVE.getState()) {
-
-            // TODO: 08.05.17 test
             return isReservationStateChanged && isReservationActivated(reservationDto, carDao);
         } else if (state == ReservationStateEnum.CLOSED.getState()) {
-
-            // TODO: 08.05.17 test
             return isReservationStateChanged && isReservationClosed(reservationDto);
         }
 
         return false;
+    }
+
+    private boolean isBillAdded(ReservationDto reservationDto) {
+        BillDao billDao = MysqlDaoFactory.getInstance().getBillDao();
+
+        return ServiceFactory.getInstance()
+                .getBillService()
+                .generateServiceBillForReservation(reservationDto)
+                .map(billDao::create)
+                .map(Optional::get)
+                .map(billId -> billDao.addBillToReservation(billId, reservationDto.getId()))
+                .isPresent();
     }
 
     private boolean isReservationClosed(ReservationDto reservationDto) {
@@ -193,7 +190,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public boolean cancelReservation(ReservationDto reservationDto) {
-        TransactionManager.startTransaction();
+        TransactionManager.startTransactionWithIsolation(Connection.TRANSACTION_REPEATABLE_READ);
 
         long reservationId = reservationDto.getId();
         long clientId = reservationDto.getClient().getId();
@@ -234,7 +231,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public boolean assignReservationToAdmin(ReservationDto reservationDto, UserDto adminDto) {
-        TransactionManager.startTransaction();
+        TransactionManager.startTransactionWithIsolation(Connection.TRANSACTION_REPEATABLE_READ);
 
         long reservationId = reservationDto.getId();
         long adminId = adminDto.getId();
@@ -245,6 +242,7 @@ public class ReservationServiceImpl implements ReservationService {
                 .findById(reservationId)
                 .filter(res -> res.getState() == ReservationStateEnum.NEW.getState() && Objects.isNull(res.getAdmin()))
                 .isPresent();
+
         boolean isAdminAssigned = reservationDao.addAdminToReservation(reservationId, adminId);
 
         boolean commitCondition = isNotClaimedByOtherAdmin && isAdminAssigned;

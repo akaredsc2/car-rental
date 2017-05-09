@@ -4,6 +4,7 @@ import org.vitaly.dao.abstraction.BillDao;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
 import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
 import org.vitaly.model.bill.Bill;
+import org.vitaly.model.bill.BillDescriptionEnum;
 import org.vitaly.model.car.Car;
 import org.vitaly.model.car.CarStateEnum;
 import org.vitaly.service.abstraction.BillService;
@@ -13,6 +14,7 @@ import org.vitaly.service.impl.dtoMapper.DtoMapper;
 import org.vitaly.service.impl.factory.DtoMapperFactory;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,8 +30,6 @@ public class BillServiceImpl implements BillService {
     public Optional<Bill> generateServiceBillForReservation(ReservationDto reservationDto) {
         long reservationId = reservationDto.getId();
 
-        // TODO: 08.05.17 test
-        // TODO: 08.05.17 refactor(replace if with filter)
         boolean hasNoGeneratedBills = findBillsForReservation(reservationDto).isEmpty();
 
         if (hasNoGeneratedBills) {
@@ -41,21 +41,21 @@ public class BillServiceImpl implements BillService {
                     .map(Car::getPricePerDay)
                     .orElse(BigDecimal.ZERO);
 
-            // TODO: 08.05.17 more options in generation
             return daoFactory
                     .getReservationDao()
                     .findById(reservationId)
-                    .map(res -> DAYS.between(res.getDropOffDatetime(), res.getPickUpDatetime()))
+                    .map(res -> DAYS.between(res.getPickUpDatetime(), res.getDropOffDatetime()))
                     .map(BigDecimal::new)
                     .map(days -> days.multiply(pricePerDay))
                     .map(Bill::forService);
         }
+
         return Optional.empty();
     }
 
     @Override
     public boolean addDamageBillToReservation(BillDto billDto, ReservationDto reservationDto) {
-        TransactionManager.startTransaction();
+        TransactionManager.startTransactionWithIsolation(Connection.TRANSACTION_SERIALIZABLE);
 
         MysqlDaoFactory daoFactory = MysqlDaoFactory.getInstance();
 
@@ -68,17 +68,20 @@ public class BillServiceImpl implements BillService {
                 .filter(state -> state.equals(CarStateEnum.RETURNED.getState()))
                 .isPresent();
 
-        // TODO: 08.05.17 check if there is a damage bill already
         BigDecimal cashAmount = billDto.getCashAmount();
         Bill bill = Bill.forDamage(cashAmount);
-
         BillDao billDao = daoFactory.getBillDao();
+
+        boolean isOtherBillForDamagePresent = billDao.findBillsForReservation(reservationId)
+                .stream()
+                .anyMatch(b -> b.getDescription() == BillDescriptionEnum.DAMAGE);
+
         boolean isBillCreated = billDao
                 .create(bill)
                 .filter(billId -> billDao.addBillToReservation(billId, reservationId))
                 .isPresent();
 
-        boolean commitCondition = isCarReturned && isBillCreated;
+        boolean commitCondition = isCarReturned && !isOtherBillForDamagePresent && isBillCreated;
 
         return TransactionManager.endTransaction(commitCondition);
     }
@@ -112,7 +115,6 @@ public class BillServiceImpl implements BillService {
     public boolean markConfirmed(BillDto billDto) {
         TransactionManager.startTransaction();
 
-        // TODO: 08.05.17 check if paid
         long billId = billDto.getId();
         boolean isConfirmed = MysqlDaoFactory.getInstance()
                 .getBillDao()

@@ -27,7 +27,9 @@ public class RegistrationCommand implements Command {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        ValidationResult validationResult = ValidatorFactory.getInstance().getRegistrationValidator().validate(request);
+        ValidationResult validationResult = ValidatorFactory.getInstance()
+                .getRegistrationValidator()
+                .validate(request);
 
         if (validationResult.isValid()) {
             doRegister(request, response);

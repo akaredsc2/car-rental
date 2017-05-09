@@ -29,8 +29,6 @@ public class MysqlConnectionPool implements ConnectionPool {
     private static final String DB_MAX_TOTAL = "db.maxTotal";
     private static final String USE_SSL_FALSE = "?useSSL=false";
     private static final String DB_DRIVER = "db.driver";
-    private static final String DB_DEFAULT_AUTO_COMMIT = "db.defaultAutoCommit";
-    private static final String DB_DEFAULT_TRANSACTION_ISOLATION = "db.defaultTransactionIsolation";
 
     private static Logger logger = LogManager.getLogger(MysqlPooledConnection.class.getName());
 
@@ -89,12 +87,10 @@ public class MysqlConnectionPool implements ConnectionPool {
         return instance;
     }
 
-    // TODO: 28.04.17 consider synchronization
     @Override
-    public PooledConnection getConnection() {
+    public synchronized PooledConnection getConnection() {
         try {
             Connection connection = basicDataSource.getConnection();
-            connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
             return new MysqlPooledConnection(connection);
         } catch (SQLException e) {
             String message = "Error while getting connection from pool.";

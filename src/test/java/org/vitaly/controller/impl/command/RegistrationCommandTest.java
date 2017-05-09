@@ -7,7 +7,11 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.vitaly.controller.impl.command.user.RegistrationCommand;
 import org.vitaly.controller.impl.factory.RequestMapperFactory;
+import org.vitaly.controller.impl.factory.ValidatorFactory;
 import org.vitaly.controller.impl.requestMapper.RequestMapper;
+import org.vitaly.controller.impl.validation.ChangePasswordValidator;
+import org.vitaly.controller.impl.validation.RegistrationValidator;
+import org.vitaly.controller.impl.validation.ValidationResultImpl;
 import org.vitaly.service.abstraction.UserService;
 import org.vitaly.service.impl.dto.UserDto;
 import org.vitaly.service.impl.factory.ServiceFactory;
@@ -37,6 +41,12 @@ public class RegistrationCommandTest {
     private RequestMapperFactory requestMapperFactory = RequestMapperFactory.getInstance();
 
     @Mock
+    private RegistrationValidator registrationValidator;
+
+    @InjectMocks
+    private ValidatorFactory validatorFactory = ValidatorFactory.getInstance();
+
+    @Mock
     private UserService userService;
 
     @InjectMocks
@@ -61,6 +71,7 @@ public class RegistrationCommandTest {
         UserDto userDto = new UserDto();
 
         when(userRequestMapper.map(request)).thenReturn(userDto);
+        when(registrationValidator.validate(any())).thenReturn(new ValidationResultImpl());
         when(userService.registerNewUser(any())).thenReturn(true);
         registrationCommand.execute(request, response);
 
@@ -75,6 +86,7 @@ public class RegistrationCommandTest {
         when(userService.registerNewUser(any())).thenReturn(false);
         when(request.getServletContext()).thenReturn(servletContext);
         when(servletContext.getRequestDispatcher(contains(ERROR_JSP))).thenReturn(requestDispatcher);
+        when(registrationValidator.validate(any())).thenReturn(new ValidationResultImpl());
         registrationCommand.execute(request, response);
 
         verify(request).setAttribute(eq(ATTR_ERROR), anyString());

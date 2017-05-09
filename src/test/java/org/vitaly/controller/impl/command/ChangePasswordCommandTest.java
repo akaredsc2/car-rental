@@ -6,6 +6,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.vitaly.controller.impl.command.user.ChangePasswordCommand;
+import org.vitaly.controller.impl.factory.ValidatorFactory;
+import org.vitaly.controller.impl.validation.ChangePasswordValidator;
+import org.vitaly.controller.impl.validation.ValidationResultImpl;
 import org.vitaly.service.abstraction.UserService;
 import org.vitaly.service.impl.dto.UserDto;
 import org.vitaly.service.impl.factory.ServiceFactory;
@@ -38,6 +41,12 @@ public class ChangePasswordCommandTest {
     private ServiceFactory serviceFactory = ServiceFactory.getInstance();
 
     @Mock
+    private ChangePasswordValidator changePasswordValidator;
+
+    @InjectMocks
+    private ValidatorFactory validatorFactory = ValidatorFactory.getInstance();
+
+    @Mock
     private HttpServletRequest request;
 
     @Mock
@@ -63,6 +72,7 @@ public class ChangePasswordCommandTest {
         when(session.getAttribute(SESSION_USER)).thenReturn(userDto);
         when(request.getParameter(eq(RequestParameters.PARAM_PASS_NEW))).thenReturn(newPassword);
         when(userService.changePassword(any(), anyString())).thenReturn(true);
+        when(changePasswordValidator.validate(any())).thenReturn(new ValidationResultImpl());
         changePasswordCommand.execute(request, response);
 
         verify(session).setAttribute(eq(SESSION_USER), any());
@@ -80,9 +90,24 @@ public class ChangePasswordCommandTest {
         when(userService.changePassword(any(), anyString())).thenReturn(false);
         when(request.getServletContext()).thenReturn(servletContext);
         when(servletContext.getRequestDispatcher(eq(ERROR_JSP))).thenReturn(requestDispatcher);
+        when(changePasswordValidator.validate(any())).thenReturn(new ValidationResultImpl());
         changePasswordCommand.execute(request, response);
 
         verify(request).setAttribute(eq(ATTR_ERROR), anyString());
+        verify(requestDispatcher).forward(request, response);
+    }
+
+    @Test
+    public void supplyingRequestWithInvalidParametersReturnsForwardsToErrorPage() throws Exception {
+        ValidationResultImpl validationResult = new ValidationResultImpl();
+        validationResult.addErrorMessage("msg");
+
+        when(changePasswordValidator.validate(any())).thenReturn(validationResult);
+        when(request.getServletContext()).thenReturn(servletContext);
+        when(servletContext.getRequestDispatcher(eq(ERROR_JSP))).thenReturn(requestDispatcher);
+        changePasswordCommand.execute(request, response);
+
+        verify(request).setAttribute(eq(ATTR_ERROR), any());
         verify(requestDispatcher).forward(request, response);
     }
 }

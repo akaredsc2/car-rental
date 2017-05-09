@@ -7,7 +7,10 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.vitaly.controller.impl.command.user.SignInCommand;
 import org.vitaly.controller.impl.factory.RequestMapperFactory;
+import org.vitaly.controller.impl.factory.ValidatorFactory;
 import org.vitaly.controller.impl.requestMapper.RequestMapper;
+import org.vitaly.controller.impl.validation.SignInValidator;
+import org.vitaly.controller.impl.validation.ValidationResultImpl;
 import org.vitaly.service.abstraction.UserService;
 import org.vitaly.service.impl.dto.UserDto;
 import org.vitaly.service.impl.factory.ServiceFactory;
@@ -46,6 +49,12 @@ public class SignInCommandTest {
     private ServiceFactory serviceFactory = ServiceFactory.getInstance();
 
     @Mock
+    private SignInValidator validator;
+
+    @InjectMocks
+    private ValidatorFactory factory = ValidatorFactory.getInstance();
+
+    @Mock
     private HttpServletRequest request;
 
     @Mock
@@ -70,6 +79,7 @@ public class SignInCommandTest {
         when(userRequestMapper.map(request)).thenReturn(userDto);
         when(userService.authenticate(anyString(), anyString())).thenReturn(Optional.of(authenticatedUser));
         when(request.getSession(true)).thenReturn(session);
+        when(validator.validate(any())).thenReturn(new ValidationResultImpl());
         signInCommand.execute(request, response);
 
         verify(session).setAttribute(eq(SESSION_USER), any());
@@ -84,6 +94,7 @@ public class SignInCommandTest {
         when(userService.authenticate(anyString(), anyString())).thenReturn(Optional.empty());
         when(request.getServletContext()).thenReturn(servletContext);
         when(servletContext.getRequestDispatcher(eq(ERROR_JSP))).thenReturn(requestDispatcher);
+        when(validator.validate(any())).thenReturn(new ValidationResultImpl());
         signInCommand.execute(request, response);
 
         verify(request).setAttribute(eq(ATTR_ERROR), anyString());

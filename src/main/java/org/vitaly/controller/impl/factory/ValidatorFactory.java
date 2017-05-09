@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 public class ValidatorFactory {
     private static ValidatorFactory instance = new ValidatorFactory();
 
-    private Validator<UserDto> signInValidator = new SignInValidator();
-    private Validator<HttpServletRequest> registrationValidator = new RegistrationValidator();
+    private SignInValidator signInValidator = new SignInValidator();
+    private RegistrationValidator registrationValidator = new RegistrationValidator();
     private Validator<String> localeValidator = new LocaleValidator();
     private Validator<HttpServletRequest> changePasswordValidator = new ChangePasswordValidator();
     private Validator<HttpServletRequest> reservationValidator = new ReservationValidator();

@@ -34,6 +34,11 @@ public class MysqlPooledConnection implements PooledConnection {
     }
 
     @Override
+    public void setTransactionIsolation(int isolationLevel) throws SQLException {
+        connection.setTransactionIsolation(isolationLevel);
+    }
+
+    @Override
     public void setInTransaction(boolean isInTransaction) {
         this.isInTransaction = isInTransaction;
     }

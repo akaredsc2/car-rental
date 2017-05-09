@@ -4,30 +4,31 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.vitaly.dao.abstraction.BillDao;
 import org.vitaly.dao.abstraction.CarDao;
 import org.vitaly.dao.abstraction.ReservationDao;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
+import org.vitaly.model.bill.Bill;
 import org.vitaly.model.car.Car;
 import org.vitaly.model.car.CarStateEnum;
 import org.vitaly.model.reservation.Reservation;
 import org.vitaly.model.reservation.ReservationStateEnum;
 import org.vitaly.model.user.User;
+import org.vitaly.service.abstraction.BillService;
 import org.vitaly.service.abstraction.ReservationService;
 import org.vitaly.service.impl.dto.CarDto;
 import org.vitaly.service.impl.dto.ReservationDto;
 import org.vitaly.service.impl.dto.UserDto;
+import org.vitaly.service.impl.factory.ServiceFactory;
 
 import java.util.Optional;
 
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by vitaly on 2017-04-20.
@@ -39,10 +40,19 @@ public class ReservationServiceImplTest {
     private CarDao carDao;
 
     @Mock
+    private BillDao billDao;
+
+    @Mock
     private ReservationDao reservationDao;
 
     @InjectMocks
     private MysqlDaoFactory daoFactory = MysqlDaoFactory.getInstance();
+
+    @Mock
+    private BillService billService;
+
+    @InjectMocks
+    private ServiceFactory serviceFactory = ServiceFactory.getInstance();
 
     private ReservationService service = new ReservationServiceImpl();
 
@@ -240,6 +250,8 @@ public class ReservationServiceImplTest {
 
         when(reservationDao.isAdminAssignedToReservation(anyLong(), anyLong())).thenReturn(false);
         when(reservationDao.findById(anyLong())).thenReturn(Optional.of(reservation));
+        when(billDao.create(any())).thenReturn(Optional.of(1L));
+        when(billService.generateServiceBillForReservation(any())).thenReturn(Optional.of(new Bill.Builder().build()));
         boolean isStateChanged = service.changeReservationState(reservationDto, targetState);
 
         assertFalse(isStateChanged);
@@ -257,6 +269,8 @@ public class ReservationServiceImplTest {
 
         when(reservationDao.isAdminAssignedToReservation(anyLong(), anyLong())).thenReturn(true);
         when(reservationDao.findById(anyLong())).thenReturn(Optional.of(reservation));
+        when(billDao.create(any())).thenReturn(Optional.of(1L));
+        when(billService.generateServiceBillForReservation(any())).thenReturn(Optional.of(new Bill.Builder().build()));
         boolean isStateChanged = service.changeReservationState(reservationDto, targetState);
 
         assertFalse(isStateChanged);
@@ -275,6 +289,8 @@ public class ReservationServiceImplTest {
         when(reservationDao.isAdminAssignedToReservation(anyLong(), anyLong())).thenReturn(true);
         when(reservationDao.findById(anyLong())).thenReturn(Optional.of(reservation));
         when(reservationDao.changeReservationState(anyLong(), any())).thenReturn(false);
+        when(billDao.create(any())).thenReturn(Optional.of(1L));
+        when(billService.generateServiceBillForReservation(any())).thenReturn(Optional.of(new Bill.Builder().build()));
         boolean isStateChanged = service.changeReservationState(reservationDto, targetState);
 
         assertFalse(isStateChanged);
