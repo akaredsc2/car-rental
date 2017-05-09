@@ -6,6 +6,7 @@ import org.vitaly.service.abstraction.CarService;
 import org.vitaly.service.impl.dto.CarDto;
 import org.vitaly.service.impl.dto.CarModelDto;
 import org.vitaly.service.impl.dto.LocationDto;
+import org.vitaly.service.impl.dto.ReservationDto;
 import org.vitaly.service.impl.factory.ServiceFactory;
 import org.vitaly.util.PropertyUtils;
 
@@ -13,6 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -32,22 +34,32 @@ public class GetCarsCommand implements Command {
         Properties properties = PropertyUtils.readProperties(PARAMETERS);
         String locationIdParam = properties.getProperty(PARAM_LOCATION_ID);
         String modelIdParam = properties.getProperty(PARAM_MODEL_ID);
+        String reservationIdParam = properties.getProperty(PARAM_RESERVATION_ID);
 
         List<CarDto> carDtoList;
         CarService carService = ServiceFactory.getInstance().getCarService();
 
+        RequestMapperFactory mapperFactory = RequestMapperFactory.getInstance();
         if (parameterMap.containsKey(locationIdParam)) {
-            LocationDto locationDto = RequestMapperFactory.getInstance()
+            LocationDto locationDto = mapperFactory
                     .getLocationRequestMapper()
                     .map(request);
 
             carDtoList = carService.findCarsAtLocation(locationDto);
         } else if (parameterMap.containsKey(modelIdParam)) {
-            CarModelDto carModelDto = RequestMapperFactory.getInstance()
+            CarModelDto carModelDto = mapperFactory
                     .getCarModelRequestMapper()
                     .map(request);
 
             carDtoList = carService.findCarsByModel(carModelDto);
+        } else if (parameterMap.containsKey(reservationIdParam)) {
+            ReservationDto reservationDto = mapperFactory
+                    .getReservationRequestMapper()
+                    .map(request);
+
+            carDtoList = carService.findCarForReservation(reservationDto)
+                    .map(Collections::singletonList)
+                    .orElse(Collections.emptyList());
         } else {
             carDtoList = carService.getAllCars();
         }

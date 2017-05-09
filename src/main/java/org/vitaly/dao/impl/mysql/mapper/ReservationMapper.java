@@ -1,5 +1,6 @@
 package org.vitaly.dao.impl.mysql.mapper;
 
+import org.vitaly.dao.exception.DaoException;
 import org.vitaly.model.car.Car;
 import org.vitaly.model.reservation.Reservation;
 import org.vitaly.model.reservation.ReservationState;
@@ -32,8 +33,9 @@ public class ReservationMapper implements Mapper<Reservation> {
         LocalDateTime pickUpDatetime = resultSet.getTimestamp(RESERVATION_PICK_UP_DATETIME).toLocalDateTime();
         LocalDateTime dropOffDatetime = resultSet.getTimestamp(RESERVATION_DROP_OFF_DATETIME).toLocalDateTime();
 
-        ReservationState state = ReservationStateEnum.valueOf(
-                resultSet.getString(RESERVATION_RESERVATION_STATUS).toUpperCase()).getState();
+        ReservationState state = ReservationStateEnum.stateOf(
+                resultSet.getString(RESERVATION_RESERVATION_STATUS))
+                .orElseThrow(() -> new DaoException("Wrong reservation state!"));
 
         return new Reservation.Builder()
                 .setId(resultSet.getLong(RESERVATION_RESERVATION_ID))

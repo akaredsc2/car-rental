@@ -1,5 +1,7 @@
 package org.vitaly.service.impl.dto;
 
+import org.vitaly.model.bill.BillDescriptionEnum;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -11,7 +13,7 @@ public class BillDto {
     private long id;
     private boolean isPaid;
     private boolean isConfirmed;
-    private String description;
+    private BillDescriptionEnum description;
     private BigDecimal cashAmount;
     private LocalDateTime creationDateTime;
 
@@ -39,11 +41,11 @@ public class BillDto {
         isConfirmed = confirmed;
     }
 
-    public String getDescription() {
+    public BillDescriptionEnum getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(BillDescriptionEnum description) {
         this.description = description;
     }
 

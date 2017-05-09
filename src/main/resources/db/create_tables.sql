@@ -30,19 +30,6 @@ ALTER TABLE users
 ALTER TABLE users
   ADD CONSTRAINT u_users_driver_licence_number UNIQUE (driver_licence_number);
 
-CREATE TABLE notification (
-  notification_id       BIGINT                 NOT NULL AUTO_INCREMENT,
-  user_id               BIGINT                          DEFAULT NULL,
-  notification_datetime DATETIME               NOT NULL,
-  notification_status   ENUM ('new', 'viewed') NOT NULL DEFAULT 'new',
-  header                VARCHAR(128)           NOT NULL,
-  content               TEXT                   NOT NULL,
-
-  PRIMARY KEY (notification_id)
-);
-ALTER TABLE notification
-  ADD CONSTRAINT fk_notification_users FOREIGN KEY (user_id) REFERENCES users (user_id);
-
 CREATE TABLE location (
   location_id BIGINT      NOT NULL AUTO_INCREMENT,
   state       VARCHAR(20) NOT NULL,

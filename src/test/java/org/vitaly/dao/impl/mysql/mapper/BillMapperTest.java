@@ -28,7 +28,7 @@ public class BillMapperTest {
 
         when(resultSet.getLong(BILL_BILL_ID)).thenReturn(expectedBill.getId());
         when(resultSet.getBoolean(BILL_IS_PAID)).thenReturn(expectedBill.isPaid());
-        when(resultSet.getString(BILL_DESCRIPTION)).thenReturn(expectedBill.getDescription());
+        when(resultSet.getString(BILL_DESCRIPTION)).thenReturn(expectedBill.getDescription().toString());
         when(resultSet.getBigDecimal(BILL_CASH_AMOUNT)).thenReturn(expectedBill.getCashAmount());
         when(resultSet.getTimestamp(BILL_CREATION_DATETIME))
                 .thenReturn(Timestamp.valueOf(expectedBill.getCreationDateTime()));

@@ -13,7 +13,7 @@ public class Bill implements Entity {
     private long id;
     private boolean isPaid;
     private boolean isConfirmed;
-    private String description;
+    private BillDescriptionEnum description;
     private BigDecimal cashAmount;
     private LocalDateTime creationDateTime;
 
@@ -38,7 +38,7 @@ public class Bill implements Entity {
         return isConfirmed;
     }
 
-    public String getDescription() {
+    public BillDescriptionEnum getDescription() {
         return description;
     }
 
@@ -89,7 +89,7 @@ public class Bill implements Entity {
         private long id;
         private boolean isPaid;
         private boolean isConfirmed;
-        private String description;
+        private BillDescriptionEnum description;
         private BigDecimal cashAmount;
         private LocalDateTime creationDateTime;
 
@@ -108,7 +108,7 @@ public class Bill implements Entity {
             return this;
         }
 
-        public Builder setDescription(String description) {
+        public Builder setDescription(BillDescriptionEnum description) {
             this.description = description;
             return this;
         }
@@ -131,7 +131,7 @@ public class Bill implements Entity {
     public static Bill forService(BigDecimal cashAmount) {
         return new Bill.Builder()
                 .setCashAmount(cashAmount)
-                .setDescription("service")
+                .setDescription(BillDescriptionEnum.SERVICE)
                 .setCreationDateTime(LocalDateTime.now())
                 .setPaid(false)
                 .setConfirmed(false)
@@ -141,7 +141,7 @@ public class Bill implements Entity {
     public static Bill forDamage(BigDecimal cashAmount) {
         return new Bill.Builder()
                 .setCashAmount(cashAmount)
-                .setDescription("damage")
+                .setDescription(BillDescriptionEnum.DAMAGE)
                 .setCreationDateTime(LocalDateTime.now())
                 .setPaid(false)
                 .setConfirmed(false)
