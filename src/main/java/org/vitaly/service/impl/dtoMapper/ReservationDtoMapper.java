@@ -29,11 +29,7 @@ public class ReservationDtoMapper implements DtoMapper<Reservation, ReservationD
         }
 
         CarDto carDto = dto.getCar();
-        Car dummyCar =
-//                DtoMapperFactory.getInstance()
-//                .getCarDtoMapper()
-//                .mapDtoToEntity(carDto);
-        Car.createDummyCarWithId(carDto.getId());
+        Car dummyCar = Car.createDummyCarWithId(carDto.getId());
 
         return new Reservation.Builder()
                 .setId(dto.getId())

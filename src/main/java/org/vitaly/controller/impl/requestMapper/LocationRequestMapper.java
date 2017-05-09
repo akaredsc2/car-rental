@@ -4,7 +4,6 @@ import org.vitaly.service.impl.dto.LocationDto;
 import org.vitaly.util.PropertyUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Collections;
 import java.util.Properties;
 
 import static org.vitaly.util.constants.RequestParameters.*;
@@ -32,7 +31,6 @@ public class LocationRequestMapper implements RequestMapper<LocationDto> {
         locationDto.setCity(city);
         locationDto.setStreet(street);
         locationDto.setBuilding(building);
-        locationDto.setCarDtoList(Collections.emptyList());
 
         return locationDto;
     }

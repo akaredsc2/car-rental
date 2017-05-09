@@ -39,6 +39,17 @@
     </div>
 
     <div class="form-group row">
+        <label for="repeat" class="col-sm-2 col-form-label text-right">
+            <fmt:message key="reg.repeatPassword" bundle="${info}"/>
+        </label>
+
+        <div class="col-sm-10">
+            <input id="repeat" type="password" name="<fmt:message key="param.pass.repeat" bundle="${par}"/>"
+                   required>
+        </div>
+    </div>
+
+    <div class="form-group row">
         <label for="name" class="col-sm-2 col-form-label text-right">
             <fmt:message key="reg.name" bundle="${info}"/>
         </label>

@@ -8,7 +8,6 @@ import org.vitaly.service.impl.dto.UserDto;
 import org.vitaly.service.impl.factory.DtoMapperFactory;
 
 import java.time.LocalDate;
-import java.util.Collections;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
@@ -44,7 +43,6 @@ public class UserDtoMapperTest {
         expectedUserDto.setDriverLicenceNumber(DriverLicenceNumber);
         expectedUserDto.setBirthDate(birthDate);
         expectedUserDto.setRole(role);
-        expectedUserDto.setReservationDtoList(Collections.emptyList());
 
         expectedUser = new User.Builder()
                 .setId(id)

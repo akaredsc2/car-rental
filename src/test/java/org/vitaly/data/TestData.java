@@ -1,6 +1,7 @@
 package org.vitaly.data;
 
 import org.vitaly.model.bill.Bill;
+import org.vitaly.model.bill.BillDescriptionEnum;
 import org.vitaly.model.car.Car;
 import org.vitaly.model.car.CarStateEnum;
 import org.vitaly.model.carModel.CarModel;
@@ -178,14 +179,14 @@ public class TestData {
 
         Bill bill1 = new Bill.Builder()
                 .setPaid(false)
-                .setDescription("description")
+                .setDescription(BillDescriptionEnum.DAMAGE)
                 .setCashAmount(BigDecimal.valueOf(1111))
                 .setCreationDateTime(LocalDateTime.now())
                 .build();
 
         Bill bill2 = new Bill.Builder()
                 .setPaid(false)
-                .setDescription("description2")
+                .setDescription(BillDescriptionEnum.SERVICE)
                 .setCashAmount(BigDecimal.valueOf(2222))
                 .setCreationDateTime(LocalDateTime.now())
                 .build();

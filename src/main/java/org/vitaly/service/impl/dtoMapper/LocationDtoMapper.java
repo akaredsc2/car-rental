@@ -3,8 +3,6 @@ package org.vitaly.service.impl.dtoMapper;
 import org.vitaly.model.location.Location;
 import org.vitaly.service.impl.dto.LocationDto;
 
-import java.util.Collections;
-
 /**
  * Created by vitaly on 23.04.17.
  */
@@ -32,7 +30,6 @@ public class LocationDtoMapper implements DtoMapper<Location, LocationDto> {
         locationDto.setStreet(entity.getStreet());
         locationDto.setBuilding(entity.getBuilding());
         locationDto.setPhotoUrl(entity.getPhotoUrl());
-        locationDto.setCarDtoList(Collections.emptyList());
 
         return locationDto;
     }

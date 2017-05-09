@@ -1,8 +1,10 @@
 package org.vitaly.service.impl.dtoMapper;
 
+import junit.framework.AssertionFailedError;
 import org.junit.Before;
 import org.junit.Test;
 import org.vitaly.model.bill.Bill;
+import org.vitaly.model.bill.BillDescriptionEnum;
 import org.vitaly.service.impl.dto.BillDto;
 import org.vitaly.service.impl.factory.DtoMapperFactory;
 
@@ -26,21 +28,21 @@ public class BillDtoMapperTest {
     @Before
     public void setUp() throws Exception {
         int id = 1;
-        String description = "description";
+        String description = "service";
         BigDecimal cashAmount = BigDecimal.ONE;
         LocalDateTime creationDateTime = LocalDateTime.now();
         boolean isPaid = false;
 
         expectedBillDto = new BillDto();
         expectedBillDto.setId(id);
-        expectedBillDto.setDescription(description);
+        expectedBillDto.setDescription(BillDescriptionEnum.of(description).orElseThrow(AssertionFailedError::new));
         expectedBillDto.setCashAmount(cashAmount);
         expectedBillDto.setCreationDateTime(creationDateTime);
         expectedBillDto.setPaid(isPaid);
 
         expectedBill = new Bill.Builder()
                 .setId(id)
-                .setDescription(description)
+                .setDescription(BillDescriptionEnum.of(description).orElseThrow(AssertionFailedError::new))
                 .setCashAmount(cashAmount)
                 .setCreationDateTime(creationDateTime)
                 .setPaid(isPaid)

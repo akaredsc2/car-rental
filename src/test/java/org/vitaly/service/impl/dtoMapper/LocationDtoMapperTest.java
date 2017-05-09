@@ -6,8 +6,6 @@ import org.vitaly.model.location.Location;
 import org.vitaly.service.impl.dto.LocationDto;
 import org.vitaly.service.impl.factory.DtoMapperFactory;
 
-import java.util.Collections;
-
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -38,7 +36,6 @@ public class LocationDtoMapperTest {
         expectedLocationDto.setStreet(street);
         expectedLocationDto.setBuilding(building);
         expectedLocationDto.setPhotoUrl(photoUrl);
-        expectedLocationDto.setCarDtoList(Collections.emptyList());
 
         expectedLocation = new Location.Builder()
                 .setId(id)

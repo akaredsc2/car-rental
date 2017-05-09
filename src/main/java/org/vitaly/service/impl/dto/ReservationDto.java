@@ -18,9 +18,6 @@ public class ReservationDto {
     private ReservationState state;
     private String rejectionReason;
 
-    private BillDto billForServiceDto;
-    private BillDto billForDamageDto;
-
     public long getId() {
         return id;
     }
@@ -85,24 +82,6 @@ public class ReservationDto {
         this.rejectionReason = rejectionReason;
     }
 
-    public BillDto getBillForServiceDto() {
-        return billForServiceDto;
-    }
-
-    public ReservationDto setBillForServiceDto(BillDto billForServiceDto) {
-        this.billForServiceDto = billForServiceDto;
-        return this;
-    }
-
-    public BillDto getBillForDamageDto() {
-        return billForDamageDto;
-    }
-
-    public ReservationDto setBillForDamageDto(BillDto billForDamageDto) {
-        this.billForDamageDto = billForDamageDto;
-        return this;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -121,9 +100,7 @@ public class ReservationDto {
                 && Objects.equals(pickUpDatetime, that.pickUpDatetime)
                 && Objects.equals(dropOffDatetime, that.dropOffDatetime)
                 && Objects.equals(state, that.state)
-                && Objects.equals(rejectionReason, that.rejectionReason)
-                && Objects.equals(billForServiceDto, that.billForServiceDto)
-                && Objects.equals(billForDamageDto, that.billForDamageDto);
+                && Objects.equals(rejectionReason, that.rejectionReason);
     }
 
     @Override
@@ -135,9 +112,7 @@ public class ReservationDto {
         result = 31 * result + (pickUpDatetime != null ? pickUpDatetime.hashCode() : 0);
         result = 31 * result + (dropOffDatetime != null ? dropOffDatetime.hashCode() : 0);
         result = 31 * result + (state != null ? state.hashCode() : 0);
-        result = 31 * result + (rejectionReason != null ? rejectionReason.hashCode() : 0);
-        result = 31 * result + (billForServiceDto != null ? billForServiceDto.hashCode() : 0);
-        result = 31 * result + (billForDamageDto != null ? billForDamageDto.hashCode() : 0);
+        result = 31 * result + (rejectionReason != null ? rejectionReason.hashCode() : 0);;
         return result;
     }
 }

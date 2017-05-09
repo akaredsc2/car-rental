@@ -75,7 +75,7 @@ public class MysqlBillDao implements BillDao {
         requireNotNull(bill, BILL_MUST_NOT_BE_NULL);
 
         HashMap<Integer, Object> parameterMap = new HashMap<>();
-        parameterMap.put(1, bill.getDescription());
+        parameterMap.put(1, bill.getDescription().toString());
         parameterMap.put(2, bill.getCashAmount());
         parameterMap.put(3, bill.getCreationDateTime());
 

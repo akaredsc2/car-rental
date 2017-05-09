@@ -1,6 +1,5 @@
 package org.vitaly.service.impl.dto;
 
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -13,7 +12,6 @@ public class LocationDto {
     private String street;
     private String building;
     private String photoUrl;
-    private List<CarDto> carDtoList;
 
     public long getId() {
         return id;
@@ -63,14 +61,6 @@ public class LocationDto {
         this.photoUrl = photoUrl;
     }
 
-    public List<CarDto> getCarDtoList() {
-        return carDtoList;
-    }
-
-    public void setCarDtoList(List<CarDto> carDtoList) {
-        this.carDtoList = carDtoList;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -87,8 +77,7 @@ public class LocationDto {
                 && Objects.equals(city, that.city)
                 && Objects.equals(street, that.street)
                 && Objects.equals(building, that.building)
-                && Objects.equals(photoUrl, that.photoUrl)
-                && Objects.equals(carDtoList, that.carDtoList);
+                && Objects.equals(photoUrl, that.photoUrl);
     }
 
     @Override
@@ -99,7 +88,6 @@ public class LocationDto {
         result = 31 * result + (street != null ? street.hashCode() : 0);
         result = 31 * result + (building != null ? building.hashCode() : 0);
         result = 31 * result + (photoUrl != null ? photoUrl.hashCode() : 0);
-        result = 31 * result + (carDtoList != null ? carDtoList.hashCode() : 0);
         return result;
     }
 }

@@ -10,11 +10,13 @@ import org.vitaly.service.abstraction.CarService;
 import org.vitaly.service.impl.dto.CarDto;
 import org.vitaly.service.impl.dto.CarModelDto;
 import org.vitaly.service.impl.dto.LocationDto;
+import org.vitaly.service.impl.dto.ReservationDto;
 import org.vitaly.service.impl.dtoMapper.DtoMapper;
 import org.vitaly.service.impl.factory.DtoMapperFactory;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.vitaly.model.car.CarStateEnum.*;
@@ -191,5 +193,15 @@ public class CarServiceImpl implements CarService {
             return car.doReturn();
         }
         return false;
+    }
+
+    @Override
+    public Optional<CarDto> findCarForReservation(ReservationDto reservationDto) {
+        DtoMapper<Car, CarDto> mapper = DtoMapperFactory.getInstance().getCarDtoMapper();
+
+        return MysqlDaoFactory.getInstance()
+                .getCarDao()
+                .findCarByReservation(reservationDto.getId())
+                .map(mapper::mapEntityToDto);
     }
 }

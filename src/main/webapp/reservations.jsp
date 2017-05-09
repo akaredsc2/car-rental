@@ -30,6 +30,11 @@
     <fmt:message key="reservations.state" bundle="${info}"/> : <c:out value="${res.state}"/><br>
     <fmt:message key="reservations.reason" bundle="${info}"/> : <c:out value="${res.rejectionReason}"/><br>
 
+    <form method="get" action="controller/cars">
+        <input type="hidden" name="<fmt:message key="param.reservation.id" bundle="${par}"/>" value="${res.id}">
+        <input type="submit" value="<fmt:message key="reservations.car.submit" bundle="${info}"/>">
+    </form>
+
     <c:if test="${sessionScope.session_user.role=='ADMIN' and (empty res.admin)}">
         <form method="post" action="controller/assign">
             <input type="hidden" name="<fmt:message key="param.reservation.id" bundle="${par}"/>" value="${res.id}">

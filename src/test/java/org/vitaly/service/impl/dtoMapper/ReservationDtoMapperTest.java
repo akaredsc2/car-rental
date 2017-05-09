@@ -69,8 +69,6 @@ public class ReservationDtoMapperTest {
         expectedReservationDto.setPickUpDatetime(pickUpDateTime);
         expectedReservationDto.setDropOffDatetime(dropOffDatetime);
         expectedReservationDto.setRejectionReason(reason);
-        expectedReservationDto.setBillForServiceDto(null);
-        expectedReservationDto.setBillForDamageDto(null);
     }
 
     @Test

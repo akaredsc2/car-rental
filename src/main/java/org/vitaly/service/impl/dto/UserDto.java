@@ -19,8 +19,6 @@ public class UserDto {
     private String driverLicenceNumber;
     private UserRole role;
 
-    private List<ReservationDto> reservationDtoList;
-
     public long getId() {
         return id;
     }
@@ -85,11 +83,6 @@ public class UserDto {
         this.role = role;
     }
 
-    public UserDto setReservationDtoList(List<ReservationDto> reservationDtoList) {
-        this.reservationDtoList = reservationDtoList;
-        return this;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -108,8 +101,7 @@ public class UserDto {
                 && Objects.equals(birthDate, userDto.birthDate)
                 && Objects.equals(passportNumber, userDto.passportNumber)
                 && Objects.equals(driverLicenceNumber, userDto.driverLicenceNumber)
-                && role == userDto.role
-                && Objects.equals(reservationDtoList, userDto.reservationDtoList);
+                && role == userDto.role;
     }
 
     @Override
@@ -122,7 +114,6 @@ public class UserDto {
         result = 31 * result + (passportNumber != null ? passportNumber.hashCode() : 0);
         result = 31 * result + (driverLicenceNumber != null ? driverLicenceNumber.hashCode() : 0);
         result = 31 * result + (role != null ? role.hashCode() : 0);
-        result = 31 * result + (reservationDtoList != null ? reservationDtoList.hashCode() : 0);
         return result;
     }
 }
