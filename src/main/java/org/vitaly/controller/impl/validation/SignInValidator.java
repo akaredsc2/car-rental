@@ -14,9 +14,9 @@ public class SignInValidator implements Validator<UserDto> {
         ValidationResult validationResult = new ValidationResultImpl();
 
         Validator.stringMatches(userDto.getLogin(), LOGIN_PATTERN,
-                validationResult, LOGIN_DOES_NOT_MATCH_REGEX);
+                validationResult, ERR_BAD_LOGIN);
         Validator.stringMatches(userDto.getPassword(), PASSWORD_PATTERN,
-                validationResult, PASSWORD_DOES_NOT_MATCH_REGEX);
+                validationResult, ERR_BAD_PASSWORD);
 
         return validationResult;
     }

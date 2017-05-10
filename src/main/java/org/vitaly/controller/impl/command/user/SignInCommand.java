@@ -11,9 +11,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Optional;
 
+import static org.vitaly.controller.abstraction.validation.Validator.ERR_SIGN_IN;
 import static org.vitaly.util.constants.Pages.ERROR_JSP;
 import static org.vitaly.util.constants.Pages.HOME_JSP;
 import static org.vitaly.util.constants.RequestAttributes.ATTR_ERROR;
@@ -55,7 +55,7 @@ public class SignInCommand implements Command {
         if (authenticatedUser.isPresent()) {
             response.sendRedirect(request.getContextPath() + HOME_JSP);
         } else {
-            request.setAttribute(ATTR_ERROR, Collections.singletonList("Sign in failed!"));
+            request.setAttribute(ATTR_ERROR, ERR_SIGN_IN);
             request.getServletContext()
                     .getRequestDispatcher(ERROR_JSP)
                     .forward(request, response);

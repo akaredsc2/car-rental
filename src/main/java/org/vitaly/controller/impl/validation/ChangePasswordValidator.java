@@ -35,7 +35,7 @@ public class ChangePasswordValidator implements Validator<HttpServletRequest> {
             validationResult.addErrorMessage("Wrong old password");
         }
         if (!newPassword.equals(repeatPassword)) {
-            validationResult.addErrorMessage(PASSWORDS_ARE_NOT_EQUAL);
+            validationResult.addErrorMessage(ERR_PASS_NOT);
         }
         return validationResult;
     }

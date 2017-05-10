@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static org.vitaly.controller.abstraction.validation.Validator.ERR_ADD_BILL;
 import static org.vitaly.util.constants.Pages.ERROR_JSP;
 import static org.vitaly.util.constants.Pages.HOME_JSP;
 import static org.vitaly.util.constants.RequestAttributes.ATTR_ERROR;
@@ -38,7 +39,7 @@ public class AddDamageBillCommand implements Command {
         if (isBillAdded) {
             response.sendRedirect(request.getContextPath() + HOME_JSP);
         } else {
-            request.setAttribute(ATTR_ERROR, "Failed to add damage bill!");
+            request.setAttribute(ATTR_ERROR, ERR_ADD_BILL);
             request.getServletContext()
                     .getRequestDispatcher(ERROR_JSP)
                     .forward(request, response);

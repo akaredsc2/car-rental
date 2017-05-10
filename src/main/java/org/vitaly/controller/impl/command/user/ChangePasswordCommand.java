@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Properties;
 
+import static org.vitaly.controller.abstraction.validation.Validator.ERR_CHANGE_PASSWORD;
 import static org.vitaly.util.constants.Pages.ERROR_JSP;
 import static org.vitaly.util.constants.Pages.HOME_JSP;
 import static org.vitaly.util.constants.RequestAttributes.ATTR_ERROR;
@@ -59,7 +60,7 @@ public class ChangePasswordCommand implements Command {
 
             response.sendRedirect(request.getContextPath() + HOME_JSP);
         } else {
-            request.setAttribute(ATTR_ERROR, "Failed to change password!");
+            request.setAttribute(ATTR_ERROR, ERR_CHANGE_PASSWORD);
             request.getServletContext()
                     .getRequestDispatcher(ERROR_JSP)
                     .forward(request, response);

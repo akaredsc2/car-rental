@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static org.vitaly.controller.abstraction.validation.Validator.ERR_CREATE_RES;
 import static org.vitaly.util.constants.Pages.ERROR_JSP;
 import static org.vitaly.util.constants.Pages.HOME_JSP;
 import static org.vitaly.util.constants.RequestAttributes.ATTR_ERROR;
@@ -30,12 +31,8 @@ public class CreateReservationCommand implements Command {
                 .validate(request);
 
         if (validationResult.isValid()) {
-            System.out.println(1);
-
             doCreateReservation(request, response);
         } else {
-            System.out.println(2);
-
             request.setAttribute(ATTR_ERROR, validationResult.getErrorMessages());
             request.getServletContext()
                     .getRequestDispatcher(ERROR_JSP)
@@ -58,7 +55,7 @@ public class CreateReservationCommand implements Command {
         if (isReservationCreated) {
             response.sendRedirect(request.getContextPath() + HOME_JSP);
         } else {
-            request.setAttribute(ATTR_ERROR, "Failed to create reservation");
+            request.setAttribute(ATTR_ERROR, ERR_CREATE_RES);
             request.getServletContext()
                     .getRequestDispatcher(ERROR_JSP)
                     .forward(request, response);

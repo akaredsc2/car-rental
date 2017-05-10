@@ -32,26 +32,26 @@ public class RegistrationValidator implements Validator<HttpServletRequest> {
         String passport = request.getParameter(properties.getProperty(PARAM_USER_PASSPORT));
         String driverLicence = request.getParameter(properties.getProperty(PARAM_USER_DRIVER));
 
-        Validator.stringMatches(login, LOGIN_PATTERN, validationResult, LOGIN_DOES_NOT_MATCH_REGEX);
-        Validator.stringMatches(password, PASSWORD_PATTERN, validationResult, PASSWORD_DOES_NOT_MATCH_REGEX);
-        Validator.stringMatches(repeatPassword, PASSWORD_PATTERN, validationResult, PASSWORD_DOES_NOT_MATCH_REGEX);
+        Validator.stringMatches(login, LOGIN_PATTERN, validationResult, ERR_BAD_LOGIN);
+        Validator.stringMatches(password, PASSWORD_PATTERN, validationResult, ERR_BAD_PASSWORD);
+        Validator.stringMatches(repeatPassword, PASSWORD_PATTERN, validationResult, ERR_BAD_PASSWORD);
         if (!password.equals(repeatPassword)) {
-            validationResult.addErrorMessage(PASSWORDS_ARE_NOT_EQUAL);
+            validationResult.addErrorMessage(ERR_PASS_NOT);
         }
-        Validator.stringMatches(fullName, NAME_PATTERN, validationResult, NAME_DOES_NOT_MATCH_PATTERN);
+        Validator.stringMatches(fullName, NAME_PATTERN, validationResult, ERR_BAD_NAME);
 
         validateBirthDate(validationResult, birthDate);
 
-        Validator.stringMatches(passport, PASSPORT_PATTERN, validationResult, PASSPORT_DOES_NOT_MATCH_PATTERN);
+        Validator.stringMatches(passport, PASSPORT_PATTERN, validationResult, ERR_BAD_PASSPORT);
         Validator.stringMatches(driverLicence, DRIVER_LICENCE_PATTERN,
-                validationResult, DRIVER_LICENCE_DOES_NOT_MATCH_PATTERN);
+                validationResult, ERR_BAD_DRIVER);
 
         return validationResult;
     }
 
     private void validateBirthDate(ValidationResult validationResult, String birthDate) {
         if (birthDate == null) {
-            validationResult.addErrorMessage(BIRTH_DATE_DOES_NOT_MATCH_PATTERN);
+            validationResult.addErrorMessage(ERR_BAD_DATE);
         } else {
             validateNonNullLocalDate(validationResult, birthDate);
         }
@@ -63,13 +63,13 @@ public class RegistrationValidator implements Validator<HttpServletRequest> {
             LocalDate now = LocalDate.now();
 
             if (localDate.until(now, ChronoUnit.YEARS) < MIN_AGE) {
-                validationResult.addErrorMessage(TOO_YOUNG);
+                validationResult.addErrorMessage(ERR_YOUNG);
             }
             if (localDate.until(now, ChronoUnit.YEARS) > MAX_AGE) {
-                validationResult.addErrorMessage(TOO_OLD);
+                validationResult.addErrorMessage(ERR_OLD);
             }
         } catch (DateTimeParseException e) {
-            validationResult.addErrorMessage(BIRTH_DATE_DOES_NOT_MATCH_PATTERN);
+            validationResult.addErrorMessage(ERR_BAD_DATE);
         }
     }
 }

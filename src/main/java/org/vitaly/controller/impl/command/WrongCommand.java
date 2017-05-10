@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static org.vitaly.controller.abstraction.validation.Validator.ERR_WRONG_COMMAND;
 import static org.vitaly.util.constants.Pages.ERROR_JSP;
 import static org.vitaly.util.constants.RequestAttributes.ATTR_ERROR;
 
@@ -17,7 +18,7 @@ public class WrongCommand implements Command {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute(ATTR_ERROR, "wrong command");
+        request.setAttribute(ATTR_ERROR, ERR_WRONG_COMMAND);
         request.getServletContext()
                 .getRequestDispatcher(ERROR_JSP)
                 .forward(request, response);

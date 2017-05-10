@@ -5,7 +5,6 @@ import org.vitaly.controller.abstraction.validation.Validator;
 import org.vitaly.util.PropertyUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -39,7 +38,7 @@ public class ReservationValidator implements Validator<HttpServletRequest> {
     private void validateLocalDateTimes(String pickUpDateTime, String dropOffDateTime,
                                         ValidationResult validationResult) {
         if (pickUpDateTime == null || dropOffDateTime == null) {
-            validationResult.addErrorMessage(DATE_TIMES_ARE_MESSED_UP);
+            validationResult.addErrorMessage(ERR_BAD_DATE);
         } else {
             validateNonNullLocalDateTimes(pickUpDateTime, dropOffDateTime, validationResult);
         }
@@ -53,10 +52,10 @@ public class ReservationValidator implements Validator<HttpServletRequest> {
             LocalDateTime now = LocalDateTime.now();
 
             if (now.until(pickUp, ChronoUnit.MINUTES) < MINUTES_BETWEEN_RESERVATION_AND_PICK_UP) {
-                validationResult.addErrorMessage(TOO_FAST);
+                validationResult.addErrorMessage(ERR_FAST);
             }
             if (now.until(pickUp, ChronoUnit.DAYS) > DAYS_BETWEEN_RESERVATION_AND_PICK_UP) {
-                validationResult.addErrorMessage(TOO_LONG);
+                validationResult.addErrorMessage(ERR_LONG);
             }
             if (pickUp.until(dropOff, ChronoUnit.DAYS) < 1) {
                 validationResult.addErrorMessage("Drop off must be at least one day after pick up!");
@@ -65,7 +64,7 @@ public class ReservationValidator implements Validator<HttpServletRequest> {
                 validationResult.addErrorMessage("Car cannot be reserved for more than a month!");
             }
         } catch (DateTimeParseException e) {
-            validationResult.addErrorMessage(DATE_TIMES_ARE_MESSED_UP);
+            validationResult.addErrorMessage(ERR_BAD_DATE);
         }
     }
 }

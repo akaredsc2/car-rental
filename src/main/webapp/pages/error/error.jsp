@@ -18,7 +18,7 @@
 <fmt:message key="error.description" bundle="${info}"/><br>
 
 <c:forEach items="${requestScope.attr_error}" var="error">
-    <c:out value="${error}"/><br>
+    <fmt:message key="${error}" bundle="${info}"/><br>
 </c:forEach>
 
 <c:choose>

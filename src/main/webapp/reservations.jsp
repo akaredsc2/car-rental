@@ -109,7 +109,7 @@
             <label>
                 <fmt:message key="reservations.bill.amount" bundle="${info}"/>
                 <input type="number" name="<fmt:message key="param.bill.amount" bundle="${par}"/>" required min="0.01"
-                       step="0.001" max="1000.0">
+                       step="0.01" max="100000.00">
             </label>
             <input type="hidden" name="<fmt:message key="param.reservation.id" bundle="${par}"/>" value="${res.id}">
             <input type="submit" value="<fmt:message key="bills.href" bundle="${info}"/>">

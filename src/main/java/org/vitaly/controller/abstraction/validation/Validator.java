@@ -20,18 +20,35 @@ public interface Validator<T> {
     String DRIVER_LICENCE_PATTERN = URK_DRIVER_LICENCE + "|" + RUS_DRIVER_LICENCE;
     String INTEGER_PATTERN = "[-+]{0,1}\\d+";
 
-    String LOGIN_DOES_NOT_MATCH_REGEX = "Login does not match regex";
-    String PASSWORD_DOES_NOT_MATCH_REGEX = "Password does not match regex";
-    String PASSWORDS_ARE_NOT_EQUAL = "Passwords are not equal!";
-    String NAME_DOES_NOT_MATCH_PATTERN = "Name does not match pattern!";
-    String PASSPORT_DOES_NOT_MATCH_PATTERN = "Passport number does not match pattern!";
-    String DRIVER_LICENCE_DOES_NOT_MATCH_PATTERN = "Driver licence number does not match pattern!";
-    String BIRTH_DATE_DOES_NOT_MATCH_PATTERN = "Birth date does not match pattern!";
-    String TOO_YOUNG = "You must be at least 21 years old to be able to sign up";
-    String TOO_OLD = "You must be not older than 70 years old to be able to sign up";
-    String TOO_FAST = "Reservation pick up date must be at least one minute in the future!";
-    String TOO_LONG = "Reservation pick up must be no longer than a week after reservation date";
-    String DATE_TIMES_ARE_MESSED_UP = "Date times are messed up!";
+    String ERR_BAD_LOGIN = "err.bad.login";
+    String ERR_BAD_PASSWORD = "err.bad.password";
+    String ERR_PASS_NOT = "err.pass.not";
+    String ERR_BAD_NAME = "err.bad.name";
+    String ERR_BAD_PASSPORT = "err.bad.passport";
+    String ERR_BAD_DRIVER = "err.bad.driver";
+    String ERR_BAD_DATE = "err.bad.date";
+    String ERR_YOUNG = "err.young";
+    String ERR_OLD = "err.old";
+    String ERR_FAST = "err.fast";
+    String ERR_LONG = "err.long";
+
+    String ERR_ADD_BILL = "err.add.bill";
+    String ERR_WRONG_COMMAND = "err.wrong.command";
+    String ERR_CREATE_RES = "err.create.res";
+    String ERR_CHANGE_CAR_STATE = "err.change.car.state";
+    String ERR_CHANGE_PASSWORD = "err.chane.password";
+    String ERR_ASSIGN_ADMIN = "err.assign.admin";
+    String ERR_CONFIRM_BILL = "err.confirm.bill";
+    String ERR_ADD_CAR_MODEL = "err.add.model";
+    String ERR_PAY = "err.bill.pay";
+    String ERR_ADD_CAR = "err.add.car";
+    String ERR_MOVE_CAR = "err.move.car";
+    String ERR_UPD_CAR = "err.upd.car";
+    String ERR_ADD_LOC = "err.add.loc";
+    String ERR_CANCEL_RES = "err.cancel.res";
+    String ERR_CHANGE_RES = "err.change.res";
+    String ERR_REG = "err.reg";
+    String ERR_SIGN_IN = "err.sign.in";
 
     ValidationResult validate(T t);
 
