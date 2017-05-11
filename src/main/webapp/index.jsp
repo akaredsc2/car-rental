@@ -19,7 +19,7 @@
 </head>
 <body>
 <jsp:include page="/inc/header.jsp"/>
-<form method="post" action="sign_in" class="form-horizontal custom-top">
+<form method="post" action="rental" class="form-horizontal custom-top">
     <div class="form-group row">
         <label for="login" class="col-sm-2 col-form-label text-right">
             <fmt:message key="signIn.login" bundle="${info}"/>
@@ -45,6 +45,7 @@
             <input class="btn btn-default" type="submit" value="<fmt:message key="signIn.submit" bundle="${info}"/>">
         </div>
     </div>
+    <input type="hidden" name="command" value="sign_in">
 </form>
 <a class="col-sm-offset-2 col-sm-10" href="<c:url value="/registration.jsp"/>"><fmt:message key="reg.href"
                                                                                             bundle="${info}"/></a>

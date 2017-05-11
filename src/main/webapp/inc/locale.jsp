@@ -6,7 +6,7 @@
 <fmt:setLocale value="${sessionScope.session_locale}"/>
 <fmt:setBundle basename="info" var="info"/>
 
-<form method="get" action="locale" class="form-inline">
+<form method="get" action="rental" class="form-inline">
     <div class="form-group row">
         <div class="col-sm-2">
             <select id="lang" name="<fmt:message key="param.locale" bundle="${par}"/>" required class="form-control ">
@@ -31,6 +31,8 @@
             </select>
         </div>
     </div>
+
+    <input type="hidden" name="command" value="locale">
 
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">

@@ -19,7 +19,8 @@
 <jsp:include page="/inc/catalog.jsp"/>
 
 <c:if test="${sessionScope.session_user.role=='ADMIN'}">
-    <form method="get" action="add_car">
+    <form method="get" action="rental">
+        <input type="hidden" name="command" value="add_car">
         <input type="submit" value="<fmt:message key="car.add.href" bundle="${info}"/>">
     </form>
 </c:if>
@@ -29,17 +30,19 @@
     <c:out value="${car.registrationPlate}"/>
     <c:out value="${car.color}"/>
     <c:out value="${car.pricePerDay}"/><br>
-    <form method="get" action="locations">
+    <form method="get" action="rental">
+        <input type="hidden" name="command" value="locations">
         <input type="hidden" name="<fmt:message key="param.car.id" bundle="${par}"/>" value="${car.id}">
         <input type="submit" value="<fmt:message key="cars.location.href" bundle="${info}"/>">
     </form>
-    <form method="get" action="models">
+    <form method="get" action="rental">
+        <input type="hidden" name="command" value="models">
         <input type="hidden" name="<fmt:message key="param.car.id" bundle="${par}"/>" value="${car.id}">
         <input type="submit" value="<fmt:message key="cars.model.href" bundle="${info}"/>">
     </form>
     <c:choose>
         <c:when test="${sessionScope.session_user.role=='CLIENT' and car.state=='available'}">
-            <form method="post" action="create_reservation">
+            <form method="post" action="rental">
                 <label>
                     <fmt:message key="reservation.create.pick" bundle="${info}"/>
                     <input type="datetime-local" name="<fmt:message key="param.reservation.pick" bundle="${par}"/>">
@@ -51,13 +54,14 @@
                 <input type="hidden" name="<fmt:message key="param.reservation.car" bundle="${par}"/>"
                        value="${car.id}">
 
+                <input type="hidden" name="command" value="create_reservation">
                 <input type="submit" value="<fmt:message key="reservation.create.submit" bundle="${info}"/>">
             </form>
         </c:when>
 
         <c:when test="${sessionScope.session_user.role=='ADMIN'}">
             <c:if test="${car.state=='unavailable'}">
-                <form method="post" action="update_car">
+                <form method="post" action="rental">
                     <label>
                         <fmt:message key="car.update.color" bundle="${info}"/>
                         <input type="text" name="<fmt:message key="param.car.color" bundle="${par}"/>" required>
@@ -70,19 +74,22 @@
                                step="0.01"
                                required>
                     </label><br>
-                    <input type="hidden" name="<fmt:message key="param.car.id" bundle="${par}"/>" value="${car.id}">
 
+                    <input type="hidden" name="command" value="update_car">
+                    <input type="hidden" name="<fmt:message key="param.car.id" bundle="${par}"/>" value="${car.id}">
                     <input type="submit" value="<fmt:message key="car.update.submit" bundle="${info}"/>">
                 </form>
 
-                <form method="get" action="move_car">
+                <form method="get" action="rental">
+                    <input type="hidden" name="command" value="move_car">
                     <input type="hidden" name="<fmt:message key="param.car.id" bundle="${par}"/>" value="${car.id}">
                     <input type="submit" value="<fmt:message key="car.move.href" bundle="${info}"/>">
                 </form>
             </c:if>
 
             <c:if test="${car.state == 'available' or car.state == 'unavailable' or car.state == 'served'}">
-                <form method="post" action="change_car_state">
+                <form method="post" action="rental">
+                    <input type="hidden" name="command" value="change_car_state">
                     <input type="hidden" name="<fmt:message key="param.car.id" bundle="${par}"/>" value="${car.id}">
                     <input type="hidden" name="<fmt:message key="param.car.state" bundle="${par}"/>"
                            value="<c:out value="${car.state}"/>">

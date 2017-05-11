@@ -13,13 +13,15 @@
             </div>
 
             <div class="col-xs-3">
-                <form method="get" action="locations">
+                <form method="get" action="rental">
+                    <input type="hidden" name="command" value="locations">
                     <input class="btn btn-default" type="submit" value="<fmt:message key="catalog.href" bundle="${info}"/>">
                 </form>
             </div>
 
             <div class="col-xs-3">
-                <form method="get" action="reservations">
+                <form method="get" action="rental">
+                    <input type="hidden" name="command" value="reservations">
                     <input class="btn btn-default" type="submit" value="<fmt:message key="reservations.href" bundle="${info}"/>">
                 </form>
             </div>

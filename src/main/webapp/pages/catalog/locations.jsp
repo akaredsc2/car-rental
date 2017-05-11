@@ -65,9 +65,9 @@
             </div>
         </address>
 
-        <form method="get" action="cars">
+        <form method="get" action="rental">
+            <input type="hidden" name="command" value="cars">
             <input type="hidden" name="<fmt:message key="param.location.id" bundle="${par}"/>" value="${location.id}">
-
             <div class="form-group col-xs-6">
                 <input class="btn btn-default" type="submit"
                        value="<fmt:message key="locations.cars.href" bundle="${info}"/>">

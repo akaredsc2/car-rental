@@ -16,7 +16,7 @@
 <body>
 <jsp:include page="/inc/header.jsp"/>
 <jsp:include page="/inc/nav.jsp"/>
-<form method="post" action="add_location">
+<form method="post" action="rental">
     <label>
         <fmt:message key="location.add.state" bundle="${info}"/>
         <input type="text" name="<fmt:message key="param.location.state" bundle="${par}"/>" required>
@@ -34,6 +34,7 @@
         <input type="text" name="<fmt:message key="param.location.building" bundle="${par}"/>" required>
     </label><br>
 
+    <input type="hidden" name="command" value="add_location">
     <input type="submit" value="<fmt:message key="location.add.submit" bundle="${info}"/>">
 </form>
 <br>

@@ -6,20 +6,23 @@
 <div class="row">
 
     <div class="col-xs-4">
-        <form method="get" action="locations">
+        <form method="get" action="rental">
+            <input type="hidden" name="command" value="locations">
             <input class="btn btn-default" type="submit" value="<fmt:message key="locations.href" bundle="${info}"/>">
         </form>
     </div>
 
     <div class="col-xs-4">
-        <form method="get" action="cars">
+        <form method="get" action="rental">
+            <input type="hidden" name="command" value="cars">
             <input class="btn btn-default" type="submit" value="<fmt:message key="cars.href" bundle="${info}"/>">
         </form>
     </div>
 
 
     <div class="col-xs-4">
-        <form method="get" action="models">
+        <form method="get" action="rental">
+            <input type="hidden" name="command" value="models">
             <input class="btn btn-default" type="submit" value="<fmt:message key="models.href" bundle="${info}"/>">
         </form>
     </div>

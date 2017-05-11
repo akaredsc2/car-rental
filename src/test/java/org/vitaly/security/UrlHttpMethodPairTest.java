@@ -5,6 +5,7 @@ import org.junit.Test;
 import javax.servlet.http.HttpServletRequest;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -14,38 +15,16 @@ import static org.mockito.Mockito.when;
 public class UrlHttpMethodPairTest {
 
     @Test
-    public void fromRequestDiscardsEverythingExceptActionIfUriIsNotEndingWithJsp() throws Exception {
+    public void fromRequestFetchesCommandParameterFromRequest() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);
         String method = "POST";
-        String contextPath = "contextPath";
-        String path = "/path";
-        String action = "/action";
-        String uri = contextPath + path + action;
+        String command = "someCommand";
 
         when(request.getMethod()).thenReturn(method);
-        when(request.getContextPath()).thenReturn(contextPath);
-        when(request.getRequestURI()).thenReturn(uri);
+        when(request.getParameter(eq("command"))).thenReturn(command);
         UrlHttpMethodPair actual = UrlHttpMethodPair.fromRequest(request);
 
-        UrlHttpMethodPair expected = new UrlHttpMethodPair(action, HttpMethod.valueOf(method));
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void fromRequestDiscardsContextPathIfUriIsEndingWithJsp() throws Exception {
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        String method = "POST";
-        String contextPath = "contextPath";
-        String path = "/path";
-        String page = "/page.jsp";
-        String uri = contextPath + path + page;
-
-        when(request.getMethod()).thenReturn(method);
-        when(request.getContextPath()).thenReturn(contextPath);
-        when(request.getRequestURI()).thenReturn(uri);
-        UrlHttpMethodPair actual = UrlHttpMethodPair.fromRequest(request);
-
-        UrlHttpMethodPair expected = new UrlHttpMethodPair(path + page, HttpMethod.valueOf(method));
+        UrlHttpMethodPair expected = new UrlHttpMethodPair(command, HttpMethod.valueOf(method));
         assertEquals(expected, actual);
     }
 

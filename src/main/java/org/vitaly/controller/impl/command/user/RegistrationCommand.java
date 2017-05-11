@@ -31,7 +31,6 @@ public class RegistrationCommand implements Command {
         if (validationResult.isValid()) {
             doRegister(request, response);
         } else {
-            System.out.println(validationResult.getErrorMessages());
             request.setAttribute(ATTR_ERROR, validationResult.getErrorMessages());
             request.getServletContext()
                     .getRequestDispatcher(ERROR_JSP)

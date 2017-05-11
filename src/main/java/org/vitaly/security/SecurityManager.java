@@ -73,7 +73,6 @@ public class SecurityManager {
         permissionMap.put(UrlHttpMethodPair.PAY_POST, client);
         permissionMap.put(UrlHttpMethodPair.CONFIRM_POST, admin);
 
-        // TODO: 08.05.17 cancel for admin if current date greater than pick up date
         permissionMap.put(UrlHttpMethodPair.CANCEL_RESERVATION_POST, client);
         permissionMap.put(UrlHttpMethodPair.ADD_DAMAGE_BILL_POST, admin);
 
@@ -92,9 +91,6 @@ public class SecurityManager {
 
     public boolean isValidRequest(HttpServletRequest request) {
         UrlHttpMethodPair urlHttpMethodPair = UrlHttpMethodPair.fromRequest(request);
-
-        // TODO: 30.04.17 remove. figure out why logger is not working
-        System.out.println(urlHttpMethodPair);
 
         return permissionMap
                 .keySet()

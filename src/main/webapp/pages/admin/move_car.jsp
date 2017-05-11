@@ -16,7 +16,7 @@
 <body>
 <jsp:include page="/inc/header.jsp"/>
 <jsp:include page="/inc/nav.jsp"/>
-<form method="post" action="move_car">
+<form method="post" action="rental">
     ${requestScope.attr_car_id}<br>
     <label>
         <fmt:message key="car.move.location" bundle="${info}"/>
@@ -31,7 +31,8 @@
             </c:forEach>
         </select>
     </label><br>
-    <input type="hidden" name="<fmt:message key="param.car.id" bundle="${par}"/>" value="${requestScope.attr_car_id}">
+        <input type="hidden" name="command" value="move_car">
+        <input type="hidden" name="<fmt:message key="param.car.id" bundle="${par}"/>" value="${requestScope.attr_car_id}">
     <input type="submit" value="<fmt:message key="car.move.submit" bundle="${info}"/>">
 </form>
 <br>

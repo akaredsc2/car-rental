@@ -15,7 +15,7 @@
 </head>
 <body>
 <jsp:include page="/inc/header.jsp"/>
-<form method="post" action="registration">
+<form method="post" action="rental">
     <div class="form-group row">
         <label for="login" class="col-sm-2 col-form-label text-right">
             <fmt:message key="reg.login" bundle="${info}"/>
@@ -98,6 +98,7 @@
             <input class="btn btn-default" type="submit" value="<fmt:message key="reg.submit" bundle="${info}"/>">
         </div>
     </div>
+    <input type="hidden" name="command" value="registration">
 </form>
 <a class="col-sm-offset-2 col-sm-10" href="<c:url value="/index.jsp"/>"><fmt:message key="signIn.href"
                                                                                      bundle="${info}"/></a>

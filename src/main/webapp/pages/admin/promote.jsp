@@ -16,7 +16,7 @@
 <body>
 <jsp:include page="/inc/header.jsp"/>
 <jsp:include page="/inc/nav.jsp"/>
-<form method="post" action="promote">
+<form method="post" action="rental">
     <label>
         <fmt:message key="promote.client" bundle="${info}"/>
         <select name="<fmt:message key="param.user.id" bundle="${par}"/>" required>
@@ -29,6 +29,7 @@
         </select>
     </label><br>
 
+    <input type="hidden" name="command" value="promote">
     <input type="submit" value="<fmt:message key="promote.submit" bundle="${info}"/>">
 </form>
 <br>

@@ -24,42 +24,42 @@ public class UrlHttpMethodPair {
     static final UrlHttpMethodPair PAGE_PERSONAL =
             new UrlHttpMethodPair("/personal.jsp", HttpMethod.GET);
 
-    public static final UrlHttpMethodPair SIGN_IN_POST = new UrlHttpMethodPair("/sign_in", HttpMethod.POST);
-    public static final UrlHttpMethodPair SIGN_OUT_POST = new UrlHttpMethodPair("/sign_out", HttpMethod.POST);
-    public static final UrlHttpMethodPair REGISTRATION_POST = new UrlHttpMethodPair("/registration", HttpMethod.POST);
+    public static final UrlHttpMethodPair SIGN_IN_POST = new UrlHttpMethodPair("sign_in", HttpMethod.POST);
+    public static final UrlHttpMethodPair SIGN_OUT_POST = new UrlHttpMethodPair("sign_out", HttpMethod.POST);
+    public static final UrlHttpMethodPair REGISTRATION_POST = new UrlHttpMethodPair("registration", HttpMethod.POST);
     public static final UrlHttpMethodPair CHANGE_PASSWORD_POST =
-            new UrlHttpMethodPair("/change_password", HttpMethod.POST);
+            new UrlHttpMethodPair("change_password", HttpMethod.POST);
 
-    public static final UrlHttpMethodPair CHANGE_LOCALE = new UrlHttpMethodPair("/locale", HttpMethod.GET);
+    public static final UrlHttpMethodPair CHANGE_LOCALE = new UrlHttpMethodPair("locale", HttpMethod.GET);
 
-    public static final UrlHttpMethodPair ADD_MODEL_POST = new UrlHttpMethodPair("/add_model", HttpMethod.POST);
-    public static final UrlHttpMethodPair ADD_CAR_GET = new UrlHttpMethodPair("/add_car", HttpMethod.GET);
-    public static final UrlHttpMethodPair ADD_CAR_POST = new UrlHttpMethodPair("/add_car", HttpMethod.POST);
-    public static final UrlHttpMethodPair ADD_LOCATION_POST = new UrlHttpMethodPair("/add_location", HttpMethod.POST);
-    public static final UrlHttpMethodPair MOVE_CAR_GET = new UrlHttpMethodPair("/move_car", HttpMethod.GET);
-    public static final UrlHttpMethodPair MOVE_CAR_POST = new UrlHttpMethodPair("/move_car", HttpMethod.POST);
+    public static final UrlHttpMethodPair ADD_MODEL_POST = new UrlHttpMethodPair("add_model", HttpMethod.POST);
+    public static final UrlHttpMethodPair ADD_CAR_GET = new UrlHttpMethodPair("add_car", HttpMethod.GET);
+    public static final UrlHttpMethodPair ADD_CAR_POST = new UrlHttpMethodPair("add_car", HttpMethod.POST);
+    public static final UrlHttpMethodPair ADD_LOCATION_POST = new UrlHttpMethodPair("add_location", HttpMethod.POST);
+    public static final UrlHttpMethodPair MOVE_CAR_GET = new UrlHttpMethodPair("move_car", HttpMethod.GET);
+    public static final UrlHttpMethodPair MOVE_CAR_POST = new UrlHttpMethodPair("move_car", HttpMethod.POST);
     public static final UrlHttpMethodPair CHANGE_CAR_STATE_POST =
-            new UrlHttpMethodPair("/change_car_state", HttpMethod.POST);
-    public static final UrlHttpMethodPair UPDATE_CAR_POST = new UrlHttpMethodPair("/update_car", HttpMethod.POST);
-    public static final UrlHttpMethodPair PROMOTE_GET = new UrlHttpMethodPair("/promote", HttpMethod.GET);
-    public static final UrlHttpMethodPair PROMOTE_POST = new UrlHttpMethodPair("/promote", HttpMethod.POST);
+            new UrlHttpMethodPair("change_car_state", HttpMethod.POST);
+    public static final UrlHttpMethodPair UPDATE_CAR_POST = new UrlHttpMethodPair("update_car", HttpMethod.POST);
+    public static final UrlHttpMethodPair PROMOTE_GET = new UrlHttpMethodPair("promote", HttpMethod.GET);
+    public static final UrlHttpMethodPair PROMOTE_POST = new UrlHttpMethodPair("promote", HttpMethod.POST);
     public static final UrlHttpMethodPair CREATE_RESERVATION_POST =
-            new UrlHttpMethodPair("/create_reservation", HttpMethod.POST);
-    public static final UrlHttpMethodPair ASSIGN_POST = new UrlHttpMethodPair("/assign", HttpMethod.POST);
+            new UrlHttpMethodPair("create_reservation", HttpMethod.POST);
+    public static final UrlHttpMethodPair ASSIGN_POST = new UrlHttpMethodPair("assign", HttpMethod.POST);
     public static final UrlHttpMethodPair CHANGE_RESERVATION_STATE_POST =
-            new UrlHttpMethodPair("/change_reservation_state", HttpMethod.POST);
+            new UrlHttpMethodPair("change_reservation_state", HttpMethod.POST);
     public static final UrlHttpMethodPair CANCEL_RESERVATION_POST =
-            new UrlHttpMethodPair("/cancel_reservation", HttpMethod.POST);
-    public static final UrlHttpMethodPair PAY_POST = new UrlHttpMethodPair("/pay", HttpMethod.POST);
-    public static final UrlHttpMethodPair CONFIRM_POST = new UrlHttpMethodPair("/confirm", HttpMethod.POST);
+            new UrlHttpMethodPair("cancel_reservation", HttpMethod.POST);
+    public static final UrlHttpMethodPair PAY_POST = new UrlHttpMethodPair("pay", HttpMethod.POST);
+    public static final UrlHttpMethodPair CONFIRM_POST = new UrlHttpMethodPair("confirm", HttpMethod.POST);
     public static final UrlHttpMethodPair ADD_DAMAGE_BILL_POST =
-            new UrlHttpMethodPair("/add_damage_bill", HttpMethod.POST);
+            new UrlHttpMethodPair("add_damage_bill", HttpMethod.POST);
 
-    public static final UrlHttpMethodPair LOCATIONS_GET = new UrlHttpMethodPair("/locations", HttpMethod.GET);
-    public static final UrlHttpMethodPair MODELS_GET = new UrlHttpMethodPair("/models", HttpMethod.GET);
-    public static final UrlHttpMethodPair CARS_GET = new UrlHttpMethodPair("/cars", HttpMethod.GET);
-    public static final UrlHttpMethodPair RESERVATIONS_GET = new UrlHttpMethodPair("/reservations", HttpMethod.GET);
-    public static final UrlHttpMethodPair BILLS_GET = new UrlHttpMethodPair("/bills", HttpMethod.GET);
+    public static final UrlHttpMethodPair LOCATIONS_GET = new UrlHttpMethodPair("locations", HttpMethod.GET);
+    public static final UrlHttpMethodPair MODELS_GET = new UrlHttpMethodPair("models", HttpMethod.GET);
+    public static final UrlHttpMethodPair CARS_GET = new UrlHttpMethodPair("cars", HttpMethod.GET);
+    public static final UrlHttpMethodPair RESERVATIONS_GET = new UrlHttpMethodPair("reservations", HttpMethod.GET);
+    public static final UrlHttpMethodPair BILLS_GET = new UrlHttpMethodPair("bills", HttpMethod.GET);
 
     private String url;
     private HttpMethod httpMethod;
@@ -109,17 +109,8 @@ public class UrlHttpMethodPair {
     public static UrlHttpMethodPair fromRequest(HttpServletRequest request) {
         InputChecker.requireNotNull(request, "Request must not be null!");
 
-        String requestUri = request.getRequestURI();
-        String url;
-
-        if (requestUri.endsWith(".jsp")) {
-            url = request.getRequestURI().substring(request.getContextPath().length());
-        } else {
-            String[] split = request.getRequestURI().split("(?=/)");
-            url = split[split.length - 1];
-        }
-
+        String command = request.getParameter("command");
         HttpMethod httpMethod = HttpMethod.valueOf(request.getMethod());
-        return new UrlHttpMethodPair(url, httpMethod);
+        return new UrlHttpMethodPair(command, httpMethod);
     }
 }

@@ -77,7 +77,7 @@
     </div>
 </div>
 
-<form method="post" action="change_password">
+<form method="post" action="rental">
     <div class="form-group row">
         <label for="old" class="col-sm-2 col-form-label text-right">
             <fmt:message key="personal.change.old" bundle="${info}"/>
@@ -120,16 +120,18 @@
                    value="<fmt:message key="personal.change.submit" bundle="${info}"/>">
         </div>
     </div>
+    <input type="hidden" name="command" value="change_password">
 </form>
 
 <c:if test="${sessionScope.session_user.role == 'ADMIN'}">
-    <form action="promote" method="get">
+    <form action="rental" method="get">
         <div class="form-group row">
             <div class="col-sm-offset-2 col-sm-10">
                 <input class="btn btn-default" type="submit"
                        value="<fmt:message key="personal.promote.submit" bundle="${info}"/>">
             </div>
         </div>
+        <input type="hidden" name="command" value="promote">
     </form>
 </c:if>
 </body>
