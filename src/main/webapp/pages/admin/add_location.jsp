@@ -19,19 +19,23 @@
 <form method="post" action="rental">
     <label>
         <fmt:message key="location.add.state" bundle="${info}"/>
-        <input type="text" name="<fmt:message key="param.location.state" bundle="${par}"/>" required>
+        <input type="text" name="<fmt:message key="param.location.state" bundle="${par}"/>" required
+               pattern="[a-zA-Zа-яА-ЯіІїЇєЄ\d]+(\s+[a-zA-Zа-яА-ЯіІїЇєЄ\d]+)*">
     </label><br>
     <label>
         <fmt:message key="location.add.city" bundle="${info}"/>
-        <input type="text" name="<fmt:message key="param.location.city" bundle="${par}"/>" required>
+        <input type="text" name="<fmt:message key="param.location.city" bundle="${par}"/>" required
+               pattern="[a-zA-Zа-яА-ЯіІїЇєЄ\d]+(\s+[a-zA-Zа-яА-ЯіІїЇєЄ\d]+)*">
     </label><br>
     <label>
         <fmt:message key="location.add.street" bundle="${info}"/>
-        <input type="text" name="<fmt:message key="param.location.street" bundle="${par}"/>" required>
+        <input type="text" name="<fmt:message key="param.location.street" bundle="${par}"/>" required
+               pattern="[a-zA-Zа-яА-ЯіІїЇєЄ\d]+(\s+[a-zA-Zа-яА-ЯіІїЇєЄ\d]+)*">
     </label><br>
     <label>
         <fmt:message key="location.add.building" bundle="${info}"/>
-        <input type="text" name="<fmt:message key="param.location.building" bundle="${par}"/>" required>
+        <input type="text" name="<fmt:message key="param.location.building" bundle="${par}"/>" required
+               pattern="[a-zA-Zа-яА-ЯіІїЇєЄ\d]+(\s+[a-zA-Zа-яА-ЯіІїЇєЄ\d]+)*">
     </label><br>
 
     <input type="hidden" name="command" value="add_location">

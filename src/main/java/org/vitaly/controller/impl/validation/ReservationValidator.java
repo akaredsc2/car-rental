@@ -25,7 +25,6 @@ public class ReservationValidator implements Validator<HttpServletRequest> {
         Properties properties = PropertyUtils.readProperties(PARAMETERS);
 
         String carId = request.getParameter(properties.getProperty(PARAM_RESERVATION_CAR));
-        Validator.isInteger(carId, validationResult, "Car id is not integer number!");
 
         String pickUpDateTime = request.getParameter(properties.getProperty(PARAM_RESERVATION_PICK));
         String dropOffDateTime = request.getParameter(properties.getProperty(PARAM_RESERVATION_DROP));
@@ -58,10 +57,10 @@ public class ReservationValidator implements Validator<HttpServletRequest> {
                 validationResult.addErrorMessage(ERR_LONG);
             }
             if (pickUp.until(dropOff, ChronoUnit.DAYS) < 1) {
-                validationResult.addErrorMessage("Drop off must be at least one day after pick up!");
+                validationResult.addErrorMessage(ERR_DROP_SOON);
             }
             if (pickUp.until(dropOff, ChronoUnit.MONTHS) > 1) {
-                validationResult.addErrorMessage("Car cannot be reserved for more than a month!");
+                validationResult.addErrorMessage(ERR_RES_TOO_LONG);
             }
         } catch (DateTimeParseException e) {
             validationResult.addErrorMessage(ERR_BAD_DATE);

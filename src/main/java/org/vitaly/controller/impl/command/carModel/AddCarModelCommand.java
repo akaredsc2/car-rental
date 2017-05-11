@@ -1,7 +1,9 @@
 package org.vitaly.controller.impl.command.carModel;
 
 import org.vitaly.controller.abstraction.command.Command;
+import org.vitaly.controller.abstraction.validation.ValidationResult;
 import org.vitaly.controller.impl.factory.RequestMapperFactory;
+import org.vitaly.controller.impl.factory.ValidatorFactory;
 import org.vitaly.service.impl.dto.CarModelDto;
 import org.vitaly.service.impl.factory.ServiceFactory;
 
@@ -25,8 +27,22 @@ public class AddCarModelCommand implements Command {
                 .getCarModelRequestMapper()
                 .map(request);
 
-        // TODO: 28.04.17 validation
+        ValidationResult validationResult = ValidatorFactory.getInstance()
+                .getAddModelValidator()
+                .validate(carModelDto);
 
+        if (validationResult.isValid()) {
+            doAddModel(request, response, carModelDto);
+        } else {
+            request.setAttribute(ATTR_ERROR, validationResult.getErrorMessages());
+            request.getServletContext()
+                    .getRequestDispatcher(ERROR_JSP)
+                    .forward(request, response);
+        }
+    }
+
+    private void doAddModel(HttpServletRequest request, HttpServletResponse response, CarModelDto carModelDto)
+            throws IOException, ServletException {
         boolean isAdded = ServiceFactory.getInstance()
                 .getCarModelService()
                 .addCarModel(carModelDto);

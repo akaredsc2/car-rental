@@ -27,15 +27,20 @@
     </label><br>
     <label>
         <fmt:message key="car.add.plate" bundle="${info}"/>
-        <input type="text" name="<fmt:message key="param.car.plate" bundle="${par}"/>" required>
+        <input type="text" name="<fmt:message key="param.car.plate" bundle="${par}"/>"
+               pattern="[А-Я]{2}\d{4}[А-Я]{2}"
+               required>
     </label><br>
     <label>
         <fmt:message key="car.add.color" bundle="${info}"/>
-        <input type="text" name="<fmt:message key="param.car.color" bundle="${par}"/>" required>
+        <input type="text" name="<fmt:message key="param.car.color" bundle="${par}"/>"
+               pattern="[a-zA-Zа-яА-ЯіІїЇєЄ\d]+(\s+[a-zA-Zа-яА-ЯіІїЇєЄ\d]+)*"
+               required>
     </label><br>
     <label>
         <fmt:message key="car.add.price" bundle="${info}"/>
-        <input type="number" name="<fmt:message key="param.car.price" bundle="${par}"/>" min="1" max="1000" step="0.01"
+        <input type="number" name="<fmt:message key="param.car.price" bundle="${par}"/>"
+               min="1" max="1000" step="0.01"
                required>
     </label><br>
 

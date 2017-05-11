@@ -1,7 +1,9 @@
 package org.vitaly.controller.impl.command.location;
 
 import org.vitaly.controller.abstraction.command.Command;
+import org.vitaly.controller.abstraction.validation.ValidationResult;
 import org.vitaly.controller.impl.factory.RequestMapperFactory;
+import org.vitaly.controller.impl.factory.ValidatorFactory;
 import org.vitaly.service.impl.dto.LocationDto;
 import org.vitaly.service.impl.factory.ServiceFactory;
 
@@ -26,6 +28,21 @@ public class AddLocationCommand implements Command {
                 .getLocationRequestMapper()
                 .map(request);
 
+        ValidationResult validationResult = ValidatorFactory.getInstance()
+                .getAddLocationValidator()
+                .validate(locationDto);
+
+        if (validationResult.isValid()) {
+            doAddLocation(request, response, locationDto);
+        } else {
+            request.setAttribute(ATTR_ERROR, validationResult.getErrorMessages());
+            request.getServletContext()
+                    .getRequestDispatcher(ERROR_JSP)
+                    .forward(request, response);
+        }
+    }
+
+    private void doAddLocation(HttpServletRequest request, HttpServletResponse response, LocationDto locationDto) throws IOException, ServletException {
         boolean isAdded = ServiceFactory.getInstance()
                 .getLocationService()
                 .addNewLocation(locationDto);

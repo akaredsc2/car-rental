@@ -1,7 +1,9 @@
 package org.vitaly.controller.impl.command.car;
 
 import org.vitaly.controller.abstraction.command.Command;
+import org.vitaly.controller.abstraction.validation.ValidationResult;
 import org.vitaly.controller.impl.factory.RequestMapperFactory;
+import org.vitaly.controller.impl.factory.ValidatorFactory;
 import org.vitaly.service.impl.dto.CarDto;
 import org.vitaly.service.impl.factory.ServiceFactory;
 
@@ -26,6 +28,23 @@ public class UpdateCarCommand implements Command {
                 .getCarRequestMapper()
                 .map(request);
 
+        ValidationResult validationResult = ValidatorFactory.getInstance()
+                .getUpdateCarValidator()
+                .validate(carDto);
+
+
+        if (validationResult.isValid()) {
+            doUpdateCar(request, response, carDto);
+        } else {
+            request.setAttribute(ATTR_ERROR, validationResult.getErrorMessages());
+            request.getServletContext()
+                    .getRequestDispatcher(ERROR_JSP)
+                    .forward(request, response);
+        }
+    }
+
+    private void doUpdateCar(HttpServletRequest request, HttpServletResponse response, CarDto carDto)
+            throws IOException, ServletException {
         boolean isUpdated = ServiceFactory.getInstance()
                 .getCarService()
                 .updateCar(carDto);

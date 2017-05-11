@@ -54,10 +54,13 @@
                     <input type="hidden" name="command" value="change_reservation_state">
                     <label>
                         <fmt:message key="reservations.change.reason" bundle="${info}"/>
-                        <input type="text" name="<fmt:message key="param.reservation.reason" bundle="${par}"/>" required>
+                        <input type="text" name="<fmt:message key="param.reservation.reason" bundle="${par}"/>"
+                               required>
                     </label>
-                    <input type="hidden" value="rejected" name="<fmt:message key="param.reservation.state" bundle="${par}"/>">
-                    <input type="hidden" name="<fmt:message key="param.reservation.id" bundle="${par}"/>" value="${res.id}">
+                    <input type="hidden" value="rejected"
+                           name="<fmt:message key="param.reservation.state" bundle="${par}"/>">
+                    <input type="hidden" name="<fmt:message key="param.reservation.id" bundle="${par}"/>"
+                           value="${res.id}">
                     <input type="hidden" name="<fmt:message key="param.reservation.car" bundle="${par}"/>"
                            value="${res.car.id}">
                     <input type="submit" value="<fmt:message key="reservations.change.rejected" bundle="${info}"/>">
@@ -65,8 +68,10 @@
 
                 <form method="post" action="rental">
                     <input type="hidden" name="command" value="change_reservation_state">
-                    <input type="hidden" value="approved" name="<fmt:message key="param.reservation.state" bundle="${par}"/>">
-                    <input type="hidden" name="<fmt:message key="param.reservation.id" bundle="${par}"/>" value="${res.id}">
+                    <input type="hidden" value="approved"
+                           name="<fmt:message key="param.reservation.state" bundle="${par}"/>">
+                    <input type="hidden" name="<fmt:message key="param.reservation.id" bundle="${par}"/>"
+                           value="${res.id}">
                     <input type="hidden" name="<fmt:message key="param.reservation.car" bundle="${par}"/>"
                            value="${res.car.id}">
                     <input type="submit" value="<fmt:message key="reservations.change.approved" bundle="${info}"/>">
@@ -75,8 +80,10 @@
             <c:when test="${res.state=='approved'}">
                 <form method="post" action="rental">
                     <input type="hidden" name="command" value="change_reservation_state">
-                    <input type="hidden" value="active" name="<fmt:message key="param.reservation.state" bundle="${par}"/>">
-                    <input type="hidden" name="<fmt:message key="param.reservation.id" bundle="${par}"/>" value="${res.id}">
+                    <input type="hidden" value="active"
+                           name="<fmt:message key="param.reservation.state" bundle="${par}"/>">
+                    <input type="hidden" name="<fmt:message key="param.reservation.id" bundle="${par}"/>"
+                           value="${res.id}">
                     <input type="hidden" name="<fmt:message key="param.reservation.car" bundle="${par}"/>"
                            value="${res.car.id}">
                     <input type="submit" value="<fmt:message key="reservations.change.active" bundle="${info}"/>">
@@ -85,8 +92,10 @@
             <c:when test="${res.state=='active'}">
                 <form method="post" action="rental">
                     <input type="hidden" name="command" value="change_reservation_state">
-                    <input type="hidden" value="closed" name="<fmt:message key="param.reservation.state" bundle="${par}"/>">
-                    <input type="hidden" name="<fmt:message key="param.reservation.id" bundle="${par}"/>" value="${res.id}">
+                    <input type="hidden" value="closed"
+                           name="<fmt:message key="param.reservation.state" bundle="${par}"/>">
+                    <input type="hidden" name="<fmt:message key="param.reservation.id" bundle="${par}"/>"
+                           value="${res.id}">
                     <input type="hidden" name="<fmt:message key="param.reservation.car" bundle="${par}"/>"
                            value="${res.car.id}">
                     <input type="submit" value="<fmt:message key="reservations.change.closed" bundle="${info}"/>">
@@ -118,8 +127,11 @@
             <input type="hidden" name="command" value="add_damage_bill">
             <label>
                 <fmt:message key="reservations.bill.amount" bundle="${info}"/>
-                <input type="number" name="<fmt:message key="param.bill.amount" bundle="${par}"/>" required min="0.01"
-                       step="0.01" max="100000.00">
+                <input type="number" name="<fmt:message key="param.bill.amount" bundle="${par}"/>" required
+                       min="0.01"
+                       step="0.01"
+                       max="100000"
+                >
             </label>
             <input type="hidden" name="<fmt:message key="param.reservation.id" bundle="${par}"/>" value="${res.id}">
             <input type="submit" value="<fmt:message key="bills.href" bundle="${info}"/>">

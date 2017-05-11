@@ -36,5 +36,8 @@
   <servlet-mapping>
     <servlet-name>CarRental</servlet-name>
     <url-pattern>/rental</url-pattern>
+    <url-pattern>/pages/admin/rental</url-pattern>
+    <url-pattern>/pages/error/rental</url-pattern>
+    <url-pattern>/pages/catalog/rental</url-pattern>
   </servlet-mapping>
 </web-app>

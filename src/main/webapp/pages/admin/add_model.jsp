@@ -19,21 +19,26 @@
 <form method="post" action="rental">
     <label>
         <fmt:message key="model.add.name" bundle="${info}"/>
-        <input type="text" name="<fmt:message key="param.model.name" bundle="${par}"/>" required>
+        <input type="text" name="<fmt:message key="param.model.name" bundle="${par}"/>"
+               pattern="[a-zA-Zа-яА-ЯіІїЇєЄ\d]+(\s+[a-zA-Zа-яА-ЯіІїЇєЄ\d]+)*"
+               required>
     </label><br>
     <label>
         <fmt:message key="model.add.door" bundle="${info}"/>
-        <input type="number" name="<fmt:message key="param.model.door" bundle="${par}"/>" min="1" max="100" step="1"
+        <input type="number" name="<fmt:message key="param.model.door" bundle="${par}"/>"
+               min="1" max="10" step="1"
                required>
     </label><br>
     <label>
         <fmt:message key="model.add.seat" bundle="${info}"/>
-        <input type="number" name="<fmt:message key="param.model.seat" bundle="${par}"/>" min="1" max="100" step="1"
+        <input type="number" name="<fmt:message key="param.model.seat" bundle="${par}"/>"
+               min="1" max="100" step="1"
                required>
     </label><br>
     <label>
         <fmt:message key="model.add.horse" bundle="${info}"/>
-        <input type="number" name="<fmt:message key="param.model.horse" bundle="${par}"/>" min="1" max="3000" step="1"
+        <input type="number" name="<fmt:message key="param.model.horse" bundle="${par}"/>"
+               min="1" max="3000" step="1"
                required>
     </label><br>
 

@@ -1,8 +1,9 @@
 package org.vitaly.controller.impl.factory;
 
 import org.vitaly.controller.abstraction.validation.Validator;
+import org.vitaly.controller.impl.command.reservation.ChangeReservationStateCommand;
 import org.vitaly.controller.impl.validation.*;
-import org.vitaly.service.impl.dto.UserDto;
+import org.vitaly.service.impl.dto.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -17,6 +18,12 @@ public class ValidatorFactory {
     private Validator<String> localeValidator = new LocaleValidator();
     private Validator<HttpServletRequest> changePasswordValidator = new ChangePasswordValidator();
     private Validator<HttpServletRequest> reservationValidator = new ReservationValidator();
+    private Validator<LocationDto> addLocationValidator = new AddLocationValidator();
+    private Validator<CarModelDto> addModelValidator = new AddModelValidator();
+    private Validator<CarDto> addCarValidator = new AddCarValidator();
+    private Validator<ReservationDto> changeReservationStateValidator = new ChangeReservationStateValidator();
+    private Validator<CarDto> updateCarValidator = new UpdateCarValidator();
+    private Validator<BillDto> addDamageBillValidator = new AddDamageBillValidator();
 
     private ValidatorFactory() {
     }
@@ -43,5 +50,29 @@ public class ValidatorFactory {
 
     public Validator<HttpServletRequest> getReservationValidator() {
         return reservationValidator;
+    }
+
+    public Validator<LocationDto> getAddLocationValidator() {
+        return addLocationValidator;
+    }
+
+    public Validator<CarModelDto> getAddModelValidator() {
+        return addModelValidator;
+    }
+
+    public Validator<CarDto> getAddCarValidator() {
+        return addCarValidator;
+    }
+
+    public Validator<ReservationDto> getChangeReservationStateValidator() {
+        return changeReservationStateValidator;
+    }
+
+    public Validator<CarDto> getUpdateCarValidator() {
+        return updateCarValidator;
+    }
+
+    public Validator<BillDto> getAddDamageBillValidator() {
+        return addDamageBillValidator;
     }
 }

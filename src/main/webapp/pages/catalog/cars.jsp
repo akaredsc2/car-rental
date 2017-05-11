@@ -64,11 +64,15 @@
                 <form method="post" action="rental">
                     <label>
                         <fmt:message key="car.update.color" bundle="${info}"/>
-                        <input type="text" name="<fmt:message key="param.car.color" bundle="${par}"/>" required>
+                        <input type="text" name="<fmt:message key="param.car.color" bundle="${par}"/>"
+                               value="${car.color}"
+                               pattern="[a-zA-Zа-яА-ЯіІїЇєЄ\d]+(\s+[a-zA-Zа-яА-ЯіІїЇєЄ\d]+)*"
+                               required>
                     </label><br>
                     <label>
                         <fmt:message key="car.update.price" bundle="${info}"/>
                         <input type="number" name="<fmt:message key="param.car.price" bundle="${par}"/>"
+                               value="${car.pricePerDay}"
                                min="1"
                                max="1000"
                                step="0.01"
@@ -95,20 +99,24 @@
                            value="<c:out value="${car.state}"/>">
                     <label>
                         <fmt:message key="car.change.title" bundle="${info}"/>
-                            <c:choose>
-                                <c:when test="${car.state=='available'}">
-                                    <input type="hidden" name="<fmt:message key="param.car.state.new" bundle="${par}"/>" value="unavailable">
-                                    <input type="submit" value="<fmt:message key="car.change.unavailable" bundle="${info}"/>">
-                                </c:when>
-                                <c:when test="${car.state=='unavailable'}">
-                                    <input type="hidden" name="<fmt:message key="param.car.state.new" bundle="${par}"/>" value="available">
-                                    <input type="submit" value="<fmt:message key="car.change.available" bundle="${info}"/>">
-                                </c:when>
-                                <c:when test="${car.state=='served'}">
-                                    <input type="hidden" name="<fmt:message key="param.car.state.new" bundle="${par}"/>" value="returned">
-                                    <input type="submit" value="<fmt:message key="car.change.returned" bundle="${info}"/>">
-                                </c:when>
-                            </c:choose>
+                        <c:choose>
+                            <c:when test="${car.state=='available'}">
+                                <input type="hidden" name="<fmt:message key="param.car.state.new" bundle="${par}"/>"
+                                       value="unavailable">
+                                <input type="submit"
+                                       value="<fmt:message key="car.change.unavailable" bundle="${info}"/>">
+                            </c:when>
+                            <c:when test="${car.state=='unavailable'}">
+                                <input type="hidden" name="<fmt:message key="param.car.state.new" bundle="${par}"/>"
+                                       value="available">
+                                <input type="submit" value="<fmt:message key="car.change.available" bundle="${info}"/>">
+                            </c:when>
+                            <c:when test="${car.state=='served'}">
+                                <input type="hidden" name="<fmt:message key="param.car.state.new" bundle="${par}"/>"
+                                       value="returned">
+                                <input type="submit" value="<fmt:message key="car.change.returned" bundle="${info}"/>">
+                            </c:when>
+                        </c:choose>
                     </label>
                 </form>
             </c:if>
