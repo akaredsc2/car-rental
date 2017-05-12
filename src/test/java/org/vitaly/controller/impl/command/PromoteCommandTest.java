@@ -52,6 +52,7 @@ public class PromoteCommandTest {
         UserDto userDto = new UserDto();
 
         when(userRequestMapper.map(request)).thenReturn(userDto);
+        when(userService.changeRole(any(), eq(UserRole.ADMIN))).thenReturn(true);
         promoteCommand.execute(request, response);
 
         verify(userService).changeRole(any(), eq(UserRole.ADMIN));

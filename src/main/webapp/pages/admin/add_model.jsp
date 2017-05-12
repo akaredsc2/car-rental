@@ -29,6 +29,8 @@
         <fmt:message key="model.add.name" bundle="${info}"/>
         <input type="text" name="<fmt:message key="param.model.name" bundle="${par}"/>"
                pattern="[a-zA-Zа-яА-ЯіІїЇєЄ\d]+(\s+[a-zA-Zа-яА-ЯіІїЇєЄ\d]+)*"
+               minlength="4"
+               maxlength="30"
                required>
     </label><br>
     <label>

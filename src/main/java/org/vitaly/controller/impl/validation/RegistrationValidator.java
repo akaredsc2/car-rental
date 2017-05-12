@@ -11,6 +11,8 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.Properties;
 
+import static org.vitaly.controller.abstraction.validation.Validator.stringMatches;
+import static org.vitaly.controller.abstraction.validation.Validator.stringWithLengthBetween;
 import static org.vitaly.util.constants.RequestParameters.*;
 
 /**
@@ -32,18 +34,19 @@ public class RegistrationValidator implements Validator<HttpServletRequest> {
         String passport = request.getParameter(properties.getProperty(PARAM_USER_PASSPORT));
         String driverLicence = request.getParameter(properties.getProperty(PARAM_USER_DRIVER));
 
-        Validator.stringMatches(login, LOGIN_PATTERN, validationResult, ERR_BAD_LOGIN);
-        Validator.stringMatches(password, PASSWORD_PATTERN, validationResult, ERR_BAD_PASSWORD);
-        Validator.stringMatches(repeatPassword, PASSWORD_PATTERN, validationResult, ERR_BAD_PASSWORD);
+        stringMatches(login, LOGIN_PATTERN, validationResult, ERR_BAD_LOGIN);
+        stringMatches(password, PASSWORD_PATTERN, validationResult, ERR_BAD_PASSWORD);
+        stringMatches(repeatPassword, PASSWORD_PATTERN, validationResult, ERR_BAD_PASSWORD);
         if (!password.equals(repeatPassword)) {
             validationResult.addErrorMessage(ERR_PASS_NOT);
         }
-        Validator.stringMatches(fullName, NAME_PATTERN, validationResult, ERR_BAD_NAME);
+        stringMatches(fullName, NAME_PATTERN, validationResult, ERR_BAD_NAME);
+        stringWithLengthBetween(fullName, MIN_LENGTH, MAX_LENGTH * 2, validationResult, ERR_BAD_NAME);
 
         validateBirthDate(validationResult, birthDate);
 
-        Validator.stringMatches(passport, PASSPORT_PATTERN, validationResult, ERR_BAD_PASSPORT);
-        Validator.stringMatches(driverLicence, DRIVER_LICENCE_PATTERN,
+        stringMatches(passport, PASSPORT_PATTERN, validationResult, ERR_BAD_PASSPORT);
+        stringMatches(driverLicence, DRIVER_LICENCE_PATTERN,
                 validationResult, ERR_BAD_DRIVER);
 
         return validationResult;

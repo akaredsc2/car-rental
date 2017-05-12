@@ -7,7 +7,10 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.vitaly.controller.impl.command.location.AddLocationCommand;
 import org.vitaly.controller.impl.factory.RequestMapperFactory;
+import org.vitaly.controller.impl.factory.ValidatorFactory;
 import org.vitaly.controller.impl.requestMapper.RequestMapper;
+import org.vitaly.controller.impl.validation.AddLocationValidator;
+import org.vitaly.controller.impl.validation.ValidationResultImpl;
 import org.vitaly.service.abstraction.LocationService;
 import org.vitaly.service.impl.dto.LocationDto;
 import org.vitaly.service.impl.factory.ServiceFactory;
@@ -16,6 +19,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
@@ -43,7 +47,16 @@ public class AddLocationCommandTest {
     private ServiceFactory serviceFactory = ServiceFactory.getInstance();
 
     @Mock
+    private AddLocationValidator addLocationValidator;
+
+    @InjectMocks
+    private ValidatorFactory validatorFactory = ValidatorFactory.getInstance();
+
+    @Mock
     private HttpServletRequest request;
+
+    @Mock
+    private Part part;
 
     @Mock
     private HttpServletResponse response;
@@ -60,6 +73,8 @@ public class AddLocationCommandTest {
     public void successfulAddingLocationSendRedirect() throws Exception {
         LocationDto locationDto = new LocationDto();
 
+        when(request.getPart(any())).thenReturn(part);
+        when(addLocationValidator.validate(any())).thenReturn(new ValidationResultImpl());
         when(locationRequestMapper.map(request)).thenReturn(locationDto);
         when(locationService.addNewLocation(any())).thenReturn(true);
         addLocationCommand.execute(request, response);
@@ -71,6 +86,8 @@ public class AddLocationCommandTest {
     public void failedAddingLocationForwardsToErrorPage() throws Exception {
         LocationDto locationDto = new LocationDto();
 
+        when(request.getPart(any())).thenReturn(part);
+        when(addLocationValidator.validate(any())).thenReturn(new ValidationResultImpl());
         when(locationRequestMapper.map(request)).thenReturn(locationDto);
         when(locationService.addNewLocation(any())).thenReturn(false);
         when(request.getServletContext()).thenReturn(servletContext);

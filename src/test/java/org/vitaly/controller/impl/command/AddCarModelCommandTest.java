@@ -5,9 +5,13 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.vitaly.controller.abstraction.validation.Validator;
 import org.vitaly.controller.impl.command.carModel.AddCarModelCommand;
 import org.vitaly.controller.impl.factory.RequestMapperFactory;
+import org.vitaly.controller.impl.factory.ValidatorFactory;
 import org.vitaly.controller.impl.requestMapper.RequestMapper;
+import org.vitaly.controller.impl.validation.AddModelValidator;
+import org.vitaly.controller.impl.validation.ValidationResultImpl;
 import org.vitaly.service.abstraction.CarModelService;
 import org.vitaly.service.impl.dto.CarModelDto;
 import org.vitaly.service.impl.factory.ServiceFactory;
@@ -16,6 +20,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
@@ -43,7 +48,16 @@ public class AddCarModelCommandTest {
     private ServiceFactory serviceFactory = ServiceFactory.getInstance();
 
     @Mock
+    private AddModelValidator addModelValidator;
+
+    @InjectMocks
+    private ValidatorFactory validatorFactory = ValidatorFactory.getInstance();
+
+    @Mock
     private HttpServletRequest request;
+
+    @Mock
+    private Part part;
 
     @Mock
     private HttpServletResponse response;
@@ -60,6 +74,8 @@ public class AddCarModelCommandTest {
     public void successfulAddingCarModelSendRedirect() throws Exception {
         CarModelDto carModelDto = new CarModelDto();
 
+        when(request.getPart(any())).thenReturn(part);
+        when(addModelValidator.validate(any())).thenReturn(new ValidationResultImpl());
         when(carModelRequestMapper.map(request)).thenReturn(carModelDto);
         when(carModelService.addCarModel(any())).thenReturn(true);
         addCarModelCommand.execute(request, response);
@@ -71,6 +87,8 @@ public class AddCarModelCommandTest {
     public void failedAddingCarModelForwardsToErrorPage() throws Exception {
         CarModelDto carModelDto = new CarModelDto();
 
+        when(addModelValidator.validate(any())).thenReturn(new ValidationResultImpl());
+        when(request.getPart(any())).thenReturn(part);
         when(carModelRequestMapper.map(request)).thenReturn(carModelDto);
         when(carModelService.addCarModel(any())).thenReturn(false);
         when(request.getServletContext()).thenReturn(servletContext);

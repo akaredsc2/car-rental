@@ -1,7 +1,6 @@
 package org.vitaly.controller.impl.factory;
 
 import org.vitaly.controller.abstraction.validation.Validator;
-import org.vitaly.controller.impl.command.reservation.ChangeReservationStateCommand;
 import org.vitaly.controller.impl.validation.*;
 import org.vitaly.service.impl.dto.*;
 
@@ -16,13 +15,13 @@ public class ValidatorFactory {
     private SignInValidator signInValidator = new SignInValidator();
     private RegistrationValidator registrationValidator = new RegistrationValidator();
     private Validator<String> localeValidator = new LocaleValidator();
-    private Validator<HttpServletRequest> changePasswordValidator = new ChangePasswordValidator();
+    private ChangePasswordValidator changePasswordValidator = new ChangePasswordValidator();
     private Validator<HttpServletRequest> reservationValidator = new ReservationValidator();
-    private Validator<LocationDto> addLocationValidator = new AddLocationValidator();
-    private Validator<CarModelDto> addModelValidator = new AddModelValidator();
-    private Validator<CarDto> addCarValidator = new AddCarValidator();
+    private AddLocationValidator addLocationValidator = new AddLocationValidator();
+    private AddModelValidator addModelValidator = new AddModelValidator();
+    private AddCarValidator addCarValidator = new AddCarValidator();
     private Validator<ReservationDto> changeReservationStateValidator = new ChangeReservationStateValidator();
-    private Validator<CarDto> updateCarValidator = new UpdateCarValidator();
+    private UpdateCarValidator updateCarValidator = new UpdateCarValidator();
     private Validator<BillDto> addDamageBillValidator = new AddDamageBillValidator();
 
     private ValidatorFactory() {

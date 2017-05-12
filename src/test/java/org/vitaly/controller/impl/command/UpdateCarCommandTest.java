@@ -7,7 +7,10 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.vitaly.controller.impl.command.car.UpdateCarCommand;
 import org.vitaly.controller.impl.factory.RequestMapperFactory;
+import org.vitaly.controller.impl.factory.ValidatorFactory;
 import org.vitaly.controller.impl.requestMapper.RequestMapper;
+import org.vitaly.controller.impl.validation.UpdateCarValidator;
+import org.vitaly.controller.impl.validation.ValidationResultImpl;
 import org.vitaly.service.abstraction.CarService;
 import org.vitaly.service.impl.dto.CarDto;
 import org.vitaly.service.impl.factory.ServiceFactory;
@@ -43,6 +46,12 @@ public class UpdateCarCommandTest {
     private ServiceFactory serviceFactory = ServiceFactory.getInstance();
 
     @Mock
+    private UpdateCarValidator validator;
+
+    @InjectMocks
+    private ValidatorFactory validatorFactory = ValidatorFactory.getInstance();
+
+    @Mock
     private HttpServletRequest request;
 
     @Mock
@@ -60,6 +69,7 @@ public class UpdateCarCommandTest {
     public void successfulUpdatingCarSendRedirect() throws Exception {
         CarDto carDto = new CarDto();
 
+        when(validator.validate(any())).thenReturn(new ValidationResultImpl());
         when(carRequestMapper.map(request)).thenReturn(carDto);
         when(carService.updateCar(any())).thenReturn(true);
         updateCarCommand.execute(request, response);
@@ -71,6 +81,7 @@ public class UpdateCarCommandTest {
     public void failedUpdatingCarForwardsToErrorPage() throws Exception {
         CarDto carDto = new CarDto();
 
+        when(validator.validate(any())).thenReturn(new ValidationResultImpl());
         when(carRequestMapper.map(request)).thenReturn(carDto);
         when(carService.updateCar(any())).thenReturn(false);
         when(request.getServletContext()).thenReturn(servletContext);

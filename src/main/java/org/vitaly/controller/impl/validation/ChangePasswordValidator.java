@@ -8,6 +8,7 @@ import org.vitaly.util.PropertyUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Properties;
 
+import static org.vitaly.controller.abstraction.validation.Validator.stringMatches;
 import static org.vitaly.util.constants.RequestParameters.*;
 import static org.vitaly.util.constants.SessionAttributes.SESSION_USER;
 
@@ -26,10 +27,9 @@ public class ChangePasswordValidator implements Validator<HttpServletRequest> {
         String newPassword = request.getParameter(properties.getProperty(PARAM_PASS_NEW));
         String repeatPassword = request.getParameter(properties.getProperty(PARAM_PASS_REPEAT));
 
-        Validator.stringMatches(oldPassword, PASSWORD_PATTERN, validationResult, "Old password does not match regex");
-        Validator.stringMatches(newPassword, PASSWORD_PATTERN, validationResult, "New password does not match regex");
-        Validator.stringMatches(repeatPassword, PASSWORD_PATTERN,
-                validationResult, "Repeat password does not match regex");
+        stringMatches(oldPassword, PASSWORD_PATTERN, validationResult, "Old password does not match regex");
+        stringMatches(newPassword, PASSWORD_PATTERN, validationResult, "New password does not match regex");
+        stringMatches(repeatPassword, PASSWORD_PATTERN, validationResult, "Repeat password does not match regex");
         String currentPassword = ((UserDto) request.getSession().getAttribute(SESSION_USER)).getPassword();
         if (!oldPassword.equals(currentPassword)) {
             validationResult.addErrorMessage("Wrong old password");

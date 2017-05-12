@@ -18,7 +18,8 @@ import static org.vitaly.controller.abstraction.validation.Validator.ERR_CHANGE_
 import static org.vitaly.util.constants.Pages.ERROR_JSP;
 import static org.vitaly.util.constants.Pages.HOME_JSP;
 import static org.vitaly.util.constants.RequestAttributes.ATTR_ERROR;
-import static org.vitaly.util.constants.RequestParameters.*;
+import static org.vitaly.util.constants.RequestParameters.PARAMETERS;
+import static org.vitaly.util.constants.RequestParameters.PARAM_PASS_NEW;
 import static org.vitaly.util.constants.SessionAttributes.SESSION_USER;
 
 /**

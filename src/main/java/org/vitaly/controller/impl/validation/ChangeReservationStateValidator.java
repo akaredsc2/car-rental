@@ -6,6 +6,9 @@ import org.vitaly.model.reservation.ReservationState;
 import org.vitaly.model.reservation.ReservationStateEnum;
 import org.vitaly.service.impl.dto.ReservationDto;
 
+import static org.vitaly.controller.abstraction.validation.Validator.stringMatches;
+import static org.vitaly.controller.abstraction.validation.Validator.stringWithLengthBetween;
+
 /**
  * Created by vitaly on 2017-05-11.
  */
@@ -17,8 +20,9 @@ public class ChangeReservationStateValidator implements Validator<ReservationDto
 
         ReservationState state = reservationDto.getState();
         if (state != null && state == ReservationStateEnum.REJECTED.getState()) {
-            Validator.stringMatches(reservationDto.getRejectionReason(), REJECTION_PATTERN,
-                    validationResult, ERR_REJECTION);
+            String rejectionReason = reservationDto.getRejectionReason();
+            stringMatches(rejectionReason, REJECTION_PATTERN, validationResult, ERR_REJECTION);
+            stringWithLengthBetween(rejectionReason, MIN_LENGTH, MAX_LENGTH * 5, validationResult, ERR_REJECTION);
         }
 
         return validationResult;

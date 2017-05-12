@@ -20,7 +20,6 @@ import java.util.Properties;
  */
 public class MysqlConnectionPool implements ConnectionPool {
     private static final String CONNECTION_PROPERTIES = "db" + File.separator + "connection.properties";
-    private static final String TEST_CONNECTION_PROPERTIES = "db" + File.separator + "test_connection.properties";
 
     private static final String DB_URL = "db.url";
     private static final String DB_USER = "db.user";
@@ -37,11 +36,7 @@ public class MysqlConnectionPool implements ConnectionPool {
     private DataSource basicDataSource;
 
     private MysqlConnectionPool() {
-        if (this.getClass().getClassLoader().getResource(TEST_CONNECTION_PROPERTIES) != null) {
-            this.basicDataSource = createConfiguredDataSource(TEST_CONNECTION_PROPERTIES);
-        } else {
-            this.basicDataSource = createConfiguredDataSource(CONNECTION_PROPERTIES);
-        }
+        this.basicDataSource = createConfiguredDataSource(CONNECTION_PROPERTIES);
     }
 
     private static DataSource createConfiguredDataSource(String fileName) {

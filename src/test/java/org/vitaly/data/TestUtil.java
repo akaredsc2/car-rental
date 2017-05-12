@@ -1,9 +1,6 @@
 package org.vitaly.data;
 
 import org.vitaly.dao.abstraction.AbstractDao;
-import org.vitaly.service.impl.dtoMapper.DtoMapper;
-
-import java.util.function.BiConsumer;
 
 /**
  * Created by vitaly on 2017-04-08.

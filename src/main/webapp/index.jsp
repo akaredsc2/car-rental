@@ -26,7 +26,7 @@
         </label>
         <div class="col-sm-10">
             <input id="login" type="text" name="<fmt:message key="param.user.login" bundle="${par}"/>" required
-                   pattern="[а-яА-ЯіІїЇєЄёЁ\w]{4,45}">
+                   pattern="[а-яА-ЯіІїЇєЄёЁ\w]{4,30}">
         </div>
     </div>
 
@@ -36,7 +36,7 @@
         </label>
         <div class="col-sm-10">
             <input id="pass" type="password" name="<fmt:message key="param.user.password" bundle="${par}"/>" required
-                   pattern="\w{4,10}">
+                   pattern="\w{4,30}">
         </div>
     </div>
 

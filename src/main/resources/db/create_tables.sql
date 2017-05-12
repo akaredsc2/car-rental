@@ -45,7 +45,7 @@ ALTER TABLE location
 
 CREATE TABLE model (
   model_id     BIGINT      NOT NULL AUTO_INCREMENT,
-  model_name   VARCHAR(50) NOT NULL,
+  model_name   VARCHAR(30) NOT NULL,
   photo_url    VARCHAR(150)         DEFAULT NULL,
   doors        INTEGER     NOT NULL,
   seats        INTEGER     NOT NULL,

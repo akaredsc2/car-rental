@@ -3,7 +3,6 @@ package org.vitaly.service.impl.dto;
 import org.vitaly.model.user.UserRole;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Objects;
 
 /**

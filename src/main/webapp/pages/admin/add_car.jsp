@@ -39,12 +39,14 @@
         <fmt:message key="car.add.color" bundle="${info}"/>
         <input type="text" name="<fmt:message key="param.car.color" bundle="${par}"/>"
                pattern="[a-zA-Zа-яА-ЯіІїЇєЄ\d]+(\s+[a-zA-Zа-яА-ЯіІїЇєЄ\d]+)*"
+               minlength="3"
+               maxlength="30"
                required>
     </label><br>
     <label>
         <fmt:message key="car.add.price" bundle="${info}"/>
         <input type="number" name="<fmt:message key="param.car.price" bundle="${par}"/>"
-               min="1" max="1000" step="0.01"
+               min="0.01" max="1000" step="0.01"
                required>
     </label><br>
 

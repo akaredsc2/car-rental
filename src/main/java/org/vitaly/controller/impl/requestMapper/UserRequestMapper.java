@@ -6,7 +6,6 @@ import org.vitaly.util.PropertyUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.Properties;
 
 import static org.vitaly.util.constants.RequestParameters.*;

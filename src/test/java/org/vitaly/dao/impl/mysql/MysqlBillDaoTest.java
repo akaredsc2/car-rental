@@ -7,13 +7,10 @@ import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.exception.DaoException;
 import org.vitaly.dao.impl.mysql.template.DaoTemplate;
 import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
-import org.vitaly.data.TestData;
 import org.vitaly.data.TestUtil;
 import org.vitaly.model.bill.Bill;
 import org.vitaly.model.bill.BillDescriptionEnum;
-import org.vitaly.model.car.Car;
 import org.vitaly.model.reservation.Reservation;
-import org.vitaly.model.user.User;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;

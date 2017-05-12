@@ -24,8 +24,6 @@ public class ReservationValidator implements Validator<HttpServletRequest> {
 
         Properties properties = PropertyUtils.readProperties(PARAMETERS);
 
-        String carId = request.getParameter(properties.getProperty(PARAM_RESERVATION_CAR));
-
         String pickUpDateTime = request.getParameter(properties.getProperty(PARAM_RESERVATION_PICK));
         String dropOffDateTime = request.getParameter(properties.getProperty(PARAM_RESERVATION_DROP));
 

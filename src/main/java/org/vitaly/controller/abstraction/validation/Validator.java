@@ -8,18 +8,27 @@ import java.math.BigDecimal;
 public interface Validator<T> {
     int MIN_AGE = 21;
     int MAX_AGE = 70;
+
     int MINUTES_BETWEEN_RESERVATION_AND_PICK_UP = 1;
     int DAYS_BETWEEN_RESERVATION_AND_PICK_UP = 7;
+
     int MODEL_MIN_DOORS = 1;
     int MODEL_MAX_DOORS = 10;
+
     int MODEL_MIN_SEATS = 1;
     int MODEL_MAX_SEATS = 100;
+
     int MODEL_MIN_POWER = 1;
     int MODEL_MAX_POWER = 3000;
+
     BigDecimal CAR_MIN_PRICE = BigDecimal.valueOf(0.01);
     BigDecimal CAR_MAX_PRICE = BigDecimal.valueOf(1_000);
+
     BigDecimal DAMAGE_MIN = BigDecimal.valueOf(0.01);
     BigDecimal DAMAGE_MAX = BigDecimal.valueOf(100_000);
+
+    int MIN_LENGTH = 4;
+    int MAX_LENGTH = 30;
 
     String LOGIN_PATTERN = "[а-яА-ЯіІїЇєЄёЁ\\w]{4,30}";
     String PASSWORD_PATTERN = "\\w{4,30}";
@@ -87,6 +96,15 @@ public interface Validator<T> {
 
     static void stringMatches(String string, String pattern, ValidationResult validationResult, String errorMessage) {
         if (string == null || !string.matches(pattern)) {
+            validationResult.addErrorMessage(errorMessage);
+        }
+    }
+
+    static void stringWithLengthBetween(String string, int min, int max,
+                                        ValidationResult validationResult, String errorMessage) {
+        if (string != null) {
+            inRange(string.length(), min, max, validationResult, errorMessage);
+        } else {
             validationResult.addErrorMessage(errorMessage);
         }
     }

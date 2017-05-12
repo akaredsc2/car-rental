@@ -1,7 +1,7 @@
 package org.vitaly.controller.impl.factory;
 
 import org.vitaly.controller.abstraction.command.Command;
-import org.vitaly.controller.impl.command.*;
+import org.vitaly.controller.impl.command.WrongCommand;
 import org.vitaly.controller.impl.command.bills.AddDamageBillCommand;
 import org.vitaly.controller.impl.command.bills.ConfirmPaymentCommand;
 import org.vitaly.controller.impl.command.bills.GetBillsCommand;

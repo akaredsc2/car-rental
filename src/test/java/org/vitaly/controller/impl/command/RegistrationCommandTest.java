@@ -9,7 +9,6 @@ import org.vitaly.controller.impl.command.user.RegistrationCommand;
 import org.vitaly.controller.impl.factory.RequestMapperFactory;
 import org.vitaly.controller.impl.factory.ValidatorFactory;
 import org.vitaly.controller.impl.requestMapper.RequestMapper;
-import org.vitaly.controller.impl.validation.ChangePasswordValidator;
 import org.vitaly.controller.impl.validation.RegistrationValidator;
 import org.vitaly.controller.impl.validation.ValidationResultImpl;
 import org.vitaly.service.abstraction.UserService;

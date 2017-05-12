@@ -59,6 +59,8 @@
                     <label>
                         <fmt:message key="reservations.change.reason" bundle="${info}"/>
                         <input type="text" name="<fmt:message key="param.reservation.reason" bundle="${par}"/>"
+                               minlength="4"
+                               maxlength="150"
                                required>
                     </label>
                     <input type="hidden" value="rejected"
