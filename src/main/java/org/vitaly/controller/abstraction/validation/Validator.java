@@ -67,7 +67,7 @@ public interface Validator<T> {
     String ERR_WRONG_COMMAND = "err.wrong.command";
     String ERR_CREATE_RES = "err.create.res";
     String ERR_CHANGE_CAR_STATE = "err.change.car.state";
-    String ERR_CHANGE_PASSWORD = "err.chane.password";
+    String ERR_CHANGE_PASSWORD = "err.change.password";
     String ERR_ASSIGN_ADMIN = "err.assign.admin";
     String ERR_CONFIRM_BILL = "err.confirm.bill";
     String ERR_ADD_CAR_MODEL = "err.add.model";

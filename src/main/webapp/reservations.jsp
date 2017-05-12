@@ -134,7 +134,7 @@
                 >
             </label>
             <input type="hidden" name="<fmt:message key="param.reservation.id" bundle="${par}"/>" value="${res.id}">
-            <input type="submit" value="<fmt:message key="bills.href" bundle="${info}"/>">
+            <input type="submit" value="<fmt:message key="bill.damage.submit" bundle="${info}"/>">
         </form>
     </c:if>
 </c:forEach>
