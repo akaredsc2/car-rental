@@ -13,12 +13,12 @@ USE car_rental_test;
 
 CREATE TABLE users (
   user_id               BIGINT                   NOT NULL AUTO_INCREMENT,
-  login                 VARCHAR(20)              NOT NULL,
-  pass                  VARCHAR(20)              NOT NULL,
-  full_name             VARCHAR(50)              NOT NULL,
+  login                 VARCHAR(30)              NOT NULL,
+  pass                  VARCHAR(30)              NOT NULL,
+  full_name             VARCHAR(60)              NOT NULL,
   birth_date            DATE                     NOT NULL,
-  passport_number       VARCHAR(20)              NOT NULL,
-  driver_licence_number VARCHAR(20)              NOT NULL,
+  passport_number       VARCHAR(10)              NOT NULL,
+  driver_licence_number VARCHAR(10)              NOT NULL,
   role                  ENUM ('client', 'admin') NOT NULL DEFAULT 'client',
 
   PRIMARY KEY (user_id)
@@ -32,11 +32,11 @@ ALTER TABLE users
 
 CREATE TABLE location (
   location_id BIGINT      NOT NULL AUTO_INCREMENT,
-  state       VARCHAR(20) NOT NULL,
-  city        VARCHAR(20) NOT NULL,
-  street      VARCHAR(20) NOT NULL,
-  building    VARCHAR(20) NOT NULL,
-  photo_url   VARCHAR(128)         DEFAULT NULL,
+  state       VARCHAR(30) NOT NULL,
+  city        VARCHAR(30) NOT NULL,
+  street      VARCHAR(30) NOT NULL,
+  building    VARCHAR(30) NOT NULL,
+  photo_url   VARCHAR(150)         DEFAULT NULL,
 
   PRIMARY KEY (location_id)
 );
@@ -46,7 +46,7 @@ ALTER TABLE location
 CREATE TABLE model (
   model_id     BIGINT      NOT NULL AUTO_INCREMENT,
   model_name   VARCHAR(50) NOT NULL,
-  photo_url    VARCHAR(128)         DEFAULT NULL,
+  photo_url    VARCHAR(150)         DEFAULT NULL,
   doors        INTEGER     NOT NULL,
   seats        INTEGER     NOT NULL,
   horse_powers INTEGER     NOT NULL,
@@ -56,11 +56,11 @@ CREATE TABLE model (
 ALTER TABLE model
   ADD CONSTRAINT u_model UNIQUE (model_name);
 ALTER TABLE model
-  ADD CONSTRAINT c_model_doors CHECK (doors >= 0 AND doors <= 10);
+  ADD CONSTRAINT c_model_doors CHECK (doors >= 1 AND doors <= 10);
 ALTER TABLE model
   ADD CONSTRAINT c_model_seats CHECK (seats >= 1 AND seats <= 100);
 ALTER TABLE model
-  ADD CONSTRAINT c_model_horse_powers CHECK (horse_powers >= 0 AND horse_powers <= 3000);
+  ADD CONSTRAINT c_model_horse_powers CHECK (horse_powers >= 1 AND horse_powers <= 3000);
 
 CREATE TABLE car (
   car_id             BIGINT               NOT NULL AUTO_INCREMENT,
@@ -70,8 +70,8 @@ CREATE TABLE car (
                            'returned',
                            'unavailable') NOT NULL DEFAULT 'unavailable',
   model_id           BIGINT               NOT NULL,
-  registration_plate VARCHAR(20)          NOT NULL,
-  color              VARCHAR(20)          NOT NULL,
+  registration_plate VARCHAR(8)          NOT NULL,
+  color              VARCHAR(30)          NOT NULL,
   price_per_day      DECIMAL(10, 2)       NOT NULL,
   location_id        BIGINT                        DEFAULT NULL,
 
@@ -83,6 +83,8 @@ ALTER TABLE car
   ADD CONSTRAINT fk_car_location FOREIGN KEY (location_id) REFERENCES location (location_id);
 ALTER TABLE car
   ADD CONSTRAINT fk_car_model FOREIGN KEY (model_id) REFERENCES model (model_id);
+ALTER TABLE car
+  ADD CONSTRAINT c_car_price CHECK (price_per_day >= 0.01 AND price_per_day <= 1000);
 
 CREATE TABLE reservation (
   reservation_id     BIGINT          NOT NULL AUTO_INCREMENT,
@@ -97,7 +99,7 @@ CREATE TABLE reservation (
                            'canceled',
                            'active',
                            'closed') NOT NULL DEFAULT 'new',
-  rejection_reason   VARCHAR(128)             DEFAULT NULL,
+  rejection_reason   VARCHAR(150)             DEFAULT NULL,
 
   PRIMARY KEY (reservation_id)
 );
@@ -113,7 +115,7 @@ CREATE TABLE bill (
   is_paid           BOOLEAN        NOT NULL DEFAULT FALSE,
   is_confirmed      BOOLEAN        NOT NULL DEFAULT FALSE,
   reservation_id    BIGINT                  DEFAULT NULL,
-  description       VARCHAR(10)   NOT NULL,
+  description       VARCHAR(7)    NOT NULL,
   cash_amount       DECIMAL(10, 2) NOT NULL,
   creation_datetime DATETIME       NOT NULL,
 
@@ -122,4 +124,4 @@ CREATE TABLE bill (
 ALTER TABLE bill
   ADD CONSTRAINT fk_bill_reservation FOREIGN KEY (reservation_id) REFERENCES reservation (reservation_id);
 ALTER TABLE bill
-  ADD CONSTRAINT c_bill_cash_amount CHECK (cash_amount > 0);
+  ADD CONSTRAINT c_bill_cash_amount CHECK (cash_amount >= 0.01 AND cash_amount <= 100000);

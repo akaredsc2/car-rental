@@ -21,8 +21,8 @@ public interface Validator<T> {
     BigDecimal DAMAGE_MIN = BigDecimal.valueOf(0.01);
     BigDecimal DAMAGE_MAX = BigDecimal.valueOf(100_000);
 
-    String LOGIN_PATTERN = "[а-яА-ЯіІїЇєЄёЁ\\w]{4,45}";
-    String PASSWORD_PATTERN = "\\w{4,10}";
+    String LOGIN_PATTERN = "[а-яА-ЯіІїЇєЄёЁ\\w]{4,30}";
+    String PASSWORD_PATTERN = "\\w{4,30}";
     String NAME_PATTERN = "([A-ZА-ЯІЇЄ][a-zа-яіїє]+)(\\s([A-ZА-ЯІЇЄ][a-zа-яіїє]+))+";
     String UKR_PASSPORT_PATTERN = "([А-Я]){2}\\d{6}";
     String RUS_PASSPORT_PATTERN = "\\d{10}";

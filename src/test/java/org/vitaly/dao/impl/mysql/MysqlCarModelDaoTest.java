@@ -5,22 +5,15 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.vitaly.dao.abstraction.CarModelDao;
-import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
+import org.vitaly.dao.impl.mysql.template.DaoTemplate;
 import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
-import org.vitaly.data.TestData;
 import org.vitaly.data.TestUtil;
-import org.vitaly.model.car.Car;
 import org.vitaly.model.carModel.CarModel;
-import org.vitaly.service.impl.dto.CarDto;
-import org.vitaly.service.impl.dto.CarModelDto;
-import org.vitaly.service.impl.factory.DtoMapperFactory;
 
+import java.util.Collections;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.allOf;
-import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
-import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.junit.Assert.*;
 import static org.vitaly.matcher.EntityIdMatcher.hasId;
@@ -30,8 +23,22 @@ import static org.vitaly.matcher.EntityIdMatcher.hasId;
  */
 public class MysqlCarModelDaoTest {
     private CarModelDao carModelDao = new MysqlCarModelDao();
-    private CarModel carModel1 = TestData.getInstance().getCarModel("carModel1");
-    private CarModel carModel2 = TestData.getInstance().getCarModel("carModel2");
+
+    private CarModel carModel1 = new CarModel.Builder()
+            .setName("Ford Focus")
+            .setPhotoUrl("none")
+            .setSeatCount(5)
+            .setDoorCount(4)
+            .setHorsePowerCount(150)
+            .build();
+
+    private CarModel carModel2 = new CarModel.Builder()
+            .setName("Ford Fiesta")
+            .setPhotoUrl("none")
+            .setSeatCount(2)
+            .setDoorCount(2)
+            .setHorsePowerCount(100)
+            .build();
 
     @Before
     public void setUp() throws Exception {
@@ -41,7 +48,6 @@ public class MysqlCarModelDaoTest {
     @After
     public void tearDown() throws Exception {
         TransactionManager.rollback();
-        TransactionManager.getConnection().close();
     }
 
     @Test
@@ -107,15 +113,6 @@ public class MysqlCarModelDaoTest {
     }
 
     @Test
-    public void createdCarModelHasNullPhotoUrl() throws Exception {
-        long createdId = carModelDao.create(carModel1).orElseThrow(AssertionFailedError::new);
-
-        CarModel createdCarModel = carModelDao.findById(createdId).orElseThrow(AssertionFailedError::new);
-
-        assertNull(createdCarModel.getPhotoUrl());
-    }
-
-    @Test
     public void creatingCarModelWithSameNameReturnsEmptyOptional() throws Exception {
         carModelDao.create(carModel1);
         boolean creationResult = carModelDao.create(carModel1).isPresent();
@@ -170,51 +167,14 @@ public class MysqlCarModelDaoTest {
     }
 
     @Test
-    public void findCarModelsWithPhotosReturnsMatchingCars() throws Exception {
-        carModelDao.create(carModel1);
-        CarModel carModelWithId2 = TestUtil.createEntityWithId(carModel2, carModelDao);
-
-        carModelDao.update(carModelWithId2.getId(), carModel2);
-
-        List<CarModel> carModelList = carModelDao.findCarModelsWithPhotos();
-
-        assertThat(carModelList, allOf(
-                hasItem(carModel2),
-                not(hasItem(carModel1))));
-    }
-
-    @Test
-    public void findCarModelsWithPhotosReturnsEmptyListOnEmptyTable() throws Exception {
-        List<CarModel> carList = carModelDao.findCarModelsWithPhotos();
-
-        assertThat(carList, empty());
-    }
-
-    @Test
-    public void findCarModelsWithPhotosReturnsEmptyListOnZeroMatches() throws Exception {
-        carModelDao.create(carModel1);
-        carModelDao.create(carModel2);
-
-        List<CarModel> carList = carModelDao.findCarModelsWithPhotos();
-
-        assertThat(carList, empty());
-    }
-
-    @Test
     public void findModelOfExistingCarReturnsModel() throws Exception {
+        long carId = 1;
         long modelId = carModelDao.create(carModel1).orElseThrow(AssertionFailedError::new);
-        CarModelDto carModelDto = new CarModelDto();
-        carModelDto.setId(modelId);
-        Car car = TestUtil.setEntityAttribute(
-                TestData.getInstance().getCar("car1"),
-                CarDto::setCarModelDto,
-                carModelDto,
-                DtoMapperFactory.getInstance().getCarDtoMapper());
-        long carId = MysqlDaoFactory.getInstance()
-                .getCarDao()
-                .create(car)
-                .orElseThrow(AssertionFailedError::new);
 
+        DaoTemplate.executeInsert(
+                "INSERT INTO " +
+                        "car(car_id, car_status, model_id, registration_plate, color, price_per_day) " +
+                        "VALUES (1, 'available', ?, '', '', 1)", Collections.singletonMap(1, modelId));
         CarModel carModel = carModelDao.findModelOfCar(carId).orElseThrow(AssertionFailedError::new);
 
         assertThat(carModel, hasId(modelId));

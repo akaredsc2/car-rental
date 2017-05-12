@@ -1,7 +1,6 @@
 package org.vitaly.dao.impl.mysql.mapper;
 
 import org.junit.Test;
-import org.vitaly.data.TestData;
 import org.vitaly.model.location.Location;
 
 import java.sql.ResultSet;
@@ -23,7 +22,14 @@ public class LocationMapperTest {
 
     @Test
     public void mapCorrectlySetsLocationParameters() throws Exception {
-        Location expectedLocation = TestData.getInstance().getLocation("location1");
+        Location expectedLocation = new Location.Builder()
+                .setId(4L)
+                .setState("Kiev region")
+                .setCity("Kotsjubinske")
+                .setStreet("Ponomarjova")
+                .setBuilding("18-a")
+                .setPhotoUrl("location1url")
+                .build();
 
         when(resultSet.getLong(LOCATION_LOCATION_ID)).thenReturn(expectedLocation.getId());
         when(resultSet.getString(LOCATION_STATE)).thenReturn(expectedLocation.getState());

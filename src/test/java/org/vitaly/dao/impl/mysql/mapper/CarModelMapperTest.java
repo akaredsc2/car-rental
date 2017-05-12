@@ -23,7 +23,14 @@ public class CarModelMapperTest {
 
     @Test
     public void mapCorrectlySetsNotificationParameters() throws Exception {
-        CarModel expectedCarModel = TestData.getInstance().getCarModel("carModel1");
+        CarModel expectedCarModel = new CarModel.Builder()
+                .setId(10)
+                .setName("Ford Focus")
+                .setPhotoUrl("none")
+                .setSeatCount(5)
+                .setDoorCount(4)
+                .setHorsePowerCount(150)
+                .build();
 
         when(resultSet.getLong(MODEL_MODEL_ID)).thenReturn(expectedCarModel.getId());
         when(resultSet.getString(MODEL_MODEL_NAME)).thenReturn(expectedCarModel.getName());

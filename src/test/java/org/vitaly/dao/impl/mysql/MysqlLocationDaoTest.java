@@ -3,20 +3,13 @@ package org.vitaly.dao.impl.mysql;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.vitaly.dao.abstraction.CarDao;
-import org.vitaly.dao.abstraction.CarModelDao;
 import org.vitaly.dao.abstraction.LocationDao;
+import org.vitaly.dao.impl.mysql.template.DaoTemplate;
 import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
-import org.vitaly.data.TestData;
 import org.vitaly.data.TestUtil;
-import org.vitaly.model.car.Car;
-import org.vitaly.model.carModel.CarModel;
 import org.vitaly.model.location.Location;
-import org.vitaly.service.impl.dto.CarDto;
-import org.vitaly.service.impl.dto.CarModelDto;
-import org.vitaly.service.impl.dtoMapper.CarDtoMapper;
-import org.vitaly.service.impl.dtoMapper.CarModelDtoMapper;
 
+import java.util.Collections;
 import java.util.List;
 
 import static junit.framework.TestCase.*;
@@ -30,8 +23,24 @@ import static org.vitaly.matcher.EntityIdMatcher.hasId;
  */
 public class MysqlLocationDaoTest {
     private LocationDao locationDao = new MysqlLocationDao();
-    private Location location1 = TestData.getInstance().getLocation("location1");
-    private Location location2 = TestData.getInstance().getLocation("location2");
+
+    private Location location1 = new Location.Builder()
+            .setId(4L)
+            .setState("Kiev region")
+            .setCity("Kotsjubinske")
+            .setStreet("Ponomarjova")
+            .setBuilding("18-a")
+            .setPhotoUrl("location1url")
+            .build();
+
+    private Location location2 = new Location.Builder()
+            .setId(5L)
+            .setState("Odesska")
+            .setCity("Odesa")
+            .setStreet("Peysivska")
+            .setBuilding("14")
+            .setPhotoUrl("location2url")
+            .build();
 
     @Before
     public void setUp() throws Exception {
@@ -41,7 +50,6 @@ public class MysqlLocationDaoTest {
     @After
     public void tearDown() throws Exception {
         TransactionManager.rollback();
-        TransactionManager.getConnection().close();
     }
 
     @Test
@@ -123,27 +131,17 @@ public class MysqlLocationDaoTest {
 
     @Test
     public void findLocationOfExistingCarReturnsLocation() throws Exception {
-        CarModel carModel = TestData.getInstance().getCarModel("carModel1");
-        CarModelDao carModelDao = new MysqlCarModelDao();
-        carModel = TestUtil.createEntityWithId(carModel, carModelDao);
-
-        CarModelDtoMapper carModelDtoMapper = new CarModelDtoMapper();
-        CarModelDto carModelDto = carModelDtoMapper.mapEntityToDto(carModel);
-
-        Car car = TestData.getInstance().getCar("car1");
-
-        CarDtoMapper carDtoMapper = new CarDtoMapper();
-        CarDto carDto = carDtoMapper.mapEntityToDto(car);
-        carDto.setCarModelDto(carModelDto);
-        car = carDtoMapper.mapDtoToEntity(carDto);
-
-        CarDao carDao = new MysqlCarDao();
-        car = TestUtil.createEntityWithId(car, carDao);
-
+        int carId = 1;
         location1 = TestUtil.createEntityWithId(location1, locationDao);
-        carDao.moveCarToLocation(car.getId(), location1.getId());
 
-        Location foundLocation = locationDao.findLocationByCarId(car.getId()).orElseThrow(AssertionError::new);
+        DaoTemplate.executeInsert(
+                "INSERT INTO model (model_id, model_name, doors, seats, horse_powers) " +
+                        "VALUES (1, '', 1, 1, 1)", Collections.emptyMap());
+        DaoTemplate.executeInsert(
+                "INSERT INTO " +
+                        "car(car_id, car_status, model_id, registration_plate, color, price_per_day, location_id) " +
+                        "VALUES (1, 'available', 1, '', '', 1, ?)", Collections.singletonMap(1, location1.getId()));
+        Location foundLocation = locationDao.findLocationByCarId(carId).orElseThrow(AssertionError::new);
 
         assertEquals(foundLocation, location1);
     }

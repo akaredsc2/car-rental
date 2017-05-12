@@ -47,7 +47,13 @@ public class ReservationServiceImpl implements ReservationService {
                 && isReservationCreated
                 && isCarReserved;
 
-        return TransactionManager.endTransaction(commitCondition);
+        if (commitCondition) {
+            TransactionManager.commit();
+        } else {
+            TransactionManager.rollback();
+        }
+
+        return commitCondition;
     }
 
     private boolean createReservation(ReservationDto reservationDto, ReservationDao reservationDao) {
@@ -115,7 +121,13 @@ public class ReservationServiceImpl implements ReservationService {
 
         boolean commitCondition = isAdminAssignedToReservation && canChangeState && isStateChanged;
 
-        return TransactionManager.endTransaction(commitCondition);
+        if (commitCondition) {
+            TransactionManager.commit();
+        } else {
+            TransactionManager.rollback();
+        }
+
+        return commitCondition;
     }
 
     private boolean doChangeState(ReservationDto reservationDto,
@@ -208,7 +220,13 @@ public class ReservationServiceImpl implements ReservationService {
                 && isReservationCanceled
                 && isCarMadeAvailable;
 
-        return TransactionManager.endTransaction(commitCondition);
+        if (commitCondition) {
+            TransactionManager.commit();
+        } else {
+            TransactionManager.rollback();
+        }
+
+        return commitCondition;
     }
 
     private boolean tryToChangeCarState(long carId, CarState state, Predicate<Car> stateChangePredicate) {
@@ -247,7 +265,13 @@ public class ReservationServiceImpl implements ReservationService {
 
         boolean commitCondition = isNotClaimedByOtherAdmin && isAdminAssigned;
 
-        return TransactionManager.endTransaction(commitCondition);
+        if (commitCondition) {
+            TransactionManager.commit();
+        } else {
+            TransactionManager.rollback();
+        }
+
+        return commitCondition;
     }
 
     private boolean checkIfAbleToChangeState(Reservation reservation, String reservationState) {

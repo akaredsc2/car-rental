@@ -3,9 +3,12 @@ package org.vitaly.dao.impl.mysql.mapper;
 import org.junit.Test;
 import org.vitaly.data.TestData;
 import org.vitaly.model.user.User;
+import org.vitaly.model.user.UserRole;
 
 import java.sql.Date;
 import java.sql.ResultSet;
+import java.time.LocalDate;
+import java.time.Month;
 
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.equalTo;
@@ -24,7 +27,16 @@ public class UserMapperTest {
 
     @Test
     public void mapCorrectlySetsUserParameters() throws Exception {
-        User expectedUser = TestData.getInstance().getUser("client1");
+        User expectedUser = new User.Builder()
+                .setId(7L)
+                .setLogin("evilVitaly")
+                .setPassword("sh2r2p0v")
+                .setFullName("Vitaly Victorovich Sharapov")
+                .setBirthDate(LocalDate.of(1995, Month.AUGUST, 1))
+                .setPassportNumber("666sat666")
+                .setDriverLicenceNumber("1313an1313")
+                .setRole(UserRole.CLIENT)
+                .build();
 
         when(resultSet.getLong(USERS_USER_ID)).thenReturn(expectedUser.getId());
         when(resultSet.getString(USERS_LOGIN)).thenReturn(expectedUser.getLogin());

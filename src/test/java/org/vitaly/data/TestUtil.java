@@ -16,10 +16,4 @@ public class TestUtil {
         long createdId = dao.create(entity).orElseThrow(AssertionError::new);
         return dao.findById(createdId).orElseThrow(AssertionError::new);
     }
-
-    public static <E, D, V> E setEntityAttribute(E entity, BiConsumer<D, V> setter, V value, DtoMapper<E, D> dtoMapper) {
-        D dto = dtoMapper.mapEntityToDto(entity);
-        setter.accept(dto, value);
-        return dtoMapper.mapDtoToEntity(dto);
-    }
 }

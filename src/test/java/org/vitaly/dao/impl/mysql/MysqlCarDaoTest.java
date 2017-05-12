@@ -3,26 +3,19 @@ package org.vitaly.dao.impl.mysql;
 import junit.framework.AssertionFailedError;
 import org.junit.*;
 import org.vitaly.dao.abstraction.CarDao;
-import org.vitaly.dao.abstraction.CarModelDao;
-import org.vitaly.dao.abstraction.LocationDao;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.exception.DaoException;
-import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
+import org.vitaly.dao.impl.mysql.template.DaoTemplate;
 import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
-import org.vitaly.data.TestData;
 import org.vitaly.data.TestUtil;
 import org.vitaly.model.car.Car;
 import org.vitaly.model.car.CarState;
 import org.vitaly.model.car.CarStateEnum;
 import org.vitaly.model.car.UnavailableState;
 import org.vitaly.model.carModel.CarModel;
-import org.vitaly.model.location.Location;
-import org.vitaly.service.impl.dto.CarDto;
-import org.vitaly.service.impl.dto.CarModelDto;
-import org.vitaly.service.impl.dtoMapper.CarDtoMapper;
-import org.vitaly.service.impl.dtoMapper.CarModelDtoMapper;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 
 import static junit.framework.TestCase.*;
@@ -44,44 +37,53 @@ public class MysqlCarDaoTest {
     private static CarModel carModel2;
 
     private CarDao carDao = new MysqlCarDao();
-    private Car car1 = TestData.getInstance().getCar("car1");
-    private Car car2 = TestData.getInstance().getCar("car2");
+
+    private Car car1 = new Car.Builder()
+            .setCarModel(carModel1)
+            .setRegistrationPlate("1")
+            .setColor("red")
+            .setPricePerDay(BigDecimal.ONE)
+            .setState(CarStateEnum.UNAVAILABLE.getState())
+            .build();
+
+    private Car car2 = new Car.Builder()
+            .setCarModel(carModel2)
+            .setRegistrationPlate("2")
+            .setColor("green")
+            .setPricePerDay(BigDecimal.TEN)
+            .setState(CarStateEnum.UNAVAILABLE.getState())
+            .build();
 
     @BeforeClass
     public static void init() throws Exception {
         TransactionManager.startTransaction();
 
-        Location locationFromTestData = TestData.getInstance().getLocation("location1");
-        LocationDao locationDao = MysqlDaoFactory.getInstance().getLocationDao();
-        locationId = TestUtil.createEntityWithId(locationFromTestData, locationDao).getId();
+        DaoTemplate.executeInsert(
+                "INSERT INTO location (location_id, state, city, street, building) " +
+                        "VALUES (1, '', '', '', '')", Collections.emptyMap());
+        locationId = 1;
 
-        CarModel carModelFromTestData1 = TestData.getInstance().getCarModel("carModel1");
-        CarModel carModelFromTestData2 = TestData.getInstance().getCarModel("carModel2");
-        CarModelDao carModelDao = MysqlDaoFactory.getInstance().getCarModelDao();
-        carModel1 = TestUtil.createEntityWithId(carModelFromTestData1, carModelDao);
-        carModel2 = TestUtil.createEntityWithId(carModelFromTestData2, carModelDao);
+        DaoTemplate.executeInsert(
+                "INSERT INTO model (model_id, model_name, doors, seats, horse_powers) " +
+                        "VALUES (1, '1', 1, 1, 1)", Collections.emptyMap());
+        carModel1 = new CarModel.Builder().setId(1).build();
+
+        DaoTemplate.executeInsert(
+                "INSERT INTO model (model_id, model_name, doors, seats, horse_powers) " +
+                        "VALUES (2, '2', 2, 2, 2)", Collections.emptyMap());
+        carModel2 = new CarModel.Builder().setId(2).build();
 
         TransactionManager.commit();
-        TransactionManager.getConnection().close();
     }
 
     @Before
     public void setUp() throws Exception {
-        CarModelDtoMapper carModelDtoMapper = new CarModelDtoMapper();
-        CarModelDto carModelDto1 = carModelDtoMapper.mapEntityToDto(carModel1);
-        CarModelDto carModelDto2 = carModelDtoMapper.mapEntityToDto(carModel2);
-
-        CarDtoMapper carDtoMapper = new CarDtoMapper();
-        car1 = TestUtil.setEntityAttribute(car1, CarDto::setCarModelDto, carModelDto1, carDtoMapper);
-        car2 = TestUtil.setEntityAttribute(car2, CarDto::setCarModelDto, carModelDto2, carDtoMapper);
-
         TransactionManager.startTransaction();
     }
 
     @After
     public void tearDown() throws Exception {
         TransactionManager.rollback();
-        TransactionManager.getConnection().close();
     }
 
     @AfterClass
@@ -94,7 +96,6 @@ public class MysqlCarDaoTest {
         connection.prepareStatement(MODEL_CLEAN_UP_QUERY).executeUpdate();
 
         TransactionManager.commit();
-        connection.close();
     }
 
     @Test

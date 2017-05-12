@@ -2,24 +2,23 @@ package org.vitaly.dao.impl.mysql;
 
 import junit.framework.AssertionFailedError;
 import org.junit.*;
-import org.vitaly.dao.abstraction.*;
+import org.vitaly.dao.abstraction.BillDao;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.exception.DaoException;
+import org.vitaly.dao.impl.mysql.template.DaoTemplate;
 import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
 import org.vitaly.data.TestData;
 import org.vitaly.data.TestUtil;
 import org.vitaly.model.bill.Bill;
+import org.vitaly.model.bill.BillDescriptionEnum;
 import org.vitaly.model.car.Car;
-import org.vitaly.model.carModel.CarModel;
 import org.vitaly.model.reservation.Reservation;
 import org.vitaly.model.user.User;
-import org.vitaly.service.impl.dto.CarDto;
-import org.vitaly.service.impl.dto.CarModelDto;
-import org.vitaly.service.impl.dtoMapper.CarDtoMapper;
-import org.vitaly.service.impl.dtoMapper.CarModelDtoMapper;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import static junit.framework.TestCase.*;
@@ -41,41 +40,43 @@ public class MysqlBillDaoTest {
     private static Reservation reservation;
 
     private BillDao billDao = new MysqlBillDao();
-    private Bill bill1 = TestData.getInstance().getBill("bill1");
-    private Bill bill2 = TestData.getInstance().getBill("bill2");
+
+    private Bill bill1 =  new Bill.Builder()
+            .setPaid(false)
+            .setDescription(BillDescriptionEnum.DAMAGE)
+            .setCashAmount(BigDecimal.valueOf(1111))
+            .setCreationDateTime(LocalDateTime.now())
+            .build();
+
+    private Bill bill2 = new Bill.Builder()
+            .setPaid(false)
+            .setDescription(BillDescriptionEnum.SERVICE)
+            .setCashAmount(BigDecimal.valueOf(2222))
+            .setCreationDateTime(LocalDateTime.now())
+            .build();
 
     @BeforeClass
     public static void init() throws SQLException {
         TransactionManager.startTransaction();
 
-        UserDao userDao = new MysqlUserDao();
-        User user = TestUtil.createEntityWithId(TestData.getInstance().getUser("client1"), userDao);
-
-        CarModel carModelFromTestData = TestData.getInstance().getCarModel("carModel1");
-        CarModelDao carModelDao = new MysqlCarModelDao();
-        CarModel carModel = TestUtil.createEntityWithId(carModelFromTestData, carModelDao);
-
-        CarModelDtoMapper carModelDtoMapper = new CarModelDtoMapper();
-        CarModelDto carModelDto = carModelDtoMapper.mapEntityToDto(carModel);
-
-        Car car = TestData.getInstance().getCar("car1");
-
-        CarDtoMapper carDtoMapper = new CarDtoMapper();
-        car = TestUtil.setEntityAttribute(car, CarDto::setCarModelDto, carModelDto, carDtoMapper);
-        CarDao carDao = new MysqlCarDao();
-        car = TestUtil.createEntityWithId(car, carDao);
-
-        Reservation temp = new Reservation.Builder()
-                .setClient(user)
-                .setCar(car)
-                .setPickUpDatetime(LocalDateTime.now())
-                .setDropOffDatetime(LocalDateTime.now().plusDays(2))
-                .build();
-        ReservationDao reservationDao = new MysqlReservationDao();
-        reservation = TestUtil.createEntityWithId(temp, reservationDao);
+        DaoTemplate.executeInsert(
+                "INSERT INTO users " +
+                        "(user_id, login, pass, full_name, birth_date, passport_number, driver_licence_number, role) " +
+                        "VALUES (1, '1', '1', '1', '1995-08-01', '1', '1', 'client')",
+                Collections.emptyMap());
+        DaoTemplate.executeInsert(
+                "INSERT INTO model (model_id, model_name, doors, seats, horse_powers) " +
+                        "VALUES (1, '1', 1, 1, 1)", Collections.emptyMap());
+        DaoTemplate.executeInsert(
+                "INSERT INTO " +
+                        "car(car_id, car_status, model_id, registration_plate, color, price_per_day) " +
+                        "VALUES (1, 'available', 1, '1', '', 1)", Collections.emptyMap());
+        DaoTemplate.executeInsert(
+                "INSERT INTO reservation(reservation_id, client_id, car_id, pick_up_datetime, drop_off_datetime) " +
+                        "VALUES (1, 1, 1, '1995-08-01T11:11:11', '1995-08-01T11:11:12')", Collections.emptyMap());
+        reservation = new Reservation.Builder().setId(1).build();
 
         TransactionManager.commit();
-        TransactionManager.getConnection().close();
     }
 
     @Before
@@ -86,7 +87,6 @@ public class MysqlBillDaoTest {
     @After
     public void tearDown() throws Exception {
         TransactionManager.rollback();
-        TransactionManager.getConnection().close();
     }
 
     @AfterClass

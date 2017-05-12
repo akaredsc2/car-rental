@@ -5,11 +5,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.vitaly.dao.abstraction.UserDao;
 import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
-import org.vitaly.data.TestData;
 import org.vitaly.data.TestUtil;
 import org.vitaly.model.user.User;
 import org.vitaly.model.user.UserRole;
 
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 
 import static junit.framework.TestCase.assertFalse;
@@ -24,9 +25,37 @@ import static org.vitaly.matcher.EntityIdMatcher.hasId;
  */
 public class MysqlUserDaoTest {
     private UserDao userDao = new MysqlUserDao();
-    private User client1 = TestData.getInstance().getUser("client1");
-    private User client2 = TestData.getInstance().getUser("client2");
-    private User admin = TestData.getInstance().getUser("admin");
+
+    private User client1 = new User.Builder()
+            .setLogin("vitaly")
+            .setPassword("sh2r2p0v")
+            .setFullName("Vitaly Victorovich Sharapov")
+            .setBirthDate(LocalDate.of(1995, Month.AUGUST, 1))
+            .setPassportNumber("ab123456")
+            .setDriverLicenceNumber("123sdf456")
+            .setRole(UserRole.CLIENT)
+            .build();
+
+    private User client2 = new User.Builder()
+            .setLogin("evilVitaly")
+            .setPassword("sh2r2p0v")
+            .setFullName("Vitaly Victorovich Sharapov")
+            .setBirthDate(LocalDate.of(1995, Month.AUGUST, 1))
+            .setPassportNumber("666sat666")
+            .setDriverLicenceNumber("1313an1313")
+            .setRole(UserRole.CLIENT)
+            .build();
+
+    private User admin = new User.Builder()
+            .setId(8L)
+            .setLogin("Karsa")
+            .setPassword("toblakai")
+            .setFullName("Karsa Orlong from Uryd Tribe")
+            .setBirthDate(LocalDate.of(1937, Month.JANUARY, 1))
+            .setPassportNumber("cd789101")
+            .setDriverLicenceNumber("789def101")
+            .setRole(UserRole.ADMIN)
+            .build();
 
     @Before
     public void setUp() throws Exception {
@@ -36,7 +65,6 @@ public class MysqlUserDaoTest {
     @After
     public void tearDown() throws Exception {
         TransactionManager.rollback();
-        TransactionManager.getConnection().close();
     }
 
     @Test

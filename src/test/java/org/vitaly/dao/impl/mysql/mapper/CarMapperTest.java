@@ -5,7 +5,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.vitaly.data.TestData;
 import org.vitaly.model.car.Car;
+import org.vitaly.model.car.CarStateEnum;
+import org.vitaly.model.carModel.CarModel;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 
 import static org.hamcrest.Matchers.allOf;
@@ -23,7 +26,15 @@ public class CarMapperTest {
 
     @Test
     public void mapCorrectlySetsCarParameters() throws Exception {
-        Car expectedCar = TestData.getInstance().getCar("car1");
+        CarModel model = new CarModel.Builder().setId(10).build();
+        Car expectedCar = new Car.Builder()
+                .setId(3L)
+                .setState(CarStateEnum.UNAVAILABLE.getState())
+                .setCarModel(model)
+                .setRegistrationPlate("888")
+                .setColor("blue")
+                .setPricePerDay(BigDecimal.valueOf(140.0))
+                .build();
 
         when(resultSet.getLong(CAR_CAR_ID)).thenReturn(expectedCar.getId());
         when(resultSet.getString(CAR_CAR_STATUS)).thenReturn(expectedCar.getState().toString());

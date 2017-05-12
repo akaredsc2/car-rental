@@ -83,7 +83,13 @@ public class BillServiceImpl implements BillService {
 
         boolean commitCondition = isCarReturned && !isOtherBillForDamagePresent && isBillCreated;
 
-        return TransactionManager.endTransaction(commitCondition);
+        if (commitCondition) {
+            TransactionManager.commit();
+        } else {
+            TransactionManager.rollback();
+        }
+
+        return commitCondition;
     }
 
     @Override
@@ -108,7 +114,13 @@ public class BillServiceImpl implements BillService {
                 .getBillDao()
                 .markPaid(billId);
 
-        return TransactionManager.endTransaction(isMarked);
+        if (isMarked) {
+            TransactionManager.commit();
+        } else {
+            TransactionManager.rollback();
+        }
+
+        return isMarked;
     }
 
     @Override
@@ -116,10 +128,21 @@ public class BillServiceImpl implements BillService {
         TransactionManager.startTransaction();
 
         long billId = billDto.getId();
-        boolean isConfirmed = MysqlDaoFactory.getInstance()
-                .getBillDao()
-                .markConfirmed(billId);
+        BillDao billDao = MysqlDaoFactory.getInstance()
+                .getBillDao();
 
-        return TransactionManager.endTransaction(isConfirmed);
+        boolean isPaid = billDao.findById(billId)
+                .filter(Bill::isPaid)
+                .isPresent();
+
+        boolean isConfirmed = billDao.markConfirmed(billId);
+
+        if (isPaid && isConfirmed) {
+            TransactionManager.commit();
+        } else {
+            TransactionManager.rollback();
+        }
+
+        return isConfirmed;
     }
 }

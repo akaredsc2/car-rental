@@ -88,14 +88,4 @@ public class TransactionManager {
             throw new DaoException(message, e);
         }
     }
-
-    public static boolean endTransaction(boolean commitCondition) {
-        if (commitCondition) {
-            TransactionManager.commit();
-        } else {
-            TransactionManager.rollback();
-        }
-
-        return commitCondition;
-    }
 }

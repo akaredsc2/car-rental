@@ -1,29 +1,21 @@
 package org.vitaly.dao.impl.mysql;
 
 import org.junit.*;
-import org.vitaly.dao.abstraction.CarDao;
-import org.vitaly.dao.abstraction.CarModelDao;
 import org.vitaly.dao.abstraction.ReservationDao;
-import org.vitaly.dao.abstraction.UserDao;
 import org.vitaly.dao.abstraction.connectionPool.PooledConnection;
 import org.vitaly.dao.exception.DaoException;
+import org.vitaly.dao.impl.mysql.template.DaoTemplate;
 import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
-import org.vitaly.data.TestData;
 import org.vitaly.data.TestUtil;
 import org.vitaly.model.car.Car;
-import org.vitaly.model.carModel.CarModel;
 import org.vitaly.model.reservation.Reservation;
 import org.vitaly.model.reservation.ReservationState;
 import org.vitaly.model.reservation.ReservationStateEnum;
 import org.vitaly.model.user.User;
-import org.vitaly.model.user.UserRole;
-import org.vitaly.service.impl.dto.CarDto;
-import org.vitaly.service.impl.dto.CarModelDto;
-import org.vitaly.service.impl.dtoMapper.CarDtoMapper;
-import org.vitaly.service.impl.dtoMapper.CarModelDtoMapper;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import static junit.framework.TestCase.*;
@@ -47,6 +39,7 @@ public class MysqlReservationDaoTest {
     private static Car car2;
 
     private ReservationDao reservationDao = new MysqlReservationDao();
+
     private Reservation reservation1 = new Reservation.Builder()
             .setClient(client1)
             .setCar(car1)
@@ -65,41 +58,46 @@ public class MysqlReservationDaoTest {
     public static void init() throws SQLException {
         TransactionManager.startTransaction();
 
-        UserDao userDao = new MysqlUserDao();
-        client1 = TestUtil.createEntityWithId(TestData.getInstance().getUser("client1"), userDao);
-        client2 = TestUtil.createEntityWithId(TestData.getInstance().getUser("client2"), userDao);
+        DaoTemplate.executeInsert(
+                "INSERT INTO users " +
+                        "(user_id, login, pass, full_name, birth_date, passport_number, driver_licence_number, role) " +
+                        "VALUES (1, '1', '1', '1', '1995-08-01', '1', '1', 'client')",
+                Collections.emptyMap());
+        client1 = new User.Builder().setId(1).build();
 
-        admin = TestUtil.createEntityWithId(TestData.getInstance().getUser("admin"), userDao);
-        userDao.changeRole(admin.getId(), UserRole.ADMIN);
-        admin = userDao.findById(admin.getId()).orElseThrow(AssertionError::new);
+        DaoTemplate.executeInsert(
+                "INSERT INTO users " +
+                        "(user_id, login, pass, full_name, birth_date, passport_number, driver_licence_number, role) " +
+                        "VALUES (2, '2', '2', '2', '1995-08-02', '2', '2', 'client')",
+                Collections.emptyMap());
+        client2 = new User.Builder().setId(2).build();
 
-        CarModel carModelFromTestData1 = TestData.getInstance().getCarModel("carModel1");
-        CarModel carModelFromTestData2 = TestData.getInstance().getCarModel("carModel2");
-        CarModelDao carModelDao = new MysqlCarModelDao();
-        CarModel carModel1 = TestUtil.createEntityWithId(carModelFromTestData1, carModelDao);
-        CarModel carModel2 = TestUtil.createEntityWithId(carModelFromTestData2, carModelDao);
+        DaoTemplate.executeInsert(
+                "INSERT INTO users " +
+                        "(user_id, login, pass, full_name, birth_date, passport_number, driver_licence_number, role) " +
+                        "VALUES (3, '3', '3', '3', '1995-08-03', '3', '3', 'admin')",
+                Collections.emptyMap());
+        admin = new User.Builder().setId(3).build();
 
-        CarModelDtoMapper carModelDtoMapper = new CarModelDtoMapper();
-        CarModelDto carModelDto1 = carModelDtoMapper.mapEntityToDto(carModel1);
-        CarModelDto carModelDto2 = carModelDtoMapper.mapEntityToDto(carModel2);
+        DaoTemplate.executeInsert(
+                "INSERT INTO model (model_id, model_name, doors, seats, horse_powers) " +
+                        "VALUES (1, '1', 1, 1, 1)", Collections.emptyMap());
+        DaoTemplate.executeInsert(
+                "INSERT INTO " +
+                        "car(car_id, car_status, model_id, registration_plate, color, price_per_day) " +
+                        "VALUES (1, 'available', 1, '1', '', 1)", Collections.emptyMap());
+        car1 = new Car.Builder().setId(1).build();
 
-        Car carFromTestData1 = TestData.getInstance().getCar("car1");
-        Car carFromTestData2 = TestData.getInstance().getCar("car2");
-
-        CarDtoMapper carDtoMapper = new CarDtoMapper();
-        CarDto carDto1 = carDtoMapper.mapEntityToDto(carFromTestData1);
-        CarDto carDto2 = carDtoMapper.mapEntityToDto(carFromTestData2);
-        carDto1.setCarModelDto(carModelDto1);
-        carDto2.setCarModelDto(carModelDto2);
-        carFromTestData1 = carDtoMapper.mapDtoToEntity(carDto1);
-        carFromTestData2 = carDtoMapper.mapDtoToEntity(carDto2);
-
-        CarDao carDao = new MysqlCarDao();
-        MysqlReservationDaoTest.car1 = TestUtil.createEntityWithId(carFromTestData1, carDao);
-        MysqlReservationDaoTest.car2 = TestUtil.createEntityWithId(carFromTestData2, carDao);
+        DaoTemplate.executeInsert(
+                "INSERT INTO model (model_id, model_name, doors, seats, horse_powers) " +
+                        "VALUES (2, '2', 2, 2, 2)", Collections.emptyMap());
+        DaoTemplate.executeInsert(
+                "INSERT INTO " +
+                        "car(car_id, car_status, model_id, registration_plate, color, price_per_day) " +
+                        "VALUES (2, 'available', 2, '2', '', 2)", Collections.emptyMap());
+        car2 = new Car.Builder().setId(2).build();
 
         TransactionManager.commit();
-        TransactionManager.getConnection().close();
     }
 
     @Before
@@ -110,7 +108,6 @@ public class MysqlReservationDaoTest {
     @After
     public void tearDown() throws Exception {
         TransactionManager.rollback();
-        TransactionManager.getConnection().close();
     }
 
     @AfterClass
@@ -124,7 +121,6 @@ public class MysqlReservationDaoTest {
         connection.prepareStatement(USERS_CLEAN_UP_QUERY).executeUpdate();
 
         TransactionManager.commit();
-        connection.close();
     }
 
     @Test
