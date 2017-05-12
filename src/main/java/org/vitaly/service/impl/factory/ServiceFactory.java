@@ -15,6 +15,7 @@ public class ServiceFactory {
     private LocationService locationService = new LocationServiceImpl();
     private ReservationService reservationService = new ReservationServiceImpl();
     private UserService userService = new UserServiceImpl();
+    private ImageService imageService = new CloudinaryImageService();
 
     private ServiceFactory() {
     }
@@ -45,5 +46,9 @@ public class ServiceFactory {
 
     public UserService getUserService() {
         return userService;
+    }
+
+    public ImageService getImageService() {
+        return imageService;
     }
 }

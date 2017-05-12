@@ -17,11 +17,6 @@
     <filter-name>EncodingFilter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
-
-  <servlet>
-    <servlet-name>CarRental</servlet-name>
-    <servlet-class>org.vitaly.servlet.CarRentalServlet</servlet-class>
-  </servlet>
   
   <error-page>
     <exception-type>java.lang.Throwable</exception-type>
@@ -32,6 +27,16 @@
     <error-code>404</error-code>
     <location>/pages/error/404.jsp</location>
   </error-page>
+
+  <servlet>
+    <servlet-name>CarRental</servlet-name>
+    <servlet-class>org.vitaly.servlet.CarRentalServlet</servlet-class>
+    <multipart-config>
+      <max-file-size>10485760</max-file-size>
+      <max-request-size>20971520</max-request-size>
+      <file-size-threshold>0</file-size-threshold>
+    </multipart-config>
+  </servlet>
 
   <servlet-mapping>
     <servlet-name>CarRental</servlet-name>

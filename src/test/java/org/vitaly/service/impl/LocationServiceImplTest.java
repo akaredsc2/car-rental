@@ -56,7 +56,7 @@ public class LocationServiceImplTest {
         LocationDto locationDto = new LocationDto();
 
         when(locationDao.update(anyLong(), any())).thenReturn(1);
-        boolean isCarModelUpdated = service.updateLocation(locationDto, "new photo url");
+        boolean isCarModelUpdated = service.updateLocation(locationDto);
 
         assertTrue(isCarModelUpdated);
     }
@@ -66,7 +66,7 @@ public class LocationServiceImplTest {
         LocationDto locationDto = new LocationDto();
 
         when(locationDao.update(anyLong(), any())).thenReturn(0);
-        boolean isCarModelUpdated = service.updateLocation(locationDto, "new photo url");
+        boolean isCarModelUpdated = service.updateLocation(locationDto);
 
         assertFalse(isCarModelUpdated);
     }

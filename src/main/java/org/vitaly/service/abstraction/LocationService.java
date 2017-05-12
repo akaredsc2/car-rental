@@ -16,5 +16,5 @@ public interface LocationService {
 
     List<LocationDto> getAll();
 
-    boolean updateLocation(LocationDto locationDto, String photoUrl);
+    boolean updateLocation(LocationDto locationDto);
 }

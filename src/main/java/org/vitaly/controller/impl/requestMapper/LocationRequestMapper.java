@@ -18,7 +18,6 @@ public class LocationRequestMapper implements RequestMapper<LocationDto> {
         Properties properties = PropertyUtils.readProperties(PARAMETERS);
 
         long id = PropertyUtils.getLongFromRequest(request, properties, PARAM_LOCATION_ID);
-        String photoUrl = request.getParameter(properties.getProperty(PARAM_LOCATION_PHOTO));
         String state = request.getParameter(properties.getProperty(PARAM_LOCATION_STATE));
         String city = request.getParameter(properties.getProperty(PARAM_LOCATION_CITY));
         String street = request.getParameter(properties.getProperty(PARAM_LOCATION_STREET));
@@ -26,7 +25,6 @@ public class LocationRequestMapper implements RequestMapper<LocationDto> {
 
         LocationDto locationDto = new LocationDto();
         locationDto.setId(id);
-        locationDto.setPhotoUrl(photoUrl);
         locationDto.setState(state);
         locationDto.setCity(city);
         locationDto.setStreet(street);

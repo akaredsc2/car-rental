@@ -54,6 +54,10 @@ public class UrlHttpMethodPair {
     public static final UrlHttpMethodPair CONFIRM_POST = new UrlHttpMethodPair("confirm", HttpMethod.POST);
     public static final UrlHttpMethodPair ADD_DAMAGE_BILL_POST =
             new UrlHttpMethodPair("add_damage_bill", HttpMethod.POST);
+    public static final UrlHttpMethodPair UPDATE_LOCATION_POST =
+            new UrlHttpMethodPair("update_location", HttpMethod.POST);
+    public static final UrlHttpMethodPair UPDATE_MODEL_POST =
+            new UrlHttpMethodPair("update_model", HttpMethod.POST);
 
     public static final UrlHttpMethodPair LOCATIONS_GET = new UrlHttpMethodPair("locations", HttpMethod.GET);
     public static final UrlHttpMethodPair MODELS_GET = new UrlHttpMethodPair("models", HttpMethod.GET);

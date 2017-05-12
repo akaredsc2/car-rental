@@ -80,6 +80,7 @@ public interface Validator<T> {
     String ERR_CHANGE_RES = "err.change.res";
     String ERR_REG = "err.reg";
     String ERR_SIGN_IN = "err.sign.in";
+    String ERR_UPDATE_PHOTO = "err.update.photo";
 
     ValidationResult validate(T t);
 

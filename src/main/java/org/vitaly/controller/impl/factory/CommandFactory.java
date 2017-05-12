@@ -9,8 +9,10 @@ import org.vitaly.controller.impl.command.bills.PayCommand;
 import org.vitaly.controller.impl.command.car.*;
 import org.vitaly.controller.impl.command.carModel.AddCarModelCommand;
 import org.vitaly.controller.impl.command.carModel.GetModelsCommand;
+import org.vitaly.controller.impl.command.carModel.UpdateCarModelCommand;
 import org.vitaly.controller.impl.command.location.AddLocationCommand;
 import org.vitaly.controller.impl.command.location.GetLocationsCommand;
+import org.vitaly.controller.impl.command.location.UpdateLocationCommand;
 import org.vitaly.controller.impl.command.reservation.*;
 import org.vitaly.controller.impl.command.user.*;
 import org.vitaly.security.UrlHttpMethodPair;
@@ -52,6 +54,8 @@ public class CommandFactory {
         commandMap.put(UrlHttpMethodPair.PAY_POST, new PayCommand());
         commandMap.put(UrlHttpMethodPair.CONFIRM_POST, new ConfirmPaymentCommand());
         commandMap.put(UrlHttpMethodPair.ADD_DAMAGE_BILL_POST, new AddDamageBillCommand());
+        commandMap.put(UrlHttpMethodPair.UPDATE_LOCATION_POST, new UpdateLocationCommand());
+        commandMap.put(UrlHttpMethodPair.UPDATE_MODEL_POST, new UpdateCarModelCommand());
 
         commandMap.put(UrlHttpMethodPair.LOCATIONS_GET, new GetLocationsCommand());
         commandMap.put(UrlHttpMethodPair.MODELS_GET, new GetModelsCommand());

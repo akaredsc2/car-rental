@@ -29,8 +29,8 @@ public class MysqlCarModelDao implements CarModelDao {
             "SELECT * " +
                     "FROM model";
     private static final String CREATE_QUERY =
-            "INSERT INTO model(model_name, doors, seats, horse_powers) " +
-                    "VALUES(?, ?, ?, ?)";
+            "INSERT INTO model(model_name, doors, seats, horse_powers, photo_url) " +
+                    "VALUES(?, ?, ?, ?, ?)";
     private static final String UPDATE_QUERY =
             "UPDATE model " +
                     "SET photo_url = ? " +
@@ -77,6 +77,7 @@ public class MysqlCarModelDao implements CarModelDao {
         parameterMap.put(2, carModel.getDoorCount());
         parameterMap.put(3, carModel.getSeatCount());
         parameterMap.put(4, carModel.getHorsePowerCount());
+        parameterMap.put(5, carModel.getPhotoUrl());
 
         Long createdId = DaoTemplate.executeInsert(CREATE_QUERY, parameterMap);
         return Optional.ofNullable(createdId);

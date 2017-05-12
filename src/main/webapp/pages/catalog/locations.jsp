@@ -24,9 +24,10 @@
 
 <c:forEach items="${requestScope.attr_location_list}" var="location">
     <div class="row panel panel-default">
-        <c:out value="${location.photoUrl}"/>
-
         <address class="form-group col-xs-4">
+
+            <img src="<c:out value="${location.photoUrl}"/>" width="100" height="100">
+
             <div class="row">
                 <div class="col-xs-4 text-right">
                     <fmt:message key="location.add.state" bundle="${info}"/> :
@@ -71,6 +72,16 @@
             <div class="form-group col-xs-6">
                 <input class="btn btn-default" type="submit"
                        value="<fmt:message key="locations.cars.href" bundle="${info}"/>">
+            </div>
+        </form>
+
+        <form method="post" action="rental" enctype="multipart/form-data">
+            <input type="hidden" name="command" value="update_location">
+            <input type="file" name="<fmt:message key="param.location.photo" bundle="${par}"/>">
+            <input type="hidden" name="<fmt:message key="param.location.id" bundle="${par}"/>" value="${location.id}">
+            <div class="form-group col-xs-6">
+                <input class="btn btn-default" type="submit"
+                       value="<fmt:message key="locations.update.href" bundle="${info}"/>">
             </div>
         </form>
     </div>

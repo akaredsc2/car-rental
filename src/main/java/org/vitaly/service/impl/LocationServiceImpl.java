@@ -9,6 +9,7 @@ import org.vitaly.service.impl.dto.CarDto;
 import org.vitaly.service.impl.dto.LocationDto;
 import org.vitaly.service.impl.dtoMapper.DtoMapper;
 import org.vitaly.service.impl.factory.DtoMapperFactory;
+import org.vitaly.service.impl.factory.ServiceFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -61,16 +62,16 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public boolean updateLocation(LocationDto locationDto, String photoUrl) {
+    public boolean updateLocation(LocationDto locationDto) {
         TransactionManager.startTransaction();
 
-        long locationId = locationDto.getId();
-        Location locationWithPhoto = new Location.Builder()
-                .setPhotoUrl(photoUrl)
-                .build();
+        Location locationWithUpdatedPhoto = DtoMapperFactory.getInstance()
+                .getLocationDtoMapper()
+                .mapDtoToEntity(locationDto);
 
-        LocationDao locationDao = MysqlDaoFactory.getInstance().getLocationDao();
-        boolean isChanged = locationDao.update(locationId, locationWithPhoto) > 0;
+        boolean isChanged = MysqlDaoFactory.getInstance()
+                .getLocationDao()
+                .update(locationDto.getId(), locationWithUpdatedPhoto) > 0;
 
         TransactionManager.commit();
 

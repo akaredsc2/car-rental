@@ -43,7 +43,6 @@ public class PropertyUtils {
         return (idString == null) ? -1 : Integer.valueOf(idString);
     }
 
-    // TODO: 2017-05-05 refactor
     public static LocalDate getLocalDateFromRequest(HttpServletRequest request,
                                                     Properties properties, String parameterName) {
         String localDateString = request.getParameter(properties.getProperty(parameterName));
@@ -52,7 +51,6 @@ public class PropertyUtils {
                 LocalDate.parse(localDateString, DateTimeFormatter.ISO_LOCAL_DATE);
     }
 
-    // TODO: 2017-05-05 refactor
     public static LocalDateTime getLocalDateTimeFromRequest(HttpServletRequest request,
                                                     Properties properties, String parameterName) {
         String localDateTimeString = request.getParameter(properties.getProperty(parameterName));

@@ -16,7 +16,11 @@
 <body>
 <jsp:include page="/inc/header.jsp"/>
 <jsp:include page="/inc/nav.jsp"/>
-<form method="post" action="rental">
+<form method="post" action="rental" enctype="multipart/form-data">
+    <label>
+        <fmt:message key="model.add.photo" bundle="${info}"/>
+        <input type="file" name="<fmt:message key="param.model.photo" bundle="${par}"/>">
+    </label>
     <label>
         <fmt:message key="model.add.name" bundle="${info}"/>
         <input type="text" name="<fmt:message key="param.model.name" bundle="${par}"/>"

@@ -6,6 +6,7 @@ import org.vitaly.controller.impl.factory.RequestMapperFactory;
 import org.vitaly.controller.impl.factory.ValidatorFactory;
 import org.vitaly.service.impl.dto.LocationDto;
 import org.vitaly.service.impl.factory.ServiceFactory;
+import org.vitaly.util.CommandUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import static org.vitaly.controller.abstraction.validation.Validator.ERR_ADD_LOC
 import static org.vitaly.util.constants.Pages.ERROR_JSP;
 import static org.vitaly.util.constants.Pages.HOME_JSP;
 import static org.vitaly.util.constants.RequestAttributes.ATTR_ERROR;
+import static org.vitaly.util.constants.RequestParameters.PARAM_LOCATION_PHOTO;
 
 /**
  * Created by vitaly on 28.04.17.
@@ -42,7 +44,10 @@ public class AddLocationCommand implements Command {
         }
     }
 
-    private void doAddLocation(HttpServletRequest request, HttpServletResponse response, LocationDto locationDto) throws IOException, ServletException {
+    private void doAddLocation(HttpServletRequest request, HttpServletResponse response, LocationDto locationDto)
+            throws IOException, ServletException {
+        CommandUtil.uploadImage(request, PARAM_LOCATION_PHOTO, locationDto::setPhotoUrl);
+
         boolean isAdded = ServiceFactory.getInstance()
                 .getLocationService()
                 .addNewLocation(locationDto);

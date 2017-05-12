@@ -1,6 +1,5 @@
 package org.vitaly.service.impl;
 
-import org.vitaly.dao.abstraction.CarModelDao;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
 import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
 import org.vitaly.model.carModel.CarModel;
@@ -56,8 +55,10 @@ public class CarModelServiceImpl implements CarModelService {
         CarModel carModel = DtoMapperFactory.getInstance()
                 .getCarModelDtoMapper()
                 .mapDtoToEntity(carModelDto);
-        CarModelDao carModelDao = MysqlDaoFactory.getInstance().getCarModelDao();
-        boolean isUpdated = carModelDao.update(carModelDto.getId(), carModel) > 0;
+
+        boolean isUpdated = MysqlDaoFactory.getInstance()
+                .getCarModelDao()
+                .update(carModelDto.getId(), carModel) > 0;
 
         TransactionManager.commit();
 
