@@ -20,7 +20,7 @@ import static org.vitaly.util.constants.SessionAttributes.SESSION_USER;
 public class SecurityManager {
     private static SecurityManager instance = new SecurityManager();
 
-    private Map<UrlHttpMethodPair, Set<UserRole>> permissionMap;
+    private Map<CommandHttpMethodPair, Set<UserRole>> permissionMap;
 
     private SecurityManager() {
         Set<UserRole> guest = Collections.singleton(UserRole.GUEST);
@@ -35,53 +35,40 @@ public class SecurityManager {
                 Stream.of(UserRole.values())
                         .collect(Collectors.toSet()));
 
-        HashMap<UrlHttpMethodPair, Set<UserRole>> permissionMap = new HashMap<>();
+        HashMap<CommandHttpMethodPair, Set<UserRole>> permissionMap = new HashMap<>();
 
-        permissionMap.put(UrlHttpMethodPair.ENTRY_POINT, all);
-        permissionMap.put(UrlHttpMethodPair.PAGE_INDEX, all);
-        permissionMap.put(UrlHttpMethodPair.PAGE_HOME, clientAndAdmin);
+        permissionMap.put(CommandHttpMethodPair.SIGN_IN_POST, guest);
+        permissionMap.put(CommandHttpMethodPair.SIGN_OUT_POST, clientAndAdmin);
+        permissionMap.put(CommandHttpMethodPair.REGISTRATION_POST, guest);
+        permissionMap.put(CommandHttpMethodPair.CHANGE_PASSWORD_POST, clientAndAdmin);
 
-        permissionMap.put(UrlHttpMethodPair.ERROR_PAGE_404, all);
-        permissionMap.put(UrlHttpMethodPair.ERROR_PAGE_403, all);
-        permissionMap.put(UrlHttpMethodPair.ERROR_PAGE, all);
+        permissionMap.put(CommandHttpMethodPair.CHANGE_LOCALE, all);
 
-        permissionMap.put(UrlHttpMethodPair.PAGE_REGISTRATION, guest);
-        permissionMap.put(UrlHttpMethodPair.PAGE_ADD_MODEL, admin);
-        permissionMap.put(UrlHttpMethodPair.PAGE_ADD_LOCATION, admin);
-        permissionMap.put(UrlHttpMethodPair.PAGE_PERSONAL, clientAndAdmin);
+        permissionMap.put(CommandHttpMethodPair.ADD_MODEL_POST, admin);
+        permissionMap.put(CommandHttpMethodPair.ADD_CAR_GET, admin);
+        permissionMap.put(CommandHttpMethodPair.ADD_CAR_POST, admin);
+        permissionMap.put(CommandHttpMethodPair.ADD_LOCATION_POST, admin);
+        permissionMap.put(CommandHttpMethodPair.MOVE_CAR_GET, admin);
+        permissionMap.put(CommandHttpMethodPair.MOVE_CAR_POST, admin);
+        permissionMap.put(CommandHttpMethodPair.CHANGE_CAR_STATE_POST, admin);
+        permissionMap.put(CommandHttpMethodPair.UPDATE_CAR_POST, admin);
+        permissionMap.put(CommandHttpMethodPair.PROMOTE_GET, admin);
+        permissionMap.put(CommandHttpMethodPair.PROMOTE_POST, admin);
+        permissionMap.put(CommandHttpMethodPair.CREATE_RESERVATION_POST, client);
+        permissionMap.put(CommandHttpMethodPair.ASSIGN_POST, admin);
+        permissionMap.put(CommandHttpMethodPair.CHANGE_RESERVATION_STATE_POST, admin);
+        permissionMap.put(CommandHttpMethodPair.PAY_POST, client);
+        permissionMap.put(CommandHttpMethodPair.CONFIRM_POST, admin);
+        permissionMap.put(CommandHttpMethodPair.CANCEL_RESERVATION_POST, client);
+        permissionMap.put(CommandHttpMethodPair.ADD_DAMAGE_BILL_POST, admin);
+        permissionMap.put(CommandHttpMethodPair.UPDATE_LOCATION_POST, admin);
+        permissionMap.put(CommandHttpMethodPair.UPDATE_MODEL_POST, admin);
 
-        permissionMap.put(UrlHttpMethodPair.SIGN_IN_POST, guest);
-        permissionMap.put(UrlHttpMethodPair.SIGN_OUT_POST, clientAndAdmin);
-        permissionMap.put(UrlHttpMethodPair.REGISTRATION_POST, guest);
-        permissionMap.put(UrlHttpMethodPair.CHANGE_PASSWORD_POST, clientAndAdmin);
-
-        permissionMap.put(UrlHttpMethodPair.CHANGE_LOCALE, all);
-
-        permissionMap.put(UrlHttpMethodPair.ADD_MODEL_POST, admin);
-        permissionMap.put(UrlHttpMethodPair.ADD_CAR_GET, admin);
-        permissionMap.put(UrlHttpMethodPair.ADD_CAR_POST, admin);
-        permissionMap.put(UrlHttpMethodPair.ADD_LOCATION_POST, admin);
-        permissionMap.put(UrlHttpMethodPair.MOVE_CAR_GET, admin);
-        permissionMap.put(UrlHttpMethodPair.MOVE_CAR_POST, admin);
-        permissionMap.put(UrlHttpMethodPair.CHANGE_CAR_STATE_POST, admin);
-        permissionMap.put(UrlHttpMethodPair.UPDATE_CAR_POST, admin);
-        permissionMap.put(UrlHttpMethodPair.PROMOTE_GET, admin);
-        permissionMap.put(UrlHttpMethodPair.PROMOTE_POST, admin);
-        permissionMap.put(UrlHttpMethodPair.CREATE_RESERVATION_POST, client);
-        permissionMap.put(UrlHttpMethodPair.ASSIGN_POST, admin);
-        permissionMap.put(UrlHttpMethodPair.CHANGE_RESERVATION_STATE_POST, admin);
-        permissionMap.put(UrlHttpMethodPair.PAY_POST, client);
-        permissionMap.put(UrlHttpMethodPair.CONFIRM_POST, client);
-        permissionMap.put(UrlHttpMethodPair.CANCEL_RESERVATION_POST, client);
-        permissionMap.put(UrlHttpMethodPair.ADD_DAMAGE_BILL_POST, admin);
-        permissionMap.put(UrlHttpMethodPair.UPDATE_LOCATION_POST, admin);
-        permissionMap.put(UrlHttpMethodPair.UPDATE_MODEL_POST, admin);
-
-        permissionMap.put(UrlHttpMethodPair.LOCATIONS_GET, clientAndAdmin);
-        permissionMap.put(UrlHttpMethodPair.MODELS_GET, clientAndAdmin);
-        permissionMap.put(UrlHttpMethodPair.CARS_GET, clientAndAdmin);
-        permissionMap.put(UrlHttpMethodPair.RESERVATIONS_GET, clientAndAdmin);
-        permissionMap.put(UrlHttpMethodPair.BILLS_GET, clientAndAdmin);
+        permissionMap.put(CommandHttpMethodPair.LOCATIONS_GET, clientAndAdmin);
+        permissionMap.put(CommandHttpMethodPair.MODELS_GET, clientAndAdmin);
+        permissionMap.put(CommandHttpMethodPair.CARS_GET, clientAndAdmin);
+        permissionMap.put(CommandHttpMethodPair.RESERVATIONS_GET, clientAndAdmin);
+        permissionMap.put(CommandHttpMethodPair.BILLS_GET, clientAndAdmin);
 
         this.permissionMap = Collections.unmodifiableMap(permissionMap);
     }
@@ -91,27 +78,25 @@ public class SecurityManager {
     }
 
     public boolean isValidRequest(HttpServletRequest request) {
-        UrlHttpMethodPair urlHttpMethodPair = UrlHttpMethodPair.fromRequest(request);
+        CommandHttpMethodPair commandHttpMethodPair = CommandHttpMethodPair.fromRequest(request);
 
         return permissionMap
                 .keySet()
-                .contains(urlHttpMethodPair);
+                .contains(commandHttpMethodPair);
     }
 
-    public boolean isRequestAllowed(HttpServletRequest request) {
-        UrlHttpMethodPair urlHttpMethodPair = UrlHttpMethodPair.fromRequest(request);
-
+    public boolean checkPermission(HttpServletRequest request, CommandHttpMethodPair commandHttpMethodPair) {
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute(SESSION_USER) == null) {
             return permissionMap
-                    .get(urlHttpMethodPair)
+                    .get(commandHttpMethodPair)
                     .contains(UserRole.GUEST);
         } else {
             UserDto userDto = (UserDto) session.getAttribute(SESSION_USER);
             UserRole role = userDto.getRole();
 
             return permissionMap
-                    .getOrDefault(urlHttpMethodPair, Collections.emptySet())
+                    .getOrDefault(commandHttpMethodPair, Collections.emptySet())
                     .contains(role);
         }
     }

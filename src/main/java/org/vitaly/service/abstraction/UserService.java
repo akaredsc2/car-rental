@@ -14,7 +14,7 @@ public interface UserService {
 
     Optional<UserDto> authenticate(String login, String password);
 
-    void changeRole(UserDto userDto, UserRole role);
+    boolean changeRole(UserDto userDto, UserRole role);
 
     boolean changePassword(UserDto userDto, String newPassword);
 

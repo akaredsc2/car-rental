@@ -3,6 +3,8 @@ package org.vitaly.service.impl;
 import org.vitaly.dao.abstraction.UserDao;
 import org.vitaly.dao.impl.mysql.factory.MysqlDaoFactory;
 import org.vitaly.dao.impl.mysql.transaction.TransactionManager;
+import org.vitaly.model.reservation.Reservation;
+import org.vitaly.model.reservation.ReservationState;
 import org.vitaly.model.user.User;
 import org.vitaly.model.user.UserRole;
 import org.vitaly.service.abstraction.UserService;
@@ -13,6 +15,8 @@ import org.vitaly.service.impl.factory.DtoMapperFactory;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static org.vitaly.model.reservation.ReservationStateEnum.*;
 
 /**
  * Created by vitaly on 2017-04-10.
@@ -49,15 +53,33 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void changeRole(UserDto userDto, UserRole newRole) {
+    public boolean changeRole(UserDto userDto, UserRole newRole) {
         TransactionManager.startTransaction();
 
         long userId = userDto.getId();
-        MysqlDaoFactory.getInstance()
-                .getUserDao()
-                .changeRole(userId, newRole);
+        MysqlDaoFactory daoFactory = MysqlDaoFactory.getInstance();
 
-        TransactionManager.commit();
+        boolean userHasActiveReservations = daoFactory
+                .getReservationDao()
+                .findReservationsByClientId(userId)
+                .stream()
+                .map(Reservation::getState)
+                .anyMatch(this::isNotTerminated);
+
+        if (userHasActiveReservations) {
+            TransactionManager.rollback();
+            return false;
+        } else {
+            daoFactory.getUserDao()
+                    .changeRole(userId, newRole);
+
+            TransactionManager.commit();
+            return true;
+        }
+    }
+
+    private boolean isNotTerminated(ReservationState state) {
+        return state == NEW.getState() || state == APPROVED.getState() || state == ACTIVE.getState();
     }
 
     @Override

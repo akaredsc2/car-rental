@@ -7,6 +7,10 @@
 <fmt:setLocale value="${sessionScope.session_locale}"/>
 <fmt:setBundle basename="info" var="info"/>
 
+<c:if test="${empty sessionScope.session_user}">
+    <c:redirect url="/pages/error/403.jsp"/>
+</c:if>
+
 <html>
 <head>
     <title><fmt:message key="models.title" bundle="${info}"/></title>

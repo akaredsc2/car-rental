@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.vitaly.controller.abstraction.command.Command;
 import org.vitaly.controller.impl.command.car.AddCarCommand;
 import org.vitaly.controller.impl.command.WrongCommand;
-import org.vitaly.security.UrlHttpMethodPair;
+import org.vitaly.security.CommandHttpMethodPair;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,7 +21,7 @@ public class CommandFactoryTest {
 
     @Test
     public void getExistingCommandReturnsThatCommand() throws Exception {
-        UrlHttpMethodPair existingUrl = UrlHttpMethodPair.ADD_CAR_POST;
+        CommandHttpMethodPair existingUrl = CommandHttpMethodPair.ADD_CAR_POST;
 
         Command actualCommand = CommandFactory.getInstance().getCommand(existingUrl);
 
@@ -35,7 +35,7 @@ public class CommandFactoryTest {
 
         when(request.getMethod()).thenReturn("POST");
         when(request.getParameter(eq("command"))).thenReturn(command);
-        UrlHttpMethodPair nonExistingUrl = UrlHttpMethodPair.fromRequest(request);
+        CommandHttpMethodPair nonExistingUrl = CommandHttpMethodPair.fromRequest(request);
         Command actualCommand = CommandFactory.getInstance().getCommand(nonExistingUrl);
 
         assertThat(actualCommand, instanceOf(WrongCommand.class));

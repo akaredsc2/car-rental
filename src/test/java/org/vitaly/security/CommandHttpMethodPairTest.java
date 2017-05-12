@@ -12,7 +12,7 @@ import static org.mockito.Mockito.when;
 /**
  * Created by vitaly on 2017-04-30.
  */
-public class UrlHttpMethodPairTest {
+public class CommandHttpMethodPairTest {
 
     @Test
     public void fromRequestFetchesCommandParameterFromRequest() throws Exception {
@@ -22,14 +22,14 @@ public class UrlHttpMethodPairTest {
 
         when(request.getMethod()).thenReturn(method);
         when(request.getParameter(eq("command"))).thenReturn(command);
-        UrlHttpMethodPair actual = UrlHttpMethodPair.fromRequest(request);
+        CommandHttpMethodPair actual = CommandHttpMethodPair.fromRequest(request);
 
-        UrlHttpMethodPair expected = new UrlHttpMethodPair(command, HttpMethod.valueOf(method));
+        CommandHttpMethodPair expected = new CommandHttpMethodPair(command, HttpMethod.valueOf(method));
         assertEquals(expected, actual);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void fromNullRequestShouldThrowException() throws Exception {
-        UrlHttpMethodPair.fromRequest(null);
+        CommandHttpMethodPair.fromRequest(null);
     }
 }

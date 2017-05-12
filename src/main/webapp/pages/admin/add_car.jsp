@@ -7,6 +7,10 @@
 <fmt:setLocale value="${sessionScope.session_locale}"/>
 <fmt:setBundle basename="info" var="info"/>
 
+<c:if test="${empty sessionScope.session_user or sessionScope.session_user.role != 'ADMIN'}">
+    <c:redirect url="/pages/error/403.jsp"/>
+</c:if>
+
 <html>
 <head>
     <title><fmt:message key="car.add.title" bundle="${info}"/></title>

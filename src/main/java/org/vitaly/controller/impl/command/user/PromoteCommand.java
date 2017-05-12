@@ -11,7 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static org.vitaly.controller.abstraction.validation.Validator.ERR_CHANGE_ROLE;
+import static org.vitaly.util.constants.Pages.ERROR_JSP;
 import static org.vitaly.util.constants.Pages.HOME_JSP;
+import static org.vitaly.util.constants.RequestAttributes.ATTR_ERROR;
 
 /**
  * Created by vitaly on 02.05.17.
@@ -24,11 +27,17 @@ public class PromoteCommand implements Command {
                 .getUserRequestMapper()
                 .map(request);
 
-        // TODO: 02.05.17 validate client has no reservations etc
-        ServiceFactory.getInstance()
+        boolean isRoleChanged = ServiceFactory.getInstance()
                 .getUserService()
                 .changeRole(userDto, UserRole.ADMIN);
 
-        response.sendRedirect(request.getContextPath() + HOME_JSP);
+        if (isRoleChanged) {
+            response.sendRedirect(request.getContextPath() + HOME_JSP);
+        } else {
+            request.setAttribute(ATTR_ERROR, ERR_CHANGE_ROLE);
+            request.getServletContext()
+                    .getRequestDispatcher(ERROR_JSP)
+                    .forward(request, response);
+        }
     }
 }

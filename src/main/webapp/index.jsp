@@ -8,7 +8,7 @@
 <fmt:setBundle basename="info" var="info"/>
 
 <c:if test="${not empty sessionScope.session_user}">
-    <c:redirect url="home.jsp"/>
+    <c:redirect url="/home.jsp"/>
 </c:if>
 <!DOCTYPE html>
 <html>

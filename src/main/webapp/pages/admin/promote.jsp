@@ -7,6 +7,10 @@
 <fmt:setLocale value="${sessionScope.session_locale}"/>
 <fmt:setBundle basename="info" var="info"/>
 
+<c:if test="${empty sessionScope.session_user or sessionScope.session_user.role != 'ADMIN'}">
+    <c:redirect url="/pages/error/403.jsp"/>
+</c:if>
+
 <html>
 <head>
     <title><fmt:message key="promote.title" bundle="${info}"/></title>
@@ -22,7 +26,7 @@
         <select name="<fmt:message key="param.user.id" bundle="${par}"/>" required>
             <c:forEach items="${requestScope.attr_user_list}" var="client">
                 <option value="${client.id}">
-                    <c:out value="${client.login}"/>
+                    <c:out value="${client.login}"/>,
                     <c:out value="${client.fullName}"/>
                 </option>
             </c:forEach>
