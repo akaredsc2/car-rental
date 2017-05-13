@@ -11,11 +11,13 @@
     <c:redirect url="/pages/error/403.jsp"/>
 </c:if>
 
+<!DOCTYPE html>
 <html>
 <head>
     <title><fmt:message key="model.add.title" bundle="${info}"/></title>
-    <link href="<c:url value='/css/bootstrap.min.css'/>" rel="stylesheet" type="text/css">
-    <link href="<c:url value='/css/custom.css'/>" rel="stylesheet" type="text/css">
+
+    <jsp:include page="/inc/css.jsp"/>
+    <jsp:include page="/inc/js.jsp"/>
 </head>
 <body class="center width-75">
 <jsp:include page="/inc/header.jsp"/>

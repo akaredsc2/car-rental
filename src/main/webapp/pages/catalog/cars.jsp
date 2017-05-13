@@ -11,11 +11,13 @@
     <c:redirect url="/pages/error/403.jsp"/>
 </c:if>
 
+<!DOCTYPE html>
 <html>
 <head>
     <title><fmt:message key="cars.title" bundle="${info}"/></title>
-    <link href="<c:url value='/css/bootstrap.min.css'/>" rel="stylesheet" type="text/css">
-    <link href="<c:url value='/css/custom.css'/>" rel="stylesheet" type="text/css">
+
+    <jsp:include page="/inc/css.jsp"/>
+    <jsp:include page="/inc/js.jsp"/>
 </head>
 <body class="center width-75">
 <jsp:include page="/inc/header.jsp"/>
@@ -23,113 +25,258 @@
 <jsp:include page="/inc/catalog.jsp"/>
 
 <c:if test="${sessionScope.session_user.role=='ADMIN'}">
-    <form method="get" action="rental">
-        <input type="hidden" name="command" value="add_car">
-        <input type="submit" value="<fmt:message key="car.add.href" bundle="${info}"/>">
-    </form>
+    <div class="container debug-border width-75">
+        <div class="row">
+            <div class="col-xs-8"></div>
+            <div class="col-xs-4">
+                <form method="get" action="rental">
+                    <input type="hidden"
+                           name="command"
+                           value="add_car">
+                    <input type="submit"
+                           class="btn btn-default"
+                           value="<fmt:message key="car.add.href" bundle="${info}"/>">
+                </form>
+            </div>
+        </div>
+    </div>
 </c:if>
 
 <c:forEach items="${requestScope.attr_car_list}" var="car">
-    <c:out value="${car.state}"/>
-    <c:out value="${car.registrationPlate}"/>
-    <c:out value="${car.color}"/>
-    <c:out value="${car.pricePerDay}"/><br>
-    <form method="get" action="rental">
-        <input type="hidden" name="command" value="locations">
-        <input type="hidden" name="<fmt:message key="param.car.id" bundle="${par}"/>" value="${car.id}">
-        <input type="submit" value="<fmt:message key="cars.location.href" bundle="${info}"/>">
-    </form>
-    <form method="get" action="rental">
-        <input type="hidden" name="command" value="models">
-        <input type="hidden" name="<fmt:message key="param.car.id" bundle="${par}"/>" value="${car.id}">
-        <input type="submit" value="<fmt:message key="cars.model.href" bundle="${info}"/>">
-    </form>
-    <c:choose>
-        <c:when test="${sessionScope.session_user.role=='CLIENT' and car.state=='available'}">
-            <form method="post" action="rental">
-                <label>
-                    <fmt:message key="reservation.create.pick" bundle="${info}"/>
-                    <input type="datetime-local" name="<fmt:message key="param.reservation.pick" bundle="${par}"/>">
-                </label>
-                <label>
-                    <fmt:message key="reservation.create.drop" bundle="${info}"/>
-                    <input type="datetime-local" name="<fmt:message key="param.reservation.drop" bundle="${par}"/>">
-                </label>
-                <input type="hidden" name="<fmt:message key="param.reservation.car" bundle="${par}"/>"
-                       value="${car.id}">
+    <div class="container debug-border width-75">
 
-                <input type="hidden" name="command" value="create_reservation">
-                <input type="submit" value="<fmt:message key="reservation.create.submit" bundle="${info}"/>">
-            </form>
-        </c:when>
+        <div class="row">
+            <div class="col-xs-4">
+                <fmt:message key="car.state" bundle="${info}"/>
+            </div>
 
-        <c:when test="${sessionScope.session_user.role=='ADMIN'}">
-            <c:if test="${car.state=='unavailable'}">
-                <form method="post" action="rental">
-                    <label>
-                        <fmt:message key="car.update.color" bundle="${info}"/>
-                        <input type="text" name="<fmt:message key="param.car.color" bundle="${par}"/>"
-                               value="${car.color}"
-                               pattern="[a-zA-Zа-яА-ЯіІїЇєЄ\d]+(\s+[a-zA-Zа-яА-ЯіІїЇєЄ\d]+)*"
-                               minlength="3"
-                               maxlength="30"
-                               required>
-                    </label><br>
-                    <label>
-                        <fmt:message key="car.update.price" bundle="${info}"/>
-                        <input type="number" name="<fmt:message key="param.car.price" bundle="${par}"/>"
-                               value="${car.pricePerDay}"
-                               min="0.01"
-                               max="1000"
-                               step="0.01"
-                               required>
-                    </label><br>
+            <div class="col-xs-4">
+                <c:out value="${car.state}"/>
+            </div>
+        </div>
 
-                    <input type="hidden" name="command" value="update_car">
-                    <input type="hidden" name="<fmt:message key="param.car.id" bundle="${par}"/>" value="${car.id}">
-                    <input type="submit" value="<fmt:message key="car.update.submit" bundle="${info}"/>">
-                </form>
+        <div class="row">
+            <div class="col-xs-4">
+                <fmt:message key="car.add.color" bundle="${info}"/>
+            </div>
 
+            <div class="col-xs-4">
+                <c:out value="${car.color}"/>
+            </div>
+
+            <div class="col-xs-4">
                 <form method="get" action="rental">
-                    <input type="hidden" name="command" value="move_car">
-                    <input type="hidden" name="<fmt:message key="param.car.id" bundle="${par}"/>" value="${car.id}">
-                    <input type="submit" value="<fmt:message key="car.move.href" bundle="${info}"/>">
-                </form>
-            </c:if>
+                    <input type="hidden"
+                           name="command"
+                           value="models">
 
-            <c:if test="${car.state == 'available' or car.state == 'unavailable' or car.state == 'served'}">
-                <form method="post" action="rental">
-                    <input type="hidden" name="command" value="change_car_state">
-                    <input type="hidden" name="<fmt:message key="param.car.id" bundle="${par}"/>" value="${car.id}">
-                    <input type="hidden" name="<fmt:message key="param.car.state" bundle="${par}"/>"
-                           value="<c:out value="${car.state}"/>">
-                    <label>
-                        <fmt:message key="car.change.title" bundle="${info}"/>
-                        <c:choose>
-                            <c:when test="${car.state=='available'}">
-                                <input type="hidden" name="<fmt:message key="param.car.state.new" bundle="${par}"/>"
-                                       value="unavailable">
-                                <input type="submit"
-                                       value="<fmt:message key="car.change.unavailable" bundle="${info}"/>">
-                            </c:when>
-                            <c:when test="${car.state=='unavailable'}">
-                                <input type="hidden" name="<fmt:message key="param.car.state.new" bundle="${par}"/>"
-                                       value="available">
-                                <input type="submit" value="<fmt:message key="car.change.available" bundle="${info}"/>">
-                            </c:when>
-                            <c:when test="${car.state=='served'}">
-                                <input type="hidden" name="<fmt:message key="param.car.state.new" bundle="${par}"/>"
-                                       value="returned">
-                                <input type="submit" value="<fmt:message key="car.change.returned" bundle="${info}"/>">
-                            </c:when>
-                        </c:choose>
-                    </label>
+                    <input type="hidden"
+                           name="<fmt:message key="param.car.id" bundle="${par}"/>"
+                           value="${car.id}">
+
+                    <input type="submit"
+                           class="btn btn-link"
+                           value="<fmt:message key="cars.model.href" bundle="${info}"/>">
                 </form>
-            </c:if>
-        </c:when>
-    </c:choose>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-4">
+                <fmt:message key="car.add.price" bundle="${info}"/>
+            </div>
+
+            <div class="col-xs-4">
+                <c:out value="${car.pricePerDay}"/>
+            </div>
+
+            <div class="col-xs-4">
+                <form method="get" action="rental">
+                    <input type="hidden"
+                           name="command"
+                           value="locations">
+
+                    <input type="hidden"
+                           name="<fmt:message key="param.car.id" bundle="${par}"/>"
+                           value="${car.id}">
+
+                    <input type="submit"
+                           class="btn btn-link"
+                           value="<fmt:message key="cars.location.href" bundle="${info}"/>">
+                </form>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-4">
+                <fmt:message key="car.add.plate" bundle="${info}"/>
+            </div>
+
+            <div class="col-xs-4">
+                <c:out value="${car.registrationPlate}"/>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <c:choose>
+                    <c:when test="${sessionScope.session_user.role=='CLIENT' and car.state=='available'}">
+                        <div class="row">
+                            <form method="post" action="rental" class="form-inline">
+                                <div class="form-group col-xs-4">
+                                    <label for="pu">
+                                        <fmt:message key="reservation.create.pick" bundle="${info}"/>
+                                    </label>
+
+                                    <input id="pu"
+                                           type="datetime-local"
+                                           class="form-control"
+                                           name="<fmt:message key="param.reservation.pick" bundle="${par}"/>">
+                                </div>
+
+                                <div class="form-group col-xs-4">
+                                    <label for="do">
+                                        <fmt:message key="reservation.create.drop" bundle="${info}"/>
+                                    </label>
+
+                                    <input id="do"
+                                           type="datetime-local"
+                                           class="form-control"
+                                           name="<fmt:message key="param.reservation.drop" bundle="${par}"/>">
+                                </div>
+
+                                <input type="hidden"
+                                       name="<fmt:message key="param.reservation.car" bundle="${par}"/>"
+                                       value="${car.id}">
+
+                                <input type="hidden"
+                                       name="command"
+                                       value="create_reservation">
+
+                                <div class="form-group col-xs-4">
+                                    <input type="submit"
+                                           class="btn btn-default"
+                                           value="<fmt:message key="reservation.create.submit" bundle="${info}"/>">
+                                </div>
+                            </form>
+                        </div>
+                    </c:when>
+
+                    <c:when test="${sessionScope.session_user.role=='ADMIN'}">
+                        <c:if test="${car.state == 'available' or car.state == 'unavailable' or car.state == 'served'}">
+                            <div class="row">
+                                <div class="col-xs-8"></div>
+                                <div class="col-xs-4">
+                                    <form method="post" action="rental" class="form-inline">
+                                        <input type="hidden"
+                                               name="command"
+                                               value="change_car_state">
+
+                                        <input type="hidden"
+                                               name="<fmt:message key="param.car.id" bundle="${par}"/>"
+                                               value="${car.id}">
+
+                                        <c:choose>
+                                            <c:when test="${car.state=='available'}">
+                                                <input type="hidden"
+                                                       name="<fmt:message key="param.car.state.new" bundle="${par}"/>"
+                                                       value="unavailable">
+                                                <input type="submit"
+                                                       class="btn btn-default"
+                                                       value="<fmt:message key="car.change.unavailable" bundle="${info}"/>">
+                                            </c:when>
+                                            <c:when test="${car.state=='unavailable'}">
+                                                <input type="hidden"
+                                                       name="<fmt:message key="param.car.state.new" bundle="${par}"/>"
+                                                       value="available">
+                                                <input type="submit"
+                                                       class="btn btn-default"
+                                                       value="<fmt:message key="car.change.available" bundle="${info}"/>">
+                                            </c:when>
+                                            <c:when test="${car.state=='served'}">
+                                                <input type="hidden"
+                                                       name="<fmt:message key="param.car.state.new" bundle="${par}"/>"
+                                                       value="returned">
+                                                <input type="submit"
+                                                       class="btn btn-default"
+                                                       value="<fmt:message key="car.change.returned" bundle="${info}"/>">
+                                            </c:when>
+                                        </c:choose>
+                                    </form>
+                                </div>
+                            </div>
+                        </c:if>
+
+                        <c:if test="${car.state=='unavailable'}">
+                            <div class="row">
+                                <div class="col-xs-8">
+                                    <form method="post" action="rental" class="form-inline">
+                                        <div class="form-group">
+                                            <label for="color">
+                                                <fmt:message key="car.update.color" bundle="${info}"/>
+                                            </label>
+
+                                            <input id="color" type="text"
+                                                   name="<fmt:message key="param.car.color" bundle="${par}"/>"
+                                                   value="${car.color}"
+                                                   class="form-control"
+                                                   pattern="[a-zA-Zа-яА-ЯіІїЇєЄ\d]+(\s+[a-zA-Zа-яА-ЯіІїЇєЄ\d]+)*"
+                                                   minlength="3"
+                                                   maxlength="30"
+                                                   required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="price">
+                                                <fmt:message key="car.update.price" bundle="${info}"/>
+                                            </label>
+
+                                            <input id="price" type="number"
+                                                   name="<fmt:message key="param.car.price" bundle="${par}"/>"
+                                                   value="${car.pricePerDay}"
+                                                   class="form-control"
+                                                   min="0.01"
+                                                   max="1000"
+                                                   step="0.01"
+                                                   required>
+                                        </div>
+
+                                        <input type="hidden"
+                                               name="command"
+                                               value="update_car">
+
+                                        <input type="hidden"
+                                               name="<fmt:message key="param.car.id" bundle="${par}"/>"
+                                               value="${car.id}">
+
+                                        <input type="submit"
+                                               class="btn btn-default"
+                                               value="<fmt:message key="car.update.submit" bundle="${info}"/>">
+                                    </form>
+                                </div>
+
+                                <div class="col-xs-4">
+                                    <form method="get" action="rental">
+                                        <input type="hidden"
+                                               name="command"
+                                               value="move_car">
+
+                                        <input type="hidden"
+                                               name="<fmt:message key="param.car.id" bundle="${par}"/>"
+                                               value="${car.id}">
+
+                                        <input type="submit"
+                                               class="btn btn-default"
+                                               value="<fmt:message key="car.move.href" bundle="${info}"/>">
+                                    </form>
+                                </div>
+                            </div>
+                        </c:if>
+                    </c:when>
+                </c:choose>
+            </div>
+        </div>
+    </div>
 </c:forEach>
-
-<a href="<c:url value="/home.jsp"/>"><fmt:message key="home.href" bundle="${info}"/></a>
 </body>
 </html>

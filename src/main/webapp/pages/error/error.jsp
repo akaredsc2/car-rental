@@ -5,11 +5,13 @@
 <fmt:setLocale value="${sessionScope.session_locale}"/>
 <fmt:setBundle basename="info" var="info"/>
 
+<!DOCTYPE html>
 <html>
 <head>
     <title><fmt:message key="error.title" bundle="${info}"/></title>
-    <link href="<c:url value='/css/bootstrap.min.css'/>" rel="stylesheet" type="text/css">
-    <link href="<c:url value='/css/custom.css'/>" rel="stylesheet" type="text/css">
+
+    <jsp:include page="/inc/css.jsp"/>
+    <jsp:include page="/inc/js.jsp"/>
 </head>
 <body class="center width-75">
 <jsp:include page="/inc/header.jsp"/>
