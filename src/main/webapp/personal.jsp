@@ -117,12 +117,19 @@
             </label>
 
             <div class="col-xs-6">
-                <input id="old"
-                       type="password"
-                       class="form-control"
-                       name="<fmt:message key="param.pass.old" bundle="${par}"/>"
-                       required
-                       pattern="\w{4,10}">
+                <div class="tip">
+                    <span class="tiptext">
+                        <fmt:message key="correct.format" bundle="${info}"/><br>
+                        <fmt:message key="correct.password" bundle="${info}"/>
+                    </span>
+
+                    <input id="old"
+                           type="password"
+                           class="form-control"
+                           name="<fmt:message key="param.pass.old" bundle="${par}"/>"
+                           required
+                           pattern="<fmt:message key="correct.password" bundle="${info}"/>">
+                </div>
             </div>
         </div>
 
@@ -132,12 +139,19 @@
             </label>
 
             <div class="col-xs-6">
-                <input id="new"
-                       type="password"
-                       class="form-control"
-                       name="<fmt:message key="param.pass.new" bundle="${par}"/>"
-                       required
-                       pattern="\w{4,10}">
+                <div class="tip">
+                    <span class="tiptext">
+                        <fmt:message key="correct.format" bundle="${info}"/><br>
+                        <fmt:message key="correct.password" bundle="${info}"/>
+                    </span>
+
+                    <input id="new"
+                           type="password"
+                           class="form-control"
+                           name="<fmt:message key="param.pass.new" bundle="${par}"/>"
+                           required
+                           pattern="<fmt:message key="correct.password" bundle="${info}"/>">
+                </div>
             </div>
         </div>
 
@@ -147,12 +161,19 @@
             </label>
 
             <div class="col-xs-6">
-                <input id="repeat"
-                       type="password"
-                       class="form-control"
-                       name="<fmt:message key="param.pass.repeat" bundle="${par}"/>"
-                       required
-                       pattern="\w{4,10}">
+                <div class="tip">
+                    <span class="tiptext">
+                        <fmt:message key="correct.format" bundle="${info}"/><br>
+                        <fmt:message key="correct.password" bundle="${info}"/>
+                    </span>
+
+                    <input id="repeat"
+                           type="password"
+                           class="form-control"
+                           name="<fmt:message key="param.pass.repeat" bundle="${par}"/>"
+                           required
+                           pattern="<fmt:message key="correct.password" bundle="${info}"/>">
+                </div>
             </div>
         </div>
 

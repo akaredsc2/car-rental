@@ -47,12 +47,19 @@
             </label>
 
             <div class="col-xs-6">
-                <input id="p"
-                       type="text"
-                       name="<fmt:message key="param.car.plate" bundle="${par}"/>"
-                       class="form-control"
-                       pattern="[А-Я]{2}\d{4}[А-Я]{2}"
-                       required>
+                <div class="tip">
+                    <span class="tiptext">
+                        <fmt:message key="correct.format" bundle="${info}"/><br>
+                        <fmt:message key="correct.plate" bundle="${info}"/>
+                    </span>
+
+                    <input id="p"
+                           type="text"
+                           name="<fmt:message key="param.car.plate" bundle="${par}"/>"
+                           class="form-control"
+                           pattern="[А-Я]{2}\d{4}[А-Я]{2}"
+                           required>
+                </div>
             </div>
         </div>
 
@@ -62,14 +69,21 @@
             </label>
 
             <div class="col-xs-6">
-                <input id="c"
-                       type="text"
-                       name="<fmt:message key="param.car.color" bundle="${par}"/>"
-                       class="form-control"
-                       pattern="[a-zA-Zа-яА-ЯіІїЇєЄ\d]+(\s+[a-zA-Zа-яА-ЯіІїЇєЄ\d]+)*"
-                       minlength="3"
-                       maxlength="30"
-                       required>
+                <div class="tip">
+                    <span class="tiptext">
+                        <fmt:message key="correct.format" bundle="${info}"/><br>
+                        <fmt:message key="correct.color" bundle="${info}"/>
+                    </span>
+
+                    <input id="c"
+                           type="text"
+                           name="<fmt:message key="param.car.color" bundle="${par}"/>"
+                           class="form-control"
+                           pattern="<fmt:message key="correct.color" bundle="${info}"/>"
+                           minlength="3"
+                           maxlength="30"
+                           required>
+                </div>
             </div>
         </div>
 

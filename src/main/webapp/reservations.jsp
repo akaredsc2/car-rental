@@ -150,13 +150,21 @@
                                        value="change_reservation_state">
 
                                 <div class="col-xs-6">
-                                    <input type="text"
-                                           class="form-control"
-                                           name="<fmt:message key="param.reservation.reason" bundle="${par}"/>"
-                                           placeholder="<fmt:message key="reservations.change.reason" bundle="${info}"/>"
-                                           minlength="4"
-                                           maxlength="150"
-                                           required>
+                                    <div class="tip">
+                                        <span class="tiptext">
+                                            <fmt:message key="correct.format" bundle="${info}"/><br>
+                                            <fmt:message key="correct.reason" bundle="${info}"/>
+                                        </span>
+
+                                        <input type="text"
+                                               class="form-control"
+                                               name="<fmt:message key="param.reservation.reason" bundle="${par}"/>"
+                                               placeholder="<fmt:message key="reservations.change.reason" bundle="${info}"/>"
+                                               pattern="<fmt:message key="correct.reason" bundle="${info}"/>"
+                                               minlength="4"
+                                               maxlength="150"
+                                               required>
+                                    </div>
                                 </div>
 
                                 <input type="hidden"

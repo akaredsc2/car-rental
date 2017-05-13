@@ -28,13 +28,20 @@
             </label>
 
             <div class="col-xs-6">
-                <input id="login"
-                       type="text"
-                       class="form-control"
-                       name="<fmt:message key="param.user.login" bundle="${par}"/>"
-                       placeholder="<fmt:message key="signIn.login" bundle="${info}"/>"
-                       required
-                       pattern="[а-яА-ЯіІїЇєЄёЁ\w]{4,30}">
+                <div class="tip">
+                    <span class="tiptext">
+                        <fmt:message key="correct.format" bundle="${info}"/><br>
+                        <fmt:message key="correct.login" bundle="${info}"/>
+                    </span>
+
+                    <input id="login"
+                           type="text"
+                           class="form-control"
+                           name="<fmt:message key="param.user.login" bundle="${par}"/>"
+                           placeholder="<fmt:message key="signIn.login" bundle="${info}"/>"
+                           required
+                           pattern="<fmt:message key="correct.login" bundle="${info}"/>">
+                </div>
             </div>
         </div>
 
@@ -44,13 +51,20 @@
             </label>
 
             <div class="col-xs-6">
-                <input id="pass"
-                       type="password"
-                       class="form-control"
-                       name="<fmt:message key="param.user.password" bundle="${par}"/>"
-                       placeholder="<fmt:message key="signIn.password" bundle="${info}"/>"
-                       required
-                       pattern="\w{4,30}">
+                <div class="tip">
+                    <span class="tiptext">
+                        <fmt:message key="correct.format" bundle="${info}"/><br>
+                        <fmt:message key="correct.password" bundle="${info}"/>
+                    </span>
+
+                    <input id="pass"
+                           type="password"
+                           class="form-control"
+                           name="<fmt:message key="param.user.password" bundle="${par}"/>"
+                           placeholder="<fmt:message key="signIn.password" bundle="${info}"/>"
+                           required
+                           pattern="<fmt:message key="correct.password" bundle="${info}"/>">
+                </div>
             </div>
         </div>
 

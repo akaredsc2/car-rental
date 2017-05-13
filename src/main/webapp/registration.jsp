@@ -30,13 +30,20 @@
             </label>
 
             <div class="col-xs-6">
-                <input id="login"
-                       type="text"
-                       name="<fmt:message key="param.user.login" bundle="${par}"/>"
-                       placeholder="<fmt:message key="reg.login" bundle="${info}"/>"
-                       class="form-control"
-                       required
-                       pattern="[а-яА-ЯіІїЇєЄёЁ\w]{4,30}">
+                <div class="tip">
+                    <span class="tiptext">
+                        <fmt:message key="correct.format" bundle="${info}"/><br>
+                        <fmt:message key="correct.login" bundle="${info}"/>
+                    </span>
+
+                    <input id="login"
+                           type="text"
+                           name="<fmt:message key="param.user.login" bundle="${par}"/>"
+                           placeholder="<fmt:message key="reg.login" bundle="${info}"/>"
+                           class="form-control"
+                           required
+                           pattern="<fmt:message key="correct.login" bundle="${info}"/>">
+                </div>
             </div>
         </div>
 
@@ -46,13 +53,20 @@
             </label>
 
             <div class="col-xs-6">
-                <input id="password"
-                       type="password"
-                       name="<fmt:message key="param.user.password" bundle="${par}"/>"
-                       placeholder="<fmt:message key="reg.password" bundle="${info}"/>"
-                       class="form-control"
-                       required
-                       pattern="\w{4,30}">
+                <div class="tip">
+                    <span class="tiptext">
+                        <fmt:message key="correct.format" bundle="${info}"/><br>
+                        <fmt:message key="correct.password" bundle="${info}"/>
+                    </span>
+
+                    <input id="password"
+                           type="password"
+                           name="<fmt:message key="param.user.password" bundle="${par}"/>"
+                           placeholder="<fmt:message key="reg.password" bundle="${info}"/>"
+                           class="form-control"
+                           required
+                           pattern="<fmt:message key="correct.password" bundle="${info}"/>">
+                </div>
             </div>
         </div>
 
@@ -62,13 +76,20 @@
             </label>
 
             <div class="col-xs-6">
-                <input id="repeat"
-                       type="password"
-                       name="<fmt:message key="param.pass.repeat" bundle="${par}"/>"
-                       placeholder="<fmt:message key="reg.repeatPassword" bundle="${info}"/>"
-                       class="form-control"
-                       required
-                       pattern="\w{4,30}">
+                <div class="tip">
+                    <span class="tiptext">
+                        <fmt:message key="correct.format" bundle="${info}"/><br>
+                        <fmt:message key="correct.password" bundle="${info}"/>
+                    </span>
+
+                    <input id="repeat"
+                           type="password"
+                           name="<fmt:message key="param.pass.repeat" bundle="${par}"/>"
+                           placeholder="<fmt:message key="reg.repeatPassword" bundle="${info}"/>"
+                           class="form-control"
+                           required
+                           pattern="<fmt:message key="correct.password" bundle="${info}"/>">
+                </div>
             </div>
         </div>
 
@@ -78,15 +99,22 @@
             </label>
 
             <div class="col-xs-6">
-                <input id="name"
-                       type="text"
-                       name="<fmt:message key="param.user.name" bundle="${par}"/>"
-                       placeholder="<fmt:message key="reg.name" bundle="${info}"/>"
-                       class="form-control"
-                       required
-                       pattern="([A-ZА-ЯІЇЄ][a-zа-яіїє]+)(\s([A-ZА-ЯІЇЄ][a-zа-яіїє]+))+"
-                       minlength="4"
-                       maxlength="60">
+                <div class="tip">
+                    <span class="tiptext">
+                        <fmt:message key="correct.format" bundle="${info}"/><br>
+                        <fmt:message key="correct.name" bundle="${info}"/>
+                    </span>
+
+                    <input id="name"
+                           type="text"
+                           name="<fmt:message key="param.user.name" bundle="${par}"/>"
+                           placeholder="<fmt:message key="reg.name" bundle="${info}"/>"
+                           class="form-control"
+                           required
+                           pattern="<fmt:message key="correct.name" bundle="${info}"/>"
+                           minlength="4"
+                           maxlength="60">
+                </div>
             </div>
         </div>
 
@@ -111,13 +139,20 @@
             </label>
 
             <div class="col-xs-6">
-                <input id="passport"
-                       type="text"
-                       name="<fmt:message key="param.user.passport" bundle="${par}"/>"
-                       placeholder="<fmt:message key="reg.passport" bundle="${info}"/>"
-                       class="form-control"
-                       required
-                       pattern="([А-Я]){2}\d{6}|\d{10}">
+                <div class="tip">
+                    <span class="tiptext">
+                        <fmt:message key="correct.format" bundle="${info}"/><br>
+                        <fmt:message key="correct.passport" bundle="${info}"/>
+                    </span>
+
+                    <input id="passport"
+                           type="text"
+                           name="<fmt:message key="param.user.passport" bundle="${par}"/>"
+                           placeholder="<fmt:message key="reg.passport" bundle="${info}"/>"
+                           class="form-control"
+                           required
+                           pattern="<fmt:message key="correct.passport" bundle="${info}"/>">
+                </div>
             </div>
         </div>
 
@@ -127,13 +162,20 @@
             </label>
 
             <div class="col-xs-6">
-                <input id="driver"
-                       type="text"
-                       name="<fmt:message key="param.user.driver" bundle="${par}"/>"
-                       placeholder="<fmt:message key="reg.driver" bundle="${info}"/>"
-                       class="form-control"
-                       required
-                       pattern="([А-Я]){3}\d{6}|\d{2}([А-Я]){2}\d{6}">
+                <div class="tip">
+                    <span class="tiptext">
+                        <fmt:message key="correct.format" bundle="${info}"/><br>
+                        <fmt:message key="correct.driver" bundle="${info}"/>
+                    </span>
+
+                    <input id="driver"
+                           type="text"
+                           name="<fmt:message key="param.user.driver" bundle="${par}"/>"
+                           placeholder="<fmt:message key="reg.driver" bundle="${info}"/>"
+                           class="form-control"
+                           required
+                           pattern="<fmt:message key="correct.driver" bundle="${info}"/>">
+                </div>
             </div>
         </div>
 

@@ -43,13 +43,20 @@
             </label>
 
             <div class="col-xs-6">
-                <input id="st"
-                       type="text" name="<fmt:message key="param.location.state" bundle="${par}"/>"
-                       class="form-control"
-                       required
-                       pattern="[a-zA-Zа-яА-ЯіІїЇєЄ\d]+(\s+[a-zA-Zа-яА-ЯіІїЇєЄ\d]+)*"
-                       minlength="4"
-                       maxlength="30">
+                <div class="tip">
+                    <span class="tiptext">
+                        <fmt:message key="correct.format" bundle="${info}"/><br>
+                        <fmt:message key="correct.location" bundle="${info}"/>
+                    </span>
+
+                    <input id="st"
+                           type="text" name="<fmt:message key="param.location.state" bundle="${par}"/>"
+                           class="form-control"
+                           required
+                           pattern="<fmt:message key="correct.location" bundle="${info}"/>"
+                           minlength="4"
+                           maxlength="30">
+                </div>
             </div>
         </div>
 
@@ -59,14 +66,21 @@
             </label>
 
             <div class="col-xs-6">
-                <input id="c"
-                       type="text"
-                       name="<fmt:message key="param.location.city" bundle="${par}"/>"
-                       required
-                       class="form-control"
-                       pattern="[a-zA-Zа-яА-ЯіІїЇєЄ\d]+(\s+[a-zA-Zа-яА-ЯіІїЇєЄ\d]+)*"
-                       minlength="4"
-                       maxlength="30">
+                <div class="tip">
+                    <span class="tiptext">
+                        <fmt:message key="correct.format" bundle="${info}"/><br>
+                        <fmt:message key="correct.location" bundle="${info}"/>
+                    </span>
+
+                    <input id="c"
+                           type="text"
+                           name="<fmt:message key="param.location.city" bundle="${par}"/>"
+                           required
+                           class="form-control"
+                           pattern="<fmt:message key="correct.location" bundle="${info}"/>"
+                           minlength="4"
+                           maxlength="30">
+                </div>
             </div>
         </div>
 
@@ -76,14 +90,21 @@
             </label>
 
             <div class="col-xs-6">
-                <input id="str"
-                       type="text"
-                       name="<fmt:message key="param.location.street" bundle="${par}"/>"
-                       required
-                       class="form-control"
-                       pattern="[a-zA-Zа-яА-ЯіІїЇєЄ\d]+(\s+[a-zA-Zа-яА-ЯіІїЇєЄ\d]+)*"
-                       minlength="4"
-                       maxlength="30">
+                <div class="tip">
+                    <span class="tiptext">
+                        <fmt:message key="correct.format" bundle="${info}"/><br>
+                        <fmt:message key="correct.location" bundle="${info}"/>
+                    </span>
+
+                    <input id="str"
+                           type="text"
+                           name="<fmt:message key="param.location.street" bundle="${par}"/>"
+                           required
+                           class="form-control"
+                           pattern="<fmt:message key="correct.location" bundle="${info}"/>"
+                           minlength="4"
+                           maxlength="30">
+                </div>
             </div>
         </div>
 
@@ -93,14 +114,21 @@
             </label>
 
             <div class="col-xs-6">
-                <input id="b"
-                       type="text"
-                       name="<fmt:message key="param.location.building" bundle="${par}"/>"
-                       required
-                       class="form-control"
-                       pattern="[a-zA-Zа-яА-ЯіІїЇєЄ\d]+(\s+[a-zA-Zа-яА-ЯіІїЇєЄ\d]+)*"
-                       minlength="4"
-                       maxlength="30">
+                <div class="tip">
+                    <span class="tiptext">
+                        <fmt:message key="correct.format" bundle="${info}"/><br>
+                        <fmt:message key="correct.location" bundle="${info}"/>
+                    </span>
+
+                    <input id="b"
+                           type="text"
+                           name="<fmt:message key="param.location.building" bundle="${par}"/>"
+                           required
+                           class="form-control"
+                           pattern="<fmt:message key="correct.location" bundle="${info}"/>"
+                           minlength="4"
+                           maxlength="30">
+                </div>
             </div>
         </div>
 

@@ -43,14 +43,21 @@
             </label>
 
             <div class="col-xs-6">
-                <input id="n"
-                       type="text"
-                       class="form-control"
-                       name="<fmt:message key="param.model.name" bundle="${par}"/>"
-                       pattern="[a-zA-Zа-яА-ЯіІїЇєЄ\d]+(\s+[a-zA-Zа-яА-ЯіІїЇєЄ\d]+)*"
-                       minlength="4"
-                       maxlength="30"
-                       required>
+                <div class="tip">
+                    <span class="tiptext">
+                        <fmt:message key="correct.format" bundle="${info}"/><br>
+                        <fmt:message key="correct.model" bundle="${info}"/>
+                    </span>
+
+                    <input id="n"
+                           type="text"
+                           class="form-control"
+                           name="<fmt:message key="param.model.name" bundle="${par}"/>"
+                           pattern="<fmt:message key="correct.model" bundle="${info}"/>"
+                           minlength="4"
+                           maxlength="30"
+                           required>
+                </div>
             </div>
         </div>
 
