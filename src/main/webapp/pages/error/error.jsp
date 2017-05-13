@@ -17,21 +17,33 @@
 <jsp:include page="/inc/header.jsp"/>
 <jsp:include page="/inc/nav.jsp"/>
 
-<fmt:message key="error.description" bundle="${info}"/><br>
+<div class="container width-75">
+    <div class="row">
+        <fmt:message key="error.description" bundle="${info}"/>
+    </div>
 
-<c:forEach items="${requestScope.attr_error}" var="error">
-    <fmt:message key="${error}" bundle="${info}"/><br>
-</c:forEach>
+    <ul class="list-group">
+        <c:forEach items="${requestScope.attr_error}" var="error">
+            <li class="list-group-item list-group-item-warning">
+                <fmt:message key="${error}" bundle="${info}"/>
+            </li>
+        </c:forEach>
+    </ul>
 
-<c:choose>
-    <c:when test="${empty sessionScope.session_user}">
-        <a class="col-sm-offset-2 col-sm-10" href="<c:url value="/index.jsp"/>"><fmt:message key="signIn.href"
-                                                                                             bundle="${info}"/></a>
-    </c:when>
-    <c:when test="${not empty sessionScope.session_user}">
-        <a class="col-sm-offset-2 col-sm-10" href="<c:url value="/home.jsp"/>"><fmt:message key="home.href"
-                                                                                            bundle="${info}"/></a>
-    </c:when>
-</c:choose>
+    <div class="col-xs-3">
+        <c:choose>
+            <c:when test="${empty sessionScope.session_user}">
+                <a class="btn btn-link" href="<c:url value="/index.jsp"/>">
+                    <fmt:message key="signIn.href" bundle="${info}"/>
+                </a>
+            </c:when>
+            <c:when test="${not empty sessionScope.session_user}">
+                <a class="btn btn-link" href="<c:url value="/home.jsp"/>">
+                    <fmt:message key="home.href" bundle="${info}"/>
+                </a>
+            </c:when>
+        </c:choose>
+    </div>
+</div>
 </body>
 </html>

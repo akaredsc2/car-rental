@@ -17,15 +17,25 @@
 <jsp:include page="/inc/header.jsp"/>
 <jsp:include page="/inc/nav.jsp"/>
 
-<fmt:message key="error.404.description" bundle="${info}"/><br>
+<div class="container width-75">
+    <div class="row">
+        <fmt:message key="error.404.description" bundle="${info}"/>
+    </div>
 
-<c:choose>
-    <c:when test="${empty sessionScope.session_user}">
-        <a class="col-sm-offset-2 col-sm-10" href="<c:url value="/index.jsp"/>"><fmt:message key="signIn.href" bundle="${info}"/></a>
-    </c:when>
-    <c:when test="${not empty sessionScope.session_user}">
-        <a class="col-sm-offset-2 col-sm-10" href="<c:url value="/home.jsp"/>"><fmt:message key="home.href" bundle="${info}"/></a>
-    </c:when>
-</c:choose>
+    <div class="col-xs-3">
+        <c:choose>
+            <c:when test="${empty sessionScope.session_user}">
+                <a class="btn btn-link" href="<c:url value="/index.jsp"/>">
+                    <fmt:message key="signIn.href" bundle="${info}"/>
+                </a>
+            </c:when>
+            <c:when test="${not empty sessionScope.session_user}">
+                <a class="btn btn-link" href="<c:url value="/home.jsp"/>">
+                    <fmt:message key="home.href" bundle="${info}"/>
+                </a>
+            </c:when>
+        </c:choose>
+    </div>
+</div>
 </body>
 </html>

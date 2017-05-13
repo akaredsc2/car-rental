@@ -27,12 +27,12 @@ public class ChangePasswordValidator implements Validator<HttpServletRequest> {
         String newPassword = request.getParameter(properties.getProperty(PARAM_PASS_NEW));
         String repeatPassword = request.getParameter(properties.getProperty(PARAM_PASS_REPEAT));
 
-        stringMatches(oldPassword, PASSWORD_PATTERN, validationResult, "Old password does not match regex");
-        stringMatches(newPassword, PASSWORD_PATTERN, validationResult, "New password does not match regex");
-        stringMatches(repeatPassword, PASSWORD_PATTERN, validationResult, "Repeat password does not match regex");
+        stringMatches(oldPassword, PASSWORD_PATTERN, validationResult, ERR_BAD_PASSWORD);
+        stringMatches(newPassword, PASSWORD_PATTERN, validationResult, ERR_BAD_PASSWORD);
+        stringMatches(repeatPassword, PASSWORD_PATTERN, validationResult, ERR_BAD_PASSWORD);
         String currentPassword = ((UserDto) request.getSession().getAttribute(SESSION_USER)).getPassword();
         if (!oldPassword.equals(currentPassword)) {
-            validationResult.addErrorMessage("Wrong old password");
+            validationResult.addErrorMessage(ERR_OLD_PASS);
         }
         if (!newPassword.equals(repeatPassword)) {
             validationResult.addErrorMessage(ERR_PASS_NOT);

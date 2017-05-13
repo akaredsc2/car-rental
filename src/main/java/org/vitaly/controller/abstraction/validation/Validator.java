@@ -47,6 +47,7 @@ public interface Validator<T> {
 
     String ERR_BAD_LOGIN = "err.bad.login";
     String ERR_BAD_PASSWORD = "err.bad.password";
+    String ERR_OLD_PASS = "err.old.pass";
     String ERR_PASS_NOT = "err.pass.not";
     String ERR_BAD_NAME = "err.bad.name";
     String ERR_BAD_PASSPORT = "err.bad.passport";
