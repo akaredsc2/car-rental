@@ -9,7 +9,7 @@
 <c:set var="currPage" value="${pageContext.request.servletPath}"/>
 
 <c:if test="${not empty sessionScope.session_user}">
-    <nav class="container">
+    <nav class="container width-75">
         <div class="col-xs-3">
             <a href="<c:url value="/home.jsp"/>"
                     <c:choose>

@@ -8,7 +8,7 @@
 
 <c:set var="currPage" value="${pageContext.request.servletPath}"/>
 
-<div class="container">
+<div class="container width-75">
     <div class="col-xs-4">
         <form method="get" action="rental">
             <input type="hidden"
