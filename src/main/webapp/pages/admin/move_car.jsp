@@ -22,26 +22,59 @@
 <body class="center width-75">
 <jsp:include page="/inc/header.jsp"/>
 <jsp:include page="/inc/nav.jsp"/>
-<form method="post" action="rental">
-    ${requestScope.attr_car_id}<br>
-    <label>
-        <fmt:message key="car.move.location" bundle="${info}"/>
-        <select name="<fmt:message key="param.location.id" bundle="${par}"/>" required>
-            <c:forEach items="${requestScope.attr_location_list}" var="location">
-                <option value="${location.id}">
-                    <c:out value="${location.state}"/>
-                    <c:out value="${location.city}"/>
-                    <c:out value="${location.street}"/>
-                    <c:out value="${location.building}"/>
-                </option>
-            </c:forEach>
-        </select>
-    </label><br>
-        <input type="hidden" name="command" value="move_car">
-        <input type="hidden" name="<fmt:message key="param.car.id" bundle="${par}"/>" value="${requestScope.attr_car_id}">
-    <input type="submit" value="<fmt:message key="car.move.submit" bundle="${info}"/>">
-</form>
-<br>
-<a href="<c:url value="/home.jsp"/>"><fmt:message key="home.href" bundle="${info}"/></a>
-</body>
+<div class="center width-50">
+    <form method="post" action="rental" class="form-horizontal">
+        <div class="form-group">
+            <label for="rp" class="control-label col-xs-4">
+                <fmt:message key="car.add.plate" bundle="${info}"/>
+            </label>
+
+            <div class="col-xs-6">
+                <input id="rp"
+                       type="text"
+                       class="form-control"
+                       value="<c:out value="${requestScope.attr_car.registrationPlate}"/>"
+                       readonly>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="l" class="control-label col-xs-4">
+                <fmt:message key="car.move.location" bundle="${info}"/>
+            </label>
+
+            <div class="col-xs-6">
+                <select id="l"
+                        class="form-control"
+                        name="<fmt:message key="param.location.id" bundle="${par}"/>"
+                        required>
+                    <c:forEach items="${requestScope.attr_location_list}" var="location">
+                        <option value="${location.id}">
+                            <c:out value="${location.state}"/>,
+                            <c:out value="${location.city}"/>,
+                            <c:out value="${location.street}"/>,
+                            <c:out value="${location.building}"/>
+                        </option>
+                    </c:forEach>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-offset-4 col-xs-6">
+                <input type="submit"
+                       class="btn btn-default"
+                       value="<fmt:message key="car.move.submit" bundle="${info}"/>">
+            </div>
+        </div>
+
+        <input type="hidden"
+               name="command"
+               value="move_car">
+
+        <input type="hidden"
+               name="<fmt:message key="param.car.id" bundle="${par}"/>"
+               value="${requestScope.attr_car.id}">
+    </form>
+</div>
 </html>

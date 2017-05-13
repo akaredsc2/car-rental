@@ -15,6 +15,8 @@ import java.util.Optional;
 public interface CarService {
     boolean addNewCar(CarDto carDto);
 
+    Optional<CarDto> findCarById(long carId);
+
     List<CarDto> findCarsAtLocation(LocationDto locationDto);
 
     List<CarDto> findCarsByModel(CarModelDto carModelDto);

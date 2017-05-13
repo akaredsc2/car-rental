@@ -45,6 +45,16 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
+    public Optional<CarDto> findCarById(long carId) {
+        DtoMapper<Car, CarDto> mapper = DtoMapperFactory.getInstance().getCarDtoMapper();
+
+        return MysqlDaoFactory.getInstance()
+                .getCarDao()
+                .findById(carId)
+                .map(mapper::mapEntityToDto);
+    }
+
+    @Override
     public List<CarDto> findCarsAtLocation(LocationDto locationDto) {
         DtoMapper<Car, CarDto> mapper = DtoMapperFactory.getInstance().getCarDtoMapper();
 

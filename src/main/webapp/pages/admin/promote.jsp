@@ -22,23 +22,41 @@
 <body class="center width-75">
 <jsp:include page="/inc/header.jsp"/>
 <jsp:include page="/inc/nav.jsp"/>
-<form method="post" action="rental">
-    <label>
-        <fmt:message key="promote.client" bundle="${info}"/>
-        <select name="<fmt:message key="param.user.id" bundle="${par}"/>" required>
-            <c:forEach items="${requestScope.attr_user_list}" var="client">
-                <option value="${client.id}">
-                    <c:out value="${client.login}"/>,
-                    <c:out value="${client.fullName}"/>
-                </option>
-            </c:forEach>
-        </select>
-    </label><br>
+<div class="center width-50">
+    <form method="post" action="rental" class="form-horizontal">
+        <div class="form-group">
+            <label for="u" class="control-label col-xs-4">
+                <fmt:message key="promote.client" bundle="${info}"/>
+            </label>
 
-    <input type="hidden" name="command" value="promote">
-    <input type="submit" value="<fmt:message key="promote.submit" bundle="${info}"/>">
-</form>
-<br>
-<a href="<c:url value="/home.jsp"/>"><fmt:message key="home.href" bundle="${info}"/></a>
+
+            <div class="col-xs-6">
+                <select id="u"
+                        class="form-control"
+                        name="<fmt:message key="param.user.id" bundle="${par}"/>"
+                        required>
+                    <c:forEach items="${requestScope.attr_user_list}" var="client">
+                        <option value="${client.id}">
+                            <c:out value="${client.login}"/>,
+                            <c:out value="${client.fullName}"/>
+                        </option>
+                    </c:forEach>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-offset-4 col-xs-6">
+                <input type="submit"
+                       class="btn btn-default"
+                       value="<fmt:message key="promote.submit" bundle="${info}"/>">
+            </div>
+        </div>
+
+        <input type="hidden"
+               name="command"
+               value="promote">
+    </form>
+</div>
 </body>
 </html>
