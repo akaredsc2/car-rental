@@ -10,6 +10,7 @@
 <c:if test="${not empty sessionScope.session_user}">
     <c:redirect url="/pages/error/403.jsp"/>
 </c:if>
+
 <!DOCTYPE html>
 <html>
 <head>

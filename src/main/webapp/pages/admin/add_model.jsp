@@ -22,42 +22,101 @@
 <body class="center width-75">
 <jsp:include page="/inc/header.jsp"/>
 <jsp:include page="/inc/nav.jsp"/>
-<form method="post" action="rental" enctype="multipart/form-data">
-    <label>
-        <fmt:message key="model.add.photo" bundle="${info}"/>
-        <input type="file" name="<fmt:message key="param.model.photo" bundle="${par}"/>">
-    </label>
-    <label>
-        <fmt:message key="model.add.name" bundle="${info}"/>
-        <input type="text" name="<fmt:message key="param.model.name" bundle="${par}"/>"
-               pattern="[a-zA-Zа-яА-ЯіІїЇєЄ\d]+(\s+[a-zA-Zа-яА-ЯіІїЇєЄ\d]+)*"
-               minlength="4"
-               maxlength="30"
-               required>
-    </label><br>
-    <label>
-        <fmt:message key="model.add.door" bundle="${info}"/>
-        <input type="number" name="<fmt:message key="param.model.door" bundle="${par}"/>"
-               min="1" max="10" step="1"
-               required>
-    </label><br>
-    <label>
-        <fmt:message key="model.add.seat" bundle="${info}"/>
-        <input type="number" name="<fmt:message key="param.model.seat" bundle="${par}"/>"
-               min="1" max="100" step="1"
-               required>
-    </label><br>
-    <label>
-        <fmt:message key="model.add.horse" bundle="${info}"/>
-        <input type="number" name="<fmt:message key="param.model.horse" bundle="${par}"/>"
-               min="1" max="3000" step="1"
-               required>
-    </label><br>
+<div class="center width-50">
+    <form method="post" action="rental" enctype="multipart/form-data" class="form-horizontal">
+        <div class="form-group">
+            <label for="ph" class="control-label col-xs-4">
+                <fmt:message key="model.add.photo" bundle="${info}"/>
+            </label>
 
-    <input type="hidden" name="command" value="add_model">
-    <input type="submit" value="<fmt:message key="model.add.submit" bundle="${info}"/>">
-</form>
-<br>
-<a href="<c:url value="/home.jsp"/>"><fmt:message key="home.href" bundle="${info}"/></a>
+            <div class="col-xs-6">
+                <input id="ph"
+                       type="file"
+                       class="form-control"
+                       name="<fmt:message key="param.model.photo" bundle="${par}"/>">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="n" class="control-label col-xs-4">
+                <fmt:message key="model.add.name" bundle="${info}"/>
+            </label>
+
+            <div class="col-xs-6">
+                <input id="n"
+                       type="text"
+                       class="form-control"
+                       name="<fmt:message key="param.model.name" bundle="${par}"/>"
+                       pattern="[a-zA-Zа-яА-ЯіІїЇєЄ\d]+(\s+[a-zA-Zа-яА-ЯіІїЇєЄ\d]+)*"
+                       minlength="4"
+                       maxlength="30"
+                       required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="d" class="control-label col-xs-4">
+                <fmt:message key="model.add.door" bundle="${info}"/>
+            </label>
+
+            <div class="col-xs-6">
+                <input id="d"
+                       type="number"
+                       class="form-control"
+                       name="<fmt:message key="param.model.door" bundle="${par}"/>"
+                       min="1"
+                       max="10"
+                       step="1"
+                       required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="s" class="control-label col-xs-4">
+                <fmt:message key="model.add.seat" bundle="${info}"/>
+            </label>
+
+            <div class="col-xs-6">
+                <input id="s"
+                       type="number"
+                       class="form-control"
+                       name="<fmt:message key="param.model.seat" bundle="${par}"/>"
+                       min="1"
+                       max="100"
+                       step="1"
+                       required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="h" class="control-label col-xs-4">
+                <fmt:message key="model.add.horse" bundle="${info}"/>
+            </label>
+
+            <div class="col-xs-6">
+                <input id="h" type="number"
+                       name="<fmt:message key="param.model.horse" bundle="${par}"/>"
+                       min="1"
+                       class="form-control"
+                       max="3000"
+                       step="1"
+                       required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-offset-4 col-xs-6">
+                <input type="submit"
+                       class="btn btn-default"
+                       value="<fmt:message key="model.add.submit"
+               bundle="${info}"/>">
+            </div>
+        </div>
+
+        <input type="hidden"
+               name="command"
+               value="add_model">
+    </form>
+</div>
 </body>
 </html>

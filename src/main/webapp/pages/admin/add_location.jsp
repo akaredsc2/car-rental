@@ -22,45 +22,100 @@
 <body class="center width-75">
 <jsp:include page="/inc/header.jsp"/>
 <jsp:include page="/inc/nav.jsp"/>
-<form method="post" action="rental" enctype="multipart/form-data">
-    <label>
-        <fmt:message key="location.add.photo" bundle="${info}"/>
-        <input type="file" name="<fmt:message key="param.location.photo" bundle="${par}"/>">
-    </label>
-    <label>
-        <fmt:message key="location.add.state" bundle="${info}"/>
-        <input type="text" name="<fmt:message key="param.location.state" bundle="${par}"/>" required
-               pattern="[a-zA-Zа-яА-ЯіІїЇєЄ\d]+(\s+[a-zA-Zа-яА-ЯіІїЇєЄ\d]+)*"
-               minlength="4"
-               maxlength="30">
-    </label><br>
-    <label>
-        <fmt:message key="location.add.city" bundle="${info}"/>
-        <input type="text" name="<fmt:message key="param.location.city" bundle="${par}"/>" required
-               pattern="[a-zA-Zа-яА-ЯіІїЇєЄ\d]+(\s+[a-zA-Zа-яА-ЯіІїЇєЄ\d]+)*"
-               minlength="4"
-               maxlength="30">
-    </label><br>
-    <label>
-        <fmt:message key="location.add.street" bundle="${info}"/>
-        <input type="text" name="<fmt:message key="param.location.street" bundle="${par}"/>" required
-               pattern="[a-zA-Zа-яА-ЯіІїЇєЄ\d]+(\s+[a-zA-Zа-яА-ЯіІїЇєЄ\d]+)*"
-               minlength="4"
-               maxlength="30">
-    </label><br>
-    <label>
-        <fmt:message key="location.add.building" bundle="${info}"/>
-        <input type="text" name="<fmt:message key="param.location.building" bundle="${par}"/>" required
-               pattern="[a-zA-Zа-яА-ЯіІїЇєЄ\d]+(\s+[a-zA-Zа-яА-ЯіІїЇєЄ\d]+)*"
-               minlength="4"
-               maxlength="30">
-    </label><br>
+<div class="center width-50">
+    <form method="post" action="rental" enctype="multipart/form-data" class="form-horizontal">
+        <div class="form-group">
+            <label for="ph" class="control-label col-xs-4">
+                <fmt:message key="location.add.photo" bundle="${info}"/>
+            </label>
 
-    <input type="hidden" name="command" value="add_location">
-    <input type="submit" value="<fmt:message key="location.add.submit" bundle="${info}"/>">
-</form>
-<br>
-<a href="<c:url value="/home.jsp"/>"><fmt:message key="home.href" bundle="${info}"/></a>
+            <div class="col-xs-6">
+                <input id="ph"
+                       type="file"
+                       class="form-control"
+                       name="<fmt:message key="param.location.photo" bundle="${par}"/>">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="st" class="control-label col-xs-4">
+                <fmt:message key="location.add.state" bundle="${info}"/>
+            </label>
+
+            <div class="col-xs-6">
+                <input id="st"
+                       type="text" name="<fmt:message key="param.location.state" bundle="${par}"/>"
+                       class="form-control"
+                       required
+                       pattern="[a-zA-Zа-яА-ЯіІїЇєЄ\d]+(\s+[a-zA-Zа-яА-ЯіІїЇєЄ\d]+)*"
+                       minlength="4"
+                       maxlength="30">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="c" class="control-label col-xs-4">
+                <fmt:message key="location.add.city" bundle="${info}"/>
+            </label>
+
+            <div class="col-xs-6">
+                <input id="c"
+                       type="text"
+                       name="<fmt:message key="param.location.city" bundle="${par}"/>"
+                       required
+                       class="form-control"
+                       pattern="[a-zA-Zа-яА-ЯіІїЇєЄ\d]+(\s+[a-zA-Zа-яА-ЯіІїЇєЄ\d]+)*"
+                       minlength="4"
+                       maxlength="30">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="str" class="control-label col-xs-4">
+                <fmt:message key="location.add.street" bundle="${info}"/>
+            </label>
+
+            <div class="col-xs-6">
+                <input id="str"
+                       type="text"
+                       name="<fmt:message key="param.location.street" bundle="${par}"/>"
+                       required
+                       class="form-control"
+                       pattern="[a-zA-Zа-яА-ЯіІїЇєЄ\d]+(\s+[a-zA-Zа-яА-ЯіІїЇєЄ\d]+)*"
+                       minlength="4"
+                       maxlength="30">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="b" class="control-label col-xs-4">
+                <fmt:message key="location.add.building" bundle="${info}"/>
+            </label>
+
+            <div class="col-xs-6">
+                <input id="b"
+                       type="text"
+                       name="<fmt:message key="param.location.building" bundle="${par}"/>"
+                       required
+                       class="form-control"
+                       pattern="[a-zA-Zа-яА-ЯіІїЇєЄ\d]+(\s+[a-zA-Zа-яА-ЯіІїЇєЄ\d]+)*"
+                       minlength="4"
+                       maxlength="30">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-offset-4 col-xs-6">
+                <input type="submit"
+                       class="btn btn-default"
+                       value="<fmt:message key="location.add.submit" bundle="${info}"/>">
+            </div>
+        </div>
+
+        <input type="hidden"
+               name="command"
+               value="add_location">
+    </form>
+</div>
 </body>
 </html>
-
