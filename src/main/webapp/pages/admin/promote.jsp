@@ -17,7 +17,7 @@
     <link href="<c:url value='/css/bootstrap.min.css'/>" rel="stylesheet" type="text/css">
     <link href="<c:url value='/css/custom.css'/>" rel="stylesheet" type="text/css">
 </head>
-<body>
+<body class="center width-75">
 <jsp:include page="/inc/header.jsp"/>
 <jsp:include page="/inc/nav.jsp"/>
 <form method="post" action="rental">

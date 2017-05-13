@@ -14,40 +14,63 @@
 <html>
 <head>
     <title><fmt:message key="signIn.title" bundle="${info}"/></title>
-    <link href="<c:url value='/css/bootstrap.min.css'/>" rel="stylesheet" type="text/css">
-    <link href="<c:url value='/css/custom.css'/>" rel="stylesheet" type="text/css">
+
+    <jsp:include page="/inc/css.jsp"/>
+    <jsp:include page="/inc/js.jsp"/>
 </head>
-<body>
+<body class="center width-75">
 <jsp:include page="/inc/header.jsp"/>
-<form method="post" action="rental" class="form-horizontal custom-top">
-    <div class="form-group row">
-        <label for="login" class="col-sm-2 col-form-label text-right">
-            <fmt:message key="signIn.login" bundle="${info}"/>
-        </label>
-        <div class="col-sm-10">
-            <input id="login" type="text" name="<fmt:message key="param.user.login" bundle="${par}"/>" required
-                   pattern="[а-яА-ЯіІїЇєЄёЁ\w]{4,30}">
-        </div>
-    </div>
+<div class="center width-50">
+    <form method="post" action="rental" class="form-horizontal">
+        <div class="form-group">
+            <label for="login" class="control-label col-xs-4">
+                <fmt:message key="signIn.login" bundle="${info}"/>
+            </label>
 
-    <div class="form-group row">
-        <label for="pass" class="col-sm-2 col-form-label text-right">
-            <fmt:message key="signIn.password" bundle="${info}"/>
-        </label>
-        <div class="col-sm-10">
-            <input id="pass" type="password" name="<fmt:message key="param.user.password" bundle="${par}"/>" required
-                   pattern="\w{4,30}">
+            <div class="col-xs-6">
+                <input id="login"
+                       type="text"
+                       class="form-control"
+                       name="<fmt:message key="param.user.login" bundle="${par}"/>"
+                       placeholder="<fmt:message key="signIn.login" bundle="${info}"/>"
+                       required
+                       pattern="[а-яА-ЯіІїЇєЄёЁ\w]{4,30}">
+            </div>
         </div>
-    </div>
 
-    <div class="form-group row">
-        <div class="col-sm-offset-2 col-sm-10">
-            <input class="btn btn-default" type="submit" value="<fmt:message key="signIn.submit" bundle="${info}"/>">
+        <div class="form-group">
+            <label for="pass" class="control-label col-xs-4">
+                <fmt:message key="signIn.password" bundle="${info}"/>
+            </label>
+
+            <div class="col-xs-6">
+                <input id="pass"
+                       type="password"
+                       class="form-control"
+                       name="<fmt:message key="param.user.password" bundle="${par}"/>"
+                       placeholder="<fmt:message key="signIn.password" bundle="${info}"/>"
+                       required
+                       pattern="\w{4,30}">
+            </div>
         </div>
-    </div>
-    <input type="hidden" name="command" value="sign_in">
-</form>
-<a class="col-sm-offset-2 col-sm-10" href="<c:url value="/registration.jsp"/>"><fmt:message key="reg.href"
-                                                                                            bundle="${info}"/></a>
+
+
+        <div class="form-group">
+            <div class="col-xs-offset-4 col-xs-6">
+                <input type="submit"
+                       value="<fmt:message key="signIn.submit" bundle="${info}"/>"
+                       class="btn btn-default">
+            </div>
+        </div>
+
+        <input type="hidden"
+               name="command"
+               value="sign_in">
+    </form>
+
+    <a href="<c:url value="/registration.jsp"/>" class="btn btn-link col-xs-offset-4">
+        <fmt:message key="reg.href" bundle="${info}"/>
+    </a>
+</div>
 </body>
 </html>

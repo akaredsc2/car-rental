@@ -8,17 +8,16 @@
 <fmt:setBundle basename="info" var="info"/>
 
 <c:if test="${!empty sessionScope.session_user}">
-    <form method="post" action="rental" class="form-inline">
+    <form method="post" action="rental" class="form-horizontal">
         <fmt:message key="welcome.greetings" bundle="${info}"/>
         <c:out value="${sessionScope.session_user.fullName}"/> !
 
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-                <input class="btn btn-default" type="submit"
-                       value="<fmt:message key="welcome.leave" bundle="${info}"/>"/>
-            </div>
-        </div>
+        <input type="submit"
+               value="<fmt:message key="welcome.leave" bundle="${info}"/>"
+               class="btn btn-default"/>
 
-        <input type="hidden" name="command" value="sign_out">
+        <input type="hidden"
+               name="command"
+               value="sign_out">
     </form>
 </c:if>

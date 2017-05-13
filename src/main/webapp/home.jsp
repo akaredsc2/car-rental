@@ -10,13 +10,15 @@
 <c:if test="${empty sessionScope.session_user}">
     <c:redirect url="/pages/error/403.jsp"/>
 </c:if>
+<!DOCTYPE html>
 <html>
 <head>
     <title><fmt:message key="home.title" bundle="${info}"/></title>
-    <link href="<c:url value='/css/bootstrap.min.css'/>" rel="stylesheet" type="text/css">
-    <link href="<c:url value='/css/custom.css'/>" rel="stylesheet" type="text/css">
+
+    <jsp:include page="/inc/css.jsp"/>
+    <jsp:include page="/inc/js.jsp"/>
 </head>
-<body>
+<body class="center width-75">
 <jsp:include page="/inc/header.jsp"/>
 <jsp:include page="/inc/nav.jsp"/>
 </body>
