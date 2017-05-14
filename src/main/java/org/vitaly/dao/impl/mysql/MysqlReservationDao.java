@@ -15,7 +15,7 @@ import java.util.*;
 import static org.vitaly.util.InputChecker.requireNotNull;
 
 /**
- * Created by vitaly on 2017-04-08.
+ * MySQL implementation of reservation dao
  */
 public class MysqlReservationDao implements ReservationDao {
     private static final String FIND_BY_ID_QUERY =
@@ -67,6 +67,9 @@ public class MysqlReservationDao implements ReservationDao {
 
     private static Logger logger = LogManager.getLogger(MysqlReservationDao.class.getName());
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public Optional<Reservation> findById(long id) {
         Mapper<Reservation> mapper = ResultSetMapperFactory.getInstance().getReservationMapper();
@@ -74,19 +77,18 @@ public class MysqlReservationDao implements ReservationDao {
         return Optional.ofNullable(reservation);
     }
 
-    @Override
-    public Optional<Long> findIdOfEntity(Reservation entity) {
-        RuntimeException e = new UnsupportedOperationException();
-        logger.error(e);
-        throw e;
-    }
-
+    /**
+     * @inheritDoc
+     */
     @Override
     public List<Reservation> getAll() {
         Mapper<Reservation> mapper = ResultSetMapperFactory.getInstance().getReservationMapper();
         return DaoTemplate.executeSelect(GET_ALL_QUERY, mapper, Collections.emptyMap());
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public Optional<Long> create(Reservation reservation) {
         requireNotNull(reservation, RESERVATION_MUST_NOT_BE_NULL);
@@ -101,6 +103,11 @@ public class MysqlReservationDao implements ReservationDao {
         return Optional.ofNullable(createdId);
     }
 
+    /**
+     * Unsupported
+     *
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public int update(long id, Reservation entity) {
         RuntimeException e = new UnsupportedOperationException();
@@ -108,6 +115,9 @@ public class MysqlReservationDao implements ReservationDao {
         throw e;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public List<Reservation> findReservationsByClientId(long clientId) {
         Mapper<Reservation> mapper = ResultSetMapperFactory.getInstance().getReservationMapper();
@@ -115,6 +125,9 @@ public class MysqlReservationDao implements ReservationDao {
                 .executeSelect(FIND_RESERVATIONS_BY_CLIENT_ID_QUERY, mapper, Collections.singletonMap(1, clientId));
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public List<Reservation> findReservationsByAdminId(long adminId) {
         Mapper<Reservation> mapper = ResultSetMapperFactory.getInstance().getReservationMapper();
@@ -122,6 +135,9 @@ public class MysqlReservationDao implements ReservationDao {
                 .executeSelect(FIND_RESERVATIONS_BY_ADMIN_ID_QUERY, mapper, Collections.singletonMap(1, adminId));
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean addAdminToReservation(long reservationId, long adminId) {
         HashMap<Integer, Object> parameterMap = new HashMap<>();
@@ -131,6 +147,9 @@ public class MysqlReservationDao implements ReservationDao {
         return DaoTemplate.executeUpdate(ADD_ADMIN_TO_RESERVATION_QUERY, parameterMap) > 0;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean changeReservationState(long reservationId, ReservationState state) {
         requireNotNull(state, RESERVATION_MUST_NOT_BE_NULL);
@@ -142,6 +161,9 @@ public class MysqlReservationDao implements ReservationDao {
         return DaoTemplate.executeUpdate(CHANGE_RESERVATION_STATE_QUERY, parameterMap) > 0;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean addRejectionReason(long reservationId, String rejectionReason) {
         requireNotNull(rejectionReason, REJECTION_REASON_MUST_NOT_BE_NULL);
@@ -153,12 +175,18 @@ public class MysqlReservationDao implements ReservationDao {
         return DaoTemplate.executeUpdate(ADD_REJECTION_REASON_QUERY, parameterMap) > 0;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public List<Reservation> findReservationsWithoutAdmin() {
         Mapper<Reservation> mapper = ResultSetMapperFactory.getInstance().getReservationMapper();
         return DaoTemplate.executeSelect(FIND_RESERVATIONS_WITHOUT_ADMIN_QUERY, mapper, Collections.emptyMap());
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean isCarPartOfActiveReservations(long carId) {
         Integer reservationsInvolvingCarCount = DaoTemplate.executeSelectOne(
@@ -167,6 +195,9 @@ public class MysqlReservationDao implements ReservationDao {
         return !Objects.equals(reservationsInvolvingCarCount, 0);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean isAdminAssignedToReservation(long adminId, long reservationId) {
         HashMap<Integer, Object> parameterMap = new HashMap<>();

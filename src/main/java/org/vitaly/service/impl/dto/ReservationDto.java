@@ -112,7 +112,8 @@ public class ReservationDto {
         result = 31 * result + (pickUpDatetime != null ? pickUpDatetime.hashCode() : 0);
         result = 31 * result + (dropOffDatetime != null ? dropOffDatetime.hashCode() : 0);
         result = 31 * result + (state != null ? state.hashCode() : 0);
-        result = 31 * result + (rejectionReason != null ? rejectionReason.hashCode() : 0);;
+        result = 31 * result + (rejectionReason != null ? rejectionReason.hashCode() : 0);
+        ;
         return result;
     }
 }

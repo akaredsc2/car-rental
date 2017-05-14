@@ -16,7 +16,7 @@ import java.util.Optional;
 import static org.vitaly.util.InputChecker.requireNotNull;
 
 /**
- * Created by vitaly on 2017-04-08.
+ * MySQL implementation of bill dao
  */
 public class MysqlBillDao implements BillDao {
     private static final String CREATE_QUERY =
@@ -50,6 +50,9 @@ public class MysqlBillDao implements BillDao {
 
     private static Logger logger = LogManager.getLogger(MysqlBillDao.class.getName());
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public Optional<Bill> findById(long id) {
         Mapper<Bill> mapper = ResultSetMapperFactory.getInstance().getBillMapper();
@@ -57,19 +60,18 @@ public class MysqlBillDao implements BillDao {
         return Optional.ofNullable(foundBill);
     }
 
-    @Override
-    public Optional<Long> findIdOfEntity(Bill entity) {
-        RuntimeException e = new UnsupportedOperationException();
-        logger.error(e);
-        throw e;
-    }
-
+    /**
+     * @inheritDoc
+     */
     @Override
     public List<Bill> getAll() {
         Mapper<Bill> mapper = ResultSetMapperFactory.getInstance().getBillMapper();
         return DaoTemplate.executeSelect(GET_ALL_QUERY, mapper, Collections.emptyMap());
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public Optional<Long> create(Bill bill) {
         requireNotNull(bill, BILL_MUST_NOT_BE_NULL);
@@ -83,6 +85,11 @@ public class MysqlBillDao implements BillDao {
         return Optional.ofNullable(createdId);
     }
 
+    /**
+     * Unsupported
+     *
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public int update(long id, Bill entity) {
         RuntimeException e = new UnsupportedOperationException();
@@ -90,6 +97,9 @@ public class MysqlBillDao implements BillDao {
         throw e;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public List<Bill> findBillsForReservation(long reservationId) {
         Mapper<Bill> mapper = ResultSetMapperFactory.getInstance().getBillMapper();
@@ -97,6 +107,9 @@ public class MysqlBillDao implements BillDao {
                 .executeSelect(FIND_BILLS_FOR_RESERVATION_QUERY, mapper, Collections.singletonMap(1, reservationId));
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean addBillToReservation(long billId, long reservationId) {
         HashMap<Integer, Object> parameterMap = new HashMap<>();
@@ -106,6 +119,9 @@ public class MysqlBillDao implements BillDao {
         return DaoTemplate.executeUpdate(ADD_BILL_TO_RESERVATION_QUERY, parameterMap) > 0;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean markPaid(long billId) {
         HashMap<Integer, Object> parameterMap = new HashMap<>();
@@ -115,6 +131,9 @@ public class MysqlBillDao implements BillDao {
         return DaoTemplate.executeUpdate(MARK_PAID_QUERY, parameterMap) > 0;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean markConfirmed(long billId) {
         HashMap<Integer, Object> parameterMap = new HashMap<>();

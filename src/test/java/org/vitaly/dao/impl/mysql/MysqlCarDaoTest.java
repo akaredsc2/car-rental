@@ -22,8 +22,6 @@ import static junit.framework.TestCase.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.iterableWithSize;
-import static org.vitaly.matcher.EntityIdMatcher.hasId;
 
 /**
  * Created by vitaly on 2017-03-27.
@@ -112,27 +110,6 @@ public class MysqlCarDaoTest {
         boolean findResult = carDao.findById(-1L).isPresent();
 
         assertFalse(findResult);
-    }
-
-    @Test
-    public void findIdOfExistingCarReturnsId() throws Exception {
-        Car createdCar = TestUtil.createEntityWithId(car1, carDao);
-
-        long foundId = carDao.findIdOfEntity(car1).orElseThrow(AssertionError::new);
-
-        assertThat(createdCar, hasId(foundId));
-    }
-
-    @Test
-    public void findIdOfNOnExistingCarReturnsEmptyOptional() throws Exception {
-        boolean findResult = carDao.findIdOfEntity(car1).isPresent();
-
-        assertFalse(findResult);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void findIdOfNullShouldThrowException() throws Exception {
-        carDao.findIdOfEntity(null);
     }
 
     @Test
@@ -284,44 +261,6 @@ public class MysqlCarDaoTest {
         List<Car> matchingCars = carDao.findCarsByModel(-1);
 
         assertThat(matchingCars, empty());
-    }
-
-    @Test
-    public void findCarsWithPriceBetweenReturnsAllMatchingCars() throws Exception {
-        car1 = TestUtil.createEntityWithId(car1, carDao);
-        car2 = TestUtil.createEntityWithId(car2, carDao);
-
-        BigDecimal first = car1.getPricePerDay();
-        BigDecimal second = car2.getPricePerDay();
-        BigDecimal from = first.min(second);
-        BigDecimal to = first.max(second).subtract(BigDecimal.ONE);
-
-        List<Car> matchingCars = carDao.findCarsWithPriceBetween(from, to);
-
-        assertThat(matchingCars, allOf(
-                iterableWithSize(1),
-                hasItem(car1),
-                not(hasItem(car2))));
-    }
-
-    @Test
-    public void findCarsWithPriceBetweenReturnsEmptyListIfThereAreNoMatches() throws Exception {
-        BigDecimal from = BigDecimal.TEN.negate();
-        BigDecimal to = BigDecimal.ONE.negate();
-
-        List<Car> matchingCars = carDao.findCarsWithPriceBetween(from, to);
-
-        assertThat(matchingCars, empty());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void findCarsWithPriceBetweenNullAndNumberShouldThrowException() throws Exception {
-        carDao.findCarsWithPriceBetween(null, BigDecimal.ONE);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void findCarsWithPriceBetweenNumberAndNullShouldThrowException() throws Exception {
-        carDao.findCarsWithPriceBetween(BigDecimal.ONE, null);
     }
 
     @Test(expected = IllegalArgumentException.class)

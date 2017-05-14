@@ -8,10 +8,13 @@ import java.sql.SQLException;
 import static org.vitaly.util.constants.TableAttributes.*;
 
 /**
- * Created by vitaly on 2017-04-22.
+ * Result set mapper for car model
  */
 public class CarModelMapper implements Mapper<CarModel> {
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public CarModel map(ResultSet resultSet) throws SQLException {
         return new CarModel.Builder()

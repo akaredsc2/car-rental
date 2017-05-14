@@ -9,7 +9,7 @@ import org.vitaly.model.reservation.Reservation;
 import org.vitaly.model.user.User;
 
 /**
- * Created by vitaly on 18.04.17.
+ * Factory for result set mappers
  */
 public class ResultSetMapperFactory {
     private static ResultSetMapperFactory instance = new ResultSetMapperFactory();
@@ -24,30 +24,65 @@ public class ResultSetMapperFactory {
     private ResultSetMapperFactory() {
     }
 
+    /**
+     * Instance of factory
+     *
+     * @return instance of factory
+     */
     public static ResultSetMapperFactory getInstance() {
         return instance;
     }
 
+    /**
+     * Bill result set mapper
+     *
+     * @return bill result set mapper
+     */
     public Mapper<Bill> getBillMapper() {
         return billMapper;
     }
 
+    /**
+     * Car model result set mapper
+     *
+     * @return car model result set mapper
+     */
     public Mapper<CarModel> getCarModelMapper() {
         return carModelMapper;
     }
 
+    /**
+     * Car result set mapper
+     *
+     * @return car result set mapper
+     */
     public Mapper<Car> getCarMapper() {
         return carMapper;
     }
 
+    /**
+     * Location result set mapper
+     *
+     * @return location result set mapper
+     */
     public Mapper<Location> getLocationMapper() {
         return locationMapper;
     }
 
+    /**
+     * Reservation result set mapper
+     *
+     * @return reservation result set mapper
+     */
     public Mapper<Reservation> getReservationMapper() {
         return reservationMapper;
     }
 
+    /**
+     * User result set mapper
+     *
+     * @return user result set mapper
+     */
     public Mapper<User> getUserMapper() {
         return userMapper;
     }

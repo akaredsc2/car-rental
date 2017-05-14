@@ -14,10 +14,13 @@ import java.time.LocalDateTime;
 import static org.vitaly.util.constants.TableAttributes.*;
 
 /**
- * Created by vitaly on 2017-04-08.
+ * Result set mapper for reservation
  */
 public class ReservationMapper implements Mapper<Reservation> {
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public Reservation map(ResultSet resultSet) throws SQLException {
         User client = User.createDummyClientWithId(resultSet.getLong(RESERVATION_CLIENT_ID));

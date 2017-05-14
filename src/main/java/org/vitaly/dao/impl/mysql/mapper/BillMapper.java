@@ -11,10 +11,13 @@ import java.time.LocalDateTime;
 import static org.vitaly.util.constants.TableAttributes.*;
 
 /**
- * Created by vitaly on 2017-04-08.
+ * Result set mapper for bill
  */
 public class BillMapper implements Mapper<Bill> {
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public Bill map(ResultSet resultSet) throws SQLException {
         LocalDateTime creationDateTime = resultSet.getTimestamp(BILL_CREATION_DATETIME).toLocalDateTime();

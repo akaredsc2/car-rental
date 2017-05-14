@@ -10,7 +10,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * Created by vitaly on 2017-04-17.
+ * Transaction manager
  */
 public class TransactionManager {
     private static Logger logger = LogManager.getLogger(TransactionManager.class.getName());
@@ -20,6 +20,11 @@ public class TransactionManager {
     private TransactionManager() {
     }
 
+    /**
+     * Gets connection. New if has none, old if has one in thread local
+     *
+     * @return connection wrapper
+     */
     public static PooledConnection getConnection() {
         PooledConnection pooledConnection = pooledConnectionThreadLocal.get();
 
@@ -30,10 +35,18 @@ public class TransactionManager {
         return pooledConnection;
     }
 
+    /**
+     * Starts transaction with read committed isolation
+     */
     public static void startTransaction() {
         startTransactionWithIsolation(Connection.TRANSACTION_READ_COMMITTED);
     }
 
+    /**
+     * Starts transaction with isolation level
+     *
+     * @param isolationLevel isolation level
+     */
     public static void startTransactionWithIsolation(int isolationLevel) {
         try {
             PooledConnection pooledConnection = MysqlConnectionPool.getInstance().getConnection();
@@ -49,6 +62,9 @@ public class TransactionManager {
         }
     }
 
+    /**
+     * Commit transaction
+     */
     public static void commit() {
         try {
             PooledConnection pooledConnection = pooledConnectionThreadLocal.get();
@@ -69,6 +85,9 @@ public class TransactionManager {
         }
     }
 
+    /**
+     * Rollback transaction
+     */
     public static void rollback() {
         try {
             PooledConnection pooledConnection = pooledConnectionThreadLocal.get();

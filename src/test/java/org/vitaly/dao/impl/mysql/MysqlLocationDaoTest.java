@@ -16,7 +16,6 @@ import static junit.framework.TestCase.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
-import static org.vitaly.matcher.EntityIdMatcher.hasId;
 
 /**
  * Created by vitaly on 2017-03-26.
@@ -68,27 +67,6 @@ public class MysqlLocationDaoTest {
         boolean findResult = locationDao.findById(-1L).isPresent();
 
         assertFalse(findResult);
-    }
-
-    @Test
-    public void successfulFindIdOfLocationReturnsId() throws Exception {
-        Location createdLocation = TestUtil.createEntityWithId(location1, locationDao);
-
-        long foundId = locationDao.findIdOfEntity(location1).orElseThrow(AssertionError::new);
-
-        assertThat(createdLocation, hasId(foundId));
-    }
-
-    @Test
-    public void findIdOfNonExistingLocationReturnsEmptyOptional() throws Exception {
-        boolean findResult = locationDao.findIdOfEntity(location2).isPresent();
-
-        assertFalse(findResult);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void findIdOfNullLocationShouldThrowException() throws Exception {
-        locationDao.findIdOfEntity(null);
     }
 
     @Test

@@ -8,10 +8,13 @@ import java.sql.SQLException;
 import static org.vitaly.util.constants.TableAttributes.*;
 
 /**
- * Created by vitaly on 2017-04-07.
+ * Result set mapper for location
  */
 public class LocationMapper implements Mapper<Location> {
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public Location map(ResultSet resultSet) throws SQLException {
         return new Location.Builder()

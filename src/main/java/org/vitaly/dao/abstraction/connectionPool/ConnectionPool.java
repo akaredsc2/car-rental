@@ -1,8 +1,14 @@
 package org.vitaly.dao.abstraction.connectionPool;
 
 /**
- * Created by vitaly on 2017-03-25.
+ * Wrapper for DataSource
  */
 public interface ConnectionPool {
+
+    /**
+     * Returns wrapped connection from pool
+     *
+     * @return wrapped connection from pool
+     */
     PooledConnection getConnection();
 }

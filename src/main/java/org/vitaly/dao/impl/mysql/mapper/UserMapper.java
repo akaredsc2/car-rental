@@ -10,10 +10,13 @@ import java.time.LocalDate;
 import static org.vitaly.util.constants.TableAttributes.*;
 
 /**
- * Created by vitaly on 2017-04-07.
+ * Result set mapper for user
  */
 public class UserMapper implements Mapper<User> {
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public User map(ResultSet resultSet) throws SQLException {
         LocalDate birthDate = resultSet.getDate(USERS_BIRTH_DATE).toLocalDate();

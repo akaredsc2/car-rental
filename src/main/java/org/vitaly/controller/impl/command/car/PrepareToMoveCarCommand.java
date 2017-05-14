@@ -11,10 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 import java.util.Properties;
 
-import static org.vitaly.util.constants.Pages.CARS_JSP;
 import static org.vitaly.util.constants.Pages.MOVE_CAR_JSP;
 import static org.vitaly.util.constants.RequestAttributes.ATTR_CAR;
 import static org.vitaly.util.constants.RequestAttributes.ATTR_LOCATION_LIST;

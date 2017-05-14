@@ -26,19 +26,19 @@ import static org.vitaly.util.constants.RequestAttributes.ATTR_USER_LIST;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class PrepareToPromoteCommandTest {
-    
+
     @Mock
     private UserService userService;
-    
+
     @InjectMocks
     private ServiceFactory serviceFactory = ServiceFactory.getInstance();
-    
+
     @Mock
     private HttpServletRequest request;
-    
+
     @Mock
     private ServletContext servletContext;
-    
+
     @Mock
     private RequestDispatcher requestDispatcher;
 

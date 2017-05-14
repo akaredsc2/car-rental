@@ -5,7 +5,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.vitaly.controller.abstraction.validation.Validator;
 import org.vitaly.controller.impl.command.car.AddCarCommand;
 import org.vitaly.controller.impl.factory.RequestMapperFactory;
 import org.vitaly.controller.impl.factory.ValidatorFactory;

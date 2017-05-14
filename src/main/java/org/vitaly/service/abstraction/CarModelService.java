@@ -16,7 +16,5 @@ public interface CarModelService {
 
     boolean updateCarModel(CarModelDto carModelDto);
 
-    List<CarModelDto> findCarsWithPhotos();
-
     Optional<CarModelDto> findModelOfCar(CarDto carDto);
 }

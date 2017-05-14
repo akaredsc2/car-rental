@@ -7,23 +7,18 @@ import org.vitaly.dao.impl.mysql.template.DaoTemplate;
 import org.vitaly.model.car.Car;
 import org.vitaly.model.car.CarState;
 
-import java.math.BigDecimal;
 import java.util.*;
 
 import static org.vitaly.util.InputChecker.requireNotNull;
 
 /**
- * Created by vitaly on 2017-03-27.
+ * MySQL implementation of car dao
  */
 public class MysqlCarDao implements CarDao {
     private static final String FIND_BY_ID_QUERY =
             "SELECT * " +
                     "FROM car " +
                     "WHERE car_id = ?";
-    private static final String FIND_ID_OF_CAR_QUERY =
-            "SELECT car_id " +
-                    "FROM car " +
-                    "WHERE registration_plate = ?";
     private static final String GET_ALL_QUERY =
             "SELECT * " +
                     "FROM car";
@@ -46,10 +41,6 @@ public class MysqlCarDao implements CarDao {
             "SELECT * " +
                     "FROM car " +
                     "WHERE model_id = ?";
-    private static final String FIND_CARS_WITH_PRICE_BETWEEN_QUERY =
-            "SELECT * " +
-                    "FROM car " +
-                    "WHERE price_per_day BETWEEN ? AND ?";
     private static final String CHANGE_CAR_STATE_QUERY =
             "UPDATE car " +
                     "SET car.car_status = ? " +
@@ -59,10 +50,11 @@ public class MysqlCarDao implements CarDao {
             "WHERE reservation_id = ?";
 
     private static final String CAR_MUST_NOT_BE_NULL = "Car must not be null!";
-    private static final String FROM_NUMBER_MUST_NOT_BE_NULL = "From number must not be null!";
-    private static final String TO_NUMBER_MUST_NOT_BE_NULL = "To number must not be null!";
     private static final String CAR_STATE_MUST_NOT_BE_NULL = "Car state must not be null!";
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public Optional<Car> findById(long id) {
         Mapper<Car> mapper = ResultSetMapperFactory.getInstance().getCarMapper();
@@ -70,22 +62,18 @@ public class MysqlCarDao implements CarDao {
         return Optional.ofNullable(car);
     }
 
-    @Override
-    public Optional<Long> findIdOfEntity(Car car) {
-        requireNotNull(car, CAR_MUST_NOT_BE_NULL);
-
-        Long foundId = DaoTemplate.executeSelectOne(FIND_ID_OF_CAR_QUERY,
-                resultSet -> resultSet.getLong(1), Collections.singletonMap(1, car.getRegistrationPlate()));
-
-        return Optional.ofNullable(foundId);
-    }
-
+    /**
+     * @inheritDoc
+     */
     @Override
     public List<Car> getAll() {
         Mapper<Car> mapper = ResultSetMapperFactory.getInstance().getCarMapper();
         return DaoTemplate.executeSelect(GET_ALL_QUERY, mapper, Collections.emptyMap());
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public Optional<Long> create(Car car) {
         requireNotNull(car, CAR_MUST_NOT_BE_NULL);
@@ -100,6 +88,9 @@ public class MysqlCarDao implements CarDao {
         return Optional.ofNullable(createdId);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public int update(long id, Car car) {
         requireNotNull(car, CAR_MUST_NOT_BE_NULL);
@@ -112,6 +103,9 @@ public class MysqlCarDao implements CarDao {
         return DaoTemplate.executeUpdate(UPDATE_QUERY, parameterMap);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean moveCarToLocation(long carId, long locationId) {
         HashMap<Integer, Object> parameterMap = new HashMap<>();
@@ -121,31 +115,27 @@ public class MysqlCarDao implements CarDao {
         return DaoTemplate.executeUpdate(ADD_CAR_TO_LOCATION_QUERY, parameterMap) > 0;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public List<Car> findCarsAtLocation(long locationId) {
         Mapper<Car> mapper = ResultSetMapperFactory.getInstance().getCarMapper();
         return DaoTemplate.executeSelect(GET_CARS_AT_LOCATION_QUERY, mapper, Collections.singletonMap(1, locationId));
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public List<Car> findCarsByModel(long carModelId) {
         Mapper<Car> mapper = ResultSetMapperFactory.getInstance().getCarMapper();
         return DaoTemplate.executeSelect(FIND_CAR_BY_MODEL_QUERY, mapper, Collections.singletonMap(1, carModelId));
     }
 
-    @Override
-    public List<Car> findCarsWithPriceBetween(BigDecimal from, BigDecimal to) {
-        requireNotNull(from, FROM_NUMBER_MUST_NOT_BE_NULL);
-        requireNotNull(to, TO_NUMBER_MUST_NOT_BE_NULL);
-
-        Map<Integer, Object> parameterMap = new HashMap<>();
-        parameterMap.put(1, from);
-        parameterMap.put(2, to);
-
-        Mapper<Car> mapper = ResultSetMapperFactory.getInstance().getCarMapper();
-        return DaoTemplate.executeSelect(FIND_CARS_WITH_PRICE_BETWEEN_QUERY, mapper, parameterMap);
-    }
-
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean changeCarState(long carId, CarState state) {
         requireNotNull(state, CAR_STATE_MUST_NOT_BE_NULL);
@@ -157,6 +147,9 @@ public class MysqlCarDao implements CarDao {
         return DaoTemplate.executeUpdate(CHANGE_CAR_STATE_QUERY, parameterMap) > 0;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public Optional<Car> findCarByReservation(long reservationId) {
         Mapper<Car> mapper = ResultSetMapperFactory.getInstance().getCarMapper();

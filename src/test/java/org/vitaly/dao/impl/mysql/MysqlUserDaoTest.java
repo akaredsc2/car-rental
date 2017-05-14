@@ -18,7 +18,6 @@ import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.assertThat;
-import static org.vitaly.matcher.EntityIdMatcher.hasId;
 
 /**
  * Created by vitaly on 2017-03-28.
@@ -79,27 +78,6 @@ public class MysqlUserDaoTest {
         boolean findResult = userDao.findById(-1L).isPresent();
 
         assertFalse(findResult);
-    }
-
-    @Test
-    public void findIdOfExistingEntityReturnsId() throws Exception {
-        User createdUser = TestUtil.createEntityWithId(client1, userDao);
-
-        long foundId = userDao.findIdOfEntity(client1).orElseThrow(AssertionError::new);
-
-        assertThat(createdUser, hasId(foundId));
-    }
-
-    @Test
-    public void findIdOfNonExistingEntityReturnsEmptyOptional() throws Exception {
-        boolean findResult = userDao.findIdOfEntity(admin).isPresent();
-
-        assertFalse(findResult);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void findIdOfNullShouldThrowException() throws Exception {
-        userDao.findIdOfEntity(null);
     }
 
     @Test

@@ -5,7 +5,6 @@ import org.vitaly.service.impl.dto.CarModelDto;
 import org.vitaly.service.impl.dto.LocationDto;
 import org.vitaly.service.impl.dto.ReservationDto;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,8 +19,6 @@ public interface CarService {
     List<CarDto> findCarsAtLocation(LocationDto locationDto);
 
     List<CarDto> findCarsByModel(CarModelDto carModelDto);
-
-    List<CarDto> findCarsWithPriceBetween(BigDecimal from, BigDecimal to);
 
     List<CarDto> getAllCars();
 

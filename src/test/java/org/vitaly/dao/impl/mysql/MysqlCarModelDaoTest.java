@@ -67,27 +67,6 @@ public class MysqlCarModelDaoTest {
     }
 
     @Test
-    public void findIdOfExistingCarModelReturnsId() throws Exception {
-        CarModel createdCarModel = TestUtil.createEntityWithId(carModel1, carModelDao);
-
-        long foundId = carModelDao.findIdOfEntity(carModel1).orElseThrow(AssertionFailedError::new);
-
-        assertThat(createdCarModel, hasId(foundId));
-    }
-
-    @Test
-    public void findIdNonExistingCarModelReturnsEmptyOptional() throws Exception {
-        boolean findResult = carModelDao.findIdOfEntity(carModel1).isPresent();
-
-        assertFalse(findResult);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void findIdOfNullShouldThrowException() throws Exception {
-        carModelDao.findIdOfEntity(null);
-    }
-
-    @Test
     public void getAllContainsAllCreatedCarModels() throws Exception {
         carModelDao.create(carModel1);
         carModelDao.create(carModel2);

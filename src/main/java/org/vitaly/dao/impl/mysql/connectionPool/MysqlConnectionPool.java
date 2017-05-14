@@ -16,7 +16,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 /**
- * Created by vitaly on 2017-03-25.
+ * Connection pool for MySQL database
  */
 public class MysqlConnectionPool implements ConnectionPool {
     private static final String CONNECTION_PROPERTIES = "db" + File.separator + "connection.properties";
@@ -78,10 +78,18 @@ public class MysqlConnectionPool implements ConnectionPool {
         return url;
     }
 
+    /**
+     * Instance of connection pool
+     *
+     * @return instance of connection pool
+     */
     public static MysqlConnectionPool getInstance() {
         return instance;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public synchronized PooledConnection getConnection() {
         try {

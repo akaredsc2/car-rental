@@ -14,7 +14,6 @@ import org.vitaly.service.impl.dto.ReservationDto;
 import org.vitaly.service.impl.dtoMapper.DtoMapper;
 import org.vitaly.service.impl.factory.DtoMapperFactory;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -75,18 +74,6 @@ public class CarServiceImpl implements CarService {
         return MysqlDaoFactory.getInstance()
                 .getCarDao()
                 .findCarsByModel(carModelId)
-                .stream()
-                .map(mapper::mapEntityToDto)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<CarDto> findCarsWithPriceBetween(BigDecimal from, BigDecimal to) {
-        DtoMapper<Car, CarDto> mapper = DtoMapperFactory.getInstance().getCarDtoMapper();
-
-        return MysqlDaoFactory.getInstance()
-                .getCarDao()
-                .findCarsWithPriceBetween(from, to)
                 .stream()
                 .map(mapper::mapEntityToDto)
                 .collect(Collectors.toList());

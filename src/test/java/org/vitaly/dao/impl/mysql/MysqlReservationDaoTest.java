@@ -139,11 +139,6 @@ public class MysqlReservationDaoTest {
         assertFalse(findResult);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void findIdOfEntityShouldThrowException() throws Exception {
-        reservationDao.findIdOfEntity(reservation1);
-    }
-
     @Test
     public void getAllFromEmptyTableReturnsEmptyList() throws Exception {
         List<Reservation> reservationList = reservationDao.getAll();

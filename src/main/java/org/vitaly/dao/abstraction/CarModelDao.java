@@ -2,14 +2,18 @@ package org.vitaly.dao.abstraction;
 
 import org.vitaly.model.carModel.CarModel;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
- * Created by vitaly on 2017-04-22.
+ * Dao for car model
  */
 public interface CarModelDao extends AbstractDao<CarModel> {
-    List<CarModel> findCarModelsWithPhotos();
 
+    /**
+     * Find model of car
+     *
+     * @param carId car id
+     * @return car model or empty optional if car model wa not found
+     */
     Optional<CarModel> findModelOfCar(long carId);
 }

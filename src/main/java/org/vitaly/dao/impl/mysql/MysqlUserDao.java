@@ -15,17 +15,13 @@ import java.util.*;
 import static org.vitaly.util.InputChecker.requireNotNull;
 
 /**
- * Created by vitaly on 2017-03-28.
+ * MySQL implementation of user dao
  */
 public class MysqlUserDao implements UserDao {
     private static final String FIND_BY_ID_QUERY =
             "SELECT * " +
                     "FROM users " +
                     "WHERE user_id = ?";
-    private static final String FIND_ID_OF_USER_QUERY =
-            "SELECT users.user_id " +
-                    "FROM users " +
-                    "WHERE users.login = ?";
     private static final String GET_ALL_QUERY =
             "SELECT * " +
                     "FROM users";
@@ -53,6 +49,9 @@ public class MysqlUserDao implements UserDao {
 
     private static Logger logger = LogManager.getLogger(MysqlUserDao.class.getName());
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public Optional<User> findById(long id) {
         Mapper<User> mapper = ResultSetMapperFactory.getInstance().getUserMapper();
@@ -60,22 +59,18 @@ public class MysqlUserDao implements UserDao {
         return Optional.ofNullable(user);
     }
 
-    @Override
-    public Optional<Long> findIdOfEntity(User user) {
-        requireNotNull(user, USER_MUST_NOT_BE_NULL);
-
-        Long foundId = DaoTemplate.executeSelectOne(
-                FIND_ID_OF_USER_QUERY, resultSet -> resultSet.getLong(1), Collections.singletonMap(1, user.getLogin()));
-
-        return Optional.ofNullable(foundId);
-    }
-
+    /**
+     * @inheritDoc
+     */
     @Override
     public List<User> getAll() {
         Mapper<User> mapper = ResultSetMapperFactory.getInstance().getUserMapper();
         return DaoTemplate.executeSelect(GET_ALL_QUERY, mapper, Collections.emptyMap());
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public Optional<Long> create(User user) {
         requireNotNull(user, USER_MUST_NOT_BE_NULL);
@@ -92,6 +87,11 @@ public class MysqlUserDao implements UserDao {
         return Optional.ofNullable(createdId);
     }
 
+    /**
+     * Not supported
+     *
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public int update(long id, User entity) {
         RuntimeException e = new UnsupportedOperationException();
@@ -99,6 +99,9 @@ public class MysqlUserDao implements UserDao {
         throw e;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public Optional<User> authenticate(String login, String password) {
         requireNotNull(login, LOGIN_MUST_NOT_BE_NULL);
@@ -113,6 +116,9 @@ public class MysqlUserDao implements UserDao {
         return Optional.ofNullable(authenticatedUser);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public void changeRole(long userId, UserRole role) {
         requireNotNull(role, ROLE_MUST_NOT_BE_NULL);
@@ -124,6 +130,9 @@ public class MysqlUserDao implements UserDao {
         DaoTemplate.executeUpdate(CHANGE_ROLE_QUERY, parameterMap);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public void changePassword(long userId, String newPassword) {
         requireNotNull(newPassword, NEW_PASSWORD_MUST_NOT_BE_NULL);

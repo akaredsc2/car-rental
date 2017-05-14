@@ -34,12 +34,6 @@ public final class TableAttributes {
     public static final String LOCATION_BUILDING = "location.building";
     public static final String LOCATION_PHOTO_URL = "location.photo_url";
 
-    public static final String NOTIFICATION_NOTIFICATION_ID = "notification.notification_id";
-    public static final String NOTIFICATION_NOTIFICATION_DATETIME = "notification.notification_datetime";
-    public static final String NOTIFICATION_NOTIFICATION_STATUS = "notification.notification_status";
-    public static final String NOTIFICATION_HEADER = "notification.header";
-    public static final String NOTIFICATION_CONTENT = "notification.content";
-
     public static final String BILL_BILL_ID = "bill.bill_id";
     public static final String BILL_IS_PAID = "bill.is_paid";
     public static final String BILL_IS_CONFIRMED = "bill.is_confirmed";

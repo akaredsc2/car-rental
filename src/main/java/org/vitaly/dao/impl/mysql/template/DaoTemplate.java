@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by vitaly on 2017-04-07.
+ * Utility methods for dao
  */
 public class DaoTemplate {
     private static final String ERROR_WHILE_EXECUTING_SELECT_QUERY = "Error while executing select query.";
@@ -24,9 +24,22 @@ public class DaoTemplate {
     private static final String ERROR_WHILE_EXECUTING_INSERT_QUERY = "Error while executing insert query.";
     private static final int ERROR_CODE_DUPLICATE_ENTRY = 1062;
 
+    private DaoTemplate() {
+    }
+
     private static Logger logger = LogManager.getLogger(DaoTemplate.class.getName());
 
-    public static <T> List<T> executeSelect(String query, Mapper<T> mapper, Map<Integer, Object> parameterMap) {
+    /**
+     * Executes select query
+     *
+     * @param query        query
+     * @param mapper       mapper for result
+     * @param parameterMap parameter map
+     * @param <T>          type of entity
+     * @return list of selected entities
+     */
+    public static <T> List<T> executeSelect(String query, Mapper<T> mapper,
+                                            Map<Integer, Object> parameterMap) {
         List<T> result = new ArrayList<>();
 
         try (PooledConnection connection = TransactionManager.getConnection();
@@ -58,6 +71,15 @@ public class DaoTemplate {
         }
     }
 
+    /**
+     * Executes select query and returns one element
+     *
+     * @param query        query
+     * @param mapper       mapper for result
+     * @param parameterMap parameter map
+     * @param <T>          type of entity
+     * @return selected entity
+     */
     public static <T> T executeSelectOne(String query, Mapper<T> mapper, Map<Integer, Object> parameterMap) {
         List<T> result = executeSelect(query, mapper, parameterMap);
 
@@ -68,6 +90,13 @@ public class DaoTemplate {
         }
     }
 
+    /**
+     * Execute insert query and return created id
+     *
+     * @param query        insert query
+     * @param parameterMap query parameters
+     * @return created id
+     */
     public static Long executeInsert(String query, Map<Integer, Object> parameterMap) {
         Long insertedId = null;
 
@@ -92,6 +121,13 @@ public class DaoTemplate {
         return insertedId;
     }
 
+    /**
+     * Execute update query
+     *
+     * @param query        update query
+     * @param parameterMap query parameters
+     * @return updated row count
+     */
     public static int executeUpdate(String query, Map<Integer, Object> parameterMap) {
         try (PooledConnection connection = TransactionManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {

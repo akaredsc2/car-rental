@@ -12,10 +12,13 @@ import java.sql.SQLException;
 import static org.vitaly.util.constants.TableAttributes.*;
 
 /**
- * Created by vitaly on 2017-04-07.
+ * Result set mapper for car
  */
 public class CarMapper implements Mapper<Car> {
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public Car map(ResultSet resultSet) throws SQLException {
         CarState state = CarStateEnum

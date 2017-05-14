@@ -38,7 +38,7 @@ public class MysqlBillDaoTest {
 
     private BillDao billDao = new MysqlBillDao();
 
-    private Bill bill1 =  new Bill.Builder()
+    private Bill bill1 = new Bill.Builder()
             .setPaid(false)
             .setDescription(BillDescriptionEnum.DAMAGE)
             .setCashAmount(BigDecimal.valueOf(1111))
@@ -115,11 +115,6 @@ public class MysqlBillDaoTest {
         boolean isFound = billDao.findById(-1).isPresent();
 
         assertFalse(isFound);
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void findIdOfEntityShouldThrowException() throws Exception {
-        billDao.findIdOfEntity(bill1);
     }
 
     @Test

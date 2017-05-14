@@ -66,18 +66,6 @@ public class CarModelServiceImpl implements CarModelService {
     }
 
     @Override
-    public List<CarModelDto> findCarsWithPhotos() {
-        DtoMapper<CarModel, CarModelDto> mapper = DtoMapperFactory.getInstance().getCarModelDtoMapper();
-
-        return MysqlDaoFactory.getInstance()
-                .getCarModelDao()
-                .findCarModelsWithPhotos()
-                .stream()
-                .map(mapper::mapEntityToDto)
-                .collect(Collectors.toList());
-    }
-
-    @Override
     public Optional<CarModelDto> findModelOfCar(CarDto carDto) {
         long carId = carDto.getId();
         DtoMapper<CarModel, CarModelDto> mapper = DtoMapperFactory.getInstance().getCarModelDtoMapper();
