@@ -18,6 +18,9 @@ import java.util.stream.Collectors;
  */
 public class CarModelServiceImpl implements CarModelService {
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean addCarModel(CarModelDto carModelDto) {
         TransactionManager.startTransaction();
@@ -36,6 +39,9 @@ public class CarModelServiceImpl implements CarModelService {
         return isCreated;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public List<CarModelDto> getAll() {
         DtoMapper<CarModel, CarModelDto> mapper = DtoMapperFactory.getInstance().getCarModelDtoMapper();
@@ -48,6 +54,9 @@ public class CarModelServiceImpl implements CarModelService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean updateCarModel(CarModelDto carModelDto) {
         TransactionManager.startTransaction();
@@ -65,6 +74,9 @@ public class CarModelServiceImpl implements CarModelService {
         return isUpdated;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public Optional<CarModelDto> findModelOfCar(CarDto carDto) {
         long carId = carDto.getId();

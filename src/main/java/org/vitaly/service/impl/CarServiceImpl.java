@@ -25,6 +25,9 @@ import static org.vitaly.model.car.CarStateEnum.*;
  */
 public class CarServiceImpl implements CarService {
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean addNewCar(CarDto carDto) {
         TransactionManager.startTransaction();
@@ -43,6 +46,9 @@ public class CarServiceImpl implements CarService {
         return isCarCreated;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public Optional<CarDto> findCarById(long carId) {
         DtoMapper<Car, CarDto> mapper = DtoMapperFactory.getInstance().getCarDtoMapper();
@@ -53,6 +59,9 @@ public class CarServiceImpl implements CarService {
                 .map(mapper::mapEntityToDto);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public List<CarDto> findCarsAtLocation(LocationDto locationDto) {
         DtoMapper<Car, CarDto> mapper = DtoMapperFactory.getInstance().getCarDtoMapper();
@@ -66,6 +75,9 @@ public class CarServiceImpl implements CarService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public List<CarDto> findCarsByModel(CarModelDto carModelDto) {
         DtoMapper<Car, CarDto> mapper = DtoMapperFactory.getInstance().getCarDtoMapper();
@@ -79,6 +91,9 @@ public class CarServiceImpl implements CarService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public List<CarDto> getAllCars() {
         DtoMapper<Car, CarDto> mapper = DtoMapperFactory.getInstance().getCarDtoMapper();
@@ -91,6 +106,9 @@ public class CarServiceImpl implements CarService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean updateCar(CarDto carDto) {
         TransactionManager.startTransaction();
@@ -116,6 +134,9 @@ public class CarServiceImpl implements CarService {
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean moveCarToLocation(CarDto carDto, LocationDto locationDto) {
         TransactionManager.startTransaction();
@@ -140,6 +161,9 @@ public class CarServiceImpl implements CarService {
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean changeCarState(CarDto carDto, String carState) {
         TransactionManager.startTransaction();
@@ -192,6 +216,9 @@ public class CarServiceImpl implements CarService {
         return false;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public Optional<CarDto> findCarForReservation(ReservationDto reservationDto) {
         DtoMapper<Car, CarDto> mapper = DtoMapperFactory.getInstance().getCarDtoMapper();

@@ -23,6 +23,9 @@ import static org.vitaly.model.reservation.ReservationStateEnum.*;
  */
 public class UserServiceImpl implements UserService {
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean registerNewUser(UserDto userDto) {
         TransactionManager.startTransaction();
@@ -42,6 +45,9 @@ public class UserServiceImpl implements UserService {
         return isUserCreated;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public Optional<UserDto> authenticate(String login, String password) {
         DtoMapper<User, UserDto> mapper = DtoMapperFactory.getInstance().getUserDtoMapper();
@@ -52,6 +58,9 @@ public class UserServiceImpl implements UserService {
                 .map(mapper::mapEntityToDto);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean changeRole(UserDto userDto, UserRole newRole) {
         TransactionManager.startTransaction();
@@ -82,6 +91,9 @@ public class UserServiceImpl implements UserService {
         return state == NEW.getState() || state == APPROVED.getState() || state == ACTIVE.getState();
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean changePassword(UserDto userDto, String newPassword) {
         TransactionManager.startTransaction();
@@ -103,6 +115,9 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public List<UserDto> findAllClients() {
         DtoMapper<User, UserDto> userDtoMapper = DtoMapperFactory.getInstance().getUserDtoMapper();

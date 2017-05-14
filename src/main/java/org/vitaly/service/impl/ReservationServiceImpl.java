@@ -32,6 +32,9 @@ import static org.vitaly.model.reservation.ReservationStateEnum.*;
  */
 public class ReservationServiceImpl implements ReservationService {
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean createNewReservation(ReservationDto reservationDto) {
         TransactionManager.startTransactionWithIsolation(Connection.TRANSACTION_SERIALIZABLE);
@@ -66,6 +69,9 @@ public class ReservationServiceImpl implements ReservationService {
                 .isPresent();
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public List<ReservationDto> findReservationsOfClient(UserDto clientDto) {
         DtoMapper<Reservation, ReservationDto> mapper = DtoMapperFactory.getInstance().getReservationDtoMapper();
@@ -79,6 +85,9 @@ public class ReservationServiceImpl implements ReservationService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public List<ReservationDto> findReservationsAssignedToAdmin(UserDto adminDto) {
         DtoMapper<Reservation, ReservationDto> mapper = DtoMapperFactory.getInstance().getReservationDtoMapper();
@@ -92,6 +101,9 @@ public class ReservationServiceImpl implements ReservationService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public List<ReservationDto> findReservationsWithoutAdmin() {
         DtoMapper<Reservation, ReservationDto> mapper = DtoMapperFactory.getInstance().getReservationDtoMapper();
@@ -104,6 +116,9 @@ public class ReservationServiceImpl implements ReservationService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean changeReservationState(ReservationDto reservationDto, String reservationState) {
         TransactionManager.startTransactionWithIsolation(Connection.TRANSACTION_SERIALIZABLE);
@@ -200,6 +215,9 @@ public class ReservationServiceImpl implements ReservationService {
         return isRejectionReasonAdded && isCarAvailable;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean cancelReservation(ReservationDto reservationDto) {
         TransactionManager.startTransactionWithIsolation(Connection.TRANSACTION_REPEATABLE_READ);
@@ -247,6 +265,9 @@ public class ReservationServiceImpl implements ReservationService {
                 .isPresent();
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean assignReservationToAdmin(ReservationDto reservationDto, UserDto adminDto) {
         TransactionManager.startTransactionWithIsolation(Connection.TRANSACTION_REPEATABLE_READ);

@@ -18,6 +18,9 @@ import java.util.stream.Collectors;
  */
 public class LocationServiceImpl implements LocationService {
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean addNewLocation(LocationDto locationDto) {
         TransactionManager.startTransaction();
@@ -36,6 +39,9 @@ public class LocationServiceImpl implements LocationService {
         return isLocationCreated;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public Optional<LocationDto> findLocationOfCar(CarDto carDto) {
         DtoMapper<Location, LocationDto> mapper = DtoMapperFactory.getInstance().getLocationDtoMapper();
@@ -47,6 +53,9 @@ public class LocationServiceImpl implements LocationService {
                 .map(mapper::mapEntityToDto);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public List<LocationDto> getAll() {
         DtoMapper<Location, LocationDto> mapper = DtoMapperFactory.getInstance().getLocationDtoMapper();
@@ -59,6 +68,9 @@ public class LocationServiceImpl implements LocationService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean updateLocation(LocationDto locationDto) {
         TransactionManager.startTransaction();
