@@ -7,7 +7,7 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 /**
- * Created by vitaly on 2017-05-10.
+ * Custom tag for displaying numbers for supplied locale
  */
 public class NumberFormatTag extends SimpleTagSupport {
 
@@ -42,7 +42,7 @@ public class NumberFormatTag extends SimpleTagSupport {
             }
 
             getJspContext().getOut()
-                    .println(numberFormat.format(number));
+                    .println("$ " + numberFormat.format(number));
         }
     }
 }

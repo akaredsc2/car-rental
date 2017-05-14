@@ -1,9 +1,9 @@
 package org.vitaly.util.constants;
 
 /**
- * Created by vitaly on 2017-05-04.
+ * Static constants with page names
  */
-public class Pages {
+public final class Pages {
     public static final String HOME_JSP = "/home.jsp";
     public static final String INDEX_JSP = "/index.jsp";
 

@@ -144,7 +144,7 @@ public class ReservationServiceImpl implements ReservationService {
         } else if (state == ReservationStateEnum.APPROVED.getState()) {
             return isReservationStateChanged && isBillAdded(reservationDto);
         } else if (state == ReservationStateEnum.ACTIVE.getState()) {
-            return isReservationStateChanged && isReservationActivated(reservationDto, carDao);
+            return isReservationStateChanged && isReservationActivated(reservationDto);
         } else if (state == ReservationStateEnum.CLOSED.getState()) {
             return isReservationStateChanged && isReservationClosed(reservationDto);
         }
@@ -174,7 +174,7 @@ public class ReservationServiceImpl implements ReservationService {
         return isCarReturned && areBillsPaid;
     }
 
-    private boolean isReservationActivated(ReservationDto reservationDto, CarDao carDao) {
+    private boolean isReservationActivated(ReservationDto reservationDto) {
         long reservationId = reservationDto.getId();
         long carId = reservationDto.getCar().getId();
 

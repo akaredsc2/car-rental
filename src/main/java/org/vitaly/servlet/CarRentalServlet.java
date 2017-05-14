@@ -13,20 +13,32 @@ import java.io.IOException;
 import static org.vitaly.util.constants.Pages.ERROR_403_JSP;
 
 /**
- * Created by vitaly on 2017-04-11.
+ * Dispatcher servlet of system
  */
 public class CarRentalServlet extends HttpServlet {
 
+    /**
+     * @inheritDoc
+     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         process(req, resp);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         process(req, resp);
     }
 
+    /**
+     * Processes request from users
+     *
+     * @param req  request
+     * @param resp response
+     */
     private void process(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         CommandHttpMethodPair commandHttpMethodPair = CommandHttpMethodPair.fromRequest(req);
 

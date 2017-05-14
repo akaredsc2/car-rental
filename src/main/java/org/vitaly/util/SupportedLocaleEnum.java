@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 /**
- * Created by vitaly on 29.04.17.
+ * Enum for supported locales
  */
 public enum SupportedLocaleEnum {
     EN_US("en_US"),
@@ -16,10 +16,21 @@ public enum SupportedLocaleEnum {
         this.name = name;
     }
 
+    /**
+     * Name of locale
+     *
+     * @return name of locale
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Returns name of locale form enum or empty optional if no such locale present
+     *
+     * @param localeName locale name
+     * @return name of locale form enum or empty optional if no such locale present
+     */
     public static Optional<String> of(String localeName) {
         return Arrays.stream(SupportedLocaleEnum.values())
                 .map(SupportedLocaleEnum::toString)

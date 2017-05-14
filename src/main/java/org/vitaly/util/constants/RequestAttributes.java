@@ -1,7 +1,7 @@
 package org.vitaly.util.constants;
 
 /**
- * Created by vitaly on 01.05.17.
+ * Static constants for request attributes
  */
 public final class RequestAttributes {
     public static final String ATTR_ERROR = "attr_error";

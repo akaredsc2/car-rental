@@ -1,7 +1,7 @@
 package org.vitaly.security;
 
 /**
- * Created by vitaly on 30.04.17.
+ * Http methods used supported by system
  */
 public enum HttpMethod {
     GET,

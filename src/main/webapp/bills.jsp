@@ -52,7 +52,6 @@
             </div>
 
             <div class="col-xs-4">
-                    <%--<c:out value="${bill.cashAmount}"/>--%>$
                 <custom:number number="${bill.cashAmount}" locale="${sessionScope.session_locale}"/>
             </div>
         </div>

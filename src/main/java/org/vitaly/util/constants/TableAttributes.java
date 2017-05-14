@@ -1,7 +1,7 @@
 package org.vitaly.util.constants;
 
 /**
- * Created by vitaly on 2017-04-15.
+ * Static constants for table attributes
  */
 public final class TableAttributes {
     public static final String USERS_USER_ID = "users.user_id";

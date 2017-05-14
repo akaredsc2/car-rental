@@ -380,6 +380,7 @@ public class ReservationServiceImplTest {
         when(reservationDao.isAdminAssignedToReservation(anyLong(), anyLong())).thenReturn(true);
         when(reservationDao.findById(anyLong())).thenReturn(Optional.of(reservation));
         when(reservationDao.changeReservationState(anyLong(), any())).thenReturn(true);
+        when(carDao.findById(anyLong())).thenReturn(Optional.of(Car.createDummyCarWithId(1)));
         when(carDao.changeCarState(anyLong(), eq(CarStateEnum.SERVED.getState()))).thenReturn(false);
         boolean isStateChanged = service.changeReservationState(reservationDto, targetState);
 
@@ -397,10 +398,14 @@ public class ReservationServiceImplTest {
         Reservation reservation = new Reservation.Builder()
                 .setState(ReservationStateEnum.APPROVED.getState())
                 .build();
+        Car reservedCar = new Car.Builder()
+                .setState(CarStateEnum.RESERVED.getState())
+                .build();
 
         when(reservationDao.isAdminAssignedToReservation(anyLong(), anyLong())).thenReturn(true);
         when(reservationDao.findById(anyLong())).thenReturn(Optional.of(reservation));
         when(reservationDao.changeReservationState(anyLong(), any())).thenReturn(true);
+        when(carDao.findById(anyLong())).thenReturn(Optional.of(reservedCar));
         when(carDao.changeCarState(anyLong(), eq(CarStateEnum.SERVED.getState()))).thenReturn(true);
         boolean isStateChanged = service.changeReservationState(reservationDto, targetState);
 

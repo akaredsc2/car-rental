@@ -5,7 +5,7 @@ import org.vitaly.util.InputChecker;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Created by vitaly on 30.04.17.
+ * Pair of command name and http method
  */
 public class CommandHttpMethodPair {
     public static final CommandHttpMethodPair SIGN_IN_POST = new CommandHttpMethodPair("sign_in", HttpMethod.POST);
@@ -53,20 +53,16 @@ public class CommandHttpMethodPair {
             new CommandHttpMethodPair("reservations", HttpMethod.GET);
     public static final CommandHttpMethodPair BILLS_GET = new CommandHttpMethodPair("bills", HttpMethod.GET);
 
-    private String url;
+    private String command;
     private HttpMethod httpMethod;
 
-    CommandHttpMethodPair(String url, HttpMethod httpMethod) {
-        this.url = url;
+    CommandHttpMethodPair(String command, HttpMethod httpMethod) {
+        this.command = command;
         this.httpMethod = httpMethod;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    HttpMethod getHttpMethod() {
-        return httpMethod;
+    public String getCommand() {
+        return command;
     }
 
     @Override
@@ -80,12 +76,12 @@ public class CommandHttpMethodPair {
 
         CommandHttpMethodPair that = (CommandHttpMethodPair) o;
 
-        return url.equals(that.url) && httpMethod == that.httpMethod;
+        return command.equals(that.command) && httpMethod == that.httpMethod;
     }
 
     @Override
     public int hashCode() {
-        int result = url.hashCode();
+        int result = command.hashCode();
         result = 31 * result + httpMethod.hashCode();
         return result;
     }
@@ -93,11 +89,17 @@ public class CommandHttpMethodPair {
     @Override
     public String toString() {
         return "CommandHttpMethodPair{" +
-                "url='" + url + '\'' +
+                "command='" + command + '\'' +
                 ", httpMethod=" + httpMethod +
                 '}';
     }
 
+    /**
+     * Static factory method to create instance from request
+     *
+     * @param request http servlet request
+     * @return created pair
+     */
     public static CommandHttpMethodPair fromRequest(HttpServletRequest request) {
         InputChecker.requireNotNull(request, "Request must not be null!");
 

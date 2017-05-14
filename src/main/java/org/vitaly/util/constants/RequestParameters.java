@@ -1,7 +1,7 @@
 package org.vitaly.util.constants;
 
 /**
- * Created by vitaly on 2017-04-27.
+ * Static constants for parameter names
  */
 public final class RequestParameters {
     public static final String PARAMETERS = "parameters.properties";

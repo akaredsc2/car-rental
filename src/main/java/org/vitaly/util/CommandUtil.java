@@ -14,12 +14,22 @@ import java.util.function.Consumer;
 import static org.vitaly.util.constants.RequestParameters.PARAMETERS;
 
 /**
- * Created by vitaly on 2017-05-12.
+ * Class for command utility methods
  */
 public class CommandUtil {
     private CommandUtil() {
     }
 
+    /**
+     * Utility method that upload image using image service
+     *
+     * @param request       request
+     * @param parameterName parameter name from request
+     * @param urlConsumer   action to be performed of uploaded image
+     * @throws IOException      thrown by request or in case of file problems
+     * @throws ServletException thrown by request
+     * @see org.vitaly.service.abstraction.ImageService
+     */
     public static void uploadImage(HttpServletRequest request, String parameterName, Consumer<String> urlConsumer)
             throws IOException, ServletException {
         Properties properties = PropertyUtils.readProperties(PARAMETERS);

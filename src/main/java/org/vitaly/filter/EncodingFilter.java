@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
- * Created by vitaly on 2017-04-27.
+ * Filter that changes character encoding
  */
 public class EncodingFilter implements Filter {
     static final String DEFAULT_ENCODING = "UTF-8";
@@ -22,8 +22,12 @@ public class EncodingFilter implements Filter {
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
         String requestEncoding = httpRequest.getCharacterEncoding();

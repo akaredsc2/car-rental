@@ -14,11 +14,20 @@ import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 
 /**
- * Created by vitaly on 28.04.17.
+ * Utility class for dealing with properties
  */
 public class PropertyUtils {
     private static Logger logger = LogManager.getLogger(PropertyUtils.class.getName());
 
+    private PropertyUtils() {
+    }
+
+    /**
+     * Reads properties with supplied name from resources
+     *
+     * @param name properties to read
+     * @return properties
+     */
     public static Properties readProperties(String name) {
         InputStream inputStream = PropertyUtils.class.getClassLoader().getResourceAsStream(name);
         Properties properties = new Properties();
@@ -31,18 +40,42 @@ public class PropertyUtils {
         }
     }
 
+    /**
+     * Read long from request
+     *
+     * @param request       request
+     * @param properties    properties with parameter name
+     * @param parameterName parameter name
+     * @return number or -1 if no such parameter in request
+     */
     public static long getLongFromRequest(HttpServletRequest request,
                                           Properties properties, String parameterName) {
         String idString = request.getParameter(properties.getProperty(parameterName));
         return (idString == null) ? -1 : Long.valueOf(idString);
     }
 
+    /**
+     * Read int from request
+     *
+     * @param request       request
+     * @param properties    properties with parameter name
+     * @param parameterName parameter name
+     * @return number or -1 if no such parameter in request
+     */
     public static int getIntFromRequest(HttpServletRequest request,
                                         Properties properties, String parameterName) {
         String idString = request.getParameter(properties.getProperty(parameterName));
         return (idString == null) ? -1 : Integer.valueOf(idString);
     }
 
+    /**
+     * Read local date from request
+     *
+     * @param request       request
+     * @param properties    properties with parameter name
+     * @param parameterName parameter name
+     * @return local date or null if no such parameter in request
+     */
     public static LocalDate getLocalDateFromRequest(HttpServletRequest request,
                                                     Properties properties, String parameterName) {
         String localDateString = request.getParameter(properties.getProperty(parameterName));
@@ -51,14 +84,30 @@ public class PropertyUtils {
                 LocalDate.parse(localDateString, DateTimeFormatter.ISO_LOCAL_DATE);
     }
 
+    /**
+     * Read local date time from request
+     *
+     * @param request       request
+     * @param properties    properties with parameter name
+     * @param parameterName parameter name
+     * @return local date time or null if no such parameter in request
+     */
     public static LocalDateTime getLocalDateTimeFromRequest(HttpServletRequest request,
-                                                    Properties properties, String parameterName) {
+                                                            Properties properties, String parameterName) {
         String localDateTimeString = request.getParameter(properties.getProperty(parameterName));
         return (localDateTimeString == null) ?
                 null :
                 LocalDateTime.parse(localDateTimeString, DateTimeFormatter.ISO_DATE_TIME);
     }
 
+    /**
+     * Read BigDecimal from request
+     *
+     * @param request       request
+     * @param properties    properties with parameter name
+     * @param parameterName parameter name
+     * @return number or null if no such parameter in request
+     */
     public static BigDecimal getBigDecimalFromRequest(HttpServletRequest request,
                                                       Properties properties, String parameterName) {
         String bigDecimalString = request.getParameter(properties.getProperty(parameterName));

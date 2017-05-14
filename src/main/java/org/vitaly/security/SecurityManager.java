@@ -15,7 +15,9 @@ import java.util.stream.Stream;
 import static org.vitaly.util.constants.SessionAttributes.SESSION_USER;
 
 /**
- * Created by vitaly on 30.04.17.
+ * Security manager of system. Contains mapping
+ * for command and roles that can execute that command.
+ * Security manager is singleton.
  */
 public class SecurityManager {
     private static SecurityManager instance = new SecurityManager();
@@ -73,18 +75,22 @@ public class SecurityManager {
         this.permissionMap = Collections.unmodifiableMap(permissionMap);
     }
 
+    /**
+     * Instance of security manager
+     *
+     * @return instance of security manager
+     */
     public static SecurityManager getInstance() {
         return instance;
     }
 
-    public boolean isValidRequest(HttpServletRequest request) {
-        CommandHttpMethodPair commandHttpMethodPair = CommandHttpMethodPair.fromRequest(request);
-
-        return permissionMap
-                .keySet()
-                .contains(commandHttpMethodPair);
-    }
-
+    /**
+     * Checks if requested command can be executed
+     *
+     * @param request               request from user
+     * @param commandHttpMethodPair command and http method
+     * @return true if command and method is allowed for request, false otherwise
+     */
     public boolean checkPermission(HttpServletRequest request, CommandHttpMethodPair commandHttpMethodPair) {
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute(SESSION_USER) == null) {
