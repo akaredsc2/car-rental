@@ -1,18 +1,30 @@
 package org.vitaly.model.reservation;
 
 /**
- * Created by vitaly on 2017-04-08.
+ * New reservation state
  */
 public class NewState extends ReservationState {
     NewState() {
     }
 
+    /**
+     * Approve reservation
+     *
+     * @param reservation context reservation
+     * @return true
+     */
     @Override
     boolean approve(Reservation reservation) {
         reservation.setState(ReservationStateEnum.APPROVED.getState());
         return true;
     }
 
+    /**
+     * Reject reservation
+     *
+     * @param reservation context reservation
+     * @return true
+     */
     @Override
     boolean reject(Reservation reservation) {
         reservation.setState(ReservationStateEnum.REJECTED.getState());

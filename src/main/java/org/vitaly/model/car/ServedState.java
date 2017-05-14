@@ -1,12 +1,15 @@
 package org.vitaly.model.car;
 
 /**
- * Created by vitaly on 2017-03-26.
+ * Served car state
  */
 public class ServedState extends CarState {
     ServedState() {
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     boolean doReturn(Car car) {
         car.setState(CarStateEnum.RETURNED.getState());

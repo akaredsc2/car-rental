@@ -1,8 +1,15 @@
 package org.vitaly.model;
 
 /**
- * Created by vitaly on 2017-04-15.
+ * Classes implementing this interface are entities in created
+ * system. Each entity has its own id.
+ * @author vitaly
  */
 public interface Entity {
+
+    /**
+     * Returns id of an entity
+     * @return id of an entity
+     */
     long getId();
 }

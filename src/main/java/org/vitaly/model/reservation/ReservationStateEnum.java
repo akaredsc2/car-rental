@@ -4,7 +4,9 @@ import java.util.Arrays;
 import java.util.Optional;
 
 /**
- * Created by vitaly on 2017-04-08.
+ * Enum to hold one instance of each reservation state
+ *
+ * @see ReservationState
  */
 public enum ReservationStateEnum {
     NEW(new NewState()),
@@ -20,10 +22,22 @@ public enum ReservationStateEnum {
         this.state = state;
     }
 
+    /**
+     * State held by enum entry
+     *
+     * @return state held by enum entry
+     */
     public ReservationState getState() {
         return state;
     }
 
+    /**
+     * Returns reservation state of supplied name or empty optional if
+     * no such state present in this enum
+     *
+     * @param stateString state to be parsed
+     * @return reservation state of supplied name or empty optional if no such state present in this enum
+     */
     public static Optional<ReservationState> stateOf(String stateString) {
         return Arrays.stream(ReservationStateEnum.values())
                 .map(ReservationStateEnum::toString)

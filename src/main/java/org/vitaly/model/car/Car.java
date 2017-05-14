@@ -6,7 +6,10 @@ import org.vitaly.model.carModel.CarModel;
 import java.math.BigDecimal;
 
 /**
- * Created by vitaly on 2017-03-26.
+ * Car in system. Use Car.Builder to create instances or static factory method
+ *
+ * @see Car.Builder
+ * @see Car#createDummyCarWithId(long)
  */
 public class Car implements Entity {
     private long id;
@@ -25,51 +28,111 @@ public class Car implements Entity {
         this.pricePerDay = builder.pricePerDay;
     }
 
+    /**
+     * Id of car
+     *
+     * @return id of car
+     */
     @Override
     public long getId() {
         return id;
     }
 
+    /**
+     * State of car
+     *
+     * @return state of car
+     */
     public CarState getState() {
         return state;
     }
 
+    /**
+     * Sets state of car. Part of State design pattern
+     *
+     * @param state
+     */
     void setState(CarState state) {
         this.state = state;
     }
 
+    /**
+     * Model of car
+     *
+     * @return model of car
+     */
     public CarModel getCarModel() {
         return carModel;
     }
 
+    /**
+     * Registration plate of car
+     *
+     * @return registration plate of car
+     */
     public String getRegistrationPlate() {
         return registrationPlate;
     }
 
+    /**
+     * Color of car
+     *
+     * @return color of car
+     */
     public String getColor() {
         return color;
     }
 
+    /**
+     * Price per day of using car
+     *
+     * @return price per day of using car
+     */
     public BigDecimal getPricePerDay() {
         return pricePerDay;
     }
 
+    /**
+     * Try to make car available
+     *
+     * @return true if made available, false otherwise
+     */
     public boolean makeAvailable() {
         return state.makeAvailable(this);
     }
 
+    /**
+     * Try to make car unavailable
+     *
+     * @return true if made unavailable, false otherwise
+     */
     public boolean makeUnavailable() {
         return state.makeUnavailable(this);
     }
 
+    /**
+     * Try to make car reserved
+     *
+     * @return true if made reserved, false otherwise
+     */
     public boolean reserve() {
         return state.reserve(this);
     }
 
+    /**
+     * Try to make car served
+     *
+     * @return true if made served, false otherwise
+     */
     public boolean serve() {
         return state.serve(this);
     }
 
+    /**
+     * Try to make car returned
+     *
+     * @return true if made returned, false otherwise
+     */
     public boolean doReturn() {
         return state.doReturn(this);
     }
@@ -101,6 +164,11 @@ public class Car implements Entity {
         return result;
     }
 
+    /**
+     * Creates instances of Car with supplied parameters
+     *
+     * @see Car
+     */
     public static class Builder {
         private long id;
         private CarState state;
@@ -144,6 +212,12 @@ public class Car implements Entity {
         }
     }
 
+    /**
+     * Static factory method to create car with supplied id
+     *
+     * @param id id
+     * @return Car with supplied id
+     */
     public static Car createDummyCarWithId(long id) {
         return new Car.Builder()
                 .setId(id)

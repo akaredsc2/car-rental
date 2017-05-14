@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 /**
- * Created by vitaly on 2017-03-26.
+ * Holds instances of car states
  */
 public enum CarStateEnum {
     AVAILABLE(new AvailableState()),
@@ -19,10 +19,21 @@ public enum CarStateEnum {
         this.state = state;
     }
 
+    /**
+     * Car state
+     *
+     * @return car state
+     */
     public CarState getState() {
         return state;
     }
 
+    /**
+     * Returns corresponding car state or empty optional otherwise
+     *
+     * @param stateName state name
+     * @return corresponding car state or empty optional otherwise
+     */
     public static Optional<CarState> stateOf(String stateName) {
         return Arrays.stream(CarStateEnum.values())
                 .map(CarStateEnum::toString)

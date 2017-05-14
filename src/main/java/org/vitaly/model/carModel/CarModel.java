@@ -3,7 +3,10 @@ package org.vitaly.model.carModel;
 import org.vitaly.model.Entity;
 
 /**
- * Created by vitaly on 2017-04-22.
+ * Model of car. Use CarModel.Builder to create instances or static factory method
+ *
+ * @see CarModel.Builder
+ * @see CarModel#createDummyCarModelWithId(long)
  */
 public class CarModel implements Entity {
     private long id;
@@ -22,27 +25,57 @@ public class CarModel implements Entity {
         this.horsePowerCount = builder.horsePowerCount;
     }
 
+    /**
+     * Id of model
+     *
+     * @return id of model
+     */
     @Override
     public long getId() {
         return id;
     }
 
+    /**
+     * Name of model
+     *
+     * @return name of model
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Url to photo of model
+     *
+     * @return url to photo of model
+     */
     public String getPhotoUrl() {
         return photoUrl;
     }
 
+    /**
+     * Door count
+     *
+     * @return door count
+     */
     public int getDoorCount() {
         return doorCount;
     }
 
+    /**
+     * Seat count
+     *
+     * @return seat count
+     */
     public int getSeatCount() {
         return seatCount;
     }
 
+    /**
+     * Horse power count of engine
+     *
+     * @return horse power count of engine
+     */
     public int getHorsePowerCount() {
         return horsePowerCount;
     }
@@ -85,6 +118,11 @@ public class CarModel implements Entity {
                 '}';
     }
 
+    /**
+     * Class that creates instances of CarModel class with supplied parameters
+     *
+     * @see CarModel
+     */
     public static class Builder {
         private long id;
         private String name;
@@ -128,6 +166,12 @@ public class CarModel implements Entity {
         }
     }
 
+    /**
+     * Static factory method to create car model with supplied id
+     *
+     * @param id id of car model
+     * @return car model with supplied id
+     */
     public static CarModel createDummyCarModelWithId(long id) {
         return new CarModel.Builder()
                 .setId(id)

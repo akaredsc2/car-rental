@@ -9,7 +9,12 @@ import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 /**
- * Created by vitaly on 2017-04-08.
+ * This class represents reservation for car in system. Reservation
+ * can have different states. To create instances of this class use
+ * Builder
+ *
+ * @see ReservationState
+ * @see Reservation.Builder
  */
 public class Reservation implements Entity {
     private long id;
@@ -32,58 +37,128 @@ public class Reservation implements Entity {
         this.rejectionReason = builder.rejectionReason;
     }
 
+    /**
+     * Returns id of reservation
+     *
+     * @return id of reservation
+     */
     public long getId() {
         return id;
     }
 
+    /**
+     * Returns client who created reservation
+     *
+     * @return client who created reservation
+     */
     public User getClient() {
         return client;
     }
 
+    /**
+     * Returns admin who is assigned to this reservation
+     *
+     * @return admin who is assigned to this reservation
+     */
     public User getAdmin() {
         return admin;
     }
 
+    /**
+     * Returns car which is reserved
+     *
+     * @return car which is reserved
+     */
     public Car getCar() {
         return car;
     }
 
+    /**
+     * Returns local date time for picking up car by client
+     *
+     * @return local date time for picking up car by client
+     */
     public LocalDateTime getPickUpDatetime() {
         return pickUpDatetime;
     }
 
+    /**
+     * Returns local date time for dropping of car by client
+     *
+     * @return local date time for dropping of car by client
+     */
     public LocalDateTime getDropOffDatetime() {
         return dropOffDatetime;
     }
 
+    /**
+     * Returns state of reservation
+     *
+     * @return state of reservation
+     */
     public ReservationState getState() {
         return state;
     }
 
+    /**
+     * Sets state of reservation. Part of State design pattern
+     *
+     * @param state new state of reservation
+     */
     void setState(ReservationState state) {
         this.state = state;
     }
 
+    /**
+     * Returns rejection reason for reservation
+     *
+     * @return rejection reason for reservation
+     */
     public String getRejectionReason() {
         return rejectionReason;
     }
 
+    /**
+     * Try to approve reservation. Part of State design pattern
+     *
+     * @return true is reservation been approved and false otherwise
+     */
     public boolean approve() {
         return state.approve(this);
     }
 
+    /**
+     * Try to reject reservation. Part of State design pattern
+     *
+     * @return true is reservation been rejected and false otherwise
+     */
     public boolean reject() {
         return state.reject(this);
     }
 
+    /**
+     * Try to cancel reservation. Part of State design pattern
+     *
+     * @return true is reservation been canceled and false otherwise
+     */
     public boolean cancel() {
         return state.cancel(this);
     }
 
+    /**
+     * Try to activate reservation. Part of State design pattern
+     *
+     * @return true is reservation been activated and false otherwise
+     */
     public boolean activate() {
         return state.activate(this);
     }
 
+    /**
+     * Try to close reservation. Part of State design pattern
+     *
+     * @return true is reservation been closed and false otherwise
+     */
     public boolean close() {
         return state.close(this);
     }
@@ -128,6 +203,13 @@ public class Reservation implements Entity {
                 '}';
     }
 
+    /**
+     * This class creates instances of Reservation. Use setter chain to
+     * set desired parameters and build methods to create instance
+     * of Reservation with supplied parameters.
+     *
+     * @see Reservation
+     */
     public static class Builder {
         private long id;
         private User client;

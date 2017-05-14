@@ -1,7 +1,7 @@
 package org.vitaly.model.reservation;
 
 /**
- * Created by vitaly on 2017-04-08.
+ * Rejected reservation state
  */
 public class RejectedState extends ReservationState {
     RejectedState() {

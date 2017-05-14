@@ -1,7 +1,7 @@
 package org.vitaly.model.reservation;
 
 /**
- * Created by vitaly on 2017-04-08.
+ * Canceled reservation state
  */
 public class CanceledState extends ReservationState {
     CanceledState() {

@@ -5,7 +5,9 @@ import org.vitaly.model.Entity;
 import java.util.Objects;
 
 /**
- * Created by vitaly on 2017-03-26.
+ * Location to pick up cars. Use Location.Builder to create instances
+ *
+ * @see Location.Builder
  */
 public class Location implements Entity {
     private long id;
@@ -24,27 +26,57 @@ public class Location implements Entity {
         this.photoUrl = builder.photoUrl;
     }
 
+    /**
+     * Id of location
+     *
+     * @return id of location
+     */
     @Override
     public long getId() {
         return id;
     }
 
+    /**
+     * State of location
+     *
+     * @return state of location
+     */
     public String getState() {
         return state;
     }
 
+    /**
+     * City of location
+     *
+     * @return city of location
+     */
     public String getCity() {
         return city;
     }
 
+    /**
+     * Street of location
+     *
+     * @return street of location
+     */
     public String getStreet() {
         return street;
     }
 
+    /**
+     * Building of location
+     *
+     * @return building of location
+     */
     public String getBuilding() {
         return building;
     }
 
+    /**
+     * Url of location photo
+     *
+     * @return url of location photo
+     */
     public String getPhotoUrl() {
         return photoUrl;
     }
@@ -88,6 +120,11 @@ public class Location implements Entity {
                 '}';
     }
 
+    /**
+     * Creates instances of Location class with supplied parameters
+     *
+     * @see Location
+     */
     public static class Builder {
         private long id;
         private String state;

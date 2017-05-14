@@ -7,7 +7,12 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 /**
- * Created by vitaly on 2017-04-08.
+ * Bill in system for using car or for damaging rented car. Use
+ * Bill.Builder to create instances of this class or static factory methods
+ *
+ * @see Bill.Builder
+ * @see Bill#forDamage(BigDecimal)
+ * @see Bill#forService(BigDecimal)
  */
 public class Bill implements Entity {
     private long id;
@@ -26,26 +31,56 @@ public class Bill implements Entity {
         this.creationDateTime = builder.creationDateTime;
     }
 
+    /**
+     * Id of bill
+     *
+     * @return id of bill
+     */
     public long getId() {
         return id;
     }
 
+    /**
+     * Is bill paid or not
+     *
+     * @return true if paid, false otherwise
+     */
     public boolean isPaid() {
         return isPaid;
     }
 
+    /**
+     * Is confirmed that bill paid
+     *
+     * @return true if confirmed, false otherwise
+     */
     public boolean isConfirmed() {
         return isConfirmed;
     }
 
+    /**
+     * Description of bill
+     *
+     * @return description of bill
+     */
     public BillDescriptionEnum getDescription() {
         return description;
     }
 
+    /**
+     * Cash amount in USD
+     *
+     * @return cash amount in USD
+     */
     public BigDecimal getCashAmount() {
         return cashAmount;
     }
 
+    /**
+     * Local date time of bill creation
+     *
+     * @return local date time of bill creation
+     */
     public LocalDateTime getCreationDateTime() {
         return creationDateTime;
     }
@@ -85,6 +120,11 @@ public class Bill implements Entity {
                 '}';
     }
 
+    /**
+     * Creates instances of Bill class with supplied parameters
+     *
+     * @see Bill
+     */
     public static class Builder {
         private long id;
         private boolean isPaid;
@@ -128,6 +168,12 @@ public class Bill implements Entity {
         }
     }
 
+    /**
+     * Creates bill for service with supplied cash amount
+     *
+     * @param cashAmount cash amount
+     * @return bill for service with supplied cash amount
+     */
     public static Bill forService(BigDecimal cashAmount) {
         return new Bill.Builder()
                 .setCashAmount(cashAmount)
@@ -138,6 +184,12 @@ public class Bill implements Entity {
                 .build();
     }
 
+    /**
+     * Creates bill for damage with supplied cash amount
+     *
+     * @param cashAmount cash amount
+     * @return bill for damage with supplied cash amount
+     */
     public static Bill forDamage(BigDecimal cashAmount) {
         return new Bill.Builder()
                 .setCashAmount(cashAmount)

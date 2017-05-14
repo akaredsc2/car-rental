@@ -1,12 +1,15 @@
 package org.vitaly.model.car;
 
 /**
- * Created by vitaly on 2017-03-26.
+ * Unavailable car state
  */
 public class UnavailableState extends CarState {
     UnavailableState() {
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     boolean makeAvailable(Car car) {
         car.setState(CarStateEnum.AVAILABLE.getState());

@@ -179,7 +179,7 @@ public class ReservationServiceImpl implements ReservationService {
         long carId = reservationDto.getCar().getId();
 
         boolean isBillPaid = areBillsPaid(reservationId);
-        boolean isCarServed = carDao.changeCarState(carId, CarStateEnum.SERVED.getState());
+        boolean isCarServed = tryToChangeCarState(carId, CarStateEnum.SERVED.getState(), Car::serve);
 
         return isCarServed && isBillPaid;
     }
