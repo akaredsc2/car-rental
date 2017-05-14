@@ -14,6 +14,7 @@ import org.vitaly.service.impl.dto.ReservationDto;
 import org.vitaly.service.impl.dtoMapper.DtoMapper;
 import org.vitaly.service.impl.factory.DtoMapperFactory;
 
+import java.sql.Connection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -111,7 +112,7 @@ public class CarServiceImpl implements CarService {
      */
     @Override
     public boolean updateCar(CarDto carDto) {
-        TransactionManager.startTransaction();
+        TransactionManager.startTransactionWithIsolation(Connection.TRANSACTION_REPEATABLE_READ);
 
         CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
         boolean isAbleToBeUpdated = carDao.findById(carDto.getId())
@@ -139,7 +140,7 @@ public class CarServiceImpl implements CarService {
      */
     @Override
     public boolean moveCarToLocation(CarDto carDto, LocationDto locationDto) {
-        TransactionManager.startTransaction();
+        TransactionManager.startTransactionWithIsolation(Connection.TRANSACTION_REPEATABLE_READ);
 
         long carId = carDto.getId();
         CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();
@@ -166,7 +167,7 @@ public class CarServiceImpl implements CarService {
      */
     @Override
     public boolean changeCarState(CarDto carDto, String carState) {
-        TransactionManager.startTransaction();
+        TransactionManager.startTransactionWithIsolation(Connection.TRANSACTION_REPEATABLE_READ);
 
         long carId = carDto.getId();
         CarDao carDao = MysqlDaoFactory.getInstance().getCarDao();

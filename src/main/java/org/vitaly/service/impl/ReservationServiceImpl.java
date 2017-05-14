@@ -37,7 +37,7 @@ public class ReservationServiceImpl implements ReservationService {
      */
     @Override
     public boolean createNewReservation(ReservationDto reservationDto) {
-        TransactionManager.startTransactionWithIsolation(Connection.TRANSACTION_SERIALIZABLE);
+        TransactionManager.startTransactionWithIsolation(Connection.TRANSACTION_REPEATABLE_READ);
 
         long carId = reservationDto.getCar().getId();
         ReservationDao reservationDao = MysqlDaoFactory.getInstance().getReservationDao();
@@ -121,7 +121,7 @@ public class ReservationServiceImpl implements ReservationService {
      */
     @Override
     public boolean changeReservationState(ReservationDto reservationDto, String reservationState) {
-        TransactionManager.startTransactionWithIsolation(Connection.TRANSACTION_SERIALIZABLE);
+        TransactionManager.startTransactionWithIsolation(Connection.TRANSACTION_REPEATABLE_READ);
 
         long reservationId = reservationDto.getId();
         long adminId = reservationDto.getAdmin().getId();

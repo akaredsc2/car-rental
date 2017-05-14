@@ -1,0 +1,18 @@
+#Car rental service
+
+Client selects car from list. Client fills reservation form pointing rental period. 
+Client pays the bill. Administrator registers return of car. 
+If car is damaged, administrator bill for damage. 
+Administrator can reject reservation pointing rejection reason
+
+##Used technologies
+
+* Java SE8, Java EE (Servlets, JSP, JSTL)
+* MySQL, JDBC, Apache Commons DBCP
+* Apache Tomcat 9
+* JUnit 4, Hamcrest, Mockito, Powermock
+* Cloudinary
+* CSS, Bootstrap
+* Apache Maven, Git, Apache Log4j 2
+
+Schema creation script can be found under *resources/db* folder

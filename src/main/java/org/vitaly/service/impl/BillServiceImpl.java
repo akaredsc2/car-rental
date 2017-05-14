@@ -66,8 +66,10 @@ public class BillServiceImpl implements BillService {
         LocalDateTime pickUpDatetime = res.getPickUpDatetime();
         LocalDateTime dropOffDatetime = res.getDropOffDatetime();
 
-        return DAYS.between(pickUpDatetime, dropOffDatetime)
-                + HOURS.between(pickUpDatetime, dropOffDatetime) % hoursInDay > fullDayPriceThreshold ? 1 : 0;
+        int partOfDayPrice =
+                HOURS.between(pickUpDatetime, dropOffDatetime) % hoursInDay > fullDayPriceThreshold ? 1 : 0;
+
+        return DAYS.between(pickUpDatetime, dropOffDatetime) + partOfDayPrice;
     }
 
     /**
@@ -75,7 +77,7 @@ public class BillServiceImpl implements BillService {
      */
     @Override
     public boolean addDamageBillToReservation(BillDto billDto, ReservationDto reservationDto) {
-        TransactionManager.startTransactionWithIsolation(Connection.TRANSACTION_SERIALIZABLE);
+        TransactionManager.startTransactionWithIsolation(Connection.TRANSACTION_REPEATABLE_READ);
 
         MysqlDaoFactory daoFactory = MysqlDaoFactory.getInstance();
 
